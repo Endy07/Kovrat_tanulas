@@ -165,6 +165,7 @@ input.small{width:5em}
 .check{color:var(--ok);font-family:var(--mono);font-weight:700;font-size:1.15rem}
 .caption{font-size:1.15rem;min-height:3.6em;border-left:4px solid var(--accent);padding:10px 16px;background:var(--accent-soft);border-radius:0 12px 12px 0;max-width:none}
 .pb-progress{display:flex;align-items:center;gap:12px}
+#pb-voice[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .progress{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
 .progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 select{font:inherit;padding:.45em .6em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
@@ -386,6 +387,7 @@ footer{color:var(--muted);font-size:.9rem}
       <button class="btn" type="button" id="pb-prev">◀ Vissza</button>
       <button class="btn primary" type="button" id="pb-play">▶ Lejátszás</button>
       <button class="btn" type="button" id="pb-next">Tovább ▶</button>
+      <button class="btn" type="button" id="pb-voice" aria-pressed="false" hidden>Felolvasás: ki</button>
       <span class="row" style="margin-left:auto;gap:8px">
         <label for="pb-speed" class="eyebrow">Tempó</label>
         <select id="pb-speed">
@@ -396,6 +398,7 @@ footer{color:var(--muted);font-size:.9rem}
         </select>
       </span>
     </div>
+    <p class="warn" id="pb-voicewarn" hidden>Ezen az eszközön nem találtam magyar felolvasóhangot, ezért a szöveg idegen kiejtéssel hangozhat el. Windowson a Microsoft Edge böngészőben biztosan van magyar hang. Chrome-ban akkor lesz, ha a Windowsra telepítve van a magyar beszédcsomag (Gépház → Idő és nyelv → Beszéd).</p>
   </div>
 
   <!-- ===== Gyakorlás ===== -->
@@ -819,19 +822,101 @@ footer{color:var(--muted);font-size:.9rem}
     if (pb.k >= pb.frames.length-1) pbShow(0);
     pb.playing = true; pbPlayBtn(); pbSchedule();
   }
-  function pbPause(){ pb.playing = false; clearTimeout(pb.timer); if (pb.frames.length) pbPlayBtn(); }
+  function pbPause(){ pb.playing = false; clearTimeout(pb.timer); tts.stop(); if (pb.frames.length) pbPlayBtn(); }
   function pbSchedule(){
     clearTimeout(pb.timer);
     if (!pb.playing) return;
-    if (pb.k >= pb.frames.length-1){ pbPause(); return; }
-    const len = pb.frames[pb.k].cap.replace(/<[^>]+>/g, "").length;
+    const last = pb.k >= pb.frames.length-1;
     const base = Number($("pb-speed").value);
+    if (tts.on){
+      // felolvassa a lépést, és csak utána lép tovább
+      tts.say(pb.frames[pb.k].cap, () => {
+        if (!pb.playing) return;
+        if (last){ pbPause(); return; }
+        pb.timer = setTimeout(() => { pbShow(pb.k+1); pbSchedule(); }, base * 0.18);
+      });
+      return;
+    }
+    if (last){ pbPause(); return; }
+    const len = pb.frames[pb.k].cap.replace(/<[^>]+>/g, "").length;
     pb.timer = setTimeout(() => { pbShow(pb.k+1); pbSchedule(); }, base * (0.7 + len/180));
   }
+  // kézi léptetésnél megáll, de az új lépést felolvassa
+  function pbStep(k){ pbPause(); pbShow(k); if (tts.on) tts.say(pb.frames[pb.k].cap); }
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on:false, voice:null, say(){}, stop(){} };
+    if (!synth || typeof SpeechSynthesisUtterance === "undefined") return api;
+    let token = 0, safety = null;
+    const rates = { "6000":0.8, "4200":0.92, "2800":1.05, "1700":1.2 };
+    const digits = s => s.split("").map(d => d === "1" ? "egy" : "nulla").join(" ");
+    function speakable(html){
+      return html
+        .replace(/([01]+)<sub>2<\/sub>/g, (m, b) => digits(b) + ", kettes számrendszerben, ")
+        .replace(/(\d+)<sub>10<\/sub>/g, "$1, tízes számrendszerben, ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&")
+        .replace(/(\d)\s*:\s*(\d)/g, "$1 osztva $2")
+        .replace(/\s·\s/g, " szorozva ")
+        .replace(/\s−\s/g, " mínusz ")
+        .replace(/\s\+\s/g, " plusz ")
+        .replace(/\s≤\s/g, " kisebb vagy egyenlő, mint ")
+        .replace(/\s>\s/g, " nagyobb, mint ")
+        .replace(/\s=\s/g, " egyenlő ")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      $("pb-voicewarn").hidden = !(api.on && !api.voice && synth.getVoices().length);
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha elfelejti jelezni a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = rates[$("pb-speed").value] || 1;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const btn = $("pb-voice");
+    btn.hidden = false;
+    function setOn(v){
+      api.on = v;
+      btn.setAttribute("aria-pressed", v ? "true" : "false");
+      btn.textContent = v ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      try { localStorage.setItem("kettes-tts", v ? "1" : "0"); } catch(e){}
+      pickVoice();
+    }
+    let saved = null;
+    try { saved = localStorage.getItem("kettes-tts"); } catch(e){}
+    setOn(saved !== "0");
+    btn.addEventListener("click", () => {
+      setOn(!api.on);
+      if (!api.on) api.stop();
+      if (pb.playing) pbSchedule();
+    });
+    return api;
+  })();
+
   $("pb-play").addEventListener("click", () => pb.playing ? pbPause() : pbPlay());
-  $("pb-next").addEventListener("click", () => { pbPause(); pbShow(pb.k+1); });
-  $("pb-prev").addEventListener("click", () => { pbPause(); pbShow(pb.k-1); });
-  $("pb-first").addEventListener("click", () => { pbPause(); pbShow(0); });
+  $("pb-next").addEventListener("click", () => pbStep(pb.k+1));
+  $("pb-prev").addEventListener("click", () => pbStep(pb.k-1));
+  $("pb-first").addEventListener("click", () => pbStep(0));
   $("pb-speed").addEventListener("change", pbSchedule);
   document.querySelectorAll("#pb-methods .tab").forEach(t => t.addEventListener("click", () => pbLoad(t.dataset.m, PBEX[t.dataset.m][2], false)));
   $("pb-ex").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) pbLoad(pb.method, b.dataset.v, true); });
