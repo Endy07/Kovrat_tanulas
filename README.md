@@ -20,6 +20,14 @@ Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: bön
   - milyen témák vannak az iskolai tanmenetben (programozás, weboldal-készítés HTML/CSS, hálózatok, hardver, számrendszerek…).
 - Utána: leckék hetekre/hónapokra bontva, mindegyik ugyanebben a formában (magyarázó diák, lejátszott példák, gyakorlófeladatok), és felvéve az `index.html` listájába.
 
+## Dokumentáció
+
+| Fájl | Kinek |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | Munkadokumentum: mit, hogyan és miért csináltunk |
+| [`docs/LECKE-RECEPT.md`](docs/LECKE-RECEPT.md) | Lépésenkénti recept új leckéhez, minden eddigi buktatóval |
+| [`PROJEKT-KONTEXTUS.md`](PROJEKT-KONTEXTUS.md), [`PROJEKT-RESZLETES.md`](PROJEKT-RESZLETES.md) | A Könyvjelzők-elemzőnek (projekt-besorolás) |
+
 ## Új lecke hozzáadása
 
 1. Új önálló HTML-fájl a gyökérben (legyen benne `<meta charset="utf-8">`).
