@@ -35,7 +35,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-table{font-size:inherit} /* quirks módban (nincs doctype) a táblázat nem örökli a betűméretet */
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit} /* quirks módban (nincs doctype) a táblázat nem örökli a betűméretet és a színt */
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
 .wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}

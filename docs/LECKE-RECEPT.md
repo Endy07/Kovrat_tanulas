@@ -46,7 +46,7 @@ szabály), a localhost és a Pages viszont nem. Ezek nélkül:
 - **mind a 9 dia egyszerre látszik**, mert a `.slide{display:flex}` felülírja a `hidden`
   attribútumot.
 - **a táblázatok betűje apró lesz**, mert doctype nélkül (quirks mód) a `table` nem örökli a
-  betűméretet. Kell egy `table{font-size:inherit}` sor is.
+  betűméretet és a színt (sötét témában a füzetlapon halvány lett a táblázat). Kell egy `table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}` sor is.
 
 `<!doctype html>`, `<html>`, `<head>`, `<body>` taget **ne** írj a lecke fájljába: az artifact
 publikálás maga teszi köré, a böngészők pedig nélküle is helyesen kezelik. (Az `index.html`
