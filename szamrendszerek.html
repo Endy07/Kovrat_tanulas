@@ -236,6 +236,23 @@ select{font:inherit;padding:.45em .6em;border-radius:10px;border:1.5px solid var
 .story .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 .story ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
 .eq .ok{color:var(--ok);font-weight:700}
+/* ábrák a részletes füzetfeladatokhoz */
+.fig{display:flex;flex-direction:column;gap:6px;max-width:640px}
+.fit{display:flex;height:38px;border-radius:8px;background:var(--surface-2);overflow:hidden;font-family:var(--mono);font-size:.82rem}
+.fit > span{display:grid;place-items:center;white-space:nowrap;overflow:hidden;min-width:3px}
+.fit .seg{background:var(--led);color:var(--led-ink);font-weight:700;border-right:2px solid var(--surface)}
+.fit .rest{background:repeating-linear-gradient(45deg,var(--surface-2) 0 6px,var(--line) 6px 12px);color:var(--muted)}
+.fit.over{background:transparent;border:2px dashed var(--bad)}
+.fit.over .have{background:var(--accent);color:var(--surface);font-weight:700}
+.fit .c0,.legend .c0{background:var(--led);color:var(--led-ink)}
+.fit .c1,.legend .c1{background:var(--accent);color:var(--surface)}
+.fit .c2,.legend .c2{background:var(--ok);color:var(--surface)}
+.fit .c3,.legend .c3{background:#9B5DE5;color:#fff}
+.fit .c4,.legend .c4{background:var(--bad);color:#fff}
+.figcap{font-size:.85rem;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--mono);font-size:.85rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.stepnum{font-family:var(--mono);font-weight:700;color:var(--accent)}
 .nb-tag{font-family:var(--body);font-size:.85rem;font-weight:700;color:var(--muted)}
 
 /* ---------- Puska ---------- */
@@ -417,6 +434,19 @@ footer{color:var(--muted);font-size:.9rem}
       <button class="btn" type="button" id="nb-say">🔊 Felolvasás</button>
     </div>
   </div>
+
+  <!-- ===== Endi mondja: a füzet feladatai ===== -->
+  <section class="section-head" aria-labelledby="ex-title">
+    <span class="eyebrow">Endi mondja · 2. rész</span>
+    <h2 id="ex-title">A füzet feladatai, részletesen</h2>
+    <p>Ezeket gyakoroltátok az órán. Most mindegyiket szavakkal és ábrákkal is végigvesszük: mit csinálunk, és miért. Válaszd ki, melyiket nézed, és olvasd végig sorban!</p>
+  </section>
+  <div class="tabs" id="st-tabs" role="tablist" aria-label="Füzetfeladat">
+    <button class="tab" role="tab" data-st="5" aria-selected="true">876 → ötös</button>
+    <button class="tab" role="tab" data-st="3" aria-selected="false">876 → hármas</button>
+    <button class="tab" role="tab" data-st="7" aria-selected="false">876 → hetes</button>
+  </div>
+  <div class="story" id="st-out"></div>
 
   <!-- ===== Diák ===== -->
   <section class="section-head" aria-labelledby="deck-title">
@@ -1422,6 +1452,112 @@ footer{color:var(--muted);font-size:.9rem}
     const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
     $("nb-box").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   });
+
+  /* ---------- Endi mondja: a füzet feladatai részletesen ---------- */
+  const ORD = ["nulladikon","elsőn","másodikon","harmadikon","negyediken","ötödiken","hatodikon"];
+  const artOrd = k => (k === 1 || k === 5) ? "az" : "a";
+  const pct = (a,b) => Math.max(0.4, a/b*100).toFixed(2)+"%";
+  function fitFig(p, q, before){
+    // q >= 1: q darab p-blokk a maradékban (before), a többi csíkozott
+    if (q === 0){
+      return '<div class="fig"><div class="fit over"><span class="have" style="width:'+pct(before,p)+'">'+(before/p > .12 ? before : '')+'</span></div>'
+        + '<span class="figcap">A szaggatott keret '+art(p)+' '+p+' hossza, a kék rész a maradék ('+before+'). A maradék kisebb, ezért egyszer sem fér bele.</span></div>';
+    }
+    let h = '<div class="fig"><div class="fit">';
+    for (let i = 0; i < q; i++) h += '<span class="seg" style="width:'+pct(p,before)+'">'+(p/before > .1 ? p : '')+'</span>';
+    const r = before - q*p;
+    if (r > 0) h += '<span class="rest" style="width:'+pct(r,before)+'">'+(r/before > .12 ? r : '')+'</span>';
+    return h + '</div><span class="figcap">A teljes sáv a maradék ('+before+'). A narancs blokkok egyenként '+p+' nagyságúak'+(r > 0 ? ', a csíkos rész ('+r+') ami utána marad' : ', és pont kitöltik')+'.</span></div>';
+  }
+  function compFig(b, st, n){
+    let h = '<div class="fig"><div class="fit" style="height:44px">', leg = [];
+    st.filter(c => c.q > 0).forEach((c,ci) => {
+      for (let i = 0; i < c.q; i++) h += '<span class="c'+(ci % 5)+'" style="width:'+pct(c.p,n)+'">'+(c.p/n > .07 ? c.p : '')+'</span>';
+      leg.push('<span><i class="c'+(ci % 5)+'"></i>'+(c.q > 1 ? c.q+' · ' : '')+c.p+' ('+b+'<sup>'+c.k+'</sup>)</span>');
+    });
+    return h + '</div><div class="legend fitleg">'+leg.join("")+'</div></div>';
+  }
+  function storyHTML(b){
+    const n = 876, st = tableSteps(n,b), s = toB(n,b), K = 6, top = st[0].k;
+    const cards = [];
+    const card = (kick, title, body) => cards.push('<div class="card"><span class="kicker">'+kick+'</span><h3>'+title+'</h3>'+body+'</div>');
+    // 1. előkészítés: számjegyek
+    card('1 · Előkészítés', 'Milyen számjegyeink vannak?',
+      '<p>'+cap1(NAME[b])+' számrendszerben <b>'+b+' számjegy</b> van: '+digitList(b)+'. A füzetben ezt így írtuk fel: „ezek lehetnek: '+digitList(b)+'”.</p>'
+      + '<p>Ezek a jegyek kerülnek majd a hatványok alá. Azt jelentik, hogy azt a hatványt <b>hányszor vesszük</b>. A legnagyobb jegy '+art(b-1)+' '+(b-1)+', tehát egy hatványt legfeljebb <b>'+TIMES[b-1]+'</b> vehetünk.</p>'
+      + '<div class="note"><b>Miért nem lehet '+b+' a jegy?</b> Mert ha egy hatványt '+TIMES[b]+' vennénk, az pont a következő, nagyobb hatvány lenne. Annak saját helye van a táblázatban.</div>');
+    // 2. hatványok
+    const powLis = Array.from({length:K+1}, (_,k) => {
+      const v = b ** k;
+      let why = k === 0 ? 'mert minden szám a nulladikon 1.' : k === 1 ? 'mert minden szám az elsőn maga a szám.'
+        : '= '+Array(k).fill(b).join(" · ")+(k <= 3 ? '. '+cap1(TIMES[k])+' írom le, és összeszorzom.' : '. Vagy egyszerűbben: az előző ('+(b ** (k-1))+') · '+b+'.');
+      return '<li><b>'+b+'<sup>'+k+'</sup> = '+v+'</b> ('+b+' '+artOrd(k)+' '+ORD[k]+') '+why+'</li>';
+    }).join("");
+    card('2 · A hatványok', art(b) === "az" ? 'Az '+b+' hatványai' : 'A '+b+' hatványai',
+      '<p>A helyiértékek '+(art(b) === "az" ? "az" : "a")+' '+b+' hatványai. Számoljuk ki őket egyenként:</p><ul>'+powLis+'</ul>'
+      + '<div class="note"><b>Trükk:</b> minden hatvány az előző megszorozva '+WITH[b]+': '+Array.from({length:K+1},(_,k)=>b**k).join(" → ")+'.</div>'
+      + '<p>Ezeket a táblázatba írjuk, <b>jobbról balra</b>: jobb szélen az 1, balra a nagyobbak.</p>'
+      + ptableHTML(b, Array.from({length:K+1},(_,i)=>({p:b**(K-i),k:K-i})), {noDigits:true}));
+    // 3. hol kezdjük
+    const big = Array.from({length:K-top},(_,i)=>b**(K-i));
+    card('3 · Hol kezdjük?', 'A legnagyobb hatvány, ami még belefér',
+      '<p>Balról jobbra nézzük a táblázatot, és mindegyiknél megkérdezzük: belefér-e a 876-ba? Pontosabban: kisebb vagy egyenlő-e, mint 876?</p><ul>'
+      + big.map(v => '<li>'+v+' &gt; 876 → <b>túl nagy</b>, ide nem írunk semmit.</li>').join("")
+      + '<li>'+st[0].p+' ≤ 876 → <b>belefér!</b> Itt kezdünk.</li></ul>'
+      + '<p>Ezért a szám '+s.length+' jegyű lesz: '+b+'<sup>'+top+'</sup>-ig minden oszlopba kerül egy jegy, le egészen az 1-ig.</p>'
+      + '<div class="fig"><div class="fit"><span class="seg" style="width:'+pct(st[0].p, Math.max(876, st[0].p*b))+'">'+st[0].p+'</span><span class="rest" style="width:'+pct(876-st[0].p, Math.max(876, st[0].p*b))+'">876</span></div>'
+      + '<div class="fit over"><span class="have" style="width:'+pct(876, st[0].p*b)+'">876</span></div>'
+      + '<span class="figcap">Fent: '+art(st[0].p)+' '+st[0].p+' (narancs) belefér a 876-ba. Lent: a szaggatott keret a következő hatvány ('+(st[0].p*b)+'). A 876 (kék) ennél kisebb, tehát az a hatvány már túl nagy.</span></div>');
+    // 4. lépések
+    let steps = '', num = 0;
+    for (let i = 0; i < st.length; i++){
+      const c = st[i];
+      num++;
+      if (c.before === 0){
+        steps += '<p><span class="stepnum">'+num+'.</span> A maradék már <b>0</b>. A többi hatvány ('+st.slice(i).map(x=>x.p).join(", ")+') alá mind <b>0</b> kerül. Ezeket is le kell írni, különben a jegyek elcsúsznak!</p>';
+        break;
+      }
+      const note7 = b === 7 && c.p === 49 ? '<div class="note"><b>A füzetedben itt akadtál el:</b> „190 − 49 =”. A 49 nem csak egyszer fér bele a 190-be, hanem háromszor! Mindig nézd meg, hányszor fér bele, ne csak azt, hogy belefér-e.</div>' : '';
+      if (c.q === 0){
+        steps += '<p><span class="stepnum">'+num+'.</span> Következik '+art(c.p)+' <b>'+c.p+'</b> ('+b+'<sup>'+c.k+'</sup>). A maradékunk <b>'+c.before+'</b>. '+cap1(art(c.p))+' '+c.p+' nagyobb, mint '+c.before+', tehát <b>egyszer sem</b> fér bele. Alá <b>0</b> kerül, a maradék marad '+c.before+'.</p>' + fitFig(c.p, 0, c.before);
+      } else {
+        const tries = [];
+        for (let m = 1; m <= c.q+1; m++){
+          const v = m*c.p;
+          tries.push(TIMES[m]+': '+(m === 1 ? c.p : Array(m <= 3 ? m : 0).fill(c.p).join(" + ") || c.p+' · '+m)+(m > 1 ? ' = '+v : '')+(v <= c.before ? ' ✓ belefér' : ' ✗ már több, mint '+c.before));
+        }
+        steps += note7 + '<p><span class="stepnum">'+num+'.</span> '+(i === 0 ? 'Az első hatvány:' : 'Következik')+' '+art(c.p)+' <b>'+c.p+'</b> ('+b+'<sup>'+c.k+'</sup>). A maradékunk <b>'+c.before+'</b>. Hányszor fér bele?</p>'
+          + '<ul>'+tries.map(t => '<li>'+t+'</li>').join("")+'</ul>'
+          + '<p>Tehát <b>'+TIMES[c.q]+'</b> fér bele: alá '+art(c.q)+' <b>'+c.q+'</b> jegy kerül. Kivonjuk: '+c.before+' − '+(c.q*c.p)+' = <b>'+c.after+'</b>. Ez az új maradék.</p>'
+          + fitFig(c.p, c.q, c.before);
+      }
+    }
+    card('4 · Számolás', 'Lépésről lépésre', steps);
+    // 5. eredmény
+    card('5 · Eredmény', 'Leolvassuk a jegyeket',
+      '<p>A hatványok alá írt jegyeket balról jobbra leolvassuk:</p>'
+      + ptableHTML(b, st.map(c => ({p:c.p,k:c.k,d:c.q})))
+      + '<div class="eq">876 = <span class="hl">'+s+'</span><sub>'+b+'</sub></div>'
+      + '<p>Az ábrán látszik, hogyan áll össze a 876 a hatványokból. Minden színes darab egy hatvány, annyiszor, amennyi a jegy:</p>'
+      + compFig(b, st, n)
+      + (b === 7 ? '<div class="note"><b>A füzetedben</b> a keretben javítás van. A helyes eredmény: <b>2361<sub>7</sub></b>.</div>' : ''));
+    // 6. próba
+    const k = s.length, prods = s.split("").map((d,i) => Number(d) * b ** (k-1-i));
+    card('6 · Próba', 'Ellenőrizzük!',
+      (b === 3 ? '<div class="note"><b>A füzetedben</b> a „Próba =” sor üresen maradt. Most megcsináljuk!</div>' : '')
+      + '<p>Minden jegyet megszorzunk a fölötte lévő hatvánnyal, és összeadjuk. Ha 876 jön ki, a megoldás jó.</p>'
+      + '<div class="eq">'+proofTerms(s,b).join(" + ")+'</div>'
+      + '<div class="eq">= '+prods.join(" + ")+' = <span class="ok">876 ✓</span></div>'
+      + '<p>A 0-s jegyek szorzata 0, ezek nem adnak hozzá semmit. De a helyüket akkor is foglalják a számban!</p>'
+      + '<div><button class="btn primary" type="button" data-nbgo="'+b+'">▶ Nézd meg a füzetlapon, lépésenként</button></div>');
+    return cards.join("");
+  }
+  function stLoad(b){
+    $("st-out").innerHTML = storyHTML(b);
+    document.querySelectorAll("#st-tabs .tab").forEach(t => t.setAttribute("aria-selected", Number(t.dataset.st) === b ? "true" : "false"));
+  }
+  document.querySelectorAll("#st-tabs .tab").forEach(t => t.addEventListener("click", () => stLoad(Number(t.dataset.st))));
+  stLoad(5);
 
   /* ---------- Puska ---------- */
   $("powtable").innerHTML = Array.from({length:8}, (_,k) => '<tr><td>'+k+'</td>'+BASES.map(b => '<td>'+(b ** k)+'</td>').join("")+'</tr>').join("");
