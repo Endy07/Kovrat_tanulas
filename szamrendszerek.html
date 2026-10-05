@@ -3,7 +3,7 @@
 <title>Hármas, ötös, hatos, hetes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@500;700&display=swap">
 <style>
 :root{
   --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
@@ -35,6 +35,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+table{font-size:inherit} /* quirks módban (nincs doctype) a táblázat nem örökli a betűméretet */
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
 .wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
@@ -213,6 +214,25 @@ select{font:inherit;padding:.45em .6em;border-radius:10px;border:1.5px solid var
 .new{animation:pop .7s ease}
 @keyframes pop{0%{transform:scale(1.5);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
 
+/* ---------- Füzet (kockás lap, kék toll) ---------- */
+.nb{font-family:"Caveat","Segoe Print",cursive;color:#1F3A93;font-size:1.75rem;line-height:1.35;background-color:#FDFEFF;background-image:linear-gradient(#C9D7F0 1px,transparent 1px),linear-gradient(90deg,#C9D7F0 1px,transparent 1px);background-size:24px 24px;border-radius:8px;padding:18px 20px 26px;min-height:420px;overflow-x:auto;box-shadow:0 2px 0 #D5DCE8,0 6px 18px rgba(20,40,90,.12);display:flex;flex-direction:column;gap:8px}
+.nb .ttl{font-weight:700;text-decoration:underline}
+.nb table{border-collapse:collapse;width:max-content}
+.nb td,.nb th{padding:0 12px;text-align:center;font-weight:500;white-space:nowrap}
+.nb th{font-size:1.15rem;color:#6F80A8;text-align:left;padding-left:0}
+.nb tr.pw td{border-bottom:2px solid #1F3A93}
+.nb td.cur{background:rgba(242,158,12,.28);border-radius:6px}
+.nb td.dg{font-weight:700;color:#C2410C;font-size:2.1rem}
+.nb td.dg.skip{color:#9AA6C2;font-weight:500}
+.nb .side{font-size:1.45rem}
+.nb .ln{white-space:normal;overflow-wrap:anywhere}
+.nb .cm{color:#7A8BB0;font-size:1.4rem}
+.nb .boxed{display:inline-block;border:2px solid #1F3A93;padding:2px 16px;font-weight:700;font-size:2rem}
+.nb .circ{display:inline-block;border:1.6px solid #1F3A93;border-radius:50%;width:1.25em;height:1.25em;line-height:1.15em;text-align:center;font-size:.55em;vertical-align:-.25em;margin-left:2px}
+.nb .ok{color:#1E7F47;font-weight:700}
+.nb .new{animation:pop .7s ease;display:inline-block}
+.nb-tag{font-family:var(--body);font-size:.85rem;font-weight:700;color:var(--muted)}
+
 /* ---------- Puska ---------- */
 .cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .cheat .box{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
@@ -256,6 +276,32 @@ footer{color:var(--muted);font-size:.9rem}
       </div>
     </div>
   </header>
+
+  <!-- ===== A füzet ===== -->
+  <section class="section-head" aria-labelledby="nb-title">
+    <span class="eyebrow">0. rész · A füzeted</span>
+    <h2 id="nb-title">Így van a füzetedben</h2>
+    <p>Az órán a <b>876</b> számot váltottátok át ötös, hármas és hetes számrendszerbe. Itt pontosan úgy megyünk végig rajta, ahogy a füzetben van, lépésről lépésre, és befejezzük azt is, ami ott félbemaradt. Vedd elő a füzeted, és csináld közben te is!</p>
+  </section>
+
+  <div class="player" id="nb-box">
+    <div class="tabs" id="nb-tabs" role="tablist" aria-label="Füzetpélda">
+      <button class="tab" role="tab" data-nb="5" aria-selected="true">876 → ötös</button>
+      <button class="tab" role="tab" data-nb="3" aria-selected="false">876 → hármas</button>
+      <button class="tab" role="tab" data-nb="7" aria-selected="false">876 → hetes</button>
+      <button class="tab" role="tab" data-nb="6" aria-selected="false">876 → hatos <span class="nb-tag">(ráadás)</span></button>
+    </div>
+    <div class="nb" id="nb-paper"></div>
+    <div class="caption" id="nb-cap" aria-live="polite"></div>
+    <div class="pb-progress"><div class="progress"><span id="nb-bar"></span></div><span class="eyebrow" id="nb-count"></span></div>
+    <div class="row">
+      <button class="btn" type="button" id="nb-first">« Elejéről</button>
+      <button class="btn" type="button" id="nb-prev">◀ Vissza</button>
+      <button class="btn primary" type="button" id="nb-next">Következő lépés ▶</button>
+      <button class="btn" type="button" id="nb-all">Mind</button>
+      <button class="btn" type="button" id="nb-say">🔊 Felolvasás</button>
+    </div>
+  </div>
 
   <!-- ===== Diák ===== -->
   <section class="section-head" aria-labelledby="deck-title">
@@ -1153,6 +1199,107 @@ footer{color:var(--muted);font-size:.9rem}
     $("player").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   });
   onBase.push(() => pbLoad(pb.method, pbExamples()[3], false));
+
+  /* ---------- A füzet példái (876, ahogy Kovrat füzetében) ---------- */
+  const nb = { b:5, frames:[], k:0 };
+  function buildNotebook(b){
+    const n = 876, F = [], K = 6;
+    const exps = Array.from({length:K+1}, (_,i) => K-i);
+    const st = tableSteps(n,b), s = toB(n,b), top = st[0].k;
+    const digs = {}, lines = [];
+    let stage = 0, cur = null, fresh = -1;
+    const render = () => {
+      let h = '<div class="ttl">876 → '+NAME[b]+' számrendszer</div>';
+      if (stage >= 1){
+        h += '<table><tr class="pw"><th></th>'+exps.map(k => '<td class="'+(k === cur ? "cur" : "")+'">'+b+'<sup>'+k+'</sup></td>').join("")+'</tr>';
+        if (stage >= 2) h += '<tr><th></th>'+exps.map(k => '<td class="'+(k === cur ? "cur" : "")+'">'+(b ** k)+'</td>').join("")+'</tr>';
+        if (stage >= 4) h += '<tr><th>jegy</th>'+exps.map(k => k > top ? '<td class="dg skip">–</td>'
+          : '<td class="dg'+(k === cur ? " cur" : "")+'">'+(digs[k] === undefined ? "" : digs[k])+'</td>').join("")+'</tr>';
+        h += '</table>';
+      }
+      if (stage >= 3) h += '<div class="side">ezek lehetnek: '+digitList(b)+'</div>';
+      lines.forEach((l,i) => h += '<div class="ln">'+(i === fresh ? '<span class="new">'+l+'</span>' : l)+'</div>');
+      return h;
+    };
+    const push = cap => { F.push({ cap, html: render() }); fresh = -1; };
+    const add = l => { lines.push(l); fresh = lines.length-1; };
+
+    push('Ezt a feladatot csináltátok az órán: a <b>876</b> számot írjuk át <b>'+NAME[b]+'</b> számrendszerbe.'
+      + (b === 6 ? ' Ez nem volt a füzetben, de pontosan ugyanígy megy, jó gyakorlásnak.' : ' Pontosan úgy csináljuk, ahogy a füzetedben van.'));
+    stage = 1;
+    push('Először a lap tetejére felírjuk '+(b === 5 ? "az" : "a")+' '+b+' hatványait, a hatodik hatványtól a nulladikig, ahogy a füzetben.');
+    stage = 2;
+    push('Alájuk írjuk az értéküket. Jobbról kezdünk: '+b+'<sup>0</sup> = 1, és balra lépve mindig megszorozzuk '+WITH[b]+': 1, '+b+', '+(b*b)+', '+(b**3)+', és így tovább.');
+    stage = 3;
+    push('Mellé odaírjuk, milyen számjegyek lehetnek: '+digitList(b)+'. A legnagyobb jegy '+art(b-1)+' '+(b-1)+', mert eggyel kisebb az alapszámnál.');
+    stage = 4; cur = top;
+    const tooBig = exps.filter(k => k > top).map(k => b ** k);
+    push('Most megkeressük a legnagyobb értéket, ami még belefér a számba (876). '
+      + (tooBig.length ? tooBig.slice().reverse().join(", ")+': ezek mind nagyobbak, mint 876, ide nem írunk semmit. ' : '')
+      + 'Ott kezdünk, ahol <b>'+st[0].p+'</b> áll. Hozzáírtam egy „jegy” sort is: érdemes a füzetbe is beírni, így nem csúszol el.');
+    for (let i = 0; i < st.length; i++){
+      const c = st[i];
+      cur = c.k;
+      if (c.before === 0){
+        for (let j = i; j < st.length; j++) digs[st[j].k] = 0;
+        add('<span class="cm">a maradék 0 → a többi jegy mind 0</span>');
+        push('A maradék 0 lett, ezért a többi helyre mind <b>0</b> kerül. Ezeket is le kell írni!');
+        break;
+      }
+      const note7 = b === 7 && c.p === 49 ? ' A füzetedben itt maradt abba a feladat: „190 − 49 =”. Figyelj, a 49 nem csak egyszer fér bele! Innen folytatjuk.' : '';
+      if (c.q === 0){
+        digs[c.k] = 0;
+        add('<span class="cm">'+c.p+' nem fér bele ('+c.p+' &gt; '+c.before+') → 0</span>');
+        push('Következő érték: <b>'+c.p+'</b>. Ez nagyobb, mint a maradék ('+c.before+'), egyszer sem fér bele. Ide <b>0</b> kerül, és a maradék nem változik.');
+      } else if (c.q === 1){
+        digs[c.k] = 1;
+        add(c.before+' − '+c.p+' = '+c.after);
+        push((i === 0 ? '' : 'Következő érték: <b>'+c.p+'</b>, maradék: '+c.before+'. ')+'Egyszer belefér, de kétszer már nem ('+c.p+' + '+c.p+' = '+(2*c.p)+', ez több, mint '+c.before+'). A jegy <b>1</b>. Levonjuk: '+c.before+' − '+c.p+' = <b>'+c.after+'</b>.'+note7);
+      } else {
+        digs[c.k] = c.q;
+        const calc = c.q <= 3 ? Array(c.q).fill(c.p).join(" + ") : c.p+" · "+c.q;
+        const how = c.q <= 3 ? 'Összeadással nézzük meg, ahogy a füzetben: ' : 'Itt szorzással gyorsabb: ';
+        add(calc+' = '+(c.q*c.p));
+        push((i === 0 ? '' : 'Következő érték: <b>'+c.p+'</b>, maradék: '+c.before+'. ')+note7+' Hányszor fér bele? '+how+calc+' = '+(c.q*c.p)+', ez még belefér. Még egy '+c.p+' már túl sok lenne ('+((c.q+1)*c.p)+' > '+c.before+'). Tehát <b>'+TIMES[c.q]+'</b> fér bele, a jegy <b>'+c.q+'</b>.');
+        add(c.before+' − '+(c.q*c.p)+' = '+c.after);
+        push('Levonjuk: '+c.before+' − '+(c.q*c.p)+' = <b>'+c.after+'</b>. Ez az új maradék.'
+          + (b === 3 && c.p === 27 ? ' (A füzetedben itt van egy áthúzás: 27 + 27 = 54, és 66 − 54 = 12.)' : ''));
+      }
+    }
+    cur = null;
+    add('<span class="boxed">876 = '+s+'<span class="circ">'+b+'</span></span>');
+    push('Kész! A jegyeket balról jobbra leolvassuk a „jegy” sorból: <b>876 = '+s+'<sub>'+b+'</sub></b>. Az alapszámot bekarikázzuk, ahogy a füzetben, ez jelzi, melyik számrendszer.'
+      + (b === 7 ? ' A füzetedben a keretben javítás van, a helyes eredmény ez.' : ''));
+    const k = s.length, prods = s.split("").map((d,i) => Number(d) * b ** (k-1-i));
+    add('Próba: '+proofTerms(s,b).join(" + ")+' =');
+    push('Jöhet a próba: minden jegyet megszorzunk a fölötte lévő értékkel.'+(b === 3 ? ' A füzetedben ez a „Próba =” sor üresen maradt, most befejezzük!' : ''));
+    add('= '+prods.join(" + ")+' = <span class="ok">876 ✓</span>');
+    push('A szorzatokat összeadva pont <b>876</b> jött ki, tehát a megoldás biztosan jó! Most próbáld meg egyedül, a füzetben, aztán gyakorolj lejjebb.');
+    return F;
+  }
+  function nbLoad(b){
+    nb.b = b; nb.frames = buildNotebook(b);
+    document.querySelectorAll("#nb-tabs .tab").forEach(t => t.setAttribute("aria-selected", Number(t.dataset.nb) === b ? "true" : "false"));
+    nbShow(0);
+  }
+  function nbShow(k){
+    const F = nb.frames;
+    nb.k = Math.max(0, Math.min(F.length-1, k));
+    $("nb-paper").innerHTML = F[nb.k].html;
+    $("nb-cap").innerHTML = F[nb.k].cap;
+    $("nb-count").textContent = (nb.k+1)+" / "+F.length+". lépés";
+    $("nb-bar").style.width = (F.length > 1 ? nb.k/(F.length-1)*100 : 100)+"%";
+    $("nb-first").disabled = $("nb-prev").disabled = nb.k === 0;
+    $("nb-next").disabled = $("nb-all").disabled = nb.k === F.length-1;
+  }
+  function nbStep(k){ pbPause(); nbShow(k); if (tts.on) tts.say(nb.frames[nb.k].cap); }
+  $("nb-next").addEventListener("click", () => nbStep(nb.k+1));
+  $("nb-prev").addEventListener("click", () => nbStep(nb.k-1));
+  $("nb-first").addEventListener("click", () => nbStep(0));
+  $("nb-all").addEventListener("click", () => { tts.stop(); nbShow(nb.frames.length-1); });
+  $("nb-say").addEventListener("click", () => { pbPause(); tts.say(nb.frames[nb.k].cap); });
+  document.querySelectorAll("#nb-tabs .tab").forEach(t => t.addEventListener("click", () => { tts.stop(); nbLoad(Number(t.dataset.nb)); }));
+  nbLoad(5);
 
   /* ---------- Puska ---------- */
   $("powtable").innerHTML = Array.from({length:8}, (_,k) => '<tr><td>'+k+'</td>'+BASES.map(b => '<td>'+(b ** k)+'</td>').join("")+'</tr>').join("");
