@@ -1,0 +1,8 @@
+#!/bin/sh
+# Ha a commitban van HTML, új verziót kap minden oldal (lásd tools/bump-version.sh),
+# hogy a látogatók böngészője biztosan a legfrissebbet töltse be.
+if git diff --cached --name-only | grep -q '\.html$'; then
+  sh tools/bump-version.sh >/dev/null || exit 1
+  git add version.json $(git ls-files '*.html')
+fi
+exit 0
