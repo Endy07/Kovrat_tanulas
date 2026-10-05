@@ -19,6 +19,8 @@ lépésenkénti menet és minden eddigi buktató.
 |---|---|
 | `index.html` | Kezdőlap, a leckék listája. **Minden új leckét fel kell venni ide.** |
 | `kettes-szamrendszer.html` | 1. lecke: kettes számrendszer (kész) |
+| `szamrendszerek.html` | 2. lecke: hármas, ötös, hatos, hetes, választható alapszámmal, próbadolgozattal (kész) |
+| `szamrendszerek/` | Kovrat füzetének fotói (nincs commitolva, a repó nyilvános). Ebből derült ki az iskolai módszer: helyiérték-táblázat + „hányszor fér bele” + kivonás + próba |
 | `README.md` | GitHubos leírás + „Hol tartunk” szakasz |
 | `docs/LECKE-RECEPT.md` | Runbook: hogyan készül egy lecke hibamentesen |
 | `PROJEKT-KONTEXTUS.md`, `PROJEKT-RESZLETES.md` | A Könyvjelzők-elemző olvassa. **Nem** munkadokumentum. |

@@ -457,6 +457,7 @@ footer{color:var(--muted);font-size:.9rem}
       <button class="tab" role="tab" data-mode="guide" aria-selected="false">Osztótábla</button>
       <button class="tab" role="tab" data-mode="count" aria-selected="false">Számlálás ±1</button>
       <button class="tab" role="tab" data-mode="puzzle" aria-selected="false">Fejtörők</button>
+      <button class="tab" role="tab" data-mode="exam" aria-selected="false">📝 Próbadolgozat</button>
     </div>
     <div class="chips" id="pbases">
       <span class="eyebrow">Számrendszer:</span>
@@ -1506,8 +1507,65 @@ footer{color:var(--muted);font-size:.9rem}
   let lastPuzzle = -1;
   function newPuzzle(){ let i; do { i = rand(0, puzzles.length-1); } while (i === lastPuzzle); lastPuzzle = i; puzzles[i](); }
 
+  // --- Próbadolgozat: 10 feladat, menet közben nincs visszajelzés, a végén jegy ---
+  function newExam(){
+    const items = [];
+    for (let i = 0; i < 10; i++){
+      const b = taskBase(), n = randN();
+      items.push({ type: i % 2 === 0 ? "d2b" : "b2d", b, n, s: toB(n,b), ans: null });
+    }
+    const ex = { items, i:0, t0: Date.now() };
+    task.innerHTML = '<p class="prompt"><b>Próbadolgozat:</b> 10 átváltás, felváltva oda és vissza. Menet közben nem szólok, hogy jó-e, csak a végén, mint egy igazi dolgozatnál. Használj papírt és ceruzát, és ne felejtsd el a próbát!</p>'
+      + '<div id="x-box"></div>';
+    renderExam(ex);
+  }
+  function renderExam(ex){
+    const box = $("x-box");
+    if (ex.i < ex.items.length){
+      const it = ex.items[ex.i];
+      const prompt = it.type === "d2b"
+        ? 'Írd át <b>'+NAME[it.b]+'</b> számrendszerbe: <span class="num">'+it.n+'</span>'
+        : 'Mennyi tízes számrendszerben: <span class="num">'+it.s+'<sub>'+it.b+'</sub></span> ?';
+      box.innerHTML = '<p class="eyebrow">'+(ex.i+1)+'. feladat / 10</p><div class="progress"><span style="width:'+(ex.i*10)+'%"></span></div>'
+        + '<p class="prompt">'+prompt+'</p>' + (it.type === "d2b" ? baseHint(it.b) : '')
+        + '<form class="row" id="x-form" autocomplete="off"><input type="text" id="x-in" inputmode="numeric" aria-label="Válasz">'
+        + '<button class="btn primary" type="submit">'+(ex.i === 9 ? "Beadom" : "Tovább")+'</button></form><div id="x-fb" hidden></div>';
+      $("x-in").focus({preventScroll:true});
+      $("x-form").addEventListener("submit", e => {
+        e.preventDefault();
+        const raw = $("x-in").value.replace(/\s+/g,""), f = $("x-fb");
+        if (!/^\d+$/.test(raw)){ f.hidden = false; f.className = "feedback bad"; f.textContent = "Írj be egy számot (ha nem tudod, tippelj)."; return; }
+        if (it.type === "d2b" && !validB(raw,it.b)){ f.hidden = false; f.className = "feedback bad"; f.textContent = cap1(NAME[it.b])+" számban csak ezek a jegyek lehetnek: "+digitList(it.b)+"."; return; }
+        it.ans = raw;
+        ex.i++; renderExam(ex);
+      });
+      return;
+    }
+    const ok = it => it.type === "d2b" ? fromB(it.ans,it.b) === it.n : Number(it.ans) === it.n;
+    const good = ex.items.filter(ok).length;
+    const grade = good >= 9 ? 5 : good >= 8 ? 4 : good >= 6 ? 3 : good >= 5 ? 2 : 1;
+    const words = {5:"jeles",4:"jó",3:"közepes",2:"elégséges",1:"elégtelen"};
+    const mins = Math.max(1, Math.round((Date.now()-ex.t0)/60000));
+    let best = 0;
+    try { best = Number(localStorage.getItem("szamr-dolgozat") || 0); if (good > best) localStorage.setItem("szamr-dolgozat", String(good)); } catch(e){}
+    let h = '<div class="feedback '+(grade >= 4 ? "ok" : "bad")+'">Eredmény: '+good+' / 10 → <b>'+grade+' ('+words[grade]+')</b> · kb. '+mins+' perc'+(good > best ? ' · Új egyéni csúcs!' : best ? ' · Eddigi legjobb: '+best+' / 10' : '')+'</div>';
+    h += '<div style="display:flex;flex-direction:column;gap:10px">';
+    ex.items.forEach((it,k) => {
+      const right = ok(it);
+      const q = it.type === "d2b" ? it.n+' → '+NAME[it.b] : it.s+'<sub>'+it.b+'</sub> → tízes';
+      const correct = it.type === "d2b" ? fb(it.s,it.b) : String(it.n);
+      const given = it.type === "d2b" ? fb(esc(it.ans),it.b) : esc(it.ans);
+      h += '<div class="'+(right ? "trick" : "mistake")+'"><span><b>'+(k+1)+'.</b> '+q+': '+(right ? '✓ '+correct
+        : 'a te válaszod: '+given+' · helyesen: <b>'+correct+'</b>')+'</span>'
+        + (right ? '' : ' <button class="btn" type="button" data-play="'+(it.type === "d2b" ? "tab" : "b2d")+'" data-b="'+it.b+'" data-v="'+(it.type === "d2b" ? it.n : it.s)+'">▶ Megoldás lejátszva</button>')+'</div>';
+    });
+    h += '</div><div class="row"><button class="btn primary" type="button" id="x-new">Új dolgozat</button></div>';
+    box.innerHTML = h;
+    $("x-new").addEventListener("click", newExam);
+  }
+
   function newTask(){
-    ({ b2d:newB2D, d2b:newD2B, table:newTable, guide:newGuide, count:newCount, puzzle:newPuzzle })[state.mode]();
+    ({ b2d:newB2D, d2b:newD2B, table:newTable, guide:newGuide, count:newCount, puzzle:newPuzzle, exam:newExam })[state.mode]();
   }
   function paintPBases(){ document.querySelectorAll("#pbases .chip").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.pb) === String(state.pbase) ? "true" : "false")); }
   document.querySelectorAll("#tabs .tab").forEach(t => t.addEventListener("click", () => {

@@ -78,6 +78,12 @@ A feladatszövegek dinamikusak, és itt könnyű nyelvtani hibát ejteni.
   - ❌ „a 8-as helyen” → ✅ „Helyiérték: 8, jegy: 1”
   - ❌ „Váltsd át 13-at” → ✅ „Váltsd át a 13 számot”
 - A fix alakok rendben vannak: „1-et írunk”, „0-t írunk”.
+- **Számrendszer neve + toldalék szintén hangrendfüggő:** hármas*ban*, de ötös*ben*; hatos*ban*, de
+  hetes*ben*. Ugyanígy: hárommal / öttel / hattal / héttel, kétszer / háromszor / ötször / hétszer.
+  Ezeket **szótárból** vedd (`INB`, `WITH`, `TIMES`, `FOLD` a `szamrendszerek.html`-ben), ne
+  `NAME[b] + "ben"` összefűzéssel. A 2. leckében ez 12 helyen el is romlott, mielőtt észrevettük.
+- Jegyenként felolvasott szám előtti névelő az első jegytől függ (egy, öt → `az`): `artB(s)`.
+- Fájlnévnél a `.jfif` képet a Read tool nem ismeri fel: előbb másold `.jpg`-ként a scratchpadba.
 
 ## 5. Felolvasás (Web Speech API)
 

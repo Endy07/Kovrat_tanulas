@@ -9,7 +9,7 @@ Interaktív tanulási segédlet Kovratnak, a debreceni Mechwart András Gépipar
 | Lecke | Tartalom |
 |---|---|
 | [Kettes számrendszer](kettes-szamrendszer.html) | Kapcsolótábla, 9 magyarázó dia, magától lejátszódó levezetések (osztogatás, helyiértékek, kettesből tízesbe), 5 típusú gyakorlófeladat 3 szinten, puska |
-| [Hármas, ötös, hatos, hetes számrendszer](szamrendszerek.html) | Választható alapszám (3/5/6/7), számláló átvitellel, 11 dia, az iskolai módszer (helyiérték-táblázat + kivonás + próba) és az osztogatás, felolvasott levezetések, 6 típusú gyakorlás 3 szinten (vegyes számrendszerekkel is), puska |
+| [Hármas, ötös, hatos, hetes számrendszer](szamrendszerek.html) | Választható alapszám (3/5/6/7), számláló átvitellel, 11 dia, az iskolai módszer (helyiérték-táblázat + kivonás + próba) és az osztogatás, felolvasott levezetések, 6 típusú gyakorlás 3 szinten (vegyes számrendszerekkel is), próbadolgozat érdemjeggyel, puska |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik.
 
