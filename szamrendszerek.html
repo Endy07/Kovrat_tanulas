@@ -231,6 +231,11 @@ select{font:inherit;padding:.45em .6em;border-radius:10px;border:1.5px solid var
 .nb .circ{display:inline-block;border:1.6px solid #1F3A93;border-radius:50%;width:1.25em;height:1.25em;line-height:1.15em;text-align:center;font-size:.55em;vertical-align:-.25em;margin-left:2px}
 .nb .ok{color:#1E7F47;font-weight:700}
 .nb .new{animation:pop .7s ease;display:inline-block}
+.story{display:flex;flex-direction:column;gap:16px}
+.story .card{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.story .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.story ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.eq .ok{color:var(--ok);font-weight:700}
 .nb-tag{font-family:var(--body);font-size:.85rem;font-weight:700;color:var(--muted)}
 
 /* ---------- Puska ---------- */
@@ -276,6 +281,116 @@ footer{color:var(--muted);font-size:.9rem}
       </div>
     </div>
   </header>
+
+  <!-- ===== Az alapgondolat ===== -->
+  <section class="section-head" aria-labelledby="intro-title">
+    <span class="eyebrow">Kezdjük az elején</span>
+    <h2 id="intro-title">Endi mondja</h2>
+    <p>Mielőtt számolnánk, értsük meg, mi a logika az egészben. A kettessel kezdjük, mert az a legegyszerűbb, utána jön a hármas. Olvasd végig sorban, nem hosszú.</p>
+  </section>
+
+  <div class="story">
+    <div class="card">
+      <span class="kicker">1 · A lényeg</span>
+      <h3>Ahányas számrendszer, annyi számjegy</h3>
+      <p>Mi a <b>tízes</b> számrendszerben számolunk. Ebben ezek a számjegyek vannak: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9. Ez <b>10 darab</b>. Ezek keveréke adja ki a számokat, mindegyik a megfelelő helyiértéken.</p>
+      <div class="ptwrap"><table class="basetable">
+        <thead><tr><th>számrendszer</th><th>számjegyek</th><th>darab</th></tr></thead>
+        <tbody>
+          <tr><td>kettes</td><td>0, 1</td><td>2</td></tr>
+          <tr><td>hármas</td><td>0, 1, 2</td><td>3</td></tr>
+          <tr><td>ötös</td><td>0, 1, 2, 3, 4</td><td>5</td></tr>
+          <tr><td>hatos</td><td>0, 1, 2, 3, 4, 5</td><td>6</td></tr>
+          <tr><td>hetes</td><td>0, 1, 2, 3, 4, 5, 6</td><td>7</td></tr>
+          <tr><td>tízes</td><td>0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td><td>10</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">2 · Kettes számrendszer</span>
+      <h3>Csak két számjegy: 0 és 1</h3>
+      <p>Kettesben a helyiértékek a <b>2 hatványai</b>: 2 a nulladikon, 2 az elsőn, 2 a másodikon, és így tovább. 2 a nulladikon az 1, utána 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024… Mindig az előző <b>duplája</b>.</p>
+      <div class="ptwrap"><table class="ptable">
+        <tr><th>hatvány</th><td>2<sup>7</sup></td><td>2<sup>6</sup></td><td>2<sup>5</sup></td><td>2<sup>4</sup></td><td>2<sup>3</sup></td><td>2<sup>2</sup></td><td>2<sup>1</sup></td><td>2<sup>0</sup></td></tr>
+        <tr><th>érték</th><td>128</td><td>64</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr>
+      </table></div>
+      <div class="note"><b>Figyelj az irányra:</b> a táblázatot <b>jobbról balra</b> töltjük ki. A jobb szélen áll az 1, és balra haladva mindig duplázunk. Így a legnagyobb helyiérték kerül bal szélre, pont mint tízesben (…100, 10, 1).</div>
+      <p>A hatványok alá azt írjuk, <b>hányszor vesszük</b> azt a számot. Kettesben egy szám vagy benne van, vagy nincs: <b>1</b> vagy <b>0</b>.</p>
+    </div>
+
+    <div class="card">
+      <span class="kicker">3 · Példa</span>
+      <h3>Mennyi a 3 kettesben?</h3>
+      <p>Jobbról sorban ezek a helyiértékek vannak: 1, 2, 4, 8… A <b>3</b> nincs köztük, tehát nem tudunk egyetlen hatvány alá 1-et írni. Két vagy több hatvány <b>összegéből</b> kell kiraknunk.</p>
+      <p>1 + 2 pont 3. Tehát a 2 alá és az 1 alá is <b>1</b>-et írunk, a 4 alá pedig 0-t, mert az már túl nagy:</p>
+      <div class="ptwrap"><table class="ptable">
+        <tr><th>érték</th><td>4</td><td>2</td><td>1</td></tr>
+        <tr><th>jegy</th><td class="dig zero">0</td><td class="dig">1</td><td class="dig">1</td></tr>
+      </table></div>
+      <div class="eq">3 = 2 + 1 → 3 = <span class="hl">11</span><sub>2</sub></div>
+      <p>Ez a 3-nál még fejben is megy. Nagyobb számoknál viszont kell a tanult technika (táblázat, „hányszor fér bele”, kivonás). Ez itt csak a logika, egyszerűen leírva.</p>
+    </div>
+
+    <div class="card">
+      <span class="kicker">4 · Hármas számrendszer</span>
+      <h3>Három számjegy: 0, 1, 2</h3>
+      <p>Hármasban 3 számjegyünk van: 0, 1, 2. Ezeket írhatjuk a <b>3 hatványai</b> alá. Itt már egy hatványt akár <b>kétszer</b> is vehetünk, ha alá 2-t írunk.</p>
+      <p>De nézzük meg, mik is pontosan a 3 hatványai:</p>
+      <ul>
+        <li><b>3<sup>0</sup> = 1</b>, mert minden szám a nulladikon 1.</li>
+        <li><b>3<sup>1</sup> = 3</b>, mert minden szám az elsőn maga a szám.</li>
+        <li><b>3<sup>2</sup> = 3 · 3 = 9</b>. A 3-at kétszer írom le, és összeszorzom.</li>
+        <li><b>3<sup>3</sup> = 3 · 3 · 3 = 27</b>. Háromszor írom le, és összeszorzom.</li>
+        <li><b>3<sup>4</sup> = 3 · 3 · 3 · 3 = 81</b></li>
+        <li><b>3<sup>5</sup> = 3 · 3 · 3 · 3 · 3 = 243</b></li>
+        <li><b>3<sup>6</sup> = 3 · 3 · 3 · 3 · 3 · 3 = 729</b></li>
+        <li><b>3<sup>7</sup> = 2187</b></li>
+      </ul>
+      <div class="note"><b>Trükk:</b> nem kell mindig elölről szorozni. Minden hatvány az előző <b>háromszorosa</b>: 1 → 3 → 9 → 27 → 81 → 243 → 729 → 2187. Például 3<sup>5</sup> = 81 · 3 = 243.</div>
+      <div class="ptwrap"><table class="ptable">
+        <tr><th>hatvány</th><td>3<sup>6</sup></td><td>3<sup>5</sup></td><td>3<sup>4</sup></td><td>3<sup>3</sup></td><td>3<sup>2</sup></td><td>3<sup>1</sup></td><td>3<sup>0</sup></td></tr>
+        <tr><th>érték</th><td>729</td><td>243</td><td>81</td><td>27</td><td>9</td><td>3</td><td>1</td></tr>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">5 · Használjuk!</span>
+      <h3>A 876 hármasban</h3>
+      <p>A hatványok alá 0-t, 1-et vagy 2-t írhatunk. A 2 azt jelenti, hogy azt a hatványt kétszer vesszük.</p>
+      <ul>
+        <li><b>729</b> belefér egyszer → alá <b>1</b>, marad 876 − 729 = 147</li>
+        <li><b>243</b> nem fér bele (243 &gt; 147) → alá <b>0</b></li>
+        <li><b>81</b> belefér egyszer → alá <b>1</b>, marad 147 − 81 = 66</li>
+        <li><b>27</b> belefér kétszer (27 + 27 = 54) → alá <b>2</b>, marad 66 − 54 = 12</li>
+        <li><b>9</b> belefér egyszer → alá <b>1</b>, marad 12 − 9 = 3</li>
+        <li><b>3</b> belefér egyszer → alá <b>1</b>, marad 3 − 3 = 0</li>
+        <li><b>1</b>: már nem maradt semmi → alá <b>0</b></li>
+      </ul>
+      <div class="ptwrap"><table class="ptable">
+        <tr><th>érték</th><td>729</td><td>243</td><td>81</td><td>27</td><td>9</td><td>3</td><td>1</td></tr>
+        <tr><th>jegy</th><td class="dig">1</td><td class="dig zero">0</td><td class="dig">1</td><td class="dig">2</td><td class="dig">1</td><td class="dig">1</td><td class="dig zero">0</td></tr>
+      </table></div>
+      <div class="eq">876 = <span class="hl">1012110</span><sub>3</sub></div>
+      <div class="eq">Próba: 1·729 + 0·243 + 1·81 + 2·27 + 1·9 + 1·3 + 0·1 = 729 + 81 + 54 + 9 + 3 = <span class="ok">876 ✓</span></div>
+      <div class="note"><b>Miért nem írhatunk 3-at?</b> Mert ha egy hatvány háromszor férne bele, az már a következő, nagyobb hatvány lenne. Például 27 + 27 + 27 = 81, és a 81-nek saját helye van a táblázatban.</div>
+      <div><button class="btn primary" type="button" data-nbgo="3">▶ Nézd meg a füzetlapon, lépésenként</button></div>
+    </div>
+
+    <div class="card">
+      <span class="kicker">6 · Ugyanígy a többi</span>
+      <h3>Ötös, hatos, hetes</h3>
+      <p>Pontosan ugyanez a logika, csak más az alapszám. A hatványokat mindig úgy kapod, hogy az előzőt megszorzod az alapszámmal. Alájuk pedig legfeljebb az alapszámnál eggyel kisebb jegy kerülhet.</p>
+      <div class="ptwrap"><table class="basetable">
+        <thead><tr><th>alap</th><th>jegyek</th><th>hatványok (jobbról balra: 1, ×alap, …)</th></tr></thead>
+        <tbody>
+          <tr><td>5</td><td>0–4</td><td>1, 5, 25, 125, 625, 3125</td></tr>
+          <tr><td>6</td><td>0–5</td><td>1, 6, 36, 216, 1296, 7776</td></tr>
+          <tr><td>7</td><td>0–6</td><td>1, 7, 49, 343, 2401, 16807</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
 
   <!-- ===== A füzet ===== -->
   <section class="section-head" aria-labelledby="nb-title">
@@ -1300,6 +1415,13 @@ footer{color:var(--muted);font-size:.9rem}
   $("nb-say").addEventListener("click", () => { pbPause(); tts.say(nb.frames[nb.k].cap); });
   document.querySelectorAll("#nb-tabs .tab").forEach(t => t.addEventListener("click", () => { tts.stop(); nbLoad(Number(t.dataset.nb)); }));
   nbLoad(5);
+  document.addEventListener("click", e => {
+    const g = e.target.closest("[data-nbgo]");
+    if (!g) return;
+    tts.stop(); nbLoad(Number(g.dataset.nbgo));
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $("nb-box").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  });
 
   /* ---------- Puska ---------- */
   $("powtable").innerHTML = Array.from({length:8}, (_,k) => '<tr><td>'+k+'</td>'+BASES.map(b => '<td>'+(b ** k)+'</td>').join("")+'</tr>').join("");
