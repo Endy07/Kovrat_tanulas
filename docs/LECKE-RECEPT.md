@@ -45,6 +45,8 @@ szabály), a localhost és a Pages viszont nem. Ezek nélkül:
 - **elromlanak az ékezetek** („Összefoglaló” → „ĂsszefoglalĂł”). Ez egyszer meg is történt.
 - **mind a 9 dia egyszerre látszik**, mert a `.slide{display:flex}` felülírja a `hidden`
   attribútumot.
+- **a táblázatok betűje apró lesz**, mert doctype nélkül (quirks mód) a `table` nem örökli a
+  betűméretet. Kell egy `table{font-size:inherit}` sor is.
 
 `<!doctype html>`, `<html>`, `<head>`, `<body>` taget **ne** írj a lecke fájljába: az artifact
 publikálás maga teszi köré, a böngészők pedig nélküle is helyesen kezelik. (Az `index.html`
