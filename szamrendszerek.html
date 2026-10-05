@@ -1,0 +1,1541 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hármas, ötös, hatos, hetes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+sup{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number]{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:10em;max-width:100%}
+input.small{width:5.5em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.backlink{font-size:.95rem}
+
+/* ---------- Alapszám-választó ---------- */
+.basebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bchip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:.35em .9em;font-weight:700;display:flex;align-items:baseline;gap:6px}
+.bchip .bn{font-family:var(--mono);font-size:1.15rem}
+.bchip .bw{font-size:.85rem;color:var(--muted)}
+.bchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.bchip[aria-pressed="true"] .bw{color:var(--surface)}
+.panel .bchip{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel .bchip .bw{color:var(--panel-muted)}
+.panel .bchip[aria-pressed="true"]{background:var(--led);border-color:var(--led);color:var(--led-ink)}
+.panel .bchip[aria-pressed="true"] .bw{color:var(--led-ink)}
+
+/* ---------- Hero / számláló ---------- */
+.hero{display:flex;flex-direction:column;gap:18px}
+.hero p.lead{font-size:1.15rem;color:var(--muted)}
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.wheels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:440px}
+.wheel{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:0}
+.wheel .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.wheel .face{width:100%;aspect-ratio:3/4;max-height:120px;border-radius:12px;background:var(--panel-2);border:2px solid #3A4656;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:clamp(2rem,9vw,3.4rem);color:var(--led);text-shadow:0 0 14px var(--led-glow)}
+.wheel:hover .face{border-color:var(--led)}
+.wheel .face.zero{color:#5B6878;text-shadow:none}
+.wheel .face.flash{animation:flip .45s ease}
+@keyframes flip{0%{transform:rotateX(80deg);opacity:.2}100%{transform:none;opacity:1}}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%;overflow-x:auto}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel .btn.primary{background:var(--led);border-color:var(--led);color:var(--led-ink)}
+.odo-msg{min-height:3em;color:var(--panel-ink);font-size:1rem;border-left:3px solid var(--led);padding:4px 12px}
+
+/* ---------- Diák ---------- */
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:460px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.deck-sub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1.5px solid var(--line)}
+
+.places{display:flex;flex-wrap:wrap;gap:10px}
+.place{display:flex;flex-direction:column;align-items:center;min-width:64px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;gap:2px}
+.place .d{font-family:var(--mono);font-size:2rem;font-weight:700}
+.place .v{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.place .m{font-family:var(--mono);font-size:.85rem;color:var(--accent);font-weight:700}
+.place.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 16%,var(--surface))}
+.place.dim .d{color:var(--muted)}
+.place.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono)}
+.chain .p{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:700;font-size:1.1rem}
+.chain .x{color:var(--muted);font-size:.8rem}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.eq .ok{color:var(--ok);font-weight:700}
+
+.basetable{border-collapse:collapse;font-family:var(--mono)}
+.basetable td,.basetable th{padding:6px 12px;border-bottom:1px solid var(--line);text-align:left}
+.basetable th{font-family:var(--body);font-size:.85rem;color:var(--muted)}
+.basetable tr.on td{background:color-mix(in srgb,var(--led) 18%,var(--surface));font-weight:700}
+.countgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+.countgrid .c{border:1.5px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;display:flex;flex-direction:column}
+.countgrid .c b{font-family:var(--mono);font-size:1.15rem}
+.countgrid .c span{font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.countgrid .c.round{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+/* füzet-szerű helyiérték-táblázat */
+.ptwrap{overflow-x:auto;max-width:100%}
+.ptable{border-collapse:collapse;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ptable th{font-family:var(--body);font-size:.8rem;color:var(--muted);text-align:left;padding:6px 10px 6px 0;font-weight:700;white-space:nowrap}
+.ptable td{padding:6px 12px;text-align:center;border-left:1.5px solid var(--line);font-size:1.05rem}
+.ptable tr:first-child td{border-bottom:2px solid var(--ink)}
+.ptable td.dig{font-size:1.6rem;font-weight:700;color:var(--led-ink);background:color-mix(in srgb,var(--led) 70%,var(--surface))}
+.ptable td.dig.empty{background:transparent;color:var(--muted)}
+.ptable td.dig.zero{background:var(--surface-2);color:var(--muted)}
+.ptable td.cur{box-shadow:inset 0 0 0 3px var(--accent)}
+.ptable td.toobig{color:var(--muted);text-decoration:line-through;opacity:.7}
+.ptable span{display:inline-block}
+.sublog{font-family:var(--mono);font-size:1.05rem;display:flex;flex-direction:column;gap:2px}
+.sublog .z{color:var(--muted)}
+.result{font-family:var(--mono);font-size:1.4rem;font-weight:700}
+.result .bit{color:var(--led-ink);background:var(--led);border-radius:6px;padding:0 6px;margin-right:2px;display:inline-block}
+.mults{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:1.05rem}
+.mults .yes{color:var(--ok);font-weight:700}
+.mults .no{color:var(--bad)}
+.mults .next{color:var(--muted)}
+
+.divtable{display:grid;grid-template-columns:auto auto auto auto;gap:6px 14px;align-items:center;font-family:var(--mono);font-size:1.1rem;width:max-content;max-width:100%}
+.divtable .h{font-family:var(--body);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.divtable .r{font-weight:700;color:var(--led-ink);background:var(--led);border-radius:6px;padding:0 8px;text-align:center}
+.divwrap{display:flex;gap:18px;align-items:stretch;flex-wrap:wrap}
+.uparrow{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;color:var(--accent);font-size:.85rem;font-weight:700;gap:4px}
+.uparrow .shaft{width:3px;flex:1;min-height:40px;background:var(--accent);border-radius:2px;position:relative}
+.uparrow .shaft::before{content:"";position:absolute;top:-8px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-bottom:10px solid var(--accent);border-top:0}
+.warn{color:var(--bad);font-size:.95rem}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.stepbox{display:flex;flex-direction:column;gap:12px}
+
+/* ---------- Gyakorlás ---------- */
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:62ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.solution{border:1.5px dashed var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-size:.95rem;color:var(--muted)}
+.stats b{color:var(--ink);font-family:var(--mono)}
+.guide-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:1.1rem}
+.guide-row input{width:4.2em}
+.guide-row .r{font-weight:700;color:var(--led-ink);background:var(--led);border-radius:6px;padding:0 8px}
+.guide-row .lbl{font-family:var(--body);font-size:.95rem}
+.choices{display:flex;gap:10px;flex-wrap:wrap}
+.choices .btn{font-family:var(--mono);font-size:1.1rem}
+.basehint{font-size:.95rem;color:var(--muted)}
+
+/* ---------- Levezetés-lejátszó ---------- */
+.player{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:16px}
+.board{min-height:340px;background:var(--bg);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:16px;overflow-x:auto}
+.pb-head{font-family:var(--mono);font-size:1.5rem;font-weight:700}
+.pb-head .hl{color:var(--accent)}
+.board .divtable > span{padding:2px 8px;border-radius:6px}
+.board .divtable > span.cur{background:var(--accent-soft)}
+.board .divtable .r.pick{outline:3px solid var(--accent);outline-offset:2px}
+.board .places{flex-wrap:nowrap}
+.board .place{min-width:52px;padding:8px 10px}
+.pb-sum{font-family:var(--mono);font-size:1.15rem}
+.check{color:var(--ok);font-family:var(--mono);font-weight:700;font-size:1.1rem;overflow-x:auto;white-space:nowrap}
+.caption{font-size:1.15rem;min-height:3.6em;border-left:4px solid var(--accent);padding:10px 16px;background:var(--accent-soft);border-radius:0 12px 12px 0;max-width:none}
+.pb-progress{display:flex;align-items:center;gap:12px}
+#pb-voice[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.progress{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+select{font:inherit;padding:.45em .6em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.new{animation:pop .7s ease}
+@keyframes pop{0%{transform:scale(1.5);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+
+/* ---------- Puska ---------- */
+.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.cheat .box{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.cheat .wide{grid-column:1/-1}
+.powtable{overflow-x:auto}
+.powtable table{border-collapse:collapse;font-family:var(--mono);font-variant-numeric:tabular-nums;width:100%}
+.powtable td,.powtable th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:right}
+.powtable th{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:700;text-align:right}
+footer{color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){
+  .slide{padding:20px 14px 24px;min-height:0}
+  .deck-nav{padding:0 14px 18px}
+  .panel{padding:18px 12px 14px}
+  .ptable td{padding:5px 7px}
+}
+</style>
+
+<div class="wrap">
+
+  <!-- ===== Számláló ===== -->
+  <header class="hero">
+    <a class="backlink" href="index.html">← Vissza a leckékhez</a>
+    <span class="eyebrow">9. évfolyam · Informatikai alapok · 2. lecke</span>
+    <h1>Hármas, ötös, hatos és hetes számrendszer</h1>
+    <p class="lead">Ez egy kilométerszámláló, de nem tízes, hanem az általad választott számrendszerben számol. Nyomd a <b>+1</b> gombot, és figyeld, mi történik, amikor egy jegy „betelik”!</p>
+    <div class="panel" aria-label="Számláló">
+      <div class="basebar" data-basebar></div>
+      <div class="wheels" id="odo"></div>
+      <div class="odo-msg" id="odo-msg" aria-live="polite"></div>
+      <div class="row">
+        <button class="btn primary" type="button" id="odo-plus">+1</button>
+        <button class="btn" type="button" id="odo-minus">−1</button>
+        <button class="btn" type="button" id="odo-auto">▶ Számolj magadtól</button>
+        <button class="btn" type="button" id="odo-reset">Nullázás</button>
+      </div>
+      <div class="readout">
+        <div><div class="eyebrow" id="odo-lbl">ötösben</div><div class="big led" id="odo-b"></div></div>
+        <div><div class="eyebrow">tízesben</div><div class="big" id="odo-d"></div></div>
+        <div class="expr" id="odo-expr"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Diák ===== -->
+  <section class="section-head" aria-labelledby="deck-title">
+    <span class="eyebrow">1. rész · Magyarázat</span>
+    <h2 id="deck-title">Lépésről lépésre</h2>
+    <p>Tizenegy dián megy végig a gondolatmenet. Fent kiválaszthatod, melyik számrendszerrel tanulsz: a diák példái ehhez igazodnak. A dobozokba saját számot is írhatsz.</p>
+  </section>
+
+  <div class="deck" id="deck" tabindex="-1">
+    <div class="deck-bar">
+      <span class="eyebrow" id="deck-count">1 / 11</span>
+      <div class="dots" id="deck-dots" role="tablist" aria-label="Diák"></div>
+    </div>
+    <div class="deck-sub"><div class="basebar" data-basebar></div></div>
+
+    <!-- 1 -->
+    <div class="slide">
+      <span class="kicker">Alapok</span>
+      <h3>Mit jelent az, hogy <span data-bn></span> számrendszer?</h3>
+      <p>A tízes számrendszerben <b>10 számjegyünk</b> van: 0-tól 9-ig. A kettesben csak kettő: 0 és 1. Ugyanígy:</p>
+      <div class="ptwrap"><table class="basetable" id="s1-table"></table></div>
+      <p>A szabály mindig ugyanaz: a számrendszer <b>alapszáma</b> megmondja, hány számjegy van, és a legnagyobb számjegy <b>eggyel kisebb</b> az alapszámnál.</p>
+      <div class="note" id="s1-note"></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="slide" hidden>
+      <span class="kicker">Számolás</span>
+      <h3>Mi jön a legnagyobb jegy után?</h3>
+      <p id="s2-text"></p>
+      <div class="countgrid" id="s2-grid"></div>
+      <div class="note">A narancs mezőkben „kerek” szám áll: 10, 100. Ezek pont az alapszám <b>hatványai</b>. Ez lesz a kulcs a következő diához.</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="slide" hidden>
+      <span class="kicker">A kulcs</span>
+      <h3>Helyiértékek: az alapszám hatványai</h3>
+      <p>Tízesben a helyiértékek 1, 10, 100, 1000: mindig tízszeresükre nőnek. <span data-bnc></span> számrendszerben jobbról balra mindig <b><span data-fold></span></b> nőnek, mert minden lépésnél megszorozzuk az alapszámmal:</p>
+      <div class="chain" id="s3-chain"></div>
+      <p>A füzetben ezt egy táblázatba írjuk. Felül a hatvány, alatta az értéke:</p>
+      <div id="s3-table"></div>
+      <div class="note" id="s3-note"></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="slide" hidden>
+      <span class="kicker"><span data-bnc></span> → tízes</span>
+      <h3>Visszafelé: szorozz és adj össze</h3>
+      <p>Írd a jegyek fölé a helyiértékeket. Minden jegyet <b>megszorzol</b> a fölötte lévő helyiértékkel, aztán a szorzatokat <b>összeadod</b>.</p>
+      <div class="row"><label for="s4-in"><span data-bnc></span> szám:</label><input type="text" id="s4-in" maxlength="8" inputmode="numeric" autocomplete="off"></div>
+      <div class="places" id="s4-places"></div>
+      <div class="eq" id="s4-eq"></div>
+      <p class="warn" id="s4-warn" hidden></p>
+      <div class="note" id="s4-note"></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="slide" hidden>
+      <span class="kicker">Tízes → <span data-bn></span> · az iskolai módszer</span>
+      <h3>Helyiérték-táblázat és kivonás</h3>
+      <ol>
+        <li>Írd fel a táblázatba az alapszám hatványait. Keresd meg a <b>legnagyobbat, ami még belefér</b> a számba.</li>
+        <li>Nézd meg, <b>hányszor fér bele</b>. Ez a szám lesz a jegy. Vond le a számból.</li>
+        <li>A maradékkal lépj a következő, kisebb helyiértékre, és kérdezd újra: hányszor fér bele?</li>
+        <li>Ha egyszer sem fér bele, oda <b>0</b> kerül. Az 1-es helyiértékig mindegyiket kitöltöd.</li>
+      </ol>
+      <div class="row">
+        <label for="s5-in">Szám:</label><input type="number" id="s5-in" class="small" value="876" min="1" max="2000">
+        <button class="btn primary" type="button" id="s5-next">Következő lépés</button>
+        <button class="btn" type="button" id="s5-all">Mind</button>
+        <button class="btn" type="button" id="s5-reset">Újra</button>
+      </div>
+      <p class="warn" id="s5-warn" hidden>Egész számot adj meg 1 és 2000 között.</p>
+      <div class="stepbox" id="s5-out"></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="slide" hidden>
+      <span class="kicker">Megértés</span>
+      <h3>Hányszor fér bele?</h3>
+      <p>Kettesben csak az volt a kérdés, hogy belefér-e. Itt egy helyiérték <b>többször is</b> beleférhet, ezért a jegy 1-nél nagyobb is lehet. Ilyenkor a helyiérték többszöröseit nézzük:</p>
+      <div id="s6-out"></div>
+      <div class="note" id="s6-note"></div>
+    </div>
+
+    <!-- 7 -->
+    <div class="slide" hidden>
+      <span class="kicker">Vigyázz!</span>
+      <h3>A nullát is le kell írni</h3>
+      <div id="s7-out"></div>
+    </div>
+
+    <!-- 8 -->
+    <div class="slide" hidden>
+      <span class="kicker">Tízes → <span data-bn></span> · 2. módszer</span>
+      <h3>Osztogatás az alapszámmal</h3>
+      <p>Ugyanúgy működik, mint kettesben, csak nem kettővel, hanem <b><span data-with></span></b> osztunk. Jó ellenőrzésnek is.</p>
+      <ol>
+        <li>Oszd el a számot az alapszámmal (<b><span data-b></span></b>), és írd fel a <b>maradékot</b> (0 és <span data-maxd></span> között lesz).</li>
+        <li>A hányadost oszd tovább, amíg a hányados <b>0</b> nem lesz.</li>
+        <li>A maradékokat <b>alulról felfelé</b> olvasd össze.</li>
+      </ol>
+      <div class="row">
+        <label for="s8-in">Szám:</label><input type="number" id="s8-in" class="small" value="100" min="1" max="2000">
+        <button class="btn primary" type="button" id="s8-next">Következő lépés</button>
+        <button class="btn" type="button" id="s8-all">Mind</button>
+        <button class="btn" type="button" id="s8-reset">Újra</button>
+      </div>
+      <p class="warn" id="s8-warn" hidden>Egész számot adj meg 1 és 2000 között.</p>
+      <div class="divwrap" id="s8-out"></div>
+    </div>
+
+    <!-- 9 -->
+    <div class="slide" hidden>
+      <span class="kicker">Ellenőrzés</span>
+      <h3>Próba: mindig számold vissza!</h3>
+      <p>A füzetben a megoldás alá a <b>Próba</b> sor kerül. Az eredmény minden jegyét megszorzod a helyiértékével, és összeadod. Ha a kiinduló szám jön ki, biztosan jó.</p>
+      <div id="s9-out"></div>
+      <div class="note"><b>Miért éri meg?</b> A próba fél perc, és a dolgozatban azonnal kiderül belőle, ha valahol elszámoltad a kivonást vagy kihagytál egy 0-t.</div>
+    </div>
+
+    <!-- 10 -->
+    <div class="slide" hidden>
+      <span class="kicker">Hibák</span>
+      <h3>A leggyakoribb hibák</h3>
+      <div class="two-col" id="s10-out"></div>
+    </div>
+
+    <!-- 11 -->
+    <div class="slide" hidden>
+      <span class="kicker">Trükkök</span>
+      <h3>Amit érdemes megjegyezni</h3>
+      <div class="two-col" id="s11-out"></div>
+      <div class="note"><b>Görgess lejjebb!</b> Előbb nézz végig néhány lejátszott levezetést, utána jöhet a gyakorlás. A „<span data-bnc></span> → tízes” feladatokkal érdemes kezdeni, az a legkönnyebb.</div>
+    </div>
+
+    <div class="deck-nav">
+      <button class="btn" type="button" id="deck-prev">← Előző</button>
+      <button class="btn primary" type="button" id="deck-next">Következő →</button>
+    </div>
+  </div>
+
+  <!-- ===== Levezetések ===== -->
+  <section class="section-head" aria-labelledby="pb-title">
+    <span class="eyebrow">2. rész · Levezetések</span>
+    <h2 id="pb-title">Nézd végig, hogyan számolunk</h2>
+    <p>Válassz számrendszert, módszert és példát, és nyomd meg a Lejátszás gombot. A levezetés magától halad, lassan, és fel is olvassa a lépéseket. Megállíthatod, és lépkedhetsz a Vissza és Tovább gombokkal.</p>
+  </section>
+
+  <div class="player" id="player">
+    <div class="basebar" data-basebar></div>
+    <div class="tabs" id="pb-methods" role="tablist" aria-label="Módszer">
+      <button class="tab" role="tab" data-m="tab" aria-selected="true">Tízes → <span data-bn></span>: táblázat (iskolai)</button>
+      <button class="tab" role="tab" data-m="div" aria-selected="false">Tízes → <span data-bn></span>: osztogatás</button>
+      <button class="tab" role="tab" data-m="b2d" aria-selected="false"><span data-bnc></span> → tízes</button>
+    </div>
+    <div class="chips"><span class="eyebrow">Példa:</span><span class="chips" id="pb-ex"></span></div>
+    <form class="row" id="pb-own" autocomplete="off">
+      <label for="pb-in">Saját szám:</label>
+      <input type="text" id="pb-in" inputmode="numeric" style="width:8em">
+      <button class="btn" type="submit">Levezetés</button>
+      <span class="warn" id="pb-warn" hidden></span>
+    </form>
+    <div class="board" id="pb-board"></div>
+    <div class="caption" id="pb-cap" aria-live="polite"></div>
+    <div class="pb-progress"><div class="progress"><span id="pb-bar"></span></div><span class="eyebrow" id="pb-count"></span></div>
+    <div class="row">
+      <button class="btn" type="button" id="pb-first">« Elejére</button>
+      <button class="btn" type="button" id="pb-prev">◀ Vissza</button>
+      <button class="btn primary" type="button" id="pb-play">▶ Lejátszás</button>
+      <button class="btn" type="button" id="pb-next">Tovább ▶</button>
+      <button class="btn" type="button" id="pb-voice" aria-pressed="false" hidden>Felolvasás: ki</button>
+      <span class="row" style="margin-left:auto;gap:8px">
+        <label for="pb-speed" class="eyebrow">Tempó</label>
+        <select id="pb-speed">
+          <option value="6000">Nagyon lassú</option>
+          <option value="4200" selected>Lassú</option>
+          <option value="2800">Közepes</option>
+          <option value="1700">Gyors</option>
+        </select>
+      </span>
+    </div>
+    <p class="warn" id="pb-voicewarn" hidden>Ezen az eszközön nem találtam magyar felolvasóhangot, ezért a szöveg idegen kiejtéssel hangozhat el. Windowson a Microsoft Edge böngészőben biztosan van magyar hang. Chrome-ban akkor lesz, ha a Windowsra telepítve van a magyar beszédcsomag (Gépház → Idő és nyelv → Beszéd).</p>
+  </div>
+
+  <!-- ===== Gyakorlás ===== -->
+  <section class="section-head" aria-labelledby="prac-title">
+    <span class="eyebrow">3. rész · Gyakorlás</span>
+    <h2 id="prac-title">Gyakorlófeladatok</h2>
+    <p>Minden feladat új, véletlen számmal jön, így akárhányszor gyakorolhatsz. Javasolt sorrend: <b>vissza tízesbe</b> → <b>táblázat lépésenként</b> → <b>tízesből átváltás</b> önállóan → <b>vegyes</b> számrendszerekkel. Ha elakadsz, a „Megoldás lépésenként” gomb megmutatja a teljes számolást.</p>
+  </section>
+
+  <div class="practice">
+    <div class="tabs" role="tablist" aria-label="Feladattípus" id="tabs">
+      <button class="tab" role="tab" data-mode="b2d" aria-selected="true">Vissza tízesbe</button>
+      <button class="tab" role="tab" data-mode="table" aria-selected="false">Táblázat lépésenként</button>
+      <button class="tab" role="tab" data-mode="d2b" aria-selected="false">Tízesből átváltás</button>
+      <button class="tab" role="tab" data-mode="guide" aria-selected="false">Osztótábla</button>
+      <button class="tab" role="tab" data-mode="count" aria-selected="false">Számlálás ±1</button>
+      <button class="tab" role="tab" data-mode="puzzle" aria-selected="false">Fejtörők</button>
+    </div>
+    <div class="chips" id="pbases">
+      <span class="eyebrow">Számrendszer:</span>
+      <button class="chip" type="button" data-pb="3" aria-pressed="false">hármas</button>
+      <button class="chip" type="button" data-pb="5" aria-pressed="false">ötös</button>
+      <button class="chip" type="button" data-pb="6" aria-pressed="false">hatos</button>
+      <button class="chip" type="button" data-pb="7" aria-pressed="false">hetes</button>
+      <button class="chip" type="button" data-pb="mix" aria-pressed="false">vegyes</button>
+    </div>
+    <div class="chips" id="levels">
+      <span class="eyebrow">Szint:</span>
+      <button class="chip" type="button" data-level="1" aria-pressed="true">Könnyű (1–50)</button>
+      <button class="chip" type="button" data-level="2" aria-pressed="false">Közepes (51–300)</button>
+      <button class="chip" type="button" data-level="3" aria-pressed="false">Dolgozat (301–2000)</button>
+    </div>
+    <div class="task" id="task"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <!-- ===== Puska ===== -->
+  <section class="section-head" aria-labelledby="cheat-title">
+    <span class="eyebrow">4. rész · Puska</span>
+    <h2 id="cheat-title">Összefoglaló</h2>
+  </section>
+  <div class="cheat">
+    <div class="box wide">
+      <h3>Hatványtáblázat</h3>
+      <div class="powtable"><table>
+        <thead><tr><th>kitevő</th><th>3-hatvány</th><th>5-hatvány</th><th>6-hatvány</th><th>7-hatvány</th></tr></thead>
+        <tbody id="powtable"></tbody>
+      </table></div>
+    </div>
+    <div class="box">
+      <h3>Számjegyek</h3>
+      <p class="mono">hármas: 0, 1, 2<br>ötös: 0, 1, 2, 3, 4<br>hatos: 0, 1, 2, 3, 4, 5<br>hetes: 0, 1, 2, 3, 4, 5, 6</p>
+      <p>A legnagyobb jegy mindig az alapszám − 1.</p>
+      <h3>Ugyanaz a szám négyféleképpen</h3>
+      <p class="mono" id="cheat-876"></p>
+    </div>
+    <div class="box">
+      <h3>Tízesből átváltás (iskolai)</h3>
+      <p>Hatványtáblázat → a legnagyobb hatvány, ami belefér → <b>hányszor fér bele</b> = jegy → levonod → következő hatvány. Ahol egyszer sem fér bele: <b>0</b>.</p>
+      <h3>Osztogatással</h3>
+      <p>Oszd az alapszámmal, írd fel a maradékot, a hányadost oszd tovább, amíg 0 nem lesz. Maradékok <b>alulról felfelé</b>.</p>
+      <h3>Vissza tízesbe</h3>
+      <p>Jegy · helyiérték, és a szorzatokat összeadod.</p>
+      <h3>Próba</h3>
+      <p>Mindig számold vissza a másik irányba!</p>
+    </div>
+  </div>
+
+  <footer>Készült Kovratnak, a 9. évfolyamos informatikai alapokhoz. Előző lecke: <a href="kettes-szamrendszer.html">Kettes számrendszer</a>.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const rand = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+  const pick = a => a[rand(0,a.length-1)];
+  const BASES = [3,5,6,7];
+  const NAME = {2:"kettes",3:"hármas",5:"ötös",6:"hatos",7:"hetes",10:"tízes"};
+  const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+  // a toldalékos alakok szótárból jönnek, mert a hangrend alapszámonként más (hármasban, de ötösben)
+  const INB = {2:"kettesben",3:"hármasban",5:"ötösben",6:"hatosban",7:"hetesben",10:"tízesben"};
+  const TIMES = ["egyszer sem","egyszer","kétszer","háromszor","négyszer","ötször","hatszor","hétszer"];
+  const WITH = {3:"hárommal",5:"öttel",6:"hattal",7:"héttel"};
+  const FOLD_PL = {3:"háromszorosukra",5:"ötszörösükre",6:"hatszorosukra",7:"hétszeresükre"};
+  const FOLD = {3:"háromszorosára",5:"ötszörösére",6:"hatszorosára",7:"hétszeresére"};
+  const toB = (n,b) => n.toString(b);
+  const fromB = (s,b) => parseInt(s,b);
+  const validB = (s,b) => new RegExp("^[0-"+(b-1)+"]+$").test(s);
+  const digitList = b => Array.from({length:b}, (_,i) => i).join(", ");
+  // névelő tízes szám előtt (1–2000 között pontos): az egy, az öt, az ötven, az ötszáz
+  const art = n => (n === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => art(n) === "az" ? "Az" : "A";
+  // névelő jegyenként felolvasott szám előtt: „egy…”, „öt…” → az
+  const artB = s => (s[0] === "1" || s[0] === "5") ? "az" : "a";
+  const SUBU = "₀₁₂₃₄₅₆₇₈₉";
+  const uni = (s,b) => s + String(b).split("").map(d => SUBU[d]).join("");
+  const fb = (s,b) => s + "<sub>" + b + "</sub>";
+  const rev = s => s.split("").reverse().join("");
+  const strip0 = s => s.replace(/^0+(?=.)/, "");
+
+  /* ---------- Közös számolók ---------- */
+  function pows(n,b){ // a hatványok csökkenő sorrendben, a legnagyobbtól, ami belefér, az 1-ig
+    let k = 0; while (b ** (k+1) <= n) k++;
+    const out = []; for (let i = k; i >= 0; i--) out.push({ p: b ** i, k: i });
+    return out;
+  }
+  function tableSteps(n,b){
+    let rest = n;
+    return pows(n,b).map(o => { const q = Math.floor(rest/o.p), before = rest; rest -= q*o.p; return { p:o.p, k:o.k, q, before, after:rest }; });
+  }
+  function divSteps(n,b){ const st = []; let x = n; while (x > 0){ st.push({ x, q: Math.floor(x/b), r: x % b }); x = Math.floor(x/b); } return st; }
+  function proofTerms(s,b){ const k = s.length; return s.split("").map((d,i) => d+" · "+(b ** (k-1-i))); }
+  function proofLine(s,b){ return proofTerms(s,b).join(" + ") + " = " + fromB(s,b); }
+
+  // füzet-szerű helyiérték-táblázat
+  function ptableHTML(b, cols, o){
+    o = o || {};
+    const big = o.big ? cols[0].k + 1 : null;
+    let h = '<div class="ptwrap"><table class="ptable"><tr><th>hatvány</th>';
+    if (big !== null) h += '<td class="toobig">'+b+'<sup>'+big+'</sup></td>';
+    cols.forEach((c,i) => h += '<td class="'+(i === o.cur ? "cur" : "")+'">'+b+'<sup>'+c.k+'</sup></td>');
+    h += '</tr><tr><th>érték</th>';
+    if (big !== null) h += '<td class="toobig">'+(b ** big)+'</td>';
+    cols.forEach((c,i) => h += '<td class="'+(i === o.cur ? "cur" : "")+'">'+c.p+'</td>');
+    h += '</tr>';
+    if (!o.noDigits){
+      h += '<tr><th>jegy</th>';
+      if (big !== null) h += '<td class="toobig">–</td>';
+      cols.forEach((c,i) => {
+        const empty = c.d === null || c.d === undefined;
+        h += '<td class="dig'+(empty ? " empty" : c.d === 0 ? " zero" : "")+(i === o.cur ? " cur" : "")+'"><span class="'+(i === o.nw ? "new" : "")+'">'+(empty ? "?" : c.d)+'</span></td>';
+      });
+      h += '</tr>';
+    }
+    return h + '</table></div>';
+  }
+  function resultHTML(s,b,n,newLast){
+    return '<div class="result">'+(n !== undefined ? n+' = ' : '')+s.split("").map((d,i) => '<span class="bit'+(newLast && i === s.length-1 ? " new" : "")+'">'+d+'</span>').join("")+'<sub>'+b+'</sub></div>';
+  }
+
+  /* ---------- Alapszám (közös a számlálónak, a diáknak és a lejátszónak) ---------- */
+  let B = 5;
+  const onBase = [];
+  document.querySelectorAll("[data-basebar]").forEach(bar => {
+    bar.innerHTML = '<span class="eyebrow">Számrendszer:</span>' + BASES.map(b =>
+      '<button type="button" class="bchip" data-basechip="'+b+'" aria-pressed="false"><span class="bn">'+b+'</span><span class="bw">'+NAME[b]+'</span></button>').join("");
+  });
+  document.addEventListener("click", e => { const c = e.target.closest("[data-basechip]"); if (c) setBase(Number(c.dataset.basechip)); });
+  function setBase(b){
+    B = b;
+    document.querySelectorAll("[data-basechip]").forEach(c => c.setAttribute("aria-pressed", Number(c.dataset.basechip) === b ? "true" : "false"));
+    document.querySelectorAll("[data-bn]").forEach(e => e.textContent = NAME[b]);
+    document.querySelectorAll("[data-bnc]").forEach(e => e.textContent = cap1(NAME[b]));
+    document.querySelectorAll("[data-b]").forEach(e => e.textContent = b);
+    document.querySelectorAll("[data-maxd]").forEach(e => e.textContent = b-1);
+    document.querySelectorAll("[data-fold]").forEach(e => e.textContent = FOLD[b]);
+    document.querySelectorAll("[data-with]").forEach(e => e.textContent = WITH[b]);
+    try { localStorage.setItem("szamr-base", String(b)); } catch(e){}
+    onBase.forEach(f => f());
+  }
+
+  /* ---------- Számláló ---------- */
+  const odo = { d:[0,0,0,0], timer:null };
+  const odoVal = () => odo.d.reduce((s,x) => s*B + x, 0);
+  function odoSet(v, why){
+    const max = B ** 4;
+    v = ((v % max) + max) % max;
+    const old = odo.d.slice();
+    for (let i = 3; i >= 0; i--){ odo.d[i] = v % B; v = Math.floor(v/B); }
+    const changed = odo.d.map((x,i) => x !== old[i]);
+    renderOdo(changed);
+    const nCh = changed.filter(Boolean).length;
+    let msg = "";
+    if (why === "plus" && nCh > 1){
+      msg = cap1(INB[B])+' nincs „'+B+'” számjegy! Ezért a jegy 0-ra ugrik vissza, és a bal szomszédja nő eggyel. Ez az <b>átvitel</b>, pont mint tízesben 9 után a 10.';
+      if (odo.d.every(x => x === 0)) msg = 'Körbeért a számláló: négy jegynél többet nem tud mutatni. A legnagyobb szám '+(B-1).toString().repeat(4)+'<sub>'+B+'</sub> = '+(B**4-1)+' volt.';
+    } else if (why === "plus") msg = 'A jobb szélső jegy nőtt eggyel. A legnagyobb jegy itt <b>'+(B-1)+'</b>, utána jön az átvitel.';
+    else if (why === "minus" && nCh > 1) msg = 'Visszafelé is van átvitel: a 0 alatti jegy a legnagyobb, '+(B-1)+' lesz, és a bal szomszédja csökken eggyel.';
+    else if (why === "click") msg = 'Egy kerékre kattintva csak azt az egy jegyet pörgeted, átvitel nélkül.';
+    else if (why === "base") msg = cap1(NAME[B])+' számrendszer: a jegyek 0-tól '+(B-1)+'-ig mennek. Nyomd a +1 gombot!';
+    $("odo-msg").innerHTML = msg;
+  }
+  function renderOdo(changed){
+    $("odo").innerHTML = odo.d.map((x,i) => {
+      const pv = B ** (3-i);
+      return '<button type="button" class="wheel" data-w="'+i+'" aria-label="Helyiérték: '+pv+', jegy: '+x+'"><span class="pv">'+pv+'</span><span class="face'+(x === 0 ? " zero" : "")+(changed && changed[i] ? " flash" : "")+'">'+x+'</span></button>';
+    }).join("");
+    const v = odoVal(), s = toB(v,B);
+    $("odo-lbl").textContent = INB[B]+"";
+    $("odo-b").innerHTML = fb(s,B);
+    $("odo-d").textContent = v;
+    const terms = [];
+    odo.d.forEach((x,i) => { if (x) terms.push(x+"·"+(B ** (3-i))); });
+    $("odo-expr").textContent = terms.length ? terms.join(" + ")+" = "+v : "Minden kerék 0: ez a nulla.";
+  }
+  $("odo").addEventListener("click", e => {
+    const w = e.target.closest("[data-w]"); if (!w) return;
+    const i = Number(w.dataset.w);
+    const d = odo.d.slice(); d[i] = (d[i]+1) % B;
+    odoSet(d.reduce((s,x) => s*B + x, 0), "click");
+  });
+  $("odo-plus").addEventListener("click", () => odoSet(odoVal()+1, "plus"));
+  $("odo-minus").addEventListener("click", () => odoSet(odoVal()-1, "minus"));
+  $("odo-reset").addEventListener("click", () => { odoStop(); odoSet(0, ""); });
+  function odoStop(){ clearInterval(odo.timer); odo.timer = null; $("odo-auto").textContent = "▶ Számolj magadtól"; }
+  $("odo-auto").addEventListener("click", () => {
+    if (odo.timer){ odoStop(); return; }
+    $("odo-auto").textContent = "⏸ Állj";
+    odo.timer = setInterval(() => odoSet(odoVal()+1, "plus"), 1100);
+  });
+  onBase.push(() => { odoStop(); odoSet(B*B - 2, "base"); });
+
+  /* ---------- Diák ---------- */
+  const slides = Array.from(document.querySelectorAll("#deck .slide"));
+  let cur = 0;
+  const dots = $("deck-dots");
+  slides.forEach((s,i) => {
+    const d = document.createElement("button");
+    d.type = "button"; d.className = "dot"; d.textContent = i+1;
+    d.setAttribute("role","tab"); d.setAttribute("aria-label", (i+1)+". dia");
+    d.addEventListener("click", () => go(i));
+    dots.appendChild(d);
+  });
+  function go(i){
+    cur = Math.max(0, Math.min(slides.length-1, i));
+    slides.forEach((s,k) => s.hidden = k !== cur);
+    Array.from(dots.children).forEach((d,k) => { d.classList.toggle("active", k === cur); d.setAttribute("aria-selected", k === cur ? "true" : "false"); });
+    $("deck-count").textContent = (cur+1) + " / " + slides.length;
+    $("deck-prev").disabled = cur === 0;
+    $("deck-next").disabled = cur === slides.length-1;
+  }
+  $("deck-prev").addEventListener("click", () => go(cur-1));
+  $("deck-next").addEventListener("click", () => go(cur+1));
+  document.addEventListener("keydown", e => {
+    const t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "SELECT" || t.tagName === "TEXTAREA")) return;
+    const r = $("deck").getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    if (e.key === "ArrowRight") go(cur+1);
+    if (e.key === "ArrowLeft") go(cur-1);
+  });
+  go(0);
+
+  // 1. dia
+  function renderS1(){
+    const rows = [2,3,5,6,7,10].map(b =>
+      '<tr class="'+(b === B ? "on" : "")+'"><td>'+NAME[b]+'</td><td>'+b+' db</td><td>'+digitList(b)+'</td></tr>').join("");
+    $("s1-table").innerHTML = '<thead><tr><th>számrendszer</th><th>jegyek száma</th><th>számjegyek</th></tr></thead><tbody>'+rows+'</tbody>';
+    $("s1-note").innerHTML = '<b>Figyelj:</b> '+NAME[B]+' számrendszerben <b>nincs „'+B+'” számjegy</b>, ahogy tízesben sincs „10” számjegy. Ha egy '+NAME[B]+' számban '+B+' vagy nagyobb jegyet látsz, az biztosan hibás.';
+  }
+  // 2. dia
+  function renderS2(){
+    $("s2-text").innerHTML = 'Tízesben 9 után a 10 jön: a 9 a legnagyobb jegy, ezért az egyesek 0-ra ugranak, és a tízesek helyén megjelenik egy 1-es. '
+      + cap1(INB[B])+' a legnagyobb jegy '+art(B-1)+' <b>'+(B-1)+'</b>, ezért '+(B-1)+' után már <b>10<sub>'+B+'</sub></b> jön, ami tízesben '+B+'. Nézd végig a számolást 0-tól (alul kicsiben a tízes értéke):';
+    const N = B*B + 2;
+    let h = "";
+    for (let i = 0; i <= N; i++){
+      const s = toB(i,B);
+      h += '<div class="c'+(/^10*$/.test(s) && i > 1 ? " round" : "")+'"><b>'+s+'</b><span>'+i+'</span></div>';
+    }
+    $("s2-grid").innerHTML = h;
+  }
+  // 3. dia
+  function renderS3(){
+    const K = 6;
+    const vals = Array.from({length:K+1}, (_,i) => B ** (K-i));
+    $("s3-chain").innerHTML = vals.map((v,i) => '<span class="p">'+v+'</span>' + (i < vals.length-1 ? '<span class="x">←·'+B+'</span>' : '')).join("");
+    $("s3-table").innerHTML = ptableHTML(B, vals.map((p,i) => ({ p, k: K-i })), { noDigits:true });
+    $("s3-note").innerHTML = '<b>Hatvány = ismételt szorzás.</b> '+B+'<sup>3</sup> = '+B+' · '+B+' · '+B+' = '+(B**3)+', és <b>nem</b> '+B+' · 3 = '+(B*3)+'! A jobb szélső helyiérték mindig '+B+'<sup>0</sup> = <b>1</b>, akármi az alapszám.';
+  }
+  // 4. dia
+  const S4EX = {3:"1201", 5:"3241", 6:"2504", 7:"2361"};
+  function renderS4(){
+    const s = $("s4-in").value.trim();
+    const ok = s.length <= 8 && validB(s,B);
+    const w = $("s4-warn");
+    w.hidden = ok || s === "";
+    w.textContent = cap1(NAME[B])+" számrendszerben csak ezek a jegyek lehetnek: "+digitList(B)+". Legfeljebb 8 jegyet írj.";
+    if (!ok){ $("s4-places").innerHTML = ""; $("s4-eq").textContent = ""; return; }
+    const k = s.length;
+    $("s4-places").innerHTML = s.split("").map((d,i) => {
+      const pv = B ** (k-1-i);
+      return '<div class="place '+(d === "0" ? "dim" : "lit")+'"><span class="v">'+pv+'</span><span class="d">'+d+'</span><span class="m">'+(d === "0" ? "0" : d+"·"+pv)+'</span></div>';
+    }).join("");
+    const parts = [];
+    s.split("").forEach((d,i) => { if (d !== "0") parts.push(d+" · "+(B ** (k-1-i))); });
+    const prods = [];
+    s.split("").forEach((d,i) => { if (d !== "0") prods.push(Number(d) * B ** (k-1-i)); });
+    $("s4-eq").innerHTML = esc(s)+"<sub>"+B+"</sub> = "+(parts.length ? parts.join(" + ")+" = "+prods.join(" + ") : "0")+" = <span class='hl'>"+fromB(s,B)+"</span><sub>10</sub>";
+  }
+  $("s4-in").addEventListener("input", renderS4);
+  function resetS4(){ $("s4-in").value = S4EX[B]; renderS4();
+    $("s4-note").innerHTML = '<b>Jelölés:</b> a számrendszert alsó indexben írjuk a szám után: '+S4EX[B]+'<sub>'+B+'</sub>. Enélkül nem tudnánk, hogy a „'+S4EX[B]+'” tízes vagy '+NAME[B]+' szám-e.'; }
+
+  // 5. dia: iskolai módszer léptető
+  function readNum(id, warnId){
+    const v = Number($(id).value);
+    const ok = Number.isInteger(v) && v >= 1 && v <= 2000;
+    $(warnId).hidden = ok;
+    return ok ? v : null;
+  }
+  let s5 = null;
+  function renderS5(){
+    if (!s5) return;
+    const st = s5.st, sh = s5.shown;
+    const cols = st.map((c,i) => ({ p:c.p, k:c.k, d: i < sh ? c.q : null }));
+    let h = '<p class="mono" style="font-size:1.2rem"><b>'+s5.n+'</b> → ?<sub>'+B+'</sub></p>';
+    h += ptableHTML(B, cols, { big:true, cur: sh < st.length ? sh : -1, nw: sh-1 });
+    const log = st.slice(0, sh).map(c => c.q ? '<span>'+c.before+' − '+c.q+' · '+c.p+' = '+c.before+' − '+(c.q*c.p)+' = <b>'+c.after+'</b></span>'
+      : '<span class="z">'+c.p+' &gt; '+c.before+', egyszer sem fér bele → 0</span>');
+    if (log.length) h += '<div class="sublog">'+log.join("")+'</div>';
+    if (sh < st.length){
+      const c = st[sh];
+      h += '<p>Következő: helyiérték <b>'+c.p+'</b>, maradék <b>'+c.before+'</b>. Hányszor fér bele?</p>';
+    } else {
+      const s = toB(s5.n,B);
+      h += resultHTML(s,B,s5.n) + '<div class="check">Próba: '+proofLine(s,B)+' ✓</div>';
+    }
+    if (sh === 0) h += '<p style="color:var(--muted)">Az áthúzott oszlop ('+B+'<sup>'+(st[0].k+1)+'</sup> = '+(B ** (st[0].k+1))+') már nagyobb a számnál, ezért a mellette lévővel kezdünk.</p>';
+    $("s5-out").innerHTML = h;
+    $("s5-next").disabled = sh >= st.length;
+  }
+  function resetS5(){ const n = readNum("s5-in","s5-warn"); if (n === null){ $("s5-out").innerHTML = ""; return; } s5 = { n, st: tableSteps(n,B), shown:0 }; renderS5(); }
+  $("s5-in").addEventListener("input", resetS5);
+  $("s5-next").addEventListener("click", () => { if (s5 && s5.shown < s5.st.length){ s5.shown++; renderS5(); } });
+  $("s5-all").addEventListener("click", () => { if (s5){ s5.shown = s5.st.length; renderS5(); } });
+  $("s5-reset").addEventListener("click", resetS5);
+
+  // 6. dia: hányszor fér bele
+  function renderS6(){
+    const P = B*B, R = 2*P + Math.floor(P/2);
+    let h = '<p>Példa: a maradék <b>'+R+'</b>, a helyiérték <b>'+P+'</b> ('+B+'<sup>2</sup>). Sorban megnézzük a többszöröseit:</p><div class="mults">';
+    for (let m = 1; m <= B; m++){
+      const v = P*m;
+      if (m === B) h += '<span class="next">'+P+' · '+m+' = '+v+' = '+B+'<sup>3</sup>, ez már a következő helyiérték</span>';
+      else if (v <= R) h += '<span class="yes">'+P+' · '+m+' = '+v+' ≤ '+R+' ✓ belefér</span>';
+      else { h += '<span class="no">'+P+' · '+m+' = '+v+' &gt; '+R+' ✗ túl sok</span>'; }
+    }
+    h += '</div><p>Tehát '+P+' <b>kétszer</b> fér bele: a jegy <b>2</b>, és '+R+' − '+(2*P)+' = <b>'+(R-2*P)+'</b> marad.</p>';
+    $("s6-out").innerHTML = h;
+    $("s6-note").innerHTML = '<b>Fontos:</b> '+INB[B]+' egy helyiérték legfeljebb <b>'+TIMES[B-1]+'</b> fér bele (a legnagyobb jegy '+(B-1)+'). Ha '+TIMES[B]+' is beleférne, az azt jelenti, hogy egy nagyobb helyiértékkel kellett volna kezdeni.';
+  }
+  // 7. dia: nullák
+  const EX0 = {3:876, 5:876, 6:876, 7:352};
+  function renderS7(){
+    const n = EX0[B], st = tableSteps(n,B), s = toB(n,B), bad = s.replace(/0/g,"");
+    let h = '<p>Ahol egy helyiérték <b>egyszer sem</b> fér bele, oda <b>0</b>-t írunk. Kihagyni nem szabad, mert akkor a többi jegy rossz helyre csúszik. Példa: '+art(n)+' '+n+' '+INB[B]+':</p>';
+    h += ptableHTML(B, st.map(c => ({ p:c.p, k:c.k, d:c.q })));
+    h += resultHTML(s,B,n);
+    h += '<div class="eq">Jó: '+s+'<sub>'+B+'</sub> = '+proofLine(s,B)+' <span class="ok">✓</span></div>';
+    h += '<div class="eq">Rossz (nullák nélkül): '+bad+'<sub>'+B+'</sub> = '+fromB(bad,B)+', és nem '+n+'!</div>';
+    h += '<div class="note">Ugyanígy van tízesben is: a 2005-ből a nullák nélkül 25 lenne. A 0 is számjegy, „helyet foglal”.</div>';
+    $("s7-out").innerHTML = h;
+  }
+  // 8. dia: osztogatás léptető
+  function divTableHTML(steps, shown, b, withResult){
+    let h = '<div class="divtable"><span class="h">szám</span><span class="h">: '+b+' =</span><span class="h">hányados</span><span class="h">maradék</span>';
+    steps.slice(0, shown).forEach(s => { h += '<span>'+s.x+'</span><span>: '+b+' =</span><span>'+s.q+'</span><span class="r">'+s.r+'</span>'; });
+    h += '</div>';
+    if (withResult && shown === steps.length){
+      h += '<div class="uparrow"><div class="shaft"></div><span>olvasd<br>felfelé</span></div>';
+      const res = steps.map(s => s.r).reverse().join("");
+      h += '<div style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px"><span class="eyebrow">eredmény</span>'+resultHTML(res,b)+'<span class="mono">= '+steps[0].x+'<sub>10</sub></span></div>';
+    }
+    return h;
+  }
+  let s8 = null;
+  function renderS8(){
+    if (!s8) return;
+    $("s8-out").innerHTML = s8.shown === 0 ? '<p class="mono" style="color:var(--muted)">Nyomd meg a „Következő lépés” gombot.</p>' : divTableHTML(s8.st, s8.shown, B, true);
+    $("s8-next").disabled = s8.shown >= s8.st.length;
+  }
+  function resetS8(){ const n = readNum("s8-in","s8-warn"); if (n === null){ $("s8-out").innerHTML = ""; return; } s8 = { st: divSteps(n,B), shown:0 }; renderS8(); }
+  $("s8-in").addEventListener("input", resetS8);
+  $("s8-next").addEventListener("click", () => { if (s8 && s8.shown < s8.st.length){ s8.shown++; renderS8(); } });
+  $("s8-all").addEventListener("click", () => { if (s8){ s8.shown = s8.st.length; renderS8(); } });
+  $("s8-reset").addEventListener("click", resetS8);
+  // 9. dia: próba
+  function renderS9(){
+    const n = 876, s = toB(n,B), k = s.length;
+    const prods = s.split("").map((d,i) => Number(d) * B ** (k-1-i));
+    let h = '<p>A füzet példája: 876 = '+fb(s,B)+'. A próba:</p>';
+    h += '<div class="places">'+s.split("").map((d,i) => '<div class="place '+(d === "0" ? "dim" : "lit")+'"><span class="v">'+(B ** (k-1-i))+'</span><span class="d">'+d+'</span><span class="m">'+prods[i]+'</span></div>').join("")+'</div>';
+    h += '<div class="eq">'+proofTerms(s,B).join(" + ")+'</div>';
+    h += '<div class="eq">= '+prods.join(" + ")+' = <span class="ok">876 ✓</span></div>';
+    $("s9-out").innerHTML = h;
+  }
+  // 10. dia: hibák
+  function renderS10(){
+    const ex = toB(876,B);
+    const items = [
+      ['Nem létező jegy.', cap1(INB[B])+' a legnagyobb jegy '+(B-1)+'. Ha egy helyiérték '+TIMES[B]+' is beleférne, akkor rossz helyen kezdtél: van nagyobb helyiérték, ami még belefér.'],
+      ['Kihagyott 0.', 'Ahol egyszer sem fér bele a helyiérték, oda 0 kerül. Nélküle a jegyek elcsúsznak, és egészen más szám jön ki.'],
+      ['Hatvány helyett szorzás.', B+'<sup>3</sup> = '+B+' · '+B+' · '+B+' = '+(B**3)+', nem '+B+' · 3 = '+(B*3)+'. A helyiértékek: 1, '+B+', '+(B**2)+', '+(B**3)+'…'],
+      ['Elfelejtett szorzás visszaváltáskor.', 'A jegyet meg kell szorozni a helyiértékkel. Ha a jegy 2 és a helyiérték '+(B**2)+', akkor '+(2*B*B)+' kerül az összegbe, nem csak '+(B**2)+'.'],
+      ['Nem a legnagyobbal kezdtél.', 'Ha kihagysz egy nagy helyiértéket, a kisebbnél túl sokszor férne bele. Mindig a legnagyobb hatvánnyal kezdj, ami még belefér!'],
+      ['Fordított sorrend az osztogatásnál.', 'A maradékokat alulról felfelé kell olvasni. 876 = '+fb(ex,B)+', és nem '+fb(rev(ex),B)+'.']
+    ];
+    $("s10-out").innerHTML = items.map(m => '<div class="mistake"><b>'+m[0]+'</b> '+m[1]+'</div>').join("");
+  }
+  // 11. dia: trükkök
+  function renderS11(){
+    const m = B-1, mm = String(m).repeat(3);
+    const par = B % 2 === 1
+      ? 'Mivel '+B+' páratlan, nem elég az utolsó jegyet nézni! Add össze a jegyeket: ha az összeg páros, a szám is páros. Például 12<sub>'+B+'</sub> = '+fromB("12",B)+': 1 + 2 = 3, páratlan.'
+      : 'Mivel 6 páros, itt elég az utolsó jegy: ha páros, a szám is páros. Például 23<sub>6</sub> = 15, a 3 páratlan, tehát a szám is.';
+    const items = [
+      ['Szorzás az alapszámmal', 'Ha a szám végére egy 0-t írsz, a szám '+FOLD[B]+' nő, mint tízesben a ×10. 12<sub>'+B+'</sub> = '+fromB("12",B)+' → 120<sub>'+B+'</sub> = '+fromB("120",B)+'.'],
+      ['A legnagyobb háromjegyű szám', 'Ha minden jegy a legnagyobb: '+mm+'<sub>'+B+'</sub> = '+(B**3-1)+' = '+B+'<sup>3</sup> − 1. Eggyel több már 1000<sub>'+B+'</sub>.'],
+      ['Az alapszám hatványai', cap1(INB[B])+' „kerek” számok: '+B+' = 10<sub>'+B+'</sub>, '+(B**2)+' = 100<sub>'+B+'</sub>, '+(B**3)+' = 1000<sub>'+B+'</sub>.'],
+      ['Páros vagy páratlan?', par],
+      ['Hány jegyű lesz?', 'Annyi jegyű, ahány oszlop van a táblázatban a legnagyobb hatványtól, ami belefér, az 1-ig. 876 '+INB[B]+' '+toB(876,B).length+' jegyű.']
+    ];
+    $("s11-out").innerHTML = items.map(t => '<div class="trick"><span class="t">'+t[0]+'</span><span>'+t[1]+'</span></div>').join("");
+  }
+  onBase.push(renderS1, renderS2, renderS3, resetS4, resetS5, renderS6, renderS7, resetS8, renderS9, renderS10, renderS11);
+
+  /* ---------- Levezetés-lejátszó ---------- */
+  const pb = { method:"tab", value:876, frames:[], k:0, playing:false, timer:null };
+  const PBDEC = [45, 100, 250, 876, 1000];
+
+  // Tízes → b, helyiérték-táblázat (iskolai)
+  function buildTab(n,b){
+    const F = [], st = tableSteps(n,b), s = toB(n,b);
+    const digs = st.map(() => null), log = [];
+    const render = o => {
+      let h = '<div class="pb-head">'+n+'<sub>10</sub> '+(o.final ? '= <span class="hl">'+s+'</span><sub>'+b+'</sub>' : '→ ?<sub>'+b+'</sub>')+'</div>';
+      if (o.table) h += ptableHTML(b, st.map((c,i) => ({ p:c.p, k:c.k, d:digs[i] })), { big:true, cur:o.cur, nw:o.nw });
+      if (o.table) h += '<div class="pb-sum">Maradék: <b class="'+(o.restNew ? "new" : "")+'">'+o.rest+'</b></div>';
+      if (log.length) h += '<div class="sublog">'+log.join("")+'</div>';
+      if (o.check) h += '<div class="check new">'+o.check+'</div>';
+      return h;
+    };
+    const push = (cap, o) => F.push({ cap, html: render(o || {}) });
+    push('Feladat: írjuk át '+art(n)+' <b>'+n+'</b> számot <b>'+NAME[b]+'</b> számrendszerbe. Módszer: <b>helyiérték-táblázat</b>, ahogy a füzetben is.');
+    const big = b ** (st[0].k + 1);
+    push('Felírjuk a táblázatba '+(b === 5 ? "az" : "a")+' '+b+' hatványait: '+st.map(c => c.p).reverse().join(", ")+'. A következő, '+big+', már nagyobb, mint '+n+', ezért azt áthúzzuk. A legnagyobb helyiérték, ami belefér: <b>'+st[0].p+'</b>.', { table:true, rest:n });
+    for (let i = 0; i < st.length; i++){
+      const c = st[i];
+      if (c.before === 0){
+        for (let j = i; j < st.length; j++) digs[j] = 0;
+        push('A maradék már 0, ezért a többi helyre mind <b>0</b> kerül.', { table:true, rest:0 });
+        break;
+      }
+      push('Helyiérték: <b>'+c.p+'</b>. Hányszor fér bele a maradékba ('+c.before+')?', { table:true, cur:i, rest:c.before });
+      digs[i] = c.q;
+      if (c.q === 0){
+        log.push('<span class="z">'+c.p+' &gt; '+c.before+' → 0</span>');
+        push(c.p+' > '+c.before+', tehát <b>egyszer sem</b> fér bele. Ide <b>0</b> kerül, a maradék nem változik.', { table:true, cur:i, nw:i, rest:c.before });
+      } else {
+        const more = c.p * (c.q+1);
+        const why = c.q > 1
+          ? c.p+' · '+c.q+' = '+(c.p*c.q)+', ez még belefér, de '+c.p+' · '+(c.q+1)+' = '+more+' már több, mint '+c.before+'.'
+          : (more <= c.before ? '' : c.p+' belefér, de '+c.p+' · 2 = '+more+' már több, mint '+c.before+'.');
+        log.push('<span>'+c.before+' − '+c.q+' · '+c.p+' = '+c.before+' − '+(c.q*c.p)+' = <b>'+c.after+'</b></span>');
+        push(why+' Tehát <b>'+TIMES[c.q]+'</b> fér bele: ide <b>'+c.q+'</b> kerül. Levonjuk: '+c.before+' − '+(c.q*c.p)+' = <b>'+c.after+'</b>.', { table:true, cur:i, nw:i, rest:c.after, restNew:true });
+      }
+    }
+    push('Kész! A jegyeket balról jobbra leírva: <b>'+n+'<sub>10</sub> = '+s+'<sub>'+b+'</sub></b>', { table:true, rest:0, final:true });
+    push('Próba: minden jegyet megszorzunk a helyiértékével, és összeadjuk. Kijött '+art(n)+' '+n+', tehát jó a megoldás.', { table:true, rest:0, final:true, check:'Próba: '+proofLine(s,b)+' ✓' });
+    return F;
+  }
+
+  // Tízes → b, osztogatás
+  function buildDiv(n,b){
+    const F = [], rows = [], s = toB(n,b);
+    const render = o => {
+      let h = '<div class="pb-head">'+n+'<sub>10</sub> '+(o.final ? '= <span class="hl">'+s+'</span><sub>'+b+'</sub>' : '→ ?<sub>'+b+'</sub>')+'</div>';
+      if (rows.length){
+        h += '<div class="divwrap"><div class="divtable"><span class="h">szám</span><span class="h">: '+b+' =</span><span class="h">hányados</span><span class="h">maradék</span>';
+        rows.forEach((r,j) => {
+          const cu = j === o.cur ? "cur" : "";
+          const picked = o.read && j >= rows.length - o.read;
+          const newest = o.read && !o.final && j === rows.length - o.read;
+          h += '<span class="'+cu+'">'+r.x+'</span><span class="'+cu+'">: '+b+' =</span>'
+            + '<span class="'+cu+(o.nw === "q" && j === o.cur ? " new" : "")+'">'+(r.q === null ? "" : r.q)+'</span>'
+            + (r.r === null ? '<span class="'+cu+'"></span>'
+               : '<span class="r'+(o.nw === "r" && j === o.cur ? " new" : "")+(picked ? " pick" : "")+(newest ? " new" : "")+'">'+r.r+'</span>');
+        });
+        h += '</div>';
+        if (o.read) h += '<div class="uparrow"><div class="shaft"></div><span>olvasd<br>felfelé</span></div>';
+        h += '</div>';
+      }
+      if (o.read){
+        const digs = rows.slice().reverse().slice(0, o.read).map(r => r.r).join("");
+        h += resultHTML(digs, b, undefined, !o.final);
+      }
+      if (o.check) h += '<div class="check new">'+o.check+'</div>';
+      return h;
+    };
+    const push = (cap, o) => F.push({ cap, html: render(o || {}) });
+    push('Feladat: írjuk át '+art(n)+' <b>'+n+'</b> számot <b>'+NAME[b]+'</b> számrendszerbe. Módszer: <b>osztogatás</b>. Minden lépésben elosztjuk az alapszámmal ('+b+'), és figyeljük a maradékot.');
+    let x = n;
+    while (x > 0){
+      const q = Math.floor(x/b), r = x % b, row = { x, q:null, r:null };
+      rows.push(row);
+      const j = rows.length - 1;
+      row.q = q;
+      push('Osztás: '+x+' : '+b+' = <b>'+q+'</b>, mert '+b+' · '+q+' = '+(b*q)+(r ? ', és '+b+' · '+(q+1)+' = '+(b*(q+1))+' már túl sok.' : ', pont kijön.'), { cur:j, nw:"q" });
+      row.r = r;
+      push('A maradék: '+x+' − '+(b*q)+' = <b>'+r+'</b>.'+(q > 0 ? ' A hányadossal ('+q+') folytatjuk a következő sorban.' : ''), { cur:j, nw:"r" });
+      x = q;
+    }
+    push('A hányados <b>0</b> lett, ezért itt megállunk. Most a maradékokat <b>alulról felfelé</b> olvassuk össze.');
+    for (let i = 1; i <= rows.length; i++){
+      const d = rows[rows.length - i].r;
+      const cap = i === 1 ? 'A legalsó maradék <b>'+d+'</b>. Ez lesz az eredmény <b>első</b>, bal szélső jegye.'
+        : i === rows.length ? 'A legfelső maradék <b>'+d+'</b>. Ez az utolsó, jobb szélső jegy.'
+        : 'Egy sorral feljebb: <b>'+d+'</b>. Ezt írjuk a már meglévő jegyek mögé.';
+      push(cap, { read:i });
+    }
+    push('Kész! <b>'+n+'<sub>10</sub> = '+s+'<sub>'+b+'</sub></b>', { read:rows.length, final:true });
+    push('Próba: visszaváltjuk tízesbe. Kijött '+art(n)+' '+n+', tehát jó a megoldás.', { read:rows.length, final:true, check:'Próba: '+proofLine(s,b)+' ✓' });
+    return F;
+  }
+
+  // b → tízes
+  function buildB2D(s,b){
+    const F = [], k = s.length, n = fromB(s,b);
+    const pvs = Array.from({length:k}, (_,i) => b ** (k-1-i));
+    const prods = [];
+    let pvShown = 0;
+    const render = o => {
+      let h = '<div class="pb-head">'+s+'<sub>'+b+'</sub> '+(o.final ? '= <span class="hl">'+n+'</span><sub>10</sub>' : '→ ?<sub>10</sub>')+'</div>';
+      h += '<div class="places">'+pvs.map((p,i) =>
+        '<div class="place'+(prods[i] !== undefined ? (s[i] === "0" ? " dim" : " lit") : "")+(i === o.cur ? " cur" : "")+'"><span class="v'+(i === o.nwPv ? " new" : "")+'">'+(i >= k - pvShown ? p : "&nbsp;")+'</span><span class="d">'+s[i]+'</span><span class="m'+(i === o.cur ? " new" : "")+'">'+(prods[i] !== undefined ? prods[i] : "&nbsp;")+'</span></div>'
+      ).join("")+'</div>';
+      if (o.sum){
+        const done = prods.filter(x => x !== undefined);
+        const sum = done.reduce((a,c) => a+c, 0);
+        h += '<div class="pb-sum">'+(o.final ? "Összeg" : "Eddig")+': '+(done.length ? done.join(" + ")+' = <b>'+sum+'</b>' : '0')+'</div>';
+      }
+      return h;
+    };
+    const push = (cap, o) => F.push({ cap, html: render(o || {}) });
+    push('Feladat: írjuk át '+artB(s)+' <b>'+s+'<sub>'+b+'</sub></b> számot tízes számrendszerbe. Módszer: <b>jegy szorozva helyiértékkel, aztán összeadás</b>.');
+    pvShown = 1;
+    push('Először a helyiértékeket írjuk a jegyek fölé, <b>jobbról</b> kezdve. A jobb szélső hely értéke mindig <b>1</b>.', { nwPv:k-1 });
+    for (let i = 2; i <= k; i++){
+      pvShown = i;
+      push('Balra lépve megszorozzuk az alapszámmal: '+pvs[k-i+1]+' · '+b+' = <b>'+pvs[k-i]+'</b>.', { nwPv:k-i });
+    }
+    for (let i = 0; i < k; i++){
+      const d = Number(s[i]);
+      prods[i] = d * pvs[i];
+      const intro = i === 0 ? 'Most balról jobbra végigmegyünk a jegyeken. ' : '';
+      push(intro + (d === 0 ? 'Jegy: <b>0</b>, helyiérték: '+pvs[i]+'. 0 · '+pvs[i]+' = 0, ez nem ad hozzá semmit.'
+        : 'Jegy: <b>'+d+'</b>, helyiérték: <b>'+pvs[i]+'</b>. Szorzat: '+d+' · '+pvs[i]+' = <b>'+prods[i]+'</b>.'), { cur:i, sum:true });
+    }
+    push('Kész! Összeadtuk a szorzatokat: <b>'+s+'<sub>'+b+'</sub> = '+n+'<sub>10</sub></b>', { sum:true, final:true });
+    return F;
+  }
+
+  function pbExamples(){
+    return pb.method === "b2d" ? PBDEC.map(v => toB(v,B)) : PBDEC;
+  }
+  function pbLoad(method, value, autoplay){
+    pbPause();
+    pb.method = method;
+    pb.value = method === "b2d" ? String(value) : Number(value);
+    pb.frames = method === "tab" ? buildTab(pb.value,B) : method === "div" ? buildDiv(pb.value,B) : buildB2D(pb.value,B);
+    document.querySelectorAll("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", t.dataset.m === method ? "true" : "false"));
+    $("pb-ex").innerHTML = pbExamples().map(v =>
+      '<button class="chip" type="button" data-v="'+v+'" aria-pressed="'+(String(v) === String(pb.value))+'">'+(method === "b2d" ? v+"<sub>"+B+"</sub>" : v)+'</button>').join("");
+    $("pb-in").placeholder = method === "b2d" ? "pl. "+toB(100,B) : "1–2000";
+    $("pb-warn").hidden = true;
+    pbShow(0);
+    if (autoplay) pbPlay();
+  }
+  function pbShow(k){
+    const F = pb.frames;
+    pb.k = Math.max(0, Math.min(F.length-1, k));
+    $("pb-board").innerHTML = F[pb.k].html;
+    $("pb-cap").innerHTML = F[pb.k].cap;
+    $("pb-count").textContent = (pb.k+1)+" / "+F.length+". lépés";
+    $("pb-bar").style.width = (F.length > 1 ? pb.k/(F.length-1)*100 : 100)+"%";
+    $("pb-first").disabled = $("pb-prev").disabled = pb.k === 0;
+    $("pb-next").disabled = pb.k === F.length-1;
+    pbPlayBtn();
+  }
+  function pbPlayBtn(){
+    $("pb-play").textContent = pb.playing ? "⏸ Szünet" : (pb.k === pb.frames.length-1 ? "↻ Újra" : "▶ Lejátszás");
+  }
+  function pbPlay(){
+    if (pb.k >= pb.frames.length-1) pbShow(0);
+    pb.playing = true; pbPlayBtn(); pbSchedule();
+  }
+  function pbPause(){ pb.playing = false; clearTimeout(pb.timer); tts.stop(); if (pb.frames.length) pbPlayBtn(); }
+  function pbSchedule(){
+    clearTimeout(pb.timer);
+    if (!pb.playing) return;
+    const last = pb.k >= pb.frames.length-1;
+    const base = Number($("pb-speed").value);
+    if (tts.on){
+      tts.say(pb.frames[pb.k].cap, () => {
+        if (!pb.playing) return;
+        if (last){ pbPause(); return; }
+        pb.timer = setTimeout(() => { pbShow(pb.k+1); pbSchedule(); }, base * 0.18);
+      });
+      return;
+    }
+    if (last){ pbPause(); return; }
+    const len = pb.frames[pb.k].cap.replace(/<[^>]+>/g, "").length;
+    pb.timer = setTimeout(() => { pbShow(pb.k+1); pbSchedule(); }, base * (0.7 + len/180));
+  }
+  function pbStep(k){ pbPause(); pbShow(k); if (tts.on) tts.say(pb.frames[pb.k].cap); }
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on:false, voice:null, say(){}, stop(){} };
+    if (!synth || typeof SpeechSynthesisUtterance === "undefined") return api;
+    let token = 0, safety = null;
+    const rates = { "6000":0.8, "4200":0.92, "2800":1.05, "1700":1.2 };
+    const DW = ["nulla","egy","kettő","három","négy","öt","hat","hét","nyolc","kilenc"];
+    const POW = ["a nulladikon","az elsőn","a másodikon","a harmadikon","a negyediken","az ötödiken","a hatodikon","a hetediken","a nyolcadikon"];
+    const digits = s => s.split("").map(d => DW[Number(d)]).join(" ");
+    function speakable(html){
+      return html
+        .replace(/(\d+)<sub>(\d+)<\/sub>/g, (m, num, b) => b === "10" ? num + ", tízes számrendszerben, " : digits(num) + ", " + (NAME[b] || b) + " számrendszerben, ")
+        .replace(/(\d+)<sup>(\d)<\/sup>/g, (m, a, k) => a + " " + POW[Number(k)])
+        .replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&")
+        .replace(/(\d)\s*:\s*(\d)/g, "$1 osztva $2")
+        .replace(/\s·\s/g, " szorozva ")
+        .replace(/\s−\s/g, " mínusz ")
+        .replace(/\s\+\s/g, " plusz ")
+        .replace(/\s≤\s/g, " kisebb vagy egyenlő, mint ")
+        .replace(/\s>\s/g, " nagyobb, mint ")
+        .replace(/\s=\s/g, " egyenlő ")
+        .replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      $("pb-voicewarn").hidden = !(api.on && !api.voice && synth.getVoices().length);
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = rates[$("pb-speed").value] || 1;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const btn = $("pb-voice");
+    btn.hidden = false;
+    function setOn(v){
+      api.on = v;
+      btn.setAttribute("aria-pressed", v ? "true" : "false");
+      btn.textContent = v ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      try { localStorage.setItem("kettes-tts", v ? "1" : "0"); } catch(e){}
+      pickVoice();
+    }
+    let saved = null;
+    try { saved = localStorage.getItem("kettes-tts"); } catch(e){}
+    setOn(saved !== "0");
+    btn.addEventListener("click", () => {
+      setOn(!api.on);
+      if (!api.on) api.stop();
+      if (pb.playing) pbSchedule();
+    });
+    return api;
+  })();
+
+  $("pb-play").addEventListener("click", () => pb.playing ? pbPause() : pbPlay());
+  $("pb-next").addEventListener("click", () => pbStep(pb.k+1));
+  $("pb-prev").addEventListener("click", () => pbStep(pb.k-1));
+  $("pb-first").addEventListener("click", () => pbStep(0));
+  $("pb-speed").addEventListener("change", pbSchedule);
+  document.querySelectorAll("#pb-methods .tab").forEach(t => t.addEventListener("click", () => {
+    pb.method = t.dataset.m; pbLoad(t.dataset.m, pbExamples()[3], false);
+  }));
+  $("pb-ex").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) pbLoad(pb.method, b.dataset.v, true); });
+  $("pb-own").addEventListener("submit", e => {
+    e.preventDefault();
+    const raw = $("pb-in").value.replace(/\s+/g, ""), w = $("pb-warn");
+    if (pb.method === "b2d"){
+      const s = strip0(raw);
+      if (!(s.length <= 8 && validB(s,B)) || fromB(s,B) === 0){ w.hidden = false; w.textContent = cap1(NAME[B])+" számot írj (jegyek: "+digitList(B)+"), legfeljebb 8 jegyet, és ne csupa 0 legyen."; return; }
+      pbLoad("b2d", s, true);
+    } else {
+      const n = Number(raw);
+      if (!/^\d+$/.test(raw) || n < 1 || n > 2000){ w.hidden = false; w.textContent = "Egész számot írj 1 és 2000 között."; return; }
+      pbLoad(pb.method, n, true);
+    }
+  });
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-play]");
+    if (!b) return;
+    if (Number(b.dataset.b) !== B) setBase(Number(b.dataset.b));
+    pbLoad(b.dataset.play, b.dataset.v, true);
+    const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    $("player").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  });
+  onBase.push(() => pbLoad(pb.method, pbExamples()[3], false));
+
+  /* ---------- Puska ---------- */
+  $("powtable").innerHTML = Array.from({length:8}, (_,k) => '<tr><td>'+k+'</td>'+BASES.map(b => '<td>'+(b ** k)+'</td>').join("")+'</tr>').join("");
+  $("cheat-876").innerHTML = "876 = " + BASES.map(b => fb(toB(876,b),b)).join(" = ");
+
+  /* ---------- Gyakorlás ---------- */
+  const store = {
+    get(){ try { return JSON.parse(localStorage.getItem("szamr-gyak") || "{}"); } catch(e){ return {}; } },
+    set(v){ try { localStorage.setItem("szamr-gyak", JSON.stringify(v)); } catch(e){} }
+  };
+  const saved = store.get();
+  const state = { mode:"b2d", level:1, pbase:5, correct:0, tries:0, streak:0, best: saved.best || 0, total: saved.total || 0 };
+  const ranges = {1:[1,50], 2:[51,300], 3:[301,2000]};
+  const randN = () => rand(ranges[state.level][0], ranges[state.level][1]);
+  const taskBase = () => state.pbase === "mix" ? pick(BASES) : state.pbase;
+  const task = $("task");
+
+  function renderStats(){
+    $("stats").innerHTML = 'Most: <b>'+state.correct+' / '+state.tries+'</b> helyes <span>·</span> Sorozat: <b>'+state.streak+'</b> <span>·</span> Legjobb sorozat: <b>'+state.best+'</b> <span>·</span> Összes helyes eddig: <b>'+state.total+'</b>';
+  }
+  function score(ok){
+    state.tries++;
+    if (ok){ state.correct++; state.streak++; state.total++; if (state.streak > state.best) state.best = state.streak; }
+    else state.streak = 0;
+    store.set({ best: state.best, total: state.total });
+    renderStats();
+  }
+  const praise = ["Szuper, ez jó!","Pontosan!","Hibátlan!","Így kell ezt!","Telitalálat!"];
+  const baseHint = b => '<span class="basehint">'+cap1(NAME[b])+' számjegyek: '+digitList(b)+'</span>';
+
+  function b2dSolution(n,b){
+    const s = toB(n,b), k = s.length;
+    const prods = s.split("").map((d,i) => Number(d) * b ** (k-1-i));
+    return '<div class="places">'+s.split("").map((d,i) => '<div class="place '+(d === "0" ? "dim" : "lit")+'"><span class="v">'+(b ** (k-1-i))+'</span><span class="d">'+d+'</span><span class="m">'+prods[i]+'</span></div>').join("")+'</div>'
+      + '<div class="eq">'+s+'<sub>'+b+'</sub> = '+proofTerms(s,b).join(" + ")+'</div>'
+      + '<div class="eq">= '+prods.join(" + ")+' = <span class="hl">'+n+'</span></div>'
+      + '<div><button class="btn" type="button" data-play="b2d" data-b="'+b+'" data-v="'+s+'">▶ Nézd meg lejátszva</button></div>';
+  }
+  function d2bSolution(n,b){
+    const st = tableSteps(n,b), s = toB(n,b);
+    const log = st.map(c => c.q ? '<span>'+c.before+' − '+c.q+' · '+c.p+' = <b>'+c.after+'</b></span>' : '<span class="z">'+c.p+' &gt; '+c.before+' → 0</span>');
+    return ptableHTML(b, st.map(c => ({ p:c.p, k:c.k, d:c.q })), { big:true })
+      + '<div class="sublog">'+log.join("")+'</div>'
+      + resultHTML(s,b,n)
+      + '<div class="check">Próba: '+proofLine(s,b)+' ✓</div>'
+      + '<div class="row"><button class="btn" type="button" data-play="tab" data-b="'+b+'" data-v="'+n+'">▶ Nézd meg lejátszva (táblázat)</button><button class="btn" type="button" data-play="div" data-b="'+b+'" data-v="'+n+'">▶ Osztogatással</button></div>';
+  }
+
+  // --- általános „írd be” feladat ---
+  function inputTask(cfg){
+    // cfg: {prompt, base (ha a válasz b-es szám) vagy null (tízes), check(val), answerText, solutionHTML, hintWrong(val)}
+    const b = cfg.base;
+    task.innerHTML =
+      '<p class="prompt">'+cfg.prompt+'</p>' + (b ? baseHint(b) : '') +
+      '<form class="row" id="t-form" autocomplete="off">' +
+        '<input type="text" id="t-in" inputmode="numeric" aria-label="Válasz" placeholder="'+(b ? "pl. "+toB(b*b+1,b) : "pl. 42")+'">' +
+        '<button class="btn primary" type="submit" id="t-go">Ellenőrzés</button>' +
+        '<button class="btn" type="button" id="t-sol">Megoldás lépésenként</button>' +
+        '<button class="btn" type="button" id="t-new">Új feladat</button>' +
+      '</form>' +
+      '<div id="t-fb" hidden></div><div class="solution" id="t-solbox" hidden></div>';
+    let done = false, missed = false;
+    const inp = $("t-in");
+    $("t-form").addEventListener("submit", e => {
+      e.preventDefault();
+      if (done){ newTask(); return; }
+      const raw = inp.value.replace(/\s+/g,"");
+      const f = $("t-fb");
+      f.hidden = false;
+      if (raw === ""){ f.className = "feedback bad"; f.textContent = "Írj be egy választ!"; return; }
+      if (!/^\d+$/.test(raw)){ f.className = "feedback bad"; f.textContent = "Csak számjegyeket írj."; return; }
+      if (b && !validB(raw,b)){ f.className = "feedback bad"; f.textContent = cap1(NAME[b])+" számrendszerben csak ezek a jegyek lehetnek: "+digitList(b)+". A „"+raw.split("").find(d => Number(d) >= b)+"” jegy itt nem létezik!"; return; }
+      const ok = cfg.check(raw);
+      if (!missed || ok) score(ok);
+      if (ok){
+        done = true;
+        f.className = "feedback ok"; f.textContent = pick(praise) + " " + cfg.answerText;
+        $("t-go").textContent = "Következő feladat";
+        $("t-go").focus();
+      } else {
+        missed = true;
+        f.className = "feedback bad";
+        f.textContent = (cfg.hintWrong && cfg.hintWrong(raw)) || "Nem ez a jó válasz. Próbáld újra, vagy nézd meg a megoldást!";
+      }
+    });
+    $("t-sol").addEventListener("click", () => {
+      const box = $("t-solbox"); box.hidden = false; box.innerHTML = cfg.solutionHTML;
+      if (!done && !missed){ missed = true; score(false); }
+    });
+    $("t-new").addEventListener("click", newTask);
+    inp.focus({preventScroll:true});
+  }
+
+  function newB2D(){
+    const b = taskBase(), n = randN(), s = toB(n,b), k = s.length;
+    inputTask({
+      prompt: 'Mennyi tízes számrendszerben: <span class="num">'+s+'<sub>'+b+'</sub></span> ?',
+      base: null,
+      check: v => Number(v) === n,
+      answerText: uni(s,b)+" = "+n,
+      solutionHTML: b2dSolution(n,b),
+      hintWrong: v => {
+        const x = Number(v);
+        const digitSum = s.split("").reduce((a,d) => a + Number(d), 0);
+        const noMult = s.split("").reduce((a,d,i) => a + (d !== "0" ? b ** (k-1-i) : 0), 0);
+        const timesK = s.split("").reduce((a,d,i) => { const e = k-1-i; return a + Number(d) * (e === 0 ? 1 : b*e); }, 0);
+        if (k > 1 && x === fromB(rev(s),b)) return "Majdnem! Úgy tűnik, jobbról balra olvastad. A legnagyobb helyiérték a bal szélen van.";
+        if (x === digitSum && k > 1) return "Csak a jegyeket adtad össze. Minden jegyet meg kell szorozni a helyiértékével!";
+        if (x === noMult && noMult !== n) return "A helyiértékeket összeadtad, de a jegyekkel nem szoroztad meg őket. Például a 2-es jegy a helyiérték kétszeresét jelenti.";
+        if (x === timesK && timesK !== n) return "Vigyázz, a helyiértékek hatványok: 1, "+b+", "+(b*b)+", "+(b**3)+"… és nem "+b+" · 2, "+b+" · 3!";
+        return "Nem ez a jó válasz. Írd a jegyek fölé a helyiértékeket (…"+(b*b)+", "+b+", 1), szorozd meg őket a jegyekkel, és add össze.";
+      }
+    });
+  }
+  function newD2B(){
+    const b = taskBase(), n = randN(), s = toB(n,b);
+    inputTask({
+      prompt: 'Írd át <b>'+NAME[b]+'</b> számrendszerbe: <span class="num">'+n+'</span>',
+      base: b,
+      check: v => fromB(v,b) === n,
+      answerText: n+" = "+uni(s,b),
+      solutionHTML: d2bSolution(n,b),
+      hintWrong: v => {
+        const t = strip0(v);
+        if (s.length > 1 && t === strip0(rev(s))) return "Majdnem! Fordítva írtad le a jegyeket. Osztogatásnál a maradékokat alulról felfelé kell olvasni.";
+        if (s.includes("0") && t === s.replace(/0/g,"")) return "Kimaradt a 0! Ahol egy helyiérték egyszer sem fér bele, oda 0-t kell írni.";
+        if (t.length !== s.length) return "A jegyek száma nem stimmel: "+s.length+" jegyű lesz. Melyik a legnagyobb hatvány, ami még belefér "+art(n)+" "+n+" számba?";
+        return "Nem ez. Próba: a válaszod visszaváltva "+uni(t,b)+" = "+fromB(t,b)+", és nem "+n+". Nézd meg, hol csúszott el!";
+      }
+    });
+  }
+
+  // --- Táblázat lépésenként (vezetett, iskolai módszer) ---
+  function newTable(){
+    const b = taskBase(), n = randN(), st = tableSteps(n,b);
+    const g = { n, b, st, i:0, missed:false };
+    task.innerHTML =
+      '<p class="prompt">Váltsd át '+art(n)+' <span class="num">'+n+'</span> számot <b>'+NAME[b]+'</b> számrendszerbe a táblázattal! Minden oszlopnál írd be, <b>hányszor fér bele</b> a helyiérték, és mennyi a <b>maradék</b> a kivonás után.</p>'
+      + baseHint(b)
+      + '<div id="g-table"></div><div id="g-log" class="sublog"></div><div id="g-step"></div>'
+      + '<div id="g-fb" hidden></div>'
+      + '<div class="row"><button class="btn" type="button" id="g-new">Új feladat</button></div>';
+    $("g-new").addEventListener("click", newTask);
+    renderTable(g);
+  }
+  function renderTable(g){
+    const { b, st } = g;
+    $("g-table").innerHTML = ptableHTML(b, st.map((c,i) => ({ p:c.p, k:c.k, d: i < g.i ? c.q : null })), { big: g.i === 0, cur: g.i < st.length ? g.i : -1, nw: g.i-1 });
+    $("g-log").innerHTML = st.slice(0, g.i).map(c => c.q ? '<span>'+c.before+' − '+c.q+' · '+c.p+' = <b>'+c.after+'</b></span>' : '<span class="z">'+c.p+' &gt; '+c.before+' → 0</span>').join("");
+    const fbx = $("g-fb");
+    if (g.i < st.length){
+      const c = st[g.i];
+      $("g-step").innerHTML = '<form class="guide-row" id="g-form" autocomplete="off">'
+        + '<span class="lbl">Helyiérték: <b>'+c.p+'</b>, maradék: <b>'+c.before+'</b>. Hányszor fér bele?</span>'
+        + '<input type="text" id="g-q" inputmode="numeric" aria-label="hányszor fér bele">'
+        + '<span class="lbl">Új maradék:</span><input type="text" id="g-r" inputmode="numeric" aria-label="új maradék">'
+        + '<button class="btn primary" type="submit">Ellenőrzés</button></form>';
+      $("g-q").focus({preventScroll:true});
+      $("g-form").addEventListener("submit", e => {
+        e.preventDefault();
+        const qs = $("g-q").value.trim(), rs = $("g-r").value.trim(), q = Number(qs), r = Number(rs);
+        fbx.hidden = false; fbx.className = "feedback bad";
+        if (qs === "" || !/^\d+$/.test(qs)){ fbx.textContent = "Írd be, hányszor fér bele (egy számjegy)."; return; }
+        if (q !== c.q){
+          g.missed = true;
+          if (q * c.p > c.before) fbx.textContent = "Túl sok: "+c.p+" · "+q+" = "+(q*c.p)+", ez több, mint "+c.before+".";
+          else fbx.textContent = "Még többször is belefér: "+c.p+" · "+(q+1)+" = "+((q+1)*c.p)+", ez még nem több, mint "+c.before+".";
+          return;
+        }
+        if (rs === "" || r !== c.after){ g.missed = true; fbx.textContent = "A hányszor jó! A maradék viszont nem: "+c.before+" − "+c.q+" · "+c.p+" = "+c.before+" − "+(c.q*c.p)+" = ?"; return; }
+        fbx.className = "feedback ok";
+        fbx.textContent = c.q === 0 ? "Jó! Egyszer sem fér bele, ide 0 kerül." : "Jó! "+cap1(TIMES[c.q])+" fér bele, ide "+c.q+" kerül.";
+        g.i++; renderTable(g);
+      });
+    } else {
+      const s = toB(g.n,b);
+      score(!g.missed);
+      $("g-step").innerHTML = resultHTML(s,b,g.n)+'<div class="check">Próba: '+proofLine(s,b)+' ✓</div>';
+      fbx.hidden = false; fbx.className = "feedback ok";
+      fbx.textContent = pick(praise)+" "+g.n+" = "+uni(s,b)+(g.missed ? " (Ezt most tanulásnak számoljuk, mert közben volt javítás.)" : "");
+      const nb = document.createElement("button"); nb.className = "btn primary"; nb.type = "button"; nb.textContent = "Következő feladat"; nb.addEventListener("click", newTask);
+      $("g-step").appendChild(nb); nb.focus({preventScroll:true});
+    }
+  }
+
+  // --- Osztótábla (vezetett) ---
+  function newGuide(){
+    const b = taskBase(), n = randN();
+    const g = { n, b, st: divSteps(n,b), i:0, missed:false };
+    task.innerHTML =
+      '<p class="prompt">Váltsd át '+art(n)+' <span class="num">'+n+'</span> számot <b>'+NAME[b]+'</b> számrendszerbe osztogatással! Minden sorban írd be a hányadost és a maradékot.</p>'
+      + '<div id="g-rows" style="display:flex;flex-direction:column;gap:8px"></div>'
+      + '<div id="g-fb" hidden></div>'
+      + '<div class="row"><button class="btn" type="button" id="g-new">Új feladat</button></div>';
+    $("g-new").addEventListener("click", newTask);
+    renderGuide(g);
+  }
+  function renderGuide(g){
+    const b = g.b;
+    let h = "";
+    for (let k = 0; k < g.i; k++){ const s = g.st[k]; h += '<div class="guide-row"><span>'+s.x+' : '+b+' = '+s.q+'</span><span class="lbl">maradék</span><span class="r">'+s.r+'</span></div>'; }
+    if (g.i < g.st.length){
+      const s = g.st[g.i];
+      h += '<form class="guide-row" id="g-form"><span>'+s.x+' : '+b+' =</span><input type="text" id="g-q" inputmode="numeric" aria-label="hányados" autocomplete="off"><span class="lbl">maradék</span><input type="text" id="g-r" inputmode="numeric" aria-label="maradék" autocomplete="off"><button class="btn primary" type="submit">Ellenőrzés</button></form>';
+    } else {
+      h += '<form class="guide-row" id="g-form2" style="flex-wrap:wrap"><span class="lbl">Most olvasd össze a maradékokat alulról felfelé:</span><input type="text" id="g-res" inputmode="numeric" aria-label="eredmény" style="width:8em" autocomplete="off"><button class="btn primary" type="submit">Kész</button></form>';
+    }
+    $("g-rows").innerHTML = h;
+    const fbx = $("g-fb");
+    const f = $("g-form");
+    if (f){
+      $("g-q").focus({preventScroll:true});
+      f.addEventListener("submit", e => {
+        e.preventDefault();
+        const s = g.st[g.i];
+        const q = $("g-q").value.trim(), r = $("g-r").value.trim();
+        fbx.hidden = false;
+        if (q === "" || Number(q) !== s.q){ g.missed = true; fbx.className = "feedback bad"; fbx.textContent = "A hányados nem jó. Hányszor van meg "+b+" "+art(s.x)+" "+s.x+" számban? (A törtrészt elhagyjuk.)"; return; }
+        if (r === "" || Number(r) !== s.r){ g.missed = true; fbx.className = "feedback bad"; fbx.textContent = "A maradék nem jó: "+s.x+" − "+b+" · "+s.q+" = "+s.x+" − "+(b*s.q)+" = ?"; return; }
+        fbx.className = "feedback ok";
+        fbx.textContent = s.q === 0 ? "Jó! A hányados 0 lett, itt megállunk." : "Jó! Most "+art(s.q)+" "+s.q+" jön.";
+        g.i++; renderGuide(g);
+      });
+    }
+    const f2 = $("g-form2");
+    if (f2){
+      $("g-res").focus({preventScroll:true});
+      f2.addEventListener("submit", e => {
+        e.preventDefault();
+        const v = $("g-res").value.replace(/\s+/g,"");
+        const s = toB(g.n,b);
+        fbx.hidden = false;
+        if (validB(v,b) && fromB(v,b) === g.n){
+          score(!g.missed);
+          fbx.className = "feedback ok"; fbx.textContent = pick(praise)+" "+g.n+" = "+uni(s,b)+(g.missed ? " (Ezt most tanulásnak számoljuk, mert közben volt javítás.)" : "");
+          f2.querySelector("button").disabled = true;
+          const nb = document.createElement("button"); nb.className = "btn primary"; nb.type = "button"; nb.textContent = "Következő feladat"; nb.addEventListener("click", newTask);
+          f2.appendChild(nb); nb.focus();
+        } else if (strip0(v) === strip0(rev(s))){
+          g.missed = true; fbx.className = "feedback bad"; fbx.textContent = "Fordítva olvastad! Kezdd a legalsó maradékkal.";
+        } else { g.missed = true; fbx.className = "feedback bad"; fbx.textContent = "Nem ez. Olvasd le a narancs maradékokat az utolsó sortól az elsőig."; }
+      });
+    }
+  }
+
+  // --- Számlálás ±1 ---
+  function newCount(){
+    const b = taskBase();
+    let n = randN();
+    const plus = Math.random() < 0.65;
+    // gyakran olyan számot adunk, ahol átvitel van
+    if (Math.random() < 0.6){
+      const s0 = toB(n,b);
+      const tail = rand(1, Math.max(1, s0.length-1));
+      const head = s0.slice(0, s0.length - tail) || "1";
+      n = fromB(head + (plus ? String(b-1) : "0").repeat(tail), b);
+      if (!plus && n < 1) n = b;
+    }
+    if (!plus && n < 1) n = 1;
+    const s = toB(n,b), t = toB(plus ? n+1 : n-1, b);
+    inputTask({
+      prompt: (plus ? 'Mi jön utána? ' : 'Mi van előtte? ')+'<span class="num">'+s+'<sub>'+b+'</sub> '+(plus ? '+' : '−')+' 1</span> = ? (Az eredményt '+INB[b]+' írd!)',
+      base: b,
+      check: v => fromB(v,b) === (plus ? n+1 : n-1),
+      answerText: uni(s,b)+(plus ? " + 1 = " : " − 1 = ")+uni(t,b),
+      solutionHTML: '<p>'+(plus
+        ? 'Hozzáadunk 1-et a jobb szélső jegyhez. Ha az '+(b-1)+' volt (a legnagyobb jegy), akkor 0 lesz belőle, és az 1 átvisszük a bal szomszédjához. Ez addig folytatódik, amíg olyan jegyhez nem érünk, ami még nőhet.'
+        : 'Elveszünk 1-et a jobb szélső jegyből. Ha az 0 volt, akkor '+(b-1)+' lesz belőle (a legnagyobb jegy), és a bal szomszédjától „kérünk kölcsön” 1-et.')+'</p>'
+        + '<div class="eq">'+s+'<sub>'+b+'</sub> '+(plus ? '+' : '−')+' 1 = <span class="hl">'+t+'</span><sub>'+b+'</sub></div>'
+        + '<div class="eq">Tízesben: '+n+' '+(plus ? '+' : '−')+' 1 = '+(plus ? n+1 : n-1)+'</div>',
+      hintWrong: v => {
+        if (plus) return "Figyelj az átvitelre! "+cap1(INB[b])+" "+(b-1)+" után nem "+b+" jön, hanem 0, és eggyel nő a bal szomszéd.";
+        return "Figyelj! Ha a jegy 0, és 1-et elveszel belőle, "+(b-1)+" lesz, és a bal szomszéd csökken eggyel.";
+      }
+    });
+  }
+
+  // --- Fejtörők ---
+  function choiceTask(prompt, options, correct, explain){
+    task.innerHTML = '<p class="prompt">'+prompt+'</p><div class="choices" id="c-box"></div><div id="c-fb" hidden></div><div class="solution" id="c-sol" hidden></div><div class="row"><button class="btn" type="button" id="c-new">Új feladat</button></div>';
+    let done = false, missed = false;
+    options.forEach(o => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = o;
+      b.addEventListener("click", () => {
+        if (done) return;
+        const ok = o === correct, f = $("c-fb"); f.hidden = false;
+        if (!missed || ok) score(ok);
+        if (ok){ done = true; f.className = "feedback ok"; f.textContent = pick(praise); const s = $("c-sol"); s.hidden = false; s.innerHTML = explain; $("c-new").className = "btn primary"; $("c-new").textContent = "Következő feladat"; }
+        else { missed = true; f.className = "feedback bad"; f.textContent = "Nem ez. Gondold át még egyszer!"; }
+      });
+      $("c-box").appendChild(b);
+    });
+    $("c-new").addEventListener("click", newTask);
+  }
+  function shuffle(a){ for (let i = a.length-1; i > 0; i--){ const j = rand(0,i); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+  const puzzles = [
+    () => { // melyik nem lehet b-es szám
+      const b = taskBase();
+      const goods = new Set();
+      while (goods.size < 3) goods.add(toB(rand(b*b, b**4-1), b));
+      const g = Array.from(goods);
+      const bad = g[0].split(""); bad[rand(0,bad.length-1)] = String(rand(b, 9));
+      if (bad[0] === "0") bad[0] = String(b);
+      const badS = bad.join("");
+      const opts = shuffle([badS, g[1], g[2]]);
+      choiceTask('Melyik <b>nem</b> lehet '+NAME[b]+' számrendszerbeli szám?', opts, badS,
+        '<p>'+cap1(INB[b])+' csak ezek a jegyek vannak: '+digitList(b)+'. A '+badS+' számban van '+b+' vagy annál nagyobb jegy, ezért ez nem lehet '+NAME[b]+' szám.</p>'); },
+    () => { // legnagyobb k-jegyű
+      const b = taskBase(), k = rand(2,4), m = b ** k - 1, s = String(b-1).repeat(k);
+      inputTask({ prompt: 'Mi a legnagyobb <span class="num">'+k+'</span> jegyű '+NAME[b]+' szám? Tízesben add meg!', base:null,
+        check: v => Number(v) === m, answerText: uni(s,b)+" = "+m,
+        solutionHTML: '<p>A legnagyobb akkor, ha minden jegy a legnagyobb, vagyis '+(b-1)+': '+s+'<sub>'+b+'</sub>.</p><div class="eq">'+proofLine(s,b)+'</div><p>Eggyel több már 1'+"0".repeat(k)+'<sub>'+b+'</sub> = '+b+'<sup>'+k+'</sup> = '+(b**k)+', ezért a válasz '+(b**k)+' − 1 = '+m+'.</p>' }); },
+    () => { // hány jegyű
+      const b = taskBase(), n = rand(20,2000), s = toB(n,b);
+      inputTask({ prompt: 'Hány jegyből áll '+art(n)+' <span class="num">'+n+'</span> '+NAME[b]+' számrendszerben?', base:null,
+        check: v => Number(v) === s.length, answerText: n+" = "+uni(s,b)+", ez "+s.length+" jegy.",
+        solutionHTML: '<p>Keresd meg a legnagyobb hatványt, ami még belefér: '+b+'<sup>'+(s.length-1)+'</sup> = '+(b ** (s.length-1))+'. A következő, '+(b ** s.length)+', már túl nagy. A táblázatban a legnagyobb ilyen hatványtól az 1-ig '+s.length+' oszlop van, tehát '+s.length+' jegy.</p><div class="eq">'+n+' = '+s+'<sub>'+b+'</sub></div>' }); },
+    () => { // szorzás az alapszámmal
+      const b = taskBase(), n = rand(3,80), s = toB(n,b);
+      inputTask({ prompt: 'Szorozd meg az alapszámmal, és '+INB[b]+' írd le: <span class="num">'+s+'<sub>'+b+'</sub> · '+b+'</span> = ?', base:b,
+        check: v => fromB(v,b) === n*b, answerText: uni(s,b)+" · "+b+" = "+uni(s+"0",b),
+        solutionHTML: '<p>Az alapszámmal szorozni annyi, mint a végére írni egy 0-t, ahogy tízesben a ×10. Minden jegy egy hellyel balra lép, ahol a helyiérték '+TIMES[b]+' nagyobb.</p><div class="eq">'+s+'<sub>'+b+'</sub> = '+n+' → '+s+'<span class="hl">0</span><sub>'+b+'</sub> = '+(n*b)+'</div>' }); },
+    () => { // melyik nagyobb (azonos alap)
+      const b = taskBase();
+      let a = rand(10,300), c = rand(10,300); while (c === a) c = rand(10,300);
+      const sa = toB(a,b), sc = toB(c,b);
+      choiceTask('Melyik a nagyobb?', [uni(sa,b), uni(sc,b)], uni(a > c ? sa : sc, b),
+        '<p>'+sa+'<sub>'+b+'</sub> = '+a+', '+sc+'<sub>'+b+'</sub> = '+c+'. Ha az egyik több jegyű, az biztosan nagyobb. Ha egyforma hosszúak, balról az első eltérő jegy dönt, pont mint tízesben.</p>'); },
+    () => { // melyik nagyobb (különböző alap)
+      // ugyanaz a jegysor két alapban: a nagyobb alapú a nagyobb (ha legalább kétjegyű)
+      let b1 = pick(BASES), b2 = pick(BASES); while (b2 === b1) b2 = pick(BASES);
+      const lo = Math.min(b1,b2), len = rand(2,3);
+      let s = String(rand(1, lo-1));
+      for (let i = 1; i < len; i++) s += String(rand(0, lo-1));
+      const a = fromB(s,b1), c = fromB(s,b2);
+      choiceTask('Ugyanaz a jegysor, két különböző számrendszerben. Melyik a nagyobb?', shuffle([uni(s,b1), uni(s,b2)]), a > c ? uni(s,b1) : uni(s,b2),
+        '<p>'+s+'<sub>'+b1+'</sub> = '+proofLine(s,b1)+'</p><p>'+s+'<sub>'+b2+'</sub> = '+proofLine(s,b2)+'</p><p>Ugyanazokkal a jegyekkel a <b>nagyobb alapszámú</b> számrendszerben nagyobb számot kapunk, mert ott nagyobbak a helyiértékek.</p>'); },
+    () => { // páros-páratlan
+      const b = taskBase(), n = rand(10,300), s = toB(n,b), even = n % 2 === 0;
+      const ds = s.split("").reduce((x,d) => x + Number(d), 0);
+      const why = b % 2 === 1
+        ? 'Mivel '+b+' páratlan, a jegyek összegét kell nézni: '+s.split("").join(" + ")+' = '+ds+', ez '+(ds % 2 ? "páratlan" : "páros")+', tehát a szám is '+(even ? "páros" : "páratlan")+'.'
+        : 'Mivel 6 páros, elég az utolsó jegy: '+s.slice(-1)+', ez '+(Number(s.slice(-1)) % 2 ? "páratlan" : "páros")+', tehát a szám is.';
+      choiceTask('Páros vagy páratlan ez a szám: <span class="num">'+s+'<sub>'+b+'</sub></span> ?', ["páros","páratlan"], even ? "páros" : "páratlan",
+        '<p>'+why+' (Tízesben: '+n+'.)</p>'); },
+    () => { // hatvány értéke
+      const b = taskBase(), k = rand(2,5);
+      inputTask({ prompt: 'Mennyi <span class="num">'+b+'<sup>'+k+'</sup></span> ? (Ez egy helyiérték a táblázatban.)', base:null,
+        check: v => Number(v) === b ** k, answerText: b+"^"+k+" = "+(b ** k),
+        solutionHTML: '<div class="eq">'+b+'<sup>'+k+'</sup> = '+Array(k).fill(b).join(" · ")+' = '+(b ** k)+'</div><p>Nem '+b+' · '+k+' = '+(b*k)+'! A hatvány ismételt szorzás.</p>' }); }
+  ];
+  let lastPuzzle = -1;
+  function newPuzzle(){ let i; do { i = rand(0, puzzles.length-1); } while (i === lastPuzzle); lastPuzzle = i; puzzles[i](); }
+
+  function newTask(){
+    ({ b2d:newB2D, d2b:newD2B, table:newTable, guide:newGuide, count:newCount, puzzle:newPuzzle })[state.mode]();
+  }
+  function paintPBases(){ document.querySelectorAll("#pbases .chip").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.pb) === String(state.pbase) ? "true" : "false")); }
+  document.querySelectorAll("#tabs .tab").forEach(t => t.addEventListener("click", () => {
+    state.mode = t.dataset.mode;
+    document.querySelectorAll("#tabs .tab").forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+    $("levels").hidden = state.mode === "puzzle";
+    newTask();
+  }));
+  document.querySelectorAll("#pbases .chip").forEach(c => c.addEventListener("click", () => {
+    state.pbase = c.dataset.pb === "mix" ? "mix" : Number(c.dataset.pb);
+    paintPBases(); newTask();
+  }));
+  document.querySelectorAll("#levels .chip").forEach(c => c.addEventListener("click", () => {
+    state.level = Number(c.dataset.level);
+    document.querySelectorAll("#levels .chip").forEach(x => x.setAttribute("aria-pressed", x === c ? "true" : "false"));
+    newTask();
+  }));
+
+  /* ---------- Indítás ---------- */
+  let startBase = 5;
+  try { const v = Number(localStorage.getItem("szamr-base")); if (BASES.includes(v)) startBase = v; } catch(e){}
+  // első betöltéskor ne ugorjon a fókusz a gyakorló részhez
+  const origFocus = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = function(){};
+  setBase(startBase);
+  state.pbase = startBase; paintPBases();
+  newTask();
+  HTMLElement.prototype.focus = origFocus;
+  renderStats();
+})();
+</script>

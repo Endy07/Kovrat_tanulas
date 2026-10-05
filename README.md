@@ -9,12 +9,14 @@ Interaktív tanulási segédlet Kovratnak, a debreceni Mechwart András Gépipar
 | Lecke | Tartalom |
 |---|---|
 | [Kettes számrendszer](kettes-szamrendszer.html) | Kapcsolótábla, 9 magyarázó dia, magától lejátszódó levezetések (osztogatás, helyiértékek, kettesből tízesbe), 5 típusú gyakorlófeladat 3 szinten, puska |
+| [Hármas, ötös, hatos, hetes számrendszer](szamrendszerek.html) | Választható alapszám (3/5/6/7), számláló átvitellel, 11 dia, az iskolai módszer (helyiérték-táblázat + kivonás + próba) és az osztogatás, felolvasott levezetések, 6 típusú gyakorlás 3 szinten (vegyes számrendszerekkel is), puska |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik.
 
-## Hol tartunk (2026. 09. 27.)
+## Hol tartunk (2026. 10. 05.)
 
 - Kész: kettes számrendszer lecke, felolvasós levezetés-lejátszóval.
+- Kész: hármas, ötös, hatos, hetes számrendszer lecke. Kovrat füzete alapján az iskolai módszert tanítja (helyiérték-táblázat, „hányszor fér bele”, próba).
 - Következő lépés: **egész éves tanmenet** a 9. évfolyamra. Ehhez Kovrattól kell megtudni:
   - milyen programozási nyelvet tanulnak (Python? C#?),
   - milyen témák vannak az iskolai tanmenetben (programozás, weboldal-készítés HTML/CSS, hálózatok, hardver, számrendszerek…).
