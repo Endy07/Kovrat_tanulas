@@ -148,6 +148,21 @@ telefonszélesség.
    ```
    A `LF will be replaced by CRLF` figyelmeztetés ártalmatlan.
 5. A Pages 1–2 perc alatt frissül. Állapot: `gh api repos/Endy07/Kovrat_tanulas/pages/builds/latest --jq .status`
+   Ha órákig `building`/`queued`, nézd meg a https://www.githubstatus.com oldalt: 2026. 10. 05-én
+   Actions-zavar miatt a futások sorban álltak, majd megszakadtak. Újraindítás:
+   `gh api -X POST repos/Endy07/Kovrat_tanulas/pages/builds`.
+
+### Automatikus frissítés (ne kelljen Ctrl+Shift+R)
+
+A GitHub Pages 10 percig engedi gyorsítótárazni az oldalakat, és Kovrat mobilon néz. Ezért:
+
+- Minden oldal tetején legyen `<meta name="kovrat-version" content="0">` (a `<title>` után), a
+  fájl végén pedig a frissítés-ellenőrző `<script>` (másold egy meglévő leckéből, a fájl legaljáról).
+  Megnyitáskor és a fülre visszatéréskor gyorsítótár nélkül lekéri a `version.json`-t. Ha az újabb,
+  egyszer újratölt egy `?v=…` címen. Végtelen ciklus nincs, mert ugyanarra a `v`-re nem tölt újra.
+- A verziót **nem kézzel** állítjuk: a `.githooks/pre-commit` minden HTML-t tartalmazó commitnál
+  lefuttatja a `tools/bump-version.sh`-t, és az összes oldalt meg a `version.json`-t is commitolja.
+- Új klónozás után egyszer be kell kapcsolni a hookot: `git config core.hooksPath .githooks`.
 
 ### Egyszeri beállítás (már kész, csak új repónál kell)
 
