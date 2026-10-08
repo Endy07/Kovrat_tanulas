@@ -1,7 +1,7 @@
 ---
 slug: kovrat
 nev: Kovrat tanulás — interaktív tanulási segédlet egy 9.-es programozás szakos diáknak
-frissitve: 2026-09-27
+frissitve: 2026-10-08
 aliasok: kovrat, kovrat tanulás, kovrat_tanulas, unokaöcsém tanulás
 ---
 
@@ -15,10 +15,12 @@ Böngészőben futó interaktív leckék és gyakorlófeladatok Kovratnak, a fel
 - Telefonon is, telepítés nélkül, egy linkről
 
 ## Amit használunk (kulcsszavak — ezekre kell találnia)
-HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · Python-alapok (valószínű) · HTML/CSS weboldal-készítés (valószínű) · programozás-oktatás kezdőknek · középiskolai informatika
+HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · GitHub Actions · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · hármas, ötös, hatos, hetes számrendszer · helyiérték-táblázat · cache busting · git hook · Playwright böngészős teszt · Python-alapok (valószínű) · HTML/CSS weboldal-készítés (valószínű) · programozás-oktatás kezdőknek · középiskolai informatika
 
 ## Ami kész
 - Kettes számrendszer lecke: kapcsolótábla, 9 dia, levezetés-lejátszó felolvasással, 5 feladattípus 3 szinten
+- Hármas, ötös, hatos, hetes számrendszer lecke Kovrat füzete alapján: az iskolai módszer (hatványtáblázat, kivonás, próba), „Endi mondja” magyarázat, kockás füzetlap, részletes feladatok ábrákkal, 11 dia, 7 feladattípus próbadolgozattal
+- Automatikus frissítés: az oldal mobilon is mindig a legfrissebb változatot tölti be
 - Kezdőlap a leckék listájával, nyilvános GitHub Pages oldal
 
 ## Ami hátra van / most ezen dolgozunk

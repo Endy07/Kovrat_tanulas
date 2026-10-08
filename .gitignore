@@ -1,0 +1,4 @@
+# Kovrat füzetének fotói: a repó nyilvános, ezek nem kerülhetnek bele
+szamrendszerek/
+# Böngészős tesztek képernyőképei (ideiglenes)
+.playwright-mcp/

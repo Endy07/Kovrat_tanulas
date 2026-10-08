@@ -13,10 +13,11 @@ Interaktív tanulási segédlet Kovratnak, a debreceni Mechwart András Gépipar
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik.
 
-## Hol tartunk (2026. 10. 05.)
+## Hol tartunk (2026. 10. 08.)
 
 - Kész: kettes számrendszer lecke, felolvasós levezetés-lejátszóval.
-- Kész: hármas, ötös, hatos, hetes számrendszer lecke. Kovrat füzete alapján az iskolai módszert tanítja (helyiérték-táblázat, „hányszor fér bele”, próba).
+- Kész: hármas, ötös, hatos, hetes számrendszer lecke. Kovrat füzete alapján az iskolai módszert tanítja (helyiérték-táblázat, „hányszor fér bele”, próba). Benne: „Endi mondja” magyarázat, a füzet példái kockás lapon, a füzet feladatai részletesen ábrákkal.
+- Kész: automatikus frissítés. Az oldalak maguktól a legfrissebb változatot töltik be, mobilon is (`version.json` + pre-commit hook).
 - Következő lépés: **egész éves tanmenet** a 9. évfolyamra. Ehhez Kovrattól kell megtudni:
   - milyen programozási nyelvet tanulnak (Python? C#?),
   - milyen témák vannak az iskolai tanmenetben (programozás, weboldal-készítés HTML/CSS, hálózatok, hardver, számrendszerek…).
