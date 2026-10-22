@@ -1,0 +1,783 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261022074754">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>HTML alapok</title>
+<style>
+.render{background:#fff;color:#111;border-radius:10px;padding:12px 14px;font-family:Georgia,serif;font-size:16px;line-height:1.4;overflow:auto;max-height:260px}
+.render h1,.render h2{font-family:Georgia,serif;margin:.3em 0}
+.render img{max-width:120px;height:auto}
+.render table{border-collapse:collapse}
+.render td,.render th{border:1px solid #888;padding:3px 9px;color:#111}
+.pb-stage .codewrap{font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;margin:0 0 10px}
+.pb-stage .codewrap .cur{background:#4a3a12;color:#FFB01F;display:inline-block;width:100%}
+.pb-stage .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;margin:6px 0}
+.tagtbl td:first-child{font-family:var(--mono);font-weight:700}
+.slide pre.code{font-size:.9rem}
+.bugline{background:var(--bad-bg);color:var(--bad);border-radius:6px;padding:0 .4em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · weboldalak</span>
+  <h1>HTML alapok</h1>
+  <p class="lead">Az első weboldalad itt készül el. Írd át a kódot, és az eredmény azonnal megjelenik mellette.</p>
+  <div class="panel">
+    <span class="eyebrow">Szerkeszd a bal oldalt, a jobb oldal azonnal frissül</span>
+    <div class="row" id="ex-btns"></div>
+    <div id="hero-ed"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Nézd végig, hogyan épül fel egy oldal elemről elemre. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="page" aria-selected="true">Személyes oldal</button>
+    <button class="tab" data-m="lists" aria-selected="false">Lista és táblázat</button>
+    <button class="tab" data-m="fix" aria-selected="false">Hibakeresés</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A „Kódolj” feladatoknál te írod a HTML-t, az ellenőrzés megmondja, mi hiányzik. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt tagtbl" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Váz</span><pre class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="hu"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Cím&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+    <div class="trick"><span class="t">Szabályok</span><span>Minden nyitó elemnek van záró párja (kivéve: <code>br</code>, <code>img</code>, <code>meta</code>, <code>hr</code>). Az elemek szépen egymásba ágyazódnak. Az attribútum értéke idézőjelben van. A képnek mindig legyen <code>alt</code> szövege.</span></div>
+    <div class="trick"><span class="t">Eszközök</span><span>VS Code (Emmet: írd be <code>!</code>, majd Tab: kész a váz) · böngésző F12 (DevTools) · W3C validator (validator.w3.org).</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  const IMG = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="120" height="80" fill="#1B5CBA"/><circle cx="60" cy="40" r="24" fill="#F29E0C"/></svg>');
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+
+  const EX = {
+    "Üres váz": '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>Az első oldalam</title>\n</head>\n<body>\n  <h1>Szia, világ!</h1>\n  <p>Ez az első weboldalam.</p>\n</body>\n</html>\n',
+    "Címek, szöveg": '<h1>Kedvenc dolgaim</h1>\n<h2>Játékok</h2>\n<p>A <strong>legjobb</strong> játék az, amit együtt játszunk, és <em>nagyon</em> jó hangulatú.</p>\n<h2>Programozás</h2>\n<p>Első sor<br>Második sor</p>\n<hr>\n<p>Vége.</p>\n',
+    "Link és kép": '<h1>Képek és linkek</h1>\n<p>Egy hivatkozás: <a href="https://www.mechwart.hu" target="_blank">az iskola oldala</a></p>\n<figure>\n  <img src="' + IMG + '" alt="Kék négyzet narancs körrel">\n  <figcaption>Ez egy kép felirata</figcaption>\n</figure>\n',
+    "Listák": '<h1>Bevásárlólista</h1>\n<ul>\n  <li>kenyér</li>\n  <li>tej</li>\n  <li>alma</li>\n</ul>\n<h2>Teendők</h2>\n<ol>\n  <li>tanulás</li>\n  <li>edzés\n    <ul><li>futás</li><li>kondi</li></ul>\n  </li>\n</ol>\n',
+    "Táblázat": '<table>\n  <caption>Órarend</caption>\n  <tr><th>Nap</th><th>1. óra</th><th>2. óra</th></tr>\n  <tr><td>Hétfő</td><td>Informatika</td><td>Matek</td></tr>\n  <tr><td>Kedd</td><td>Magyar</td><td>Angol</td></tr>\n</table>\n'
+  };
+  const hero = K.editor($("#hero-ed"), { code: EX["Üres váz"], rows: 12 });
+  Object.keys(EX).forEach(k => { const b = document.createElement("button"); b.className = "btn"; b.textContent = k; b.addEventListener("click", () => hero.set(EX[k])); $("#ex-btns").appendChild(b); });
+  const loadHero = k => { hero.set(EX[k]); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+  /* ---------- Levezetések ---------- */
+  const mk = (head, tail, body, k, cap) => {
+    const lines = head.slice(), hl = [];
+    for (let i = 0; i <= k; i++) body[i].c.forEach(l => { if (i === k) hl.push(lines.length); lines.push(l); });
+    tail.forEach(l => lines.push(l));
+    const code = lines.map((l, i) => hl.includes(i) ? '<span class="cur">' + esc(l || " ") + "</span>" : esc(l)).join("\n");
+    const render = body.slice(0, k + 1).map(b => b.h).join("");
+    return { cap, html: '<div class="lbl">Kód</div><pre class="codewrap">' + code + '</pre><div class="lbl">Így látja a böngésző</div><div class="render">' + (render || "<i>(még üres)</i>") + "</div>" };
+  };
+  const HEAD = ["<!DOCTYPE html>", '<html lang="hu">', "<head>", '  <meta charset="utf-8">', "  <title>Kovrat oldala</title>", "</head>", "<body>"], TAIL = ["</body>", "</html>"];
+  const BUILD = {
+    page: () => {
+      const B = [
+        { c: [], h: "", cap: "Az oldal váza: a DOCTYPE jelzi, hogy HTML5-öt írunk. A html elem fogja közre az egészet, a head a láthatatlan adatokat tartalmazza (kódolás, cím), a body a látható tartalmat." },
+        { c: ["  <h1>Kovrat oldala</h1>"], h: "<h1>Kovrat oldala</h1>", cap: "A body-ba kerül az első szintű címsor: a legnagyobb, az oldal fő címe. Oldalanként egy ilyen legyen." },
+        { c: ["  <p>Ez az <strong>első</strong> weboldalam.</p>"], h: "<p>Ez az <strong>első</strong> weboldalam.</p>", cap: "A bekezdés a szöveg alapeleme. A strong a fontos részt kiemeli, vastagon jelenik meg." },
+        { c: ["  <h2>Kedvenceim</h2>", "  <ul>", "    <li>programozás</li>", "    <li>zene</li>", "  </ul>"], h: "<h2>Kedvenceim</h2><ul><li>programozás</li><li>zene</li></ul>", cap: "Egy másodszintű címsor és egy felsorolás. A lista elemeit a li adja, az ul közrefogja őket." },
+        { c: ['  <p><a href="https://www.w3schools.com">Tanulj tovább!</a></p>'], h: '<p><a href="#">Tanulj tovább!</a></p>', cap: "A hivatkozás (a) href attribútuma mondja meg, hová mutat, a két címke közti szöveg kattintható." },
+        { c: ['  <img src="kep.png" alt="Egy kép">'], h: '<img src="' + IMG + '" alt="Egy kép">', cap: "A kép (img) nem tárolódik az oldalban, a src attribútum mondja meg, honnan töltődik. Az alt a helyettesítő szöveg: ezt olvassa fel a képernyőolvasó, és ez jelenik meg, ha a kép nem töltődik be." }
+      ];
+      return B.map((b, k) => mk(HEAD, TAIL, B, k, b.cap));
+    },
+    lists: () => {
+      const B = [
+        { c: [], h: "", cap: "Az üres váz után két gyakori szerkezetet építünk fel: egy rendezett listát és egy táblázatot." },
+        { c: ["  <ol>", "    <li>Telepítsd a VS Code-ot</li>", "    <li>Írd meg az oldalt</li>", "    <li>Nézd meg a böngészőben</li>", "  </ol>"], h: "<ol><li>Telepítsd a VS Code-ot</li><li>Írd meg az oldalt</li><li>Nézd meg a böngészőben</li></ol>", cap: "A rendezett lista (ol) automatikusan sorszámoz, a sorszámokat nem nekünk kell beírni." },
+        { c: ["  <table>", "    <caption>Hetirend</caption>", "    <tr>", "      <th>Nap</th>", "      <th>Tantárgy</th>", "    </tr>"], h: "<table><caption>Hetirend</caption><tr><th>Nap</th><th>Tantárgy</th></tr></table>", cap: "A táblázat (table) sorokból (tr) áll. A th a fejléc cella (vastag, középre igazított), a caption a táblázat címe." },
+        { c: ["    <tr>", "      <td>Hétfő</td>", "      <td>Informatika</td>", "    </tr>", "  </table>"], h: "<table><caption>Hetirend</caption><tr><th>Nap</th><th>Tantárgy</th></tr><tr><td>Hétfő</td><td>Informatika</td></tr></table>", cap: "Az adatsorban td cellák vannak. Egy sor minden cellája egy tr-en belül marad, a végén a table záró címkéje következik." }
+      ];
+      // a táblázat két lépése egyetlen táblázatot ad: az utolsó lépés teljes kódja a táblázat lezárásával
+      return B.map((b, k) => mk(HEAD, TAIL, B.map((x, i) => i === 2 ? { c: x.c.concat(["  </table>"]), h: x.h } : x), k === 3 ? 3 : k, b.cap));
+    },
+    fix: () => {
+      const bug = (lines, hl) => '<pre class="codewrap">' + lines.map((l, i) => hl === i ? '<span class="cur">' + esc(l) + "</span>" : esc(l)).join("\n") + "</pre>";
+      const lines = ["<h1>Hobbik</h1>", "<ul>", "  <li>foci</li>", "  <li>zene</li>", "</ol>", '<img src="kep.png">', "<p>Ez <strong>fontos</p></strong>"];
+      const fixed = ["<h1>Hobbik</h1>", "<ul>", "  <li>foci</li>", "  <li>zene</li>", "</ul>", '<img src="kep.png" alt="Egy kép">', "<p>Ez <strong>fontos</strong></p>"];
+      return [
+        { cap: "Hibakeresés: ebben a kódban három hiba van. A böngésző nem szól, csendben megpróbálja kitalálni, mit akartál. Keressük meg őket!", html: bug(lines, -1) },
+        { cap: "Az első hiba: a lista ul-lal nyílik, de ol-lal zárul. A nyitó és záró elem neve egyezzen: a javítás a záró ul.", html: bug(lines, 4) + '<div class="lbl">Javítva</div>' + bug(fixed, 4) },
+        { cap: "A második hiba: a kép nem kapott alt attribútumot. Az alt nélkül a képet nem tudja a képernyőolvasó leírni. Javítás: alt=\"Egy kép\".", html: bug(lines, 5) + '<div class="lbl">Javítva</div>' + bug(fixed, 5) },
+        { cap: "A harmadik hiba: rossz a beágyazás. Aminek belül nyílt, annak kell előbb zárulnia: a strong zárul előbb, aztán a p.", html: bug(lines, 6) + '<div class="lbl">Javítva</div>' + bug(fixed, 6) },
+        { cap: "Mindhárom javítva. Tipp: a böngészőben az F12 (DevTools) Elements fülén látod, hogyan értelmezte a böngésző a kódot, a W3C validátor pedig felsorolja a hibákat.", html: bug(fixed, -1) }
+      ];
+    }
+  };
+  const pb = K.player($("#pb"));
+  const PB = { m: "page" };
+  const TT = { page: "Személyes oldal építése", lists: "Lista és táblázat", fix: "Hibakeresés" };
+  function pbNew(auto){
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m)));
+    pb.load(BUILD[PB.m](), TT[PB.m], auto);
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const loadBtn = k => "<p><button class='btn' data-load='" + k + "'>↑ Betöltés a szerkesztőbe</button></p>";
+  const wire = el => $$("[data-load]", el).forEach(b => b.addEventListener("click", () => loadHero(b.dataset.load)));
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi az a weboldal?", h:
+      "<p>A weboldal egy <b>szöveges fájl</b>. A böngésző beolvassa, és megjeleníti. Három nyelv dolgozik együtt:</p>" +
+      "<div class='two-col'><div class='trick'><span class='t'>HTML</span><span>a <b>szerkezet</b>: mi van az oldalon (cím, bekezdés, kép, lista).</span></div><div class='trick'><span class='t'>CSS</span><span>a <b>kinézet</b>: szín, betű, elrendezés. (Következő lecke.)</span></div><div class='trick'><span class='t'>JavaScript</span><span>a <b>viselkedés</b>: mi történik kattintásra. (Később.)</span></div></div>" +
+      "<div class='note'><b>Fontos:</b> a HTML nem programozási nyelv, hanem leíró (jelölő) nyelv. Nincs benne változó vagy ciklus, de a programozó mindennap használja.</div>" },
+    { k: "Váz", t: "Az oldal váza", h: () =>
+      "<p>Minden HTML-oldal ugyanígy kezdődik:</p>" + code(EX["Üres váz"]) +
+      "<ul><li><code>&lt;!DOCTYPE html&gt;</code>: ez HTML5 oldal.</li><li><code>html lang=\"hu\"</code>: a gyökérelem, megadjuk a nyelvet.</li><li><code>head</code>: láthatatlan adatok: <code>meta charset=\"utf-8\"</code> (az ékezetek miatt!), <code>title</code> (a böngészőfül felirata).</li><li><code>body</code>: minden, ami látszik.</li></ul>" + loadBtn("Üres váz"), init: wire },
+    { k: "Elemek", t: "Elem, címke, attribútum", h:
+      "<p>Az <b>elem</b> általában nyitó és záró <b>címkéből</b> áll, köztük a tartalom:</p>" + code('<p class="kiemelt">Ez egy bekezdés.</p>') +
+      "<ul><li><code>&lt;p&gt;</code> nyitó, <code>&lt;/p&gt;</code> záró címke</li><li><code>class=\"kiemelt\"</code> az <b>attribútum</b>: név = \"érték\", mindig a nyitó címkében</li><li>Üres elemnek nincs tartalma és záró párja: <code>&lt;br&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;hr&gt;</code>, <code>&lt;meta&gt;</code></li></ul>" +
+      "<div class='note'><b>Beágyazás:</b> az elemek egymásba illeszkednek, mint a dobozok. Aminek belül nyílt, annak kell előbb zárulnia.</div>" },
+    { k: "Szöveg", t: "Címsorok és bekezdések", h: () =>
+      "<p><code>h1</code>–<code>h6</code>: címsorok (h1 a legnagyobb, oldalanként egy). <code>p</code>: bekezdés. <code>strong</code>: fontos (vastag). <code>em</code>: hangsúlyos (dőlt). <code>br</code>: sortörés. <code>hr</code>: vízszintes vonal.</p>" + code(EX["Címek, szöveg"]) + loadBtn("Címek, szöveg"), init: wire },
+    { k: "Link, kép", t: "Hivatkozás és kép", h: () =>
+      code('<a href="https://www.mechwart.hu" target="_blank">az iskola oldala</a>\n<img src="kep.png" alt="Leírás a képről">') +
+      "<ul><li><code>a</code> (anchor): <code>href</code> = hová mutat; <code>target=\"_blank\"</code> = új lapon nyílik.</li><li><code>img</code>: <code>src</code> = hol van a kép, <code>alt</code> = leírás (<b>mindig add meg</b>).</li><li><code>figure</code> + <code>figcaption</code>: kép és felirata egy egységben.</li></ul>" + loadBtn("Link és kép"), init: wire },
+    { k: "Lista", t: "Felsorolás és sorszámozott lista", h: () =>
+      "<p><code>ul</code> = jelekkel felsorolt lista (unordered), <code>ol</code> = számozott (ordered). Mindkettőben <code>li</code> az elem. Listák egymásba is ágyazhatók.</p>" + code(EX["Listák"]) + loadBtn("Listák"), init: wire },
+    { k: "Táblázat", t: "Táblázat", h: () =>
+      "<p><code>table</code> a táblázat, <code>tr</code> a sor, <code>th</code> a fejléc cella, <code>td</code> az adat cella, <code>caption</code> a cím.</p>" + code(EX["Táblázat"]) +
+      "<div class='note'><b>Tipp:</b> a sorok száma = a <code>tr</code> elemek száma. Egy sorban a cellák száma legyen egyforma.</div>" + loadBtn("Táblázat"), init: wire },
+    { k: "Szerkezet", t: "div, span, szemantikus elemek", h:
+      "<p><code>div</code> (blokk) és <code>span</code> (sorbeli) általános dobozok, formázáshoz használjuk őket. A <b>szemantikus</b> elemek jelentést is hordoznak:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><td><code>header</code></td><td>fejléc</td></tr><tr><td><code>nav</code></td><td>menü, navigáció</td></tr><tr><td><code>main</code></td><td>fő tartalom</td></tr><tr><td><code>section</code>, <code>article</code></td><td>szakasz, önálló cikk</td></tr><tr><td><code>aside</code></td><td>oldalsáv</td></tr><tr><td><code>footer</code></td><td>lábléc</td></tr></table></div>" +
+      "<p>Az <code>id</code> és <code>class</code> attribútum a CSS-hez kell majd: ezek nevezik meg az elemeket.</p>" },
+    { k: "Eszközök", t: "Eszközök, hibakeresés", h:
+      "<ul><li><b>VS Code</b>: az iskola ajánlott szerkesztője. Az Emmet-tel a <code>!</code> + Tab megírja a vázat, a <code>ul&gt;li*3</code> + Tab egy háromelemű listát.</li><li><b>Böngésző F12 (DevTools)</b>: az Elements fülön látod, mit értett a böngésző a kódból.</li><li><b>W3C validator</b> (validator.w3.org): felsorolja a hibákat.</li><li><b>Git és GitHub</b>: a verziókezelés (a tanév későbbi része).</li></ul>" +
+      "<div class='note'><b>Fontos:</b> a böngésző nem ír hibaüzenetet. Elrontott HTML-ből is mutat valamit, csak nem azt, amit akartál. Ezért kell ellenőrizni.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hiányzó vagy rossz záró címke.</b> <code>&lt;ul&gt; … &lt;/ol&gt;</code> vagy kimaradt <code>&lt;/p&gt;</code>.</div>" +
+      "<div class='mistake'><b>Rossz beágyazás.</b> <code>&lt;p&gt;&lt;strong&gt;…&lt;/p&gt;&lt;/strong&gt;</code>: előbb a belső zárul.</div>" +
+      "<div class='mistake'><b>Idézőjel kimaradt.</b> <code>href=https://…</code> helyett <code>href=\"https://…\"</code>.</div>" +
+      "<div class='mistake'><b>Elfelejtett charset.</b> Ékezetes betűk helyett „Ã©” jelek: add meg a <code>&lt;meta charset=\"utf-8\"&gt;</code>-et.</div>" +
+      "<div class='mistake'><b>Alt nélküli kép.</b> A képernyőolvasó nem tudja, mi van rajta.</div>" },
+    { k: "Trükkök", t: "Jó szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Behúzás</span><span>A beágyazott elemeket húzd beljebb (2 szóköz). Így rögtön látod a szerkezetet.</span></div>" +
+      "<div class='trick'><span class='t'>Mindig kisbetű</span><span>A címkék és attribútumok kisbetűsek: <code>&lt;p&gt;</code>, nem <code>&lt;P&gt;</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Egy h1</span><span>Oldalanként egy h1, a címsorok sorrendje ne ugorjon (h1, h2, h3).</span></div>" +
+      "<div class='trick'><span class='t'>Mentés, frissítés</span><span>Mentsd a fájlt <code>.html</code> kiterjesztéssel, és frissítsd a böngészőt (F5).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const txt = el => el ? el.textContent.trim().replace(/\s+/g, " ") : "";
+  const rep = (ok, miss) => ok ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Hiányzik vagy hibás: " + miss.join("; ") + "." };
+  const chk = (pairs) => { const miss = pairs.filter(p => !p[0]).map(p => p[1]); return rep(!miss.length, miss); };
+  const W = ["alma", "körte", "szilva", "barack", "meggy", "dió", "mogyoró", "cseresznye"];
+  const T = ["Az én oldalam", "Kedvenc állataim", "Mechwart", "Programozás", "Hobbijaim", "Hétvégi terv"];
+  const P = ["Szeretem a számítógépeket.", "Ez egy rövid bekezdés.", "Ma jó idő van.", "Tanulok programozni."];
+  const sol = s => "<p>Egy lehetséges megoldás:</p>" + code(s);
+  const kod = (q, starter, check, ans, hint) => ({ q, kind: "code", starter, check: v => check(v.parsed, v.code), answer: "<pre class='code'>" + esc(ans) + "</pre>", sol: sol(ans), hint: hint || "írd a <body> tartalmát", rows: 8 });
+  const L1 = [
+    () => { const t = pick(T), p = pick(P); return kod("Készíts egy <b>h1</b> címsort ezzel a szöveggel: <b>" + esc(t) + "</b>, alatta egy <b>p</b> bekezdést ezzel: <b>" + esc(p) + "</b>.", "", d => chk([[txt(d.querySelector("h1")) === t, "h1 a megadott szöveggel"], [txt(d.querySelector("p")) === p, "p a megadott szöveggel"], [d.querySelector("h1") && d.querySelector("p") && d.querySelector("h1").compareDocumentPosition(d.querySelector("p")) & 4, "a p a h1 alatt legyen"]]), "<h1>" + t + "</h1>\n<p>" + p + "</p>"); },
+    () => { const a = pick(W), b = pick(W.filter(x => x !== a)); return kod("Tedd <b>vastaggá (strong)</b> ezt a szót: „" + a + "”, és <b>dőlté (em)</b> ezt: „" + b + "” a bekezdésben.", "<p>Ma " + a + " és " + b + " került az asztalra.</p>", d => chk([[txt(d.querySelector("strong")) === a, "strong ezzel a szóval: „" + a + "”"], [txt(d.querySelector("em")) === b, "em ezzel a szóval: „" + b + "”"], [txt(d.querySelector("p")).includes("Ma " + a + " és " + b + " került"), "a mondat maradjon egyben"]]), "<p>Ma <strong>" + a + "</strong> és <em>" + b + "</em> került az asztalra.</p>"); },
+    () => { const s = pick(["kod", "iskola", "tanar", "diak"]), url = "https://example.org/" + s, tx = pick(["Kattints ide", "Tovább", "Olvass tovább"]); return kod("Készíts <b>hivatkozást</b>, amely ide mutat: <b>" + url + "</b>, a szövege pedig: <b>" + tx + "</b>.", "", d => chk([[d.querySelector("a") && d.querySelector("a").getAttribute("href") === url, "a elem href=\"" + url + "\""], [txt(d.querySelector("a")) === tx, "a hivatkozás szövege"]]), '<a href="' + url + '">' + tx + "</a>"); },
+    () => { const al = pick(["Egy kutya", "Napsütés a parton", "Az iskola épülete"]); return kod("Szúrj be egy <b>képet</b>: a forrása <b>kep.png</b>, az alt szövege: <b>" + al + "</b>.", "", d => chk([[d.querySelector("img") && /(^|\/)kep\.png$/.test(d.querySelector("img").getAttribute("src") || ""), "img src=\"kep.png\""], [d.querySelector("img") && d.querySelector("img").getAttribute("alt") === al, "alt=\"" + al + "\""]]), '<img src="kep.png" alt="' + al + '">'); }
+  ];
+  const L2 = [
+    () => { const it = shuffle(W).slice(0, 3); return kod("Készíts egy <b>felsorolást (ul)</b> három elemmel, ebben a sorrendben: <b>" + it.join(", ") + "</b>.", "", d => { const li = [...d.querySelectorAll("ul > li")].map(txt); return chk([[!!d.querySelector("ul"), "ul elem"], [li.length === 3, "3 db li az ul-ben (most " + li.length + ")"], [li.join("|") === it.join("|"), "az elemek szövege és sorrendje"]]); }, "<ul>\n" + it.map(x => "  <li>" + x + "</li>").join("\n") + "\n</ul>"); },
+    () => { const it = shuffle(["Kapcsold be a gépet", "Nyisd meg a VS Code-ot", "Írd meg a kódot", "Mentsd el", "Nézd meg a böngészőben"]).slice(0, 3); return kod("Készíts <b>számozott listát (ol)</b> ezekből a lépésekből, ebben a sorrendben: <b>" + it.join(" / ") + "</b>.", "", d => { const li = [...d.querySelectorAll("ol > li")].map(txt); return chk([[!!d.querySelector("ol"), "ol elem"], [li.length === 3, "3 db li az ol-ben (most " + li.length + ")"], [li.join("|") === it.join("|"), "a lépések szövege és sorrendje"]]); }, "<ol>\n" + it.map(x => "  <li>" + x + "</li>").join("\n") + "\n</ol>"); },
+    () => { const h = pick([["Név", "Kor"], ["Tárgy", "Jegy"], ["Termék", "Ár"]]), v = pick([["Anna", "15"], ["Matek", "5"], ["Alma", "300"]]); return kod("Készíts egy <b>táblázatot</b> két sorral: az első sor fejléc (<b>th</b>) ezekkel: <b>" + h.join(", ") + "</b>; a második sor adat (<b>td</b>): <b>" + v.join(", ") + "</b>.", "", d => chk([[d.querySelectorAll("tr").length === 2, "2 db tr"], [[...d.querySelectorAll("th")].map(txt).join("|") === h.join("|"), "th cellák: " + h.join(", ")], [[...d.querySelectorAll("td")].map(txt).join("|") === v.join("|"), "td cellák: " + v.join(", ")]]), "<table>\n  <tr><th>" + h[0] + "</th><th>" + h[1] + "</th></tr>\n  <tr><td>" + v[0] + "</td><td>" + v[1] + "</td></tr>\n</table>"); },
+    () => { const a = pick(T), b = pick(["Első rész", "Második rész", "Játékok"]), c = pick(["Zene", "Utazás", "Sport"]); return kod("Készíts egy <b>h1</b> címsort (<b>" + a + "</b>), alatta két <b>h2</b> alcímet (<b>" + b + "</b> és <b>" + c + "</b>), ebben a sorrendben.", "", d => { const hs = [...d.querySelectorAll("h1,h2")].map(e => e.tagName + ":" + txt(e)); return chk([[hs.join("|") === ["H1:" + a, "H2:" + b, "H2:" + c].join("|"), "h1, majd két h2 a megadott szövegekkel, ebben a sorrendben"]]); }, "<h1>" + a + "</h1>\n<h2>" + b + "</h2>\n<h2>" + c + "</h2>"); }
+  ];
+  const L3 = [
+    () => { const t = pick(T), h = pick(["Üdv nálam", "Főoldal", "Kezdőlap"]); return kod("Írj <b>teljes oldalt</b>: <b>lang=\"hu\"</b> a html elemen, <b>meta charset</b>, <b>title</b>: <b>" + t + "</b>, a body-ban <b>h1</b>: <b>" + h + "</b>.", '<!DOCTYPE html>\n', (d, c) => chk([[d.documentElement.getAttribute("lang") === "hu", "html lang=\"hu\""], [!!d.querySelector("meta[charset]"), "meta charset"], [txt(d.querySelector("title")) === t, "title: " + t], [txt(d.querySelector("h1")) === h, "h1: " + h], [/<!DOCTYPE html>/i.test(c), "<!DOCTYPE html>"]]), '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>' + t + "</title>\n</head>\n<body>\n  <h1>" + h + "</h1>\n</body>\n</html>", "írj teljes oldalt"); },
+    () => { const items = shuffle(["Főoldal", "Rólam", "Kapcsolat", "Galéria"]).slice(0, 3); return kod("Készíts egy <b>nav</b> elemet, benne <b>ul</b> lista három <b>hivatkozással</b> (a), a szövegük: <b>" + items.join(", ") + "</b> (a href lehet #).", "", d => { const as = [...d.querySelectorAll("nav ul li a")].map(txt); return chk([[!!d.querySelector("nav"), "nav elem"], [as.length === 3, "3 db a a nav > ul > li-ben (most " + as.length + ")"], [as.join("|") === items.join("|"), "a hivatkozások szövege és sorrendje"]]); }, '<nav>\n  <ul>\n' + items.map(x => '    <li><a href="#">' + x + "</a></li>").join("\n") + "\n  </ul>\n</nav>"); },
+    () => { const al = pick(["Naplemente", "Az osztály", "A kutyám"]), cp = pick(["A tavalyi nyár", "Osztálykirándulás", "Kedvencem"]); return kod("Készíts egy <b>figure</b> elemet: benne <b>img</b> (src: kep.png, alt: <b>" + al + "</b>) és <b>figcaption</b> (szöveg: <b>" + cp + "</b>).", "", d => chk([[!!d.querySelector("figure img"), "img a figure-ben"], [d.querySelector("figure img") && d.querySelector("figure img").getAttribute("alt") === al, "alt=\"" + al + "\""], [txt(d.querySelector("figure figcaption")) === cp, "figcaption: " + cp]]), '<figure>\n  <img src="kep.png" alt="' + al + '">\n  <figcaption>' + cp + "</figcaption>\n</figure>"); },
+    () => { const names = shuffle(["Anna", "Béla", "Cili", "Dani"]).slice(0, 3); return kod("Készíts egy <b>táblázatot</b>: az első sor fejléc (th): <b>Név</b>, <b>Jegy</b>; majd három adatsor (td) a nevekkel <b>" + names.join(", ") + "</b> és bármilyen jeggyel.", "", d => { const trs = d.querySelectorAll("tr"); const first = [...d.querySelectorAll("tr td:first-child")].map(txt); return chk([[trs.length === 4, "4 db tr (most " + trs.length + ")"], [[...d.querySelectorAll("th")].map(txt).join("|") === "Név|Jegy", "th cellák: Név, Jegy"], [first.join("|") === names.join("|"), "az adatsorok első cellái: " + names.join(", ")]]); }, "<table>\n  <tr><th>Név</th><th>Jegy</th></tr>\n" + names.map((n, i) => "  <tr><td>" + n + "</td><td>" + (5 - i) + "</td></tr>").join("\n") + "\n</table>"); }
+  ];
+  const FIX = [
+    () => ({ ...kod("<b>Hibakeresés.</b> A lista felül ul-lal nyílik, alul ol-lal zárul. Javítsd úgy, hogy a nyitó és a záró elem egyezzen, és maradjon 3 elem.", "<ul>\n  <li>egy</li>\n  <li>kettő</li>\n  <li>három</li>\n</ol>", (d, c) => chk([[!/<\/ol>/i.test(c), "ne legyen </ol> záró címke"], [/<\/ul>/i.test(c), "legyen </ul> záró címke"], [d.querySelectorAll("ul > li").length === 3, "3 li az ul-ben"]]), "<ul>\n  <li>egy</li>\n  <li>kettő</li>\n  <li>három</li>\n</ul>", "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A kép nem akadálymentes, mert hiányzik az alt. Add meg: <b>alt=\"Logó\"</b>.", '<img src="logo.png">', d => chk([[d.querySelector("img") && d.querySelector("img").getAttribute("alt") === "Logó", "alt=\"Logó\""], [d.querySelector("img") && d.querySelector("img").getAttribute("src") === "logo.png", "a src maradjon logo.png"]]), '<img src="logo.png" alt="Logó">', "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> Rossz a beágyazás: a strong és a p rossz sorrendben záródik. Javítsd.", "<p>Ez <strong>nagyon fontos</p></strong>", (d, c) => chk([[/<\/strong>\s*<\/p>/i.test(c), "előbb </strong>, utána </p>"], [txt(d.querySelector("strong")) === "nagyon fontos", "a strong szövege: nagyon fontos"]]), "<p>Ez <strong>nagyon fontos</strong></p>", "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A hivatkozás nem működik: elírták az attribútum nevét. Javítsd úgy, hogy a href legyen <b>https://example.org</b>.", '<a hreff="https://example.org">Link</a>', d => chk([[d.querySelector("a") && d.querySelector("a").getAttribute("href") === "https://example.org", "href=\"https://example.org\""]]), '<a href="https://example.org">Link</a>', "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A böngészőfülön nem látszik cím, mert a <b>title</b> kimaradt a head-ből. Add hozzá: <b>Hibás oldal</b>.", '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n</head>\n<body>\n  <h1>Üdv</h1>\n</body>\n</html>', d => chk([[txt(d.querySelector("head title")) === "Hibás oldal", "title a head-ben: Hibás oldal"], [!!d.querySelector("h1"), "a h1 maradjon"]]), '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>Hibás oldal</title>\n</head>\n<body>\n  <h1>Üdv</h1>\n</body>\n</html>', "javítsd a kódot") })
+  ];
+  const mkcode = (l) => (l === 1 ? pick(L1) : l === 2 ? pick(L2) : pick(L3))();
+  const Q = [
+    ["Melyik elem a <b>legnagyobb címsor</b>?", "h1", ["h6", "p", "title"]], ["Melyik elem a <b>bekezdés</b>?", "p", ["h1", "br", "div"]],
+    ["Melyik elem készít <b>hivatkozást</b>?", "a", ["link", "href", "url"]], ["Melyik elem szúr be <b>képet</b>?", "img", ["image", "pic", "src"]],
+    ["Melyik elem a <b>számozott lista</b>?", "ol", ["ul", "li", "nl"]], ["Melyik elem a <b>felsorolás</b> (jeles lista)?", "ul", ["ol", "li", "dl"]],
+    ["Melyik elem a <b>lista egy eleme</b>?", "li", ["ul", "td", "p"]], ["Melyik elem a táblázat <b>fejléc cellája</b>?", "th", ["td", "tr", "head"]],
+    ["Melyik elem a táblázat <b>sora</b>?", "tr", ["td", "th", "row"]], ["Melyik elem <b>sortörés</b>?", "br", ["hr", "p", "lb"]],
+    ["Melyik elem emel ki <b>dőlt</b> (hangsúlyos) szöveget?", "em", ["strong", "b2", "i2"]], ["Melyik attribútum mondja meg, <b>hová mutat</b> a hivatkozás?", "href", ["src", "alt", "target"]],
+    ["Melyik attribútum a <b>kép helyettesítő szövege</b>?", "alt", ["src", "href", "title"]], ["Melyik elem tartalmazza a <b>böngészőfül feliratát</b>?", "title", ["h1", "head", "meta"]],
+    ["Melyik elem jelzi, hogy <b>HTML5</b> oldalról van szó (az első sor)?", "!DOCTYPE html", ["html5", "meta charset", "<head>"]], ["Hol van az oldal <b>látható tartalma</b>?", "body", ["head", "title", "meta"]]
+  ];
+  const countTask = (l) => {
+    let src, ans, what;
+    if (l === 1){ const n = rnd(3, 7); src = "<ul>\n" + Array.from({ length: n }, (_, i) => "  <li>" + W[i % W.length] + "</li>").join("\n") + "\n</ul>"; ans = n; what = "li elem"; }
+    else if (l === 2){ const r = rnd(2, 4), c = rnd(2, 4); src = "<table>\n  <tr>" + "<th>x</th>".repeat(c) + "</tr>\n" + Array.from({ length: r }, () => "  <tr>" + "<td>y</td>".repeat(c) + "</tr>").join("\n") + "\n</table>"; const k = pick(["td", "tr", "th"]); ans = k === "td" ? r * c : k === "tr" ? r + 1 : c; what = k + " elem"; }
+    else { const a = rnd(2, 3), b = rnd(2, 3); src = "<ul>\n  <li>A</li>\n  <li>B\n    <ul>\n" + Array.from({ length: a }, () => "      <li>x</li>").join("\n") + "\n    </ul>\n  </li>\n  <li>C\n    <ul>\n" + Array.from({ length: b }, () => "      <li>y</li>").join("\n") + "\n    </ul>\n  </li>\n</ul>"; ans = 3 + a + b; what = "li elem összesen (a beágyazottakat is)"; }
+    return { q: "Hány <b>" + what + "</b> van a kódban?<pre class='code'>" + esc(src) + "</pre>", kind: "input", mode: "numeric", answer: ans, sol: "<p>Számold meg a nyitó címkéket, a beágyazottakat is.</p>", check: v => { const s = String(v).trim(); return +s === ans && /^\d+$/.test(s) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Végig kell menni a kódon, és minden megfelelő nyitó címkét meg kell számolni." }; } };
+  };
+  const types = [
+    { id: "code", name: "Kódolj", gen: l => mkcode(l) },
+    { id: "fix", name: "Hibakeresés", gen: l => pick(FIX)() },
+    { id: "which", name: "Melyik elem?", gen(l){
+      const q = pick(Q), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false }))));
+      return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: <b>" + esc(q[1]) + "</b>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } },
+    { id: "count", name: "Számold meg", gen: l => countTask(l) }
+  ];
+  K.practice($("#practice"), { id: "html", types, play: playTo, examN: 8 });
+
+  /* ---------- Puska ---------- */
+  const tags = [["h1–h6", "címsor"], ["p", "bekezdés"], ["strong / em", "kiemelt (vastag) / hangsúlyos (dőlt)"], ["br / hr", "sortörés / vízszintes vonal"], ["a href", "hivatkozás"], ["img src alt", "kép"], ["ul / ol / li", "felsorolás / számozott lista / elem"], ["table tr th td", "táblázat, sor, fejléc cella, adat cella"], ["div / span", "általános doboz (blokk / sorbeli)"], ["header nav main section article aside footer", "szemantikus szerkezet"]];
+  $("#cheat").innerHTML = "<tr><th>Elem</th><th>Mire való</th></tr>" + tags.map(t => "<tr><td>" + t[0] + "</td><td style='text-align:left'>" + t[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>

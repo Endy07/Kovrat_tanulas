@@ -1,0 +1,263 @@
+<!--@HEAD-->
+<title>HTML alapok</title>
+<style>
+.render{background:#fff;color:#111;border-radius:10px;padding:12px 14px;font-family:Georgia,serif;font-size:16px;line-height:1.4;overflow:auto;max-height:260px}
+.render h1,.render h2{font-family:Georgia,serif;margin:.3em 0}
+.render img{max-width:120px;height:auto}
+.render table{border-collapse:collapse}
+.render td,.render th{border:1px solid #888;padding:3px 9px;color:#111}
+.pb-stage .codewrap{font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;margin:0 0 10px}
+.pb-stage .codewrap .cur{background:#4a3a12;color:#FFB01F;display:inline-block;width:100%}
+.pb-stage .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;margin:6px 0}
+.tagtbl td:first-child{font-family:var(--mono);font-weight:700}
+.slide pre.code{font-size:.9rem}
+.bugline{background:var(--bad-bg);color:var(--bad);border-radius:6px;padding:0 .4em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · weboldalak</span>
+  <h1>HTML alapok</h1>
+  <p class="lead">Az első weboldalad itt készül el. Írd át a kódot, és az eredmény azonnal megjelenik mellette.</p>
+  <div class="panel">
+    <span class="eyebrow">Szerkeszd a bal oldalt, a jobb oldal azonnal frissül</span>
+    <div class="row" id="ex-btns"></div>
+    <div id="hero-ed"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Nézd végig, hogyan épül fel egy oldal elemről elemre. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="page" aria-selected="true">Személyes oldal</button>
+    <button class="tab" data-m="lists" aria-selected="false">Lista és táblázat</button>
+    <button class="tab" data-m="fix" aria-selected="false">Hibakeresés</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A „Kódolj” feladatoknál te írod a HTML-t, az ellenőrzés megmondja, mi hiányzik. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt tagtbl" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Váz</span><pre class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="hu"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;Cím&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ...
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+    <div class="trick"><span class="t">Szabályok</span><span>Minden nyitó elemnek van záró párja (kivéve: <code>br</code>, <code>img</code>, <code>meta</code>, <code>hr</code>). Az elemek szépen egymásba ágyazódnak. Az attribútum értéke idézőjelben van. A képnek mindig legyen <code>alt</code> szövege.</span></div>
+    <div class="trick"><span class="t">Eszközök</span><span>VS Code (Emmet: írd be <code>!</code>, majd Tab: kész a váz) · böngésző F12 (DevTools) · W3C validator (validator.w3.org).</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  const IMG = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="120" height="80" fill="#1B5CBA"/><circle cx="60" cy="40" r="24" fill="#F29E0C"/></svg>');
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+
+  const EX = {
+    "Üres váz": '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>Az első oldalam</title>\n</head>\n<body>\n  <h1>Szia, világ!</h1>\n  <p>Ez az első weboldalam.</p>\n</body>\n</html>\n',
+    "Címek, szöveg": '<h1>Kedvenc dolgaim</h1>\n<h2>Játékok</h2>\n<p>A <strong>legjobb</strong> játék az, amit együtt játszunk, és <em>nagyon</em> jó hangulatú.</p>\n<h2>Programozás</h2>\n<p>Első sor<br>Második sor</p>\n<hr>\n<p>Vége.</p>\n',
+    "Link és kép": '<h1>Képek és linkek</h1>\n<p>Egy hivatkozás: <a href="https://www.mechwart.hu" target="_blank">az iskola oldala</a></p>\n<figure>\n  <img src="' + IMG + '" alt="Kék négyzet narancs körrel">\n  <figcaption>Ez egy kép felirata</figcaption>\n</figure>\n',
+    "Listák": '<h1>Bevásárlólista</h1>\n<ul>\n  <li>kenyér</li>\n  <li>tej</li>\n  <li>alma</li>\n</ul>\n<h2>Teendők</h2>\n<ol>\n  <li>tanulás</li>\n  <li>edzés\n    <ul><li>futás</li><li>kondi</li></ul>\n  </li>\n</ol>\n',
+    "Táblázat": '<table>\n  <caption>Órarend</caption>\n  <tr><th>Nap</th><th>1. óra</th><th>2. óra</th></tr>\n  <tr><td>Hétfő</td><td>Informatika</td><td>Matek</td></tr>\n  <tr><td>Kedd</td><td>Magyar</td><td>Angol</td></tr>\n</table>\n'
+  };
+  const hero = K.editor($("#hero-ed"), { code: EX["Üres váz"], rows: 12 });
+  Object.keys(EX).forEach(k => { const b = document.createElement("button"); b.className = "btn"; b.textContent = k; b.addEventListener("click", () => hero.set(EX[k])); $("#ex-btns").appendChild(b); });
+  const loadHero = k => { hero.set(EX[k]); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+  /* ---------- Levezetések ---------- */
+  const mk = (head, tail, body, k, cap) => {
+    const lines = head.slice(), hl = [];
+    for (let i = 0; i <= k; i++) body[i].c.forEach(l => { if (i === k) hl.push(lines.length); lines.push(l); });
+    tail.forEach(l => lines.push(l));
+    const code = lines.map((l, i) => hl.includes(i) ? '<span class="cur">' + esc(l || " ") + "</span>" : esc(l)).join("\n");
+    const render = body.slice(0, k + 1).map(b => b.h).join("");
+    return { cap, html: '<div class="lbl">Kód</div><pre class="codewrap">' + code + '</pre><div class="lbl">Így látja a böngésző</div><div class="render">' + (render || "<i>(még üres)</i>") + "</div>" };
+  };
+  const HEAD = ["<!DOCTYPE html>", '<html lang="hu">', "<head>", '  <meta charset="utf-8">', "  <title>Kovrat oldala</title>", "</head>", "<body>"], TAIL = ["</body>", "</html>"];
+  const BUILD = {
+    page: () => {
+      const B = [
+        { c: [], h: "", cap: "Az oldal váza: a DOCTYPE jelzi, hogy HTML5-öt írunk. A html elem fogja közre az egészet, a head a láthatatlan adatokat tartalmazza (kódolás, cím), a body a látható tartalmat." },
+        { c: ["  <h1>Kovrat oldala</h1>"], h: "<h1>Kovrat oldala</h1>", cap: "A body-ba kerül az első szintű címsor: a legnagyobb, az oldal fő címe. Oldalanként egy ilyen legyen." },
+        { c: ["  <p>Ez az <strong>első</strong> weboldalam.</p>"], h: "<p>Ez az <strong>első</strong> weboldalam.</p>", cap: "A bekezdés a szöveg alapeleme. A strong a fontos részt kiemeli, vastagon jelenik meg." },
+        { c: ["  <h2>Kedvenceim</h2>", "  <ul>", "    <li>programozás</li>", "    <li>zene</li>", "  </ul>"], h: "<h2>Kedvenceim</h2><ul><li>programozás</li><li>zene</li></ul>", cap: "Egy másodszintű címsor és egy felsorolás. A lista elemeit a li adja, az ul közrefogja őket." },
+        { c: ['  <p><a href="https://www.w3schools.com">Tanulj tovább!</a></p>'], h: '<p><a href="#">Tanulj tovább!</a></p>', cap: "A hivatkozás (a) href attribútuma mondja meg, hová mutat, a két címke közti szöveg kattintható." },
+        { c: ['  <img src="kep.png" alt="Egy kép">'], h: '<img src="' + IMG + '" alt="Egy kép">', cap: "A kép (img) nem tárolódik az oldalban, a src attribútum mondja meg, honnan töltődik. Az alt a helyettesítő szöveg: ezt olvassa fel a képernyőolvasó, és ez jelenik meg, ha a kép nem töltődik be." }
+      ];
+      return B.map((b, k) => mk(HEAD, TAIL, B, k, b.cap));
+    },
+    lists: () => {
+      const B = [
+        { c: [], h: "", cap: "Az üres váz után két gyakori szerkezetet építünk fel: egy rendezett listát és egy táblázatot." },
+        { c: ["  <ol>", "    <li>Telepítsd a VS Code-ot</li>", "    <li>Írd meg az oldalt</li>", "    <li>Nézd meg a böngészőben</li>", "  </ol>"], h: "<ol><li>Telepítsd a VS Code-ot</li><li>Írd meg az oldalt</li><li>Nézd meg a böngészőben</li></ol>", cap: "A rendezett lista (ol) automatikusan sorszámoz, a sorszámokat nem nekünk kell beírni." },
+        { c: ["  <table>", "    <caption>Hetirend</caption>", "    <tr>", "      <th>Nap</th>", "      <th>Tantárgy</th>", "    </tr>"], h: "<table><caption>Hetirend</caption><tr><th>Nap</th><th>Tantárgy</th></tr></table>", cap: "A táblázat (table) sorokból (tr) áll. A th a fejléc cella (vastag, középre igazított), a caption a táblázat címe." },
+        { c: ["    <tr>", "      <td>Hétfő</td>", "      <td>Informatika</td>", "    </tr>", "  </table>"], h: "<table><caption>Hetirend</caption><tr><th>Nap</th><th>Tantárgy</th></tr><tr><td>Hétfő</td><td>Informatika</td></tr></table>", cap: "Az adatsorban td cellák vannak. Egy sor minden cellája egy tr-en belül marad, a végén a table záró címkéje következik." }
+      ];
+      // a táblázat két lépése egyetlen táblázatot ad: az utolsó lépés teljes kódja a táblázat lezárásával
+      return B.map((b, k) => mk(HEAD, TAIL, B.map((x, i) => i === 2 ? { c: x.c.concat(["  </table>"]), h: x.h } : x), k === 3 ? 3 : k, b.cap));
+    },
+    fix: () => {
+      const bug = (lines, hl) => '<pre class="codewrap">' + lines.map((l, i) => hl === i ? '<span class="cur">' + esc(l) + "</span>" : esc(l)).join("\n") + "</pre>";
+      const lines = ["<h1>Hobbik</h1>", "<ul>", "  <li>foci</li>", "  <li>zene</li>", "</ol>", '<img src="kep.png">', "<p>Ez <strong>fontos</p></strong>"];
+      const fixed = ["<h1>Hobbik</h1>", "<ul>", "  <li>foci</li>", "  <li>zene</li>", "</ul>", '<img src="kep.png" alt="Egy kép">', "<p>Ez <strong>fontos</strong></p>"];
+      return [
+        { cap: "Hibakeresés: ebben a kódban három hiba van. A böngésző nem szól, csendben megpróbálja kitalálni, mit akartál. Keressük meg őket!", html: bug(lines, -1) },
+        { cap: "Az első hiba: a lista ul-lal nyílik, de ol-lal zárul. A nyitó és záró elem neve egyezzen: a javítás a záró ul.", html: bug(lines, 4) + '<div class="lbl">Javítva</div>' + bug(fixed, 4) },
+        { cap: "A második hiba: a kép nem kapott alt attribútumot. Az alt nélkül a képet nem tudja a képernyőolvasó leírni. Javítás: alt=\"Egy kép\".", html: bug(lines, 5) + '<div class="lbl">Javítva</div>' + bug(fixed, 5) },
+        { cap: "A harmadik hiba: rossz a beágyazás. Aminek belül nyílt, annak kell előbb zárulnia: a strong zárul előbb, aztán a p.", html: bug(lines, 6) + '<div class="lbl">Javítva</div>' + bug(fixed, 6) },
+        { cap: "Mindhárom javítva. Tipp: a böngészőben az F12 (DevTools) Elements fülén látod, hogyan értelmezte a böngésző a kódot, a W3C validátor pedig felsorolja a hibákat.", html: bug(fixed, -1) }
+      ];
+    }
+  };
+  const pb = K.player($("#pb"));
+  const PB = { m: "page" };
+  const TT = { page: "Személyes oldal építése", lists: "Lista és táblázat", fix: "Hibakeresés" };
+  function pbNew(auto){
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m)));
+    pb.load(BUILD[PB.m](), TT[PB.m], auto);
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const loadBtn = k => "<p><button class='btn' data-load='" + k + "'>↑ Betöltés a szerkesztőbe</button></p>";
+  const wire = el => $$("[data-load]", el).forEach(b => b.addEventListener("click", () => loadHero(b.dataset.load)));
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi az a weboldal?", h:
+      "<p>A weboldal egy <b>szöveges fájl</b>. A böngésző beolvassa, és megjeleníti. Három nyelv dolgozik együtt:</p>" +
+      "<div class='two-col'><div class='trick'><span class='t'>HTML</span><span>a <b>szerkezet</b>: mi van az oldalon (cím, bekezdés, kép, lista).</span></div><div class='trick'><span class='t'>CSS</span><span>a <b>kinézet</b>: szín, betű, elrendezés. (Következő lecke.)</span></div><div class='trick'><span class='t'>JavaScript</span><span>a <b>viselkedés</b>: mi történik kattintásra. (Később.)</span></div></div>" +
+      "<div class='note'><b>Fontos:</b> a HTML nem programozási nyelv, hanem leíró (jelölő) nyelv. Nincs benne változó vagy ciklus, de a programozó mindennap használja.</div>" },
+    { k: "Váz", t: "Az oldal váza", h: () =>
+      "<p>Minden HTML-oldal ugyanígy kezdődik:</p>" + code(EX["Üres váz"]) +
+      "<ul><li><code>&lt;!DOCTYPE html&gt;</code>: ez HTML5 oldal.</li><li><code>html lang=\"hu\"</code>: a gyökérelem, megadjuk a nyelvet.</li><li><code>head</code>: láthatatlan adatok: <code>meta charset=\"utf-8\"</code> (az ékezetek miatt!), <code>title</code> (a böngészőfül felirata).</li><li><code>body</code>: minden, ami látszik.</li></ul>" + loadBtn("Üres váz"), init: wire },
+    { k: "Elemek", t: "Elem, címke, attribútum", h:
+      "<p>Az <b>elem</b> általában nyitó és záró <b>címkéből</b> áll, köztük a tartalom:</p>" + code('<p class="kiemelt">Ez egy bekezdés.</p>') +
+      "<ul><li><code>&lt;p&gt;</code> nyitó, <code>&lt;/p&gt;</code> záró címke</li><li><code>class=\"kiemelt\"</code> az <b>attribútum</b>: név = \"érték\", mindig a nyitó címkében</li><li>Üres elemnek nincs tartalma és záró párja: <code>&lt;br&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;hr&gt;</code>, <code>&lt;meta&gt;</code></li></ul>" +
+      "<div class='note'><b>Beágyazás:</b> az elemek egymásba illeszkednek, mint a dobozok. Aminek belül nyílt, annak kell előbb zárulnia.</div>" },
+    { k: "Szöveg", t: "Címsorok és bekezdések", h: () =>
+      "<p><code>h1</code>–<code>h6</code>: címsorok (h1 a legnagyobb, oldalanként egy). <code>p</code>: bekezdés. <code>strong</code>: fontos (vastag). <code>em</code>: hangsúlyos (dőlt). <code>br</code>: sortörés. <code>hr</code>: vízszintes vonal.</p>" + code(EX["Címek, szöveg"]) + loadBtn("Címek, szöveg"), init: wire },
+    { k: "Link, kép", t: "Hivatkozás és kép", h: () =>
+      code('<a href="https://www.mechwart.hu" target="_blank">az iskola oldala</a>\n<img src="kep.png" alt="Leírás a képről">') +
+      "<ul><li><code>a</code> (anchor): <code>href</code> = hová mutat; <code>target=\"_blank\"</code> = új lapon nyílik.</li><li><code>img</code>: <code>src</code> = hol van a kép, <code>alt</code> = leírás (<b>mindig add meg</b>).</li><li><code>figure</code> + <code>figcaption</code>: kép és felirata egy egységben.</li></ul>" + loadBtn("Link és kép"), init: wire },
+    { k: "Lista", t: "Felsorolás és sorszámozott lista", h: () =>
+      "<p><code>ul</code> = jelekkel felsorolt lista (unordered), <code>ol</code> = számozott (ordered). Mindkettőben <code>li</code> az elem. Listák egymásba is ágyazhatók.</p>" + code(EX["Listák"]) + loadBtn("Listák"), init: wire },
+    { k: "Táblázat", t: "Táblázat", h: () =>
+      "<p><code>table</code> a táblázat, <code>tr</code> a sor, <code>th</code> a fejléc cella, <code>td</code> az adat cella, <code>caption</code> a cím.</p>" + code(EX["Táblázat"]) +
+      "<div class='note'><b>Tipp:</b> a sorok száma = a <code>tr</code> elemek száma. Egy sorban a cellák száma legyen egyforma.</div>" + loadBtn("Táblázat"), init: wire },
+    { k: "Szerkezet", t: "div, span, szemantikus elemek", h:
+      "<p><code>div</code> (blokk) és <code>span</code> (sorbeli) általános dobozok, formázáshoz használjuk őket. A <b>szemantikus</b> elemek jelentést is hordoznak:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><td><code>header</code></td><td>fejléc</td></tr><tr><td><code>nav</code></td><td>menü, navigáció</td></tr><tr><td><code>main</code></td><td>fő tartalom</td></tr><tr><td><code>section</code>, <code>article</code></td><td>szakasz, önálló cikk</td></tr><tr><td><code>aside</code></td><td>oldalsáv</td></tr><tr><td><code>footer</code></td><td>lábléc</td></tr></table></div>" +
+      "<p>Az <code>id</code> és <code>class</code> attribútum a CSS-hez kell majd: ezek nevezik meg az elemeket.</p>" },
+    { k: "Eszközök", t: "Eszközök, hibakeresés", h:
+      "<ul><li><b>VS Code</b>: az iskola ajánlott szerkesztője. Az Emmet-tel a <code>!</code> + Tab megírja a vázat, a <code>ul&gt;li*3</code> + Tab egy háromelemű listát.</li><li><b>Böngésző F12 (DevTools)</b>: az Elements fülön látod, mit értett a böngésző a kódból.</li><li><b>W3C validator</b> (validator.w3.org): felsorolja a hibákat.</li><li><b>Git és GitHub</b>: a verziókezelés (a tanév későbbi része).</li></ul>" +
+      "<div class='note'><b>Fontos:</b> a böngésző nem ír hibaüzenetet. Elrontott HTML-ből is mutat valamit, csak nem azt, amit akartál. Ezért kell ellenőrizni.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hiányzó vagy rossz záró címke.</b> <code>&lt;ul&gt; … &lt;/ol&gt;</code> vagy kimaradt <code>&lt;/p&gt;</code>.</div>" +
+      "<div class='mistake'><b>Rossz beágyazás.</b> <code>&lt;p&gt;&lt;strong&gt;…&lt;/p&gt;&lt;/strong&gt;</code>: előbb a belső zárul.</div>" +
+      "<div class='mistake'><b>Idézőjel kimaradt.</b> <code>href=https://…</code> helyett <code>href=\"https://…\"</code>.</div>" +
+      "<div class='mistake'><b>Elfelejtett charset.</b> Ékezetes betűk helyett „Ã©” jelek: add meg a <code>&lt;meta charset=\"utf-8\"&gt;</code>-et.</div>" +
+      "<div class='mistake'><b>Alt nélküli kép.</b> A képernyőolvasó nem tudja, mi van rajta.</div>" },
+    { k: "Trükkök", t: "Jó szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Behúzás</span><span>A beágyazott elemeket húzd beljebb (2 szóköz). Így rögtön látod a szerkezetet.</span></div>" +
+      "<div class='trick'><span class='t'>Mindig kisbetű</span><span>A címkék és attribútumok kisbetűsek: <code>&lt;p&gt;</code>, nem <code>&lt;P&gt;</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Egy h1</span><span>Oldalanként egy h1, a címsorok sorrendje ne ugorjon (h1, h2, h3).</span></div>" +
+      "<div class='trick'><span class='t'>Mentés, frissítés</span><span>Mentsd a fájlt <code>.html</code> kiterjesztéssel, és frissítsd a böngészőt (F5).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const txt = el => el ? el.textContent.trim().replace(/\s+/g, " ") : "";
+  const rep = (ok, miss) => ok ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Hiányzik vagy hibás: " + miss.join("; ") + "." };
+  const chk = (pairs) => { const miss = pairs.filter(p => !p[0]).map(p => p[1]); return rep(!miss.length, miss); };
+  const W = ["alma", "körte", "szilva", "barack", "meggy", "dió", "mogyoró", "cseresznye"];
+  const T = ["Az én oldalam", "Kedvenc állataim", "Mechwart", "Programozás", "Hobbijaim", "Hétvégi terv"];
+  const P = ["Szeretem a számítógépeket.", "Ez egy rövid bekezdés.", "Ma jó idő van.", "Tanulok programozni."];
+  const sol = s => "<p>Egy lehetséges megoldás:</p>" + code(s);
+  const kod = (q, starter, check, ans, hint) => ({ q, kind: "code", starter, check: v => check(v.parsed, v.code), answer: "<pre class='code'>" + esc(ans) + "</pre>", sol: sol(ans), hint: hint || "írd a <body> tartalmát", rows: 8 });
+  const L1 = [
+    () => { const t = pick(T), p = pick(P); return kod("Készíts egy <b>h1</b> címsort ezzel a szöveggel: <b>" + esc(t) + "</b>, alatta egy <b>p</b> bekezdést ezzel: <b>" + esc(p) + "</b>.", "", d => chk([[txt(d.querySelector("h1")) === t, "h1 a megadott szöveggel"], [txt(d.querySelector("p")) === p, "p a megadott szöveggel"], [d.querySelector("h1") && d.querySelector("p") && d.querySelector("h1").compareDocumentPosition(d.querySelector("p")) & 4, "a p a h1 alatt legyen"]]), "<h1>" + t + "</h1>\n<p>" + p + "</p>"); },
+    () => { const a = pick(W), b = pick(W.filter(x => x !== a)); return kod("Tedd <b>vastaggá (strong)</b> ezt a szót: „" + a + "”, és <b>dőlté (em)</b> ezt: „" + b + "” a bekezdésben.", "<p>Ma " + a + " és " + b + " került az asztalra.</p>", d => chk([[txt(d.querySelector("strong")) === a, "strong ezzel a szóval: „" + a + "”"], [txt(d.querySelector("em")) === b, "em ezzel a szóval: „" + b + "”"], [txt(d.querySelector("p")).includes("Ma " + a + " és " + b + " került"), "a mondat maradjon egyben"]]), "<p>Ma <strong>" + a + "</strong> és <em>" + b + "</em> került az asztalra.</p>"); },
+    () => { const s = pick(["kod", "iskola", "tanar", "diak"]), url = "https://example.org/" + s, tx = pick(["Kattints ide", "Tovább", "Olvass tovább"]); return kod("Készíts <b>hivatkozást</b>, amely ide mutat: <b>" + url + "</b>, a szövege pedig: <b>" + tx + "</b>.", "", d => chk([[d.querySelector("a") && d.querySelector("a").getAttribute("href") === url, "a elem href=\"" + url + "\""], [txt(d.querySelector("a")) === tx, "a hivatkozás szövege"]]), '<a href="' + url + '">' + tx + "</a>"); },
+    () => { const al = pick(["Egy kutya", "Napsütés a parton", "Az iskola épülete"]); return kod("Szúrj be egy <b>képet</b>: a forrása <b>kep.png</b>, az alt szövege: <b>" + al + "</b>.", "", d => chk([[d.querySelector("img") && /(^|\/)kep\.png$/.test(d.querySelector("img").getAttribute("src") || ""), "img src=\"kep.png\""], [d.querySelector("img") && d.querySelector("img").getAttribute("alt") === al, "alt=\"" + al + "\""]]), '<img src="kep.png" alt="' + al + '">'); }
+  ];
+  const L2 = [
+    () => { const it = shuffle(W).slice(0, 3); return kod("Készíts egy <b>felsorolást (ul)</b> három elemmel, ebben a sorrendben: <b>" + it.join(", ") + "</b>.", "", d => { const li = [...d.querySelectorAll("ul > li")].map(txt); return chk([[!!d.querySelector("ul"), "ul elem"], [li.length === 3, "3 db li az ul-ben (most " + li.length + ")"], [li.join("|") === it.join("|"), "az elemek szövege és sorrendje"]]); }, "<ul>\n" + it.map(x => "  <li>" + x + "</li>").join("\n") + "\n</ul>"); },
+    () => { const it = shuffle(["Kapcsold be a gépet", "Nyisd meg a VS Code-ot", "Írd meg a kódot", "Mentsd el", "Nézd meg a böngészőben"]).slice(0, 3); return kod("Készíts <b>számozott listát (ol)</b> ezekből a lépésekből, ebben a sorrendben: <b>" + it.join(" / ") + "</b>.", "", d => { const li = [...d.querySelectorAll("ol > li")].map(txt); return chk([[!!d.querySelector("ol"), "ol elem"], [li.length === 3, "3 db li az ol-ben (most " + li.length + ")"], [li.join("|") === it.join("|"), "a lépések szövege és sorrendje"]]); }, "<ol>\n" + it.map(x => "  <li>" + x + "</li>").join("\n") + "\n</ol>"); },
+    () => { const h = pick([["Név", "Kor"], ["Tárgy", "Jegy"], ["Termék", "Ár"]]), v = pick([["Anna", "15"], ["Matek", "5"], ["Alma", "300"]]); return kod("Készíts egy <b>táblázatot</b> két sorral: az első sor fejléc (<b>th</b>) ezekkel: <b>" + h.join(", ") + "</b>; a második sor adat (<b>td</b>): <b>" + v.join(", ") + "</b>.", "", d => chk([[d.querySelectorAll("tr").length === 2, "2 db tr"], [[...d.querySelectorAll("th")].map(txt).join("|") === h.join("|"), "th cellák: " + h.join(", ")], [[...d.querySelectorAll("td")].map(txt).join("|") === v.join("|"), "td cellák: " + v.join(", ")]]), "<table>\n  <tr><th>" + h[0] + "</th><th>" + h[1] + "</th></tr>\n  <tr><td>" + v[0] + "</td><td>" + v[1] + "</td></tr>\n</table>"); },
+    () => { const a = pick(T), b = pick(["Első rész", "Második rész", "Játékok"]), c = pick(["Zene", "Utazás", "Sport"]); return kod("Készíts egy <b>h1</b> címsort (<b>" + a + "</b>), alatta két <b>h2</b> alcímet (<b>" + b + "</b> és <b>" + c + "</b>), ebben a sorrendben.", "", d => { const hs = [...d.querySelectorAll("h1,h2")].map(e => e.tagName + ":" + txt(e)); return chk([[hs.join("|") === ["H1:" + a, "H2:" + b, "H2:" + c].join("|"), "h1, majd két h2 a megadott szövegekkel, ebben a sorrendben"]]); }, "<h1>" + a + "</h1>\n<h2>" + b + "</h2>\n<h2>" + c + "</h2>"); }
+  ];
+  const L3 = [
+    () => { const t = pick(T), h = pick(["Üdv nálam", "Főoldal", "Kezdőlap"]); return kod("Írj <b>teljes oldalt</b>: <b>lang=\"hu\"</b> a html elemen, <b>meta charset</b>, <b>title</b>: <b>" + t + "</b>, a body-ban <b>h1</b>: <b>" + h + "</b>.", '<!DOCTYPE html>\n', (d, c) => chk([[d.documentElement.getAttribute("lang") === "hu", "html lang=\"hu\""], [!!d.querySelector("meta[charset]"), "meta charset"], [txt(d.querySelector("title")) === t, "title: " + t], [txt(d.querySelector("h1")) === h, "h1: " + h], [/<!DOCTYPE html>/i.test(c), "<!DOCTYPE html>"]]), '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>' + t + "</title>\n</head>\n<body>\n  <h1>" + h + "</h1>\n</body>\n</html>", "írj teljes oldalt"); },
+    () => { const items = shuffle(["Főoldal", "Rólam", "Kapcsolat", "Galéria"]).slice(0, 3); return kod("Készíts egy <b>nav</b> elemet, benne <b>ul</b> lista három <b>hivatkozással</b> (a), a szövegük: <b>" + items.join(", ") + "</b> (a href lehet #).", "", d => { const as = [...d.querySelectorAll("nav ul li a")].map(txt); return chk([[!!d.querySelector("nav"), "nav elem"], [as.length === 3, "3 db a a nav > ul > li-ben (most " + as.length + ")"], [as.join("|") === items.join("|"), "a hivatkozások szövege és sorrendje"]]); }, '<nav>\n  <ul>\n' + items.map(x => '    <li><a href="#">' + x + "</a></li>").join("\n") + "\n  </ul>\n</nav>"); },
+    () => { const al = pick(["Naplemente", "Az osztály", "A kutyám"]), cp = pick(["A tavalyi nyár", "Osztálykirándulás", "Kedvencem"]); return kod("Készíts egy <b>figure</b> elemet: benne <b>img</b> (src: kep.png, alt: <b>" + al + "</b>) és <b>figcaption</b> (szöveg: <b>" + cp + "</b>).", "", d => chk([[!!d.querySelector("figure img"), "img a figure-ben"], [d.querySelector("figure img") && d.querySelector("figure img").getAttribute("alt") === al, "alt=\"" + al + "\""], [txt(d.querySelector("figure figcaption")) === cp, "figcaption: " + cp]]), '<figure>\n  <img src="kep.png" alt="' + al + '">\n  <figcaption>' + cp + "</figcaption>\n</figure>"); },
+    () => { const names = shuffle(["Anna", "Béla", "Cili", "Dani"]).slice(0, 3); return kod("Készíts egy <b>táblázatot</b>: az első sor fejléc (th): <b>Név</b>, <b>Jegy</b>; majd három adatsor (td) a nevekkel <b>" + names.join(", ") + "</b> és bármilyen jeggyel.", "", d => { const trs = d.querySelectorAll("tr"); const first = [...d.querySelectorAll("tr td:first-child")].map(txt); return chk([[trs.length === 4, "4 db tr (most " + trs.length + ")"], [[...d.querySelectorAll("th")].map(txt).join("|") === "Név|Jegy", "th cellák: Név, Jegy"], [first.join("|") === names.join("|"), "az adatsorok első cellái: " + names.join(", ")]]); }, "<table>\n  <tr><th>Név</th><th>Jegy</th></tr>\n" + names.map((n, i) => "  <tr><td>" + n + "</td><td>" + (5 - i) + "</td></tr>").join("\n") + "\n</table>"); }
+  ];
+  const FIX = [
+    () => ({ ...kod("<b>Hibakeresés.</b> A lista felül ul-lal nyílik, alul ol-lal zárul. Javítsd úgy, hogy a nyitó és a záró elem egyezzen, és maradjon 3 elem.", "<ul>\n  <li>egy</li>\n  <li>kettő</li>\n  <li>három</li>\n</ol>", (d, c) => chk([[!/<\/ol>/i.test(c), "ne legyen </ol> záró címke"], [/<\/ul>/i.test(c), "legyen </ul> záró címke"], [d.querySelectorAll("ul > li").length === 3, "3 li az ul-ben"]]), "<ul>\n  <li>egy</li>\n  <li>kettő</li>\n  <li>három</li>\n</ul>", "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A kép nem akadálymentes, mert hiányzik az alt. Add meg: <b>alt=\"Logó\"</b>.", '<img src="logo.png">', d => chk([[d.querySelector("img") && d.querySelector("img").getAttribute("alt") === "Logó", "alt=\"Logó\""], [d.querySelector("img") && d.querySelector("img").getAttribute("src") === "logo.png", "a src maradjon logo.png"]]), '<img src="logo.png" alt="Logó">', "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> Rossz a beágyazás: a strong és a p rossz sorrendben záródik. Javítsd.", "<p>Ez <strong>nagyon fontos</p></strong>", (d, c) => chk([[/<\/strong>\s*<\/p>/i.test(c), "előbb </strong>, utána </p>"], [txt(d.querySelector("strong")) === "nagyon fontos", "a strong szövege: nagyon fontos"]]), "<p>Ez <strong>nagyon fontos</strong></p>", "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A hivatkozás nem működik: elírták az attribútum nevét. Javítsd úgy, hogy a href legyen <b>https://example.org</b>.", '<a hreff="https://example.org">Link</a>', d => chk([[d.querySelector("a") && d.querySelector("a").getAttribute("href") === "https://example.org", "href=\"https://example.org\""]]), '<a href="https://example.org">Link</a>', "javítsd a kódot") }),
+    () => ({ ...kod("<b>Hibakeresés.</b> A böngészőfülön nem látszik cím, mert a <b>title</b> kimaradt a head-ből. Add hozzá: <b>Hibás oldal</b>.", '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n</head>\n<body>\n  <h1>Üdv</h1>\n</body>\n</html>', d => chk([[txt(d.querySelector("head title")) === "Hibás oldal", "title a head-ben: Hibás oldal"], [!!d.querySelector("h1"), "a h1 maradjon"]]), '<!DOCTYPE html>\n<html lang="hu">\n<head>\n  <meta charset="utf-8">\n  <title>Hibás oldal</title>\n</head>\n<body>\n  <h1>Üdv</h1>\n</body>\n</html>', "javítsd a kódot") })
+  ];
+  const mkcode = (l) => (l === 1 ? pick(L1) : l === 2 ? pick(L2) : pick(L3))();
+  const Q = [
+    ["Melyik elem a <b>legnagyobb címsor</b>?", "h1", ["h6", "p", "title"]], ["Melyik elem a <b>bekezdés</b>?", "p", ["h1", "br", "div"]],
+    ["Melyik elem készít <b>hivatkozást</b>?", "a", ["link", "href", "url"]], ["Melyik elem szúr be <b>képet</b>?", "img", ["image", "pic", "src"]],
+    ["Melyik elem a <b>számozott lista</b>?", "ol", ["ul", "li", "nl"]], ["Melyik elem a <b>felsorolás</b> (jeles lista)?", "ul", ["ol", "li", "dl"]],
+    ["Melyik elem a <b>lista egy eleme</b>?", "li", ["ul", "td", "p"]], ["Melyik elem a táblázat <b>fejléc cellája</b>?", "th", ["td", "tr", "head"]],
+    ["Melyik elem a táblázat <b>sora</b>?", "tr", ["td", "th", "row"]], ["Melyik elem <b>sortörés</b>?", "br", ["hr", "p", "lb"]],
+    ["Melyik elem emel ki <b>dőlt</b> (hangsúlyos) szöveget?", "em", ["strong", "b2", "i2"]], ["Melyik attribútum mondja meg, <b>hová mutat</b> a hivatkozás?", "href", ["src", "alt", "target"]],
+    ["Melyik attribútum a <b>kép helyettesítő szövege</b>?", "alt", ["src", "href", "title"]], ["Melyik elem tartalmazza a <b>böngészőfül feliratát</b>?", "title", ["h1", "head", "meta"]],
+    ["Melyik elem jelzi, hogy <b>HTML5</b> oldalról van szó (az első sor)?", "!DOCTYPE html", ["html5", "meta charset", "<head>"]], ["Hol van az oldal <b>látható tartalma</b>?", "body", ["head", "title", "meta"]]
+  ];
+  const countTask = (l) => {
+    let src, ans, what;
+    if (l === 1){ const n = rnd(3, 7); src = "<ul>\n" + Array.from({ length: n }, (_, i) => "  <li>" + W[i % W.length] + "</li>").join("\n") + "\n</ul>"; ans = n; what = "li elem"; }
+    else if (l === 2){ const r = rnd(2, 4), c = rnd(2, 4); src = "<table>\n  <tr>" + "<th>x</th>".repeat(c) + "</tr>\n" + Array.from({ length: r }, () => "  <tr>" + "<td>y</td>".repeat(c) + "</tr>").join("\n") + "\n</table>"; const k = pick(["td", "tr", "th"]); ans = k === "td" ? r * c : k === "tr" ? r + 1 : c; what = k + " elem"; }
+    else { const a = rnd(2, 3), b = rnd(2, 3); src = "<ul>\n  <li>A</li>\n  <li>B\n    <ul>\n" + Array.from({ length: a }, () => "      <li>x</li>").join("\n") + "\n    </ul>\n  </li>\n  <li>C\n    <ul>\n" + Array.from({ length: b }, () => "      <li>y</li>").join("\n") + "\n    </ul>\n  </li>\n</ul>"; ans = 3 + a + b; what = "li elem összesen (a beágyazottakat is)"; }
+    return { q: "Hány <b>" + what + "</b> van a kódban?<pre class='code'>" + esc(src) + "</pre>", kind: "input", mode: "numeric", answer: ans, sol: "<p>Számold meg a nyitó címkéket, a beágyazottakat is.</p>", check: v => { const s = String(v).trim(); return +s === ans && /^\d+$/.test(s) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Végig kell menni a kódon, és minden megfelelő nyitó címkét meg kell számolni." }; } };
+  };
+  const types = [
+    { id: "code", name: "Kódolj", gen: l => mkcode(l) },
+    { id: "fix", name: "Hibakeresés", gen: l => pick(FIX)() },
+    { id: "which", name: "Melyik elem?", gen(l){
+      const q = pick(Q), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false }))));
+      return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: <b>" + esc(q[1]) + "</b>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } },
+    { id: "count", name: "Számold meg", gen: l => countTask(l) }
+  ];
+  K.practice($("#practice"), { id: "html", types, play: playTo, examN: 8 });
+
+  /* ---------- Puska ---------- */
+  const tags = [["h1–h6", "címsor"], ["p", "bekezdés"], ["strong / em", "kiemelt (vastag) / hangsúlyos (dőlt)"], ["br / hr", "sortörés / vízszintes vonal"], ["a href", "hivatkozás"], ["img src alt", "kép"], ["ul / ol / li", "felsorolás / számozott lista / elem"], ["table tr th td", "táblázat, sor, fejléc cella, adat cella"], ["div / span", "általános doboz (blokk / sorbeli)"], ["header nav main section article aside footer", "szemantikus szerkezet"]];
+  $("#cheat").innerHTML = "<tr><th>Elem</th><th>Mire való</th></tr>" + tags.map(t => "<tr><td>" + t[0] + "</td><td style='text-align:left'>" + t[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
