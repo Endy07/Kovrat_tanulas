@@ -20,6 +20,10 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `index.html` | Kezdőlap, a leckék listája. **Minden új leckét fel kell venni ide.** |
 | `kettes-szamrendszer.html` | 1. lecke: kettes számrendszer (kész) |
 | `szamrendszerek.html` | 2. lecke: hármas, ötös, hatos, hetes számrendszer, választható alapszámmal (kész) |
+| `tanrend.html`, `docs/tanrend-9.md` | A 9. évfolyam éves tanrendje (hónapkártyák, melyikhez van már lecke). A `.md` a kutatás forrásokkal: ✅ biztos / ⚠️ feltételezés. |
+| `8-visszatekintes.html` | Visszatekintés a 8. osztályra: hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség (kész) |
+| `tizenhatos-szamrendszer.html`, `logikai-muveletek.html`, `szoveg-es-kep.html`, `html-alapok.html`, `css-alapok.html`, `git-alapok.html` | A 2026. 10. 22-i leckék (kész). **A forrásuk a `tools/lessons/*.src.html`**, ne a kimenetet szerkeszd. |
+| `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, szerkesztő, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `version.json` | Az aktuális verzió-időbélyeg. Az oldalak ebből tudják, hogy van-e újabb változat. **Kézzel ne írd**, a pre-commit hook állítja. |
 | `tools/bump-version.sh` | Új időbélyeg a `version.json`-ba és minden oldal `kovrat-version` metájába |
 | `.githooks/pre-commit` | HTML-t tartalmazó commitnál lefuttatja a bump-ot, és mindent hozzáad a commithoz |
@@ -71,6 +75,33 @@ megnyitáskor és a fülre visszatéréskor gyorsítótár nélkül lekéri a `v
 újabb, egyszer újratölt egy `?v=…` címen. (Akkor valójában GitHub-üzemzavar volt az oka, de a
 10 perces Pages-gyorsítótár ettől függetlenül is gond lett volna.)
 
+### A 9. évfolyam éves tanrendje és az új leckék (2026. 10. 22.)
+
+Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osztályos visszatekintés.
+
+- **Tanrend** (`docs/tanrend-9.md`, `tanrend.html`): az országos programtanterv (Informatika és távközlés
+  ágazati alapoktatás) szerint a 9.-ben **Informatikai és távközlési alapok I. 108 óra** és
+  **Programozási alapok 72 óra**. A programozás a 9.-ben **játékos kódolás (Scratch és társai) → HTML → Git/GitHub →
+  CSS → reszponzív → JavaScript-bevezető**; **a Python a 10. évfolyamon van** (4 + 48 + 20 óra), C# nincs a 9.-ben.
+  A hónapokra bontás **becslés** (az iskola tanmenete nem nyilvános); a számrendszerek, logika, ASCII, Caesar egy másik
+  iskola helyi listájából valók, Kovrat füzete támogatja. Az üzemeltető technikus programtantervét olvastuk (a
+  szoftveresé nem jött le olvashatóan), az ágazati alapozás közös.
+- **Új leckék** (mind: hero, diák, felolvasós levezetés-lejátszó, 5–7 feladattípus × 3 szint, próbadolgozat, puska):
+  tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok,
+  Git és GitHub alapok, 8. osztályos visszatekintés.
+- **Közös készlet** (`tools/lessons`): a leckék ugyanazt a CSS-t és JS-t használják, a forrás kicsi (`*.src.html`), a
+  `build.js` önálló HTML-t állít elő belőle. A futás közben továbbra sincs függőség és build. A **tizenhatos
+  leckénél** készült, a többi erre épül; a régi két lecke (kettes, szamrendszerek) érintetlen.
+- **Kódolós feladatok**: a diák HTML/CSS-t ír egy élő szerkesztőbe (szkript nélküli, azonos eredetű `iframe`), az
+  ellenőrzés a DOM-ot és a `getComputedStyle`-t nézi, tehát a böngésző tényleges megjelenéséből dönt.
+- **Ellenőrzés**: minden gyakorlótípus × szint × 40–80 feladat szkripttel (a kiírt jó válasz átmegy, a kiinduló kód nem),
+  lejátszók végigléptetve, 390 px-en nincs vízszintes görgetés (iframe-es mérés, minden feladat megoldással nyitva),
+  sötét téma. Képernyőképek: `.playwright-mcp/` (nincs commitolva).
+- **Nem készült el** (tervezett): reszponzív weboldalak, JavaScript-bevezető, elektronika, hálózatok. Gyakorlati
+  órák (PC-összeszerelés, nyomtató, Windows) szándékosan kimaradnak.
+- **Hook-hiba**: az új klónban a `core.hooksPath` nem volt beállítva, ezért az első commitoknál nem futott a verzió-bump.
+  Beállítva (`git config core.hooksPath .githooks`), külön commit javította. Új klónnál ne felejtsd el.
+
 ## Döntések és indokaik
 
 | Döntés | Miért |
@@ -105,10 +136,12 @@ megnyitáskor és a fülre visszatéréskor gyorsítótár nélkül lekéri a `v
 
 ## Nyitott / következő
 
-- **Egész éves tanmenet: FÜGGŐBEN.** Endi megkérdezi Kovratot, milyen nyelvet tanulnak
-  (Python? C#?) és milyen témák vannak. Az iskola tanmenete nincs fent az interneten.
-  Az országos programtanterv alapján 9.-ben valószínű a Python-alapok és a HTML/CSS, de ez
-  **feltételezés**.
+- **Az éves tanrend megvan** (`docs/tanrend-9.md`, `tanrend.html`), az országos programtanterv alapján. Ami bizonytalan,
+  azt Kovrat tudja megmondani: mit használnak programozásórán (Scratch vagy már HTML?), tanultak-e logikát / tizenhatos
+  számrendszert / ASCII-t, mi a tanár sorrendje, van-e tankönyv vagy Teams-jegyzet. A válaszok alapján igazítjuk a tanrendet.
+- **Következő leckék** (a tanrend sorrendjében): reszponzív weboldalak (media query, Bootstrap), JavaScript-bevezető,
+  elektronika-alapok, hálózatok alapjai. A 10. évfolyamra: Python.
+- **Push**: az új leckék helyben commitolva vannak, a push (= GitHub Pages élesítés) Endi jóváhagyására vár.
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 
 ## Munkastílus Endivel

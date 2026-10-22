@@ -47,8 +47,12 @@
   kerüljük meg. Egy megbízható JS-függvény a számnevek toldalékolására jól jönne.
 - **A GitHub Pages a GitHub Actions-ön fut:** Actions-zavarnál az oldal órákig nem frissül, és
   a megszakadt építéseket kézzel kell újraindítani.
-- **A tanmenet ismeretlen:** az iskola saját tanmenete nem nyilvános.
-- **Programozós leckékhez böngészőben futó Python kellene** (pl. Pyodide), ha Pythont tanulnak.
+- **A tanmenet becslés:** az országos programtanterv alapján van éves tanrend (`docs/tanrend-9.md`), de az iskola saját
+  sorrendje nem nyilvános; Kovrat válaszai igazítanak rajta. A 9.-ben nincs Python (HTML/CSS/JS, Git), az a 10.-ben jön.
+- **Programozós leckékhez böngészőben futó kód kellene:** a HTML/CSS leckékben élő szerkesztő van (szkript nélküli iframe);
+  JavaScript-futtatáshoz (és később Pythonhoz, pl. Pyodide) engedélyezett szkriptes, elszigetelt futtatókörnyezet kell.
+- **Közös leckekészlet:** a leckék forrása `tools/lessons`, egy kis node-szkript állítja elő belőle az önálló HTML-t
+  (új lecke = egy forrásfájl + a közös diák/lejátszó/gyakorló modulok).
 - **Nincs visszajelzés arról, hol tart a diák:** a haladás csak az ő böngészőjében van.
 
 ## Kizárt utak (ne ajánld)

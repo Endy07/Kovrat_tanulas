@@ -6,6 +6,32 @@ Ha új buktatóba futsz, **írd ide** a végén, a megfelelő szakaszba.
 
 ---
 
+## A. Új lecke a közös készlettel (2026. 10. 22-től ez az alap)
+
+A 3.–9. lecke a `tools/lessons` mappából épül. **A kimenet (`*.html`) generált, a forrást szerkeszd.**
+
+```bash
+node tools/lessons/build.js <név>     # tools/lessons/<név>.src.html → ./<név>.html (név nélkül mindet)
+```
+
+- A forrás váza: `<!--@HEAD-->` (meta, betűk, közös CSS) · `<title>` · saját `<style>` · a tartalom · `<!--@KITJS-->` ·
+  saját `<script>` · `<!--@UPDATE-->` (frissítés-szkript). Minta: `tizenhatos-szamrendszer.src.html` (számrendszer),
+  `html-alapok.src.html` (kódolós feladatok), `logikai-muveletek.src.html` (kifejezésfa).
+- A `K` objektum (kit.js): `K.deck(el, slides)` diák · `K.player(el)` + `.load(frames, cím, auto)` lejátszó, a képkocka
+  `{cap, html}` · `K.practice(el, {id, types, play, examN})` gyakorlás · `K.editor(el, {code})` élő HTML/CSS szerkesztő ·
+  `K.tts.rules` felolvasás-szabályok (regex, csere) · segédek: `rnd, pick, shuffle, esc, norm, art`.
+- Feladat (`gen(szint)` visszatérése): `{q, kind:"input"|"choice"|"code", check(érték)→{ok,msg}, answer, sol, frames, title}`.
+  Választós: `options:[{l, ok}]`, a `check` kapja `{idx, v}`-t. Kódos: `starter`, a `check` kapja `{doc, win, parsed, code}`-t
+  (a `parsed` a begépelt kód DOMParser-es dokumentuma, a `doc`/`win` az élő előnézet: `getComputedStyle`-hoz).
+- **Ellenőrzés (kötelező):** minden típus × szint × 40–80 feladat szkripttel: a megoldásban kiírt „Jó válasz” átmegy-e;
+  kódos feladatnál a kiinduló kód **ne** menjen át. Telefonszélesség: iframe-ben 390 px, minden feladat megoldással
+  megnyitva, `documentElement.scrollWidth` ne nőjön (az iframe görgetősávja miatt 371 az alapérték). Sötét téma.
+- A kimenet verziója: a `build.js` a `version.json`-ból veszi, a hook commitkor újat ír.
+
+A 0–9. szakaszok (füzet, tartalom, tokenek, nyelvtan, felolvasás, ellenőrzés, publikálás) ezután is érvényesek.
+
+---
+
 ## 0. Forrás: hogyan tanítják az iskolában?
 
 **Mielőtt bármit terveznél, derítsd ki, milyen módszerrel tanítják.** A 2. leckénél Kovrat
@@ -248,3 +274,23 @@ git config core.hooksPath .githooks
 - **Firecrawl keresés 402-es hibát adott** (kredit). Helyette a `WebSearch` működik.
 - Az iskola (Mechwart) saját tanmenete **nincs fent az interneten**. Kérdezd meg Endit.
 - Az artifact-keretben az `alert()`, `confirm()`, `window.print()` és letöltés nem működik.
+
+### A 2026. 10. 22-i leckék új buktatói
+
+- **Új klónban a verzió-hook nem fut**, ha a `core.hooksPath` nincs beállítva (`git config core.hooksPath .githooks`).
+  Tünet: a `version.json` és a `kovrat-version` meta nem változik a commitnál. Ellenőrzés: `git show HEAD:version.json`.
+- **Generált mondatban tilos az „a(z)”**, és a változó szó után a toldalék („kékra”, „pirosra”). Fogalmazz át úgy, hogy
+  a változó mögé fix szó kerüljön: „A h1 betűszíne legyen **piros**”, „Csatorna: piros. Jegyei: …”, „ezt a szót: „alma””.
+  A `grep -c "a(z)"` a forráson 0 legyen.
+- **Hosszú, szóköz nélküli szöveg telefonon** (URL, parancs a gombokon, megoldásban, `code`-ban) vízszintes görgetést okoz.
+  A készlet CSS-e `overflow-wrap:anywhere`-t ad a `.opt`, `.solution`, `.prompt`, `.feedback` és `code` elemekre.
+- **Kódolós feladat: a kiinduló kód ne menjen át.** A böngésző alapértékei miatt egy „állítsd 32 px-re” feladat a
+  h1-nél eleve igaz (az alap 32 px). A szkriptes ellenőrzés `starterPass=0`-t várjon.
+- **HTML-feladat ellenőrzése:** a böngésző kijavítja a hibás HTML-t (pl. `<ul>…</ol>`), ezért a hibakeresős feladatnál a
+  **nyers kódot** is nézd regexszel (`</ol>` ne legyen, `</strong>` előbb legyen, mint `</p>`), ne csak a DOM-ot.
+- **Élő előnézet:** `iframe sandbox="allow-same-origin"` (szkript nélkül), a tartalmat `document.write`-tal kell beírni
+  (szinkron), akkor a `getComputedStyle` rögtön jó értéket ad. `srcdoc`-nál a dokumentum betöltése aszinkron.
+- **PDF-ek (programtanterv):** a `WebFetch` nem olvassa a PDF-et. Töltsd le (a harness elmenti), majd
+  `pdftotext -enc UTF-8 -layout fájl.pdf ki.txt` (Git Bash, `pdftotext` megvan), és grep-pel keress benne.
+- **Szkriptes vizsgálat `browser_evaluate`-tel:** a lecke-IIFE belső változói nem érhetők el, ezért a gyakorlót a DOM-on
+  át vezéreld (fül, szint, „Új feladat”, „Megoldás lépésenként”, a „Jó válasz” kiolvasása, beírás, `submit` esemény).

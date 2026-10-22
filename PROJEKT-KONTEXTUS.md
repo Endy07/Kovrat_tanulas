@@ -1,8 +1,8 @@
 ---
 slug: kovrat
 nev: Kovrat tanulás — interaktív tanulási segédlet egy 9.-es programozás szakos diáknak
-frissitve: 2026-10-08
-aliasok: kovrat, kovrat tanulás, kovrat_tanulas, unokaöcsém tanulás
+frissitve: 2026-10-22
+aliasok: kovrat tanulás, kovrat_tanulas, unokaöcsém tanulás
 ---
 
 ## Egy mondatban
@@ -15,24 +15,27 @@ Böngészőben futó interaktív leckék és gyakorlófeladatok Kovratnak, a fel
 - Telefonon is, telepítés nélkül, egy linkről
 
 ## Amit használunk (kulcsszavak — ezekre kell találnia)
-HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · GitHub Actions · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · hármas, ötös, hatos, hetes számrendszer · helyiérték-táblázat · cache busting · git hook · Playwright böngészős teszt · Python-alapok (valószínű) · HTML/CSS weboldal-készítés (valószínű) · programozás-oktatás kezdőknek · középiskolai informatika
+HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · GitHub Actions · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · hármas, ötös, hatos, hetes számrendszer · tizenhatos számrendszer · helyiérték-táblázat · logikai műveletek · ASCII, Unicode, UTF-8 · képméret, színmélység · Caesar-kód · HTML és CSS élő szerkesztővel · Git és GitHub alapok · éves tanrend · 8. osztályos ismétlés · cache busting · git hook · Playwright böngészős teszt · programozás-oktatás kezdőknek · középiskolai informatika · a Python a 10. évfolyamon jön, a 9.-ben HTML/CSS/JavaScript
 
 ## Ami kész
 - Kettes számrendszer lecke: kapcsolótábla, 9 dia, levezetés-lejátszó felolvasással, 5 feladattípus 3 szinten
 - Hármas, ötös, hatos, hetes számrendszer lecke Kovrat füzete alapján: az iskolai módszer (hatványtáblázat, kivonás, próba), „Endi mondja” magyarázat, kockás füzetlap, részletes feladatok ábrákkal, 11 dia, 7 feladattípus próbadolgozattal
+- Éves tanrend a 9. évfolyamra az országos programtanterv alapján (óraszámok, témák, hónapokra bontva; a hónapokra bontás becslés)
+- Hét új lecke 2026-10-22-én: tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok, Git és GitHub alapok, 8. osztályos visszatekintés; mind felolvasós levezetéssel, 3 szintű feladatokkal, próbadolgozattal
 - Automatikus frissítés: az oldal mobilon is mindig a legfrissebb változatot tölti be
-- Kezdőlap a leckék listájával, nyilvános GitHub Pages oldal
+- Kezdőlap szakaszokra bontva, a tanrend-oldallal; nyilvános GitHub Pages oldal
 
 ## Ami hátra van / most ezen dolgozunk
-- Egész éves tanmenet: vár Kovrat válaszára (nyelv: Python vagy C#, témák)
-- További leckék a tanmenet szerint
+- Push (GitHub Pages élesítés): a felhasználó jóváhagyására vár
+- Kovrat válaszai: mit használnak programozásórán, a tanár sorrendje (a tanrend becslés)
+- További leckék a tanrend szerint: reszponzív weboldalak, JavaScript-bevezető, hálózatok; a 10. évfolyamra Python
 
 ## Jövőbeni tervek
 - Rövid animált magyarázó videók a leckékhez
 - Programozós leckék a böngészőben futtatható kóddal
 
 ## Ami NEM érdekel (negatív jelzés)
-- Keretrendszerek, build-eszközök (React, Vue, bundlerek): a leckék szándékosan egyfájlos HTML-ek
+- Keretrendszerek, build-eszközök (React, Vue, bundlerek): a leckék szándékosan egyfájlos HTML-ek (a forrásból egy apró node-szkript állítja elő őket, a futó oldalnak nincs függősége)
 - Fizetős e-learning platformok, LMS-rendszerek (Moodle stb.), bejelentkezést igénylő megoldások
 - Szerveroldali backend, adatbázis
 - Felnőtt- vagy egyetemi szintű tananyag, versenyprogramozás
