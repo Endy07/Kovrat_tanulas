@@ -21,14 +21,14 @@ HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pag
 - Kettes számrendszer lecke: kapcsolótábla, 9 dia, levezetés-lejátszó felolvasással, 5 feladattípus 3 szinten
 - Hármas, ötös, hatos, hetes számrendszer lecke Kovrat füzete alapján: az iskolai módszer (hatványtáblázat, kivonás, próba), „Endi mondja” magyarázat, kockás füzetlap, részletes feladatok ábrákkal, 11 dia, 7 feladattípus próbadolgozattal
 - Éves tanrend a 9. évfolyamra az országos programtanterv alapján (óraszámok, témák, hónapokra bontva; a hónapokra bontás becslés)
-- Hét új lecke 2026-10-22-én: tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok, Git és GitHub alapok, 8. osztályos visszatekintés; mind felolvasós levezetéssel, 3 szintű feladatokkal, próbadolgozattal
+- Nyolc új lecke 2026-10-22-én: tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok, Git és GitHub alapok, reszponzív weboldalak, 8. osztályos visszatekintés; mind felolvasós levezetéssel, 3 szintű feladatokkal, próbadolgozattal
 - Automatikus frissítés: az oldal mobilon is mindig a legfrissebb változatot tölti be
 - Kezdőlap szakaszokra bontva, a tanrend-oldallal; nyilvános GitHub Pages oldal
 
 ## Ami hátra van / most ezen dolgozunk
 - Push (GitHub Pages élesítés): a felhasználó jóváhagyására vár
 - Kovrat válaszai: mit használnak programozásórán, a tanár sorrendje (a tanrend becslés)
-- További leckék a tanrend szerint: reszponzív weboldalak, JavaScript-bevezető, hálózatok; a 10. évfolyamra Python
+- További leckék a tanrend szerint: JavaScript-bevezető, hálózatok; a 10. évfolyamra Python
 
 ## Jövőbeni tervek
 - Rövid animált magyarázó videók a leckékhez

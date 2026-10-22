@@ -19,16 +19,17 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [HTML alapok](html-alapok.html) | Élő szerkesztő, az oldal váza, címsorok, linkek, képek, listák, táblázatok, hibakeresés |
 | [CSS alapok](css-alapok.html) | Szelektorok, színek, dobozmodell, display és position, melyik szabály nyer |
 | [Git és GitHub alapok](git-alapok.html) | Munkamappa, staging, commit, ág, GitHub; parancsok beírása |
+| [Reszponzív weboldalak](reszponziv-weboldalak.html) | Viewport, media query, relatív mértékegységek, flex és grid, Bootstrap-rács; szélességállítható előnézet, kódolós feladatok több ablakszélességen ellenőrizve |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
 ## Hol tartunk (2026. 10. 22.)
 
 - Kész: az **éves tanrend** (`docs/tanrend-9.md`, `tanrend.html`) az országos programtanterv alapján. Biztos: tantárgyak, óraszámok, témák. Becslés: a hónapokra bontás (az iskola tanmenete nem nyilvános).
-- Kész: 9 lecke (a két számrendszeres és a hét új), mind felolvasós levezetéssel, 3 szintű feladatokkal és próbadolgozattal.
+- Kész: 10 lecke (a két számrendszeres és a nyolc új), mind felolvasós levezetéssel, 3 szintű feladatokkal és próbadolgozattal.
 - Kész: automatikus frissítés (`version.json` + pre-commit hook; új klónnál `git config core.hooksPath .githooks`).
 - A **programtanterv szerint a 9.-ben nincs Python**: játékos kódolás, HTML, CSS, Git, reszponzív oldal, JavaScript-bevezető. A Python a 10. évfolyamon jön.
-- Következő: reszponzív weboldalak, JavaScript-bevezető, hálózatok. Kovrat válaszai alapján igazítjuk a tanrendet (mit használnak programozásórán, mi a tanár sorrendje).
+- Következő: JavaScript-bevezető, hálózatok. Kovrat válaszai alapján igazítjuk a tanrendet (mit használnak programozásórán, mi a tanár sorrendje).
 
 ## Dokumentáció
 

@@ -88,7 +88,7 @@ Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osz
   szoftveresé nem jött le olvashatóan), az ágazati alapozás közös.
 - **Új leckék** (mind: hero, diák, felolvasós levezetés-lejátszó, 5–7 feladattípus × 3 szint, próbadolgozat, puska):
   tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok,
-  Git és GitHub alapok, 8. osztályos visszatekintés.
+  Git és GitHub alapok, reszponzív weboldalak (a 2. félévi tanrendből), 8. osztályos visszatekintés.
 - **Közös készlet** (`tools/lessons`): a leckék ugyanazt a CSS-t és JS-t használják, a forrás kicsi (`*.src.html`), a
   `build.js` önálló HTML-t állít elő belőle. A futás közben továbbra sincs függőség és build. A **tizenhatos
   leckénél** készült, a többi erre épül; a régi két lecke (kettes, szamrendszerek) érintetlen.
@@ -97,7 +97,7 @@ Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osz
 - **Ellenőrzés**: minden gyakorlótípus × szint × 40–80 feladat szkripttel (a kiírt jó válasz átmegy, a kiinduló kód nem),
   lejátszók végigléptetve, 390 px-en nincs vízszintes görgetés (iframe-es mérés, minden feladat megoldással nyitva),
   sötét téma. Képernyőképek: `.playwright-mcp/` (nincs commitolva).
-- **Nem készült el** (tervezett): reszponzív weboldalak, JavaScript-bevezető, elektronika, hálózatok. Gyakorlati
+- **Nem készült el** (tervezett): JavaScript-bevezető, elektronika, hálózatok. Gyakorlati
   órák (PC-összeszerelés, nyomtató, Windows) szándékosan kimaradnak.
 - **Hook-hiba**: az új klónban a `core.hooksPath` nem volt beállítva, ezért az első commitoknál nem futott a verzió-bump.
   Beállítva (`git config core.hooksPath .githooks`), külön commit javította. Új klónnál ne felejtsd el.
@@ -139,7 +139,7 @@ Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osz
 - **Az éves tanrend megvan** (`docs/tanrend-9.md`, `tanrend.html`), az országos programtanterv alapján. Ami bizonytalan,
   azt Kovrat tudja megmondani: mit használnak programozásórán (Scratch vagy már HTML?), tanultak-e logikát / tizenhatos
   számrendszert / ASCII-t, mi a tanár sorrendje, van-e tankönyv vagy Teams-jegyzet. A válaszok alapján igazítjuk a tanrendet.
-- **Következő leckék** (a tanrend sorrendjében): reszponzív weboldalak (media query, Bootstrap), JavaScript-bevezető,
+- **Következő leckék** (a tanrend sorrendjében): JavaScript-bevezető (ehhez szkriptet futtató, elszigetelt előnézet kell),
   elektronika-alapok, hálózatok alapjai. A 10. évfolyamra: Python.
 - **Push**: az új leckék helyben commitolva vannak, a push (= GitHub Pages élesítés) Endi jóváhagyására vár.
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.

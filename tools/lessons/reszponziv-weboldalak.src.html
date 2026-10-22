@@ -1,0 +1,300 @@
+<!--@HEAD-->
+<title>Reszponzív weboldalak</title>
+<style>
+.ed{grid-template-columns:1fr}
+.vw{display:flex;flex-direction:column;gap:8px}
+.vw .row label{font-size:.85rem;color:var(--panel-muted)}
+.vwbox{background:var(--panel-2);border-radius:12px;padding:10px;overflow-x:auto}
+.vwbox #vw-frame{margin:0 auto;overflow:hidden;border-radius:8px}
+.vwbox iframe{display:block;border:0;background:#fff;transform-origin:top left}
+.vwnote{font-size:.8rem;color:var(--panel-muted)}
+.pb-stage iframe{width:100%;height:150px;border:0;border-radius:8px;background:#fff;margin-bottom:6px}
+.pb-stage .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;margin:6px 0}
+.pb-stage .codewrap{font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;margin:0 0 10px}
+.pb-stage .codewrap .cur{background:#4a3a12;color:#FFB01F;display:inline-block;width:100%}
+.pb-stage .big{font-size:1.2rem;line-height:1.7}
+.tagtbl td:first-child{font-family:var(--mono);font-weight:700}
+.devs{display:flex;gap:10px;flex-wrap:wrap}
+.devs .btn{font-size:.85rem;padding:.35em .8em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · weboldalak</span>
+  <h1>Reszponzív weboldalak</h1>
+  <p class="lead">Ugyanaz az oldal jól néz ki telefonon és monitoron is. Húzd a csúszkát, és nézd, hogyan alkalmazkodik az oldal az ablak szélességéhez.</p>
+  <div class="panel">
+    <span class="eyebrow">Az előnézet szélességét a csúszka állítja. A kódot átírhatod.</span>
+    <div class="vw">
+      <div class="row"><label for="w-r">Ablak szélessége: <b id="w-v" class="mono">360</b></label><input id="w-r" type="range" min="240" max="1000" value="360" step="10" style="flex:1;min-width:140px"><span class="devs"><button class="btn" data-w="360">📱 Telefon</button><button class="btn" data-w="768">📋 Tablet</button><button class="btn" data-w="1000">🖥️ Monitor</button></span></div>
+      <div class="vwbox"><div id="vw-frame"></div></div>
+    </div>
+    <div id="hero-ed"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Válassz módszert. Az „Új példa” új számokat húz. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="mq" aria-selected="true">Media query</button>
+    <button class="tab" data-m="which" aria-selected="false">Melyik szabály él?</button>
+    <button class="tab" data-m="bs" aria-selected="false">Bootstrap oszlopok</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A „Kódolj reszponzívan” feladatoknál a böngésző a kódodat több ablakszélességen is kipróbálja. A „Próbadolgozat” 8 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt tagtbl" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Viewport</span><pre class="code">&lt;meta name="viewport"
+ content="width=device-width,
+ initial-scale=1"&gt;</pre></div>
+    <div class="trick"><span class="t">Media query</span><pre class="code">@media (min-width: 600px) {
+  .oszlop { width: 50%; }
+}</pre></div>
+    <div class="trick"><span class="t">Mobile first</span><span>Előbb a telefonos (szűk) stílus, aztán <code>min-width</code> media query-kkel bővítesz a nagyobb ablakokra.</span></div>
+    <div class="trick"><span class="t">Bootstrap töréspontok</span><span>sm ≥ 576 · md ≥ 768 · lg ≥ 992 · xl ≥ 1200 px. A sor 12 egység széles.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, norm } = K;
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const IMG = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><rect width="800" height="400" fill="#1B5CBA"/><circle cx="400" cy="200" r="120" fill="#F29E0C"/></svg>');
+  const EX = '<meta name="viewport" content="width=device-width, initial-scale=1">\n<style>\n  * { box-sizing: border-box; }\n  body { font-family: sans-serif; margin: 0; padding: 12px; }\n  .racs { display: grid; gap: 10px; grid-template-columns: 1fr; }\n  .kartya { background: #DCE7F7; padding: 14px; border-radius: 8px; }\n  @media (min-width: 600px) {\n    .racs { grid-template-columns: 1fr 1fr; }\n  }\n  @media (min-width: 900px) {\n    .racs { grid-template-columns: 1fr 1fr 1fr; }\n  }\n</style>\n<h2>Kártyák</h2>\n<div class="racs">\n  <div class="kartya">Egy</div>\n  <div class="kartya">Kettő</div>\n  <div class="kartya">Három</div>\n  <div class="kartya">Négy</div>\n  <div class="kartya">Öt</div>\n  <div class="kartya">Hat</div>\n</div>\n';
+
+  /* ---------- Hero: szélességállítható előnézet ---------- */
+  const hero = K.editor($("#hero-ed"), { code: EX, rows: 16 });
+  // az előnézetet a csúszkás keretbe tesszük, a szerkesztő saját keretét elrejtjük
+  const ed = $("#hero-ed");
+  const own = document.createElement("iframe"); own.setAttribute("sandbox", "allow-same-origin"); own.title = "Reszponzív előnézet";
+  $("#vw-frame").appendChild(own);
+  const edIframe = $("iframe", ed); edIframe.parentElement.hidden = true;
+  const ta = $("textarea", ed);
+  function drawHero(){ try { const d = own.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){} }
+  ta.addEventListener("input", () => setTimeout(drawHero, 140));
+  let curW = 360;
+  function setW(w){
+    curW = w; const box = $(".vwbox").clientWidth - 20, sc = Math.min(1, box / w), H = 260;
+    own.style.width = w + "px"; own.style.height = Math.round(H / sc) + "px"; own.style.transform = "scale(" + sc + ")";
+    const fw = $("#vw-frame"); fw.style.width = Math.round(w * sc) + "px"; fw.style.height = H + "px";
+    $("#w-v").textContent = w + " px" + (sc < 1 ? " (kicsinyítve a képernyőhöz)" : ""); $("#w-r").value = w;
+  }
+  window.addEventListener("resize", () => setW(curW));
+  $("#w-r").addEventListener("input", e => setW(+e.target.value));
+  $$(".devs [data-w]").forEach(b => b.addEventListener("click", () => setW(+b.dataset.w)));
+  setW(360); drawHero();
+
+  /* ---------- Segéd: a kód kipróbálása adott ablakszélességen ---------- */
+  function at(codeStr, w, sel, prop){
+    const f = document.createElement("iframe"); f.setAttribute("sandbox", "allow-same-origin");
+    f.style.cssText = "position:fixed;left:-9999px;top:0;height:700px;border:0;width:" + w + "px";
+    document.body.appendChild(f);
+    try { const d = f.contentDocument; d.open(); d.write(codeStr); d.close(); const e = d.querySelector(sel); if (!e) return null; const cs = f.contentWindow.getComputedStyle(e); return prop === "$width" ? e.getBoundingClientRect().width : cs[prop]; }
+    finally { f.remove(); }
+  }
+
+  /* ---------- Levezetések ---------- */
+  const frame = (css, w, body) => '<iframe sandbox="allow-same-origin" title="Előnézet" style="width:' + w + 'px;max-width:100%" srcdoc="' + esc("<style>*{box-sizing:border-box}body{font-family:sans-serif;margin:0;padding:8px}" + css + "</style>" + body) + '"></iframe>';
+  const BODY = '<h3 style="margin:0 0 6px">Kártyák</h3><div class="racs"><div class="k">1</div><div class="k">2</div><div class="k">3</div><div class="k">4</div></div>';
+  function mqFrames(){
+    const base = ".racs{display:grid;gap:6px;grid-template-columns:1fr}\n.k{background:#DCE7F7;padding:10px;border-radius:6px}";
+    const q1 = "@media (min-width: 600px) {\n  .racs { grid-template-columns: 1fr 1fr; }\n}", q2 = "@media (min-width: 900px) {\n  .racs { grid-template-columns: 1fr 1fr 1fr 1fr; }\n}";
+    const cd = (t, hl) => '<pre class="codewrap">' + t.split("\n").map(l => hl ? '<span class="cur">' + esc(l) + "</span>" : esc(l)).join("\n") + "</pre>";
+    return [
+      { cap: "Mobile first: előbb az alapstílust írjuk meg a legkisebb (telefonos) ablakra. A kártyák egy oszlopban jönnek, mert a grid-template-columns: 1fr.", html: '<div class="lbl">Alapstílus</div>' + cd(base, false) + '<div class="lbl">Ablak: 360 px</div>' + frame(base, 360, BODY) },
+      { cap: "Aztán media query-vel bővítünk. A min-width: 600px azt jelenti: csak akkor érvényes, ha az ablak legalább 600 pixel széles. Két oszlop lesz.", html: '<div class="lbl">Új szabály</div>' + cd(q1, true) + '<div class="lbl">Ablak: 700 px</div>' + frame(base + q1, 700, BODY) },
+      { cap: "A második töréspont: 900 pixeltől négy oszlop. A szűk ablakon továbbra is az alapstílus él.", html: '<div class="lbl">Új szabály</div>' + cd(q2, true) + '<div class="lbl">Ablak: 1000 px</div>' + frame(base + q1 + q2, 1000, BODY) },
+      { cap: "Összefoglalva: ugyanaz a HTML, három ablakszélesség, három elrendezés. A böngésző minden ablakszélességnél újra kiértékeli a media query-ket.", html: '<div class="lbl">360 px</div>' + frame(base + q1 + q2, 360, BODY) + '<div class="lbl">700 px</div>' + frame(base + q1 + q2, 700, BODY) }
+    ];
+  }
+  function whichGen(){
+    const w = pick([320, 480, 650, 800, 1000, 1280]);
+    const defs = [["font-size", "14px", "18px", "22px"], ["color", "piros", "zöld", "kék"], ["oszlopok száma", "1", "2", "3"]], d = pick(defs);
+    const b1 = pick([500, 600, 700]), b2 = pick([900, 1000, 1100]);
+    const val = w >= b2 ? d[3] : w >= b1 ? d[2] : d[1];
+    return { w, d, b1, b2, val };
+  }
+  function whichFrames(t){
+    const F = [{ cap: "Az oldal három szabályt tartalmaz, a tulajdonság: " + t.d[0] + ". Az alap " + t.d[1] + ", a " + t.b1 + " pixel feletti ablakban " + t.d[2] + ", a " + t.b2 + " pixel feletti ablakban " + t.d[3] + ". Az ablak most " + t.w + " pixel széles. Mi lesz az érték?", html: '<pre class="codewrap">' + esc("alap: " + t.d[1] + "\n@media (min-width: " + t.b1 + "px): " + t.d[2] + "\n@media (min-width: " + t.b2 + "px): " + t.d[3] + "\nablak: " + t.w + "px") + "</pre>" }];
+    F.push({ cap: "Az alapszabály mindig érvényes: " + t.d[1] + ".", html: '<p class="big">alap → ' + t.d[1] + "</p>" });
+    F.push({ cap: "Az első media query: " + t.w + " ≥ " + t.b1 + (t.w >= t.b1 ? "? Igen, érvényes, így " + t.d[2] + " lesz." : "? Nem, nem érvényes."), html: '<p class="big">' + t.w + " ≥ " + t.b1 + " → " + (t.w >= t.b1 ? "igen" : "nem") + "</p>" });
+    F.push({ cap: "A második media query: " + t.w + " ≥ " + t.b2 + (t.w >= t.b2 ? "? Igen, érvényes, ez írja felül az előzőt: " + t.d[3] + "." : "? Nem, nem érvényes."), html: '<p class="big">' + t.w + " ≥ " + t.b2 + " → " + (t.w >= t.b2 ? "igen" : "nem") + "</p>" });
+    F.push({ cap: "A végén az érvényes szabályok közül a legutolsó (legnagyobb töréspontú) nyer: " + t.val + ".", html: '<p class="big cur">' + t.val + "</p>" });
+    return F;
+  }
+  const BSW = [["xs", 0], ["sm", 576], ["md", 768], ["lg", 992], ["xl", 1200]];
+  const bpOf = w => BSW.filter(b => w >= b[1]).pop()[0];
+  function bsCols(cls, w){
+    const order = ["xs", "sm", "md", "lg", "xl"], cur = bpOf(w); let n = null;
+    cls.forEach(c => { const m = c.match(/^col(?:-(sm|md|lg|xl))?-(\d+)$/); if (!m) return; const bp = m[1] || "xs"; if (order.indexOf(bp) <= order.indexOf(cur)) { if (n === null || order.indexOf(bp) >= order.indexOf(n[0])) n = [bp, +m[2]]; } });
+    return n;
+  }
+  function bsGen(){
+    const sets = [["col-12", "col-md-6", "col-lg-4"], ["col-6", "col-md-3"], ["col-12", "col-sm-6", "col-lg-3"], ["col-12", "col-lg-6"], ["col-6", "col-sm-4", "col-xl-2"]];
+    return { cls: pick(sets), w: pick([360, 600, 800, 1000, 1300]) };
+  }
+  function bsFrames(t){
+    const cur = bpOf(t.w), n = bsCols(t.cls, t.w), per = 12 / n[1];
+    return [
+      { cap: "A Bootstrap sora 12 egység széles. Egy elem osztályai: " + t.cls.join(" ") + ". Az ablak " + t.w + " pixel széles.", html: '<pre class="codewrap">' + esc('<div class="' + t.cls.join(" ") + '">...</div>\nablak: ' + t.w + " px") + "</pre>" },
+      { cap: "Először a töréspont: a Bootstrap töréspontjai sm 576, md 768, lg 992, xl 1200 pixeltől. A " + t.w + " pixel ebbe a tartományba esik: " + cur + ".", html: '<p class="big">' + t.w + " px → <span class=\"cur\">" + cur + "</span></p>" },
+      { cap: "Az osztályok közül az érvényes: " + (n[0] === "xs" ? "col-" + n[1] : "col-" + n[0] + "-" + n[1]) + ". Mindig a legnagyobb olyan töréspontú osztály számít, ami nem nagyobb a mostani ablaknál.", html: '<p class="big">' + (n[0] === "xs" ? "col-" + n[1] : "col-" + n[0] + "-" + n[1]) + " → <span class=\"cur\">" + n[1] + "</span> egység</p>" },
+      { cap: "A sor 12 egység széles, egy elem " + n[1] + " egység: 12 : " + n[1] + " = " + per + " elem fér egy sorba.", html: '<p class="big">12 : ' + n[1] + ' = <span class="cur">' + per + "</span> elem / sor</p>" }
+    ];
+  }
+  const pb = K.player($("#pb"));
+  const PB = { m: "mq" };
+  function pbNew(auto){
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m)));
+    if (PB.m === "mq") pb.load(mqFrames(), "Media query", auto);
+    else if (PB.m === "which") pb.load(whichFrames(whichGen()), "Melyik szabály él?", auto);
+    else pb.load(bsFrames(bsGen()), "Bootstrap oszlopok", auto);
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a reszponzív oldal?", h:
+      "<p>Egy oldalt ma telefonon, tableten és monitoron is megnyitnak, nagyon különböző ablakszélességgel (320–1920 pixel). A <b>reszponzív</b> oldal ugyanabból a HTML-ből mindegyiken jól olvasható és használható elrendezést ad.</p>" +
+      "<ul><li><b>Mobile first</b>: a szűk (telefonos) nézetet tervezed meg először, aztán bővíted a nagyobbakra.</li><li><b>Progressive enhancement</b>: az alap mindenhol működik, a nagyobb ablakban többet kap.</li></ul>" +
+      "<div class='note'><b>Kipróbálhatod:</b> a fenti csúszkával változtasd az ablakszélességet, és nézd a kártyákat.</div>" },
+    { k: "Viewport", t: "A viewport meta elem", h:
+      "<p>A telefonok alapból úgy tesznek, mintha 980 pixel széles lenne a képernyőjük, és kicsinyítik az oldalt. Ezt kapcsolja ki ez a sor a <code>head</code>-ben:</p>" + code('<meta name="viewport" content="width=device-width, initial-scale=1">') +
+      "<p>Jelentése: a <b>viewport</b> (látható terület) szélessége egyezzen az eszköz szélességével, és ne legyen kicsinyítés. Reszponzív oldalnál <b>mindig</b> ott van.</p>" },
+    { k: "Mértékegységek", t: "Relatív mértékegységek", h: () =>
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Egység</th><th>Mihez viszonyít?</th><th>Példa</th></tr><tr><td>px</td><td>fix pixel</td><td>16px</td></tr><tr><td>%</td><td>a szülő méretéhez</td><td>width: 50% (a szülő felére)</td></tr><tr><td>em</td><td>az elem saját betűméretéhez</td><td>padding: 1.5em</td></tr><tr><td>rem</td><td>a html elem betűméretéhez (alapból 16px)</td><td>font-size: 1.25rem = 20px</td></tr><tr><td>vw / vh</td><td>az ablak szélességének / magasságának 1 százaléka</td><td>10vw = 100px, ha az ablak 1000px</td></tr></table></div>" +
+      "<p>Két alapszabály: <code>img { max-width: 100%; height: auto; }</code> (a kép sosem lóg ki a szülőből) és a dobozmodell: <code>* { box-sizing: border-box; }</code>.</p>" },
+    { k: "Media query", t: "@media: ha az ablak ilyen széles", h: () =>
+      code("@media (min-width: 600px) {\n  .oszlop { width: 50%; }\n}") +
+      "<ul><li><code>min-width: 600px</code>: <b>legalább</b> 600 pixel széles ablakban érvényes (mobile first: ezzel bővítesz felfelé).</li><li><code>max-width: 599px</code>: <b>legfeljebb</b> 599 pixeles ablakban érvényes (leszűkítés lefelé).</li></ul>" +
+      "<p>A <b>töréspont</b> az a szélesség, ahol az elrendezés vált (gyakori: 576, 768, 992, 1200). Ne az eszközökhöz, hanem ahhoz igazítsd, ahol a <b>tartalom</b> már rosszul néz ki.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "mq"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "mq"))); playTo(mqFrames(), "Media query"); }); } },
+    { k: "Elrendezés", t: "Flexbox és grid", h:
+      "<p>Mindkettő a rugalmas elrendezést segíti, és nem kell hozzá minden szélességhez külön szabály.</p>" +
+      code(".sor { display: flex; flex-wrap: wrap; gap: 10px; }\n.kartya { flex: 1 1 200px; }") +
+      "<p>A <b>flex</b> egy sorban/oszlopban rendezi az elemeket (<code>flex-direction: row | column</code>), a <code>flex-wrap: wrap</code> új sorba tördel, ha nem fér el.</p>" +
+      code(".racs {\n  display: grid;\n  gap: 10px;\n  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));\n}") +
+      "<p>A <b>grid</b> kétdimenziós rács: ez a példa annyi 200 pixeles oszlopot rak, amennyi elfér, media query nélkül is." },
+    { k: "Bootstrap", t: "Bootstrap: kész rács", h: () =>
+      "<p>A <b>Bootstrap</b> egy CSS-keretrendszer: kész osztályokat ad. A rács 12 egységből áll, a sorban az oszlopok osztályai megmondják, hány egység szélesek az egyes ablakméreteknél:</p>" +
+      code('<div class="container">\n  <div class="row">\n    <div class="col-12 col-md-6 col-lg-4">Kártya</div>\n    <div class="col-12 col-md-6 col-lg-4">Kártya</div>\n    <div class="col-12 col-md-6 col-lg-4">Kártya</div>\n  </div>\n</div>') +
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Előtag</th><th>Ettől az ablakszélességtől</th></tr><tr><td>col-</td><td>0 (mindig)</td></tr><tr><td>col-sm-</td><td>576 px</td></tr><tr><td>col-md-</td><td>768 px</td></tr><tr><td>col-lg-</td><td>992 px</td></tr><tr><td>col-xl-</td><td>1200 px</td></tr></table></div>" +
+      "<p>A fenti példa: telefonon (col-12) egy elem sorban, tableten (col-md-6) kettő, monitoron (col-lg-4) három. A Bootstrap a <code>head</code>-ben egy <code>link</code>-kel töltődik be (CDN).</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "bs"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "bs"))); playTo(bsFrames({ cls: ["col-12", "col-md-6", "col-lg-4"], w: 800 }), "Bootstrap oszlopok"); }); } },
+    { k: "Tesztelés", t: "Hogyan próbáld ki?", h:
+      "<ul><li><b>A böngésző DevTools eszközsávja:</b> F12, majd Ctrl+Shift+M. Itt telefon- és tabletméretet választhatsz, vagy húzhatod az ablak szélét.</li><li><b>Egyszerűen:</b> szűkítsd a böngészőablakot, és figyeld, mikor törik el az elrendezés. Ott kell töréspont.</li><li><b>Valódi telefon:</b> a leghitelesebb, mert a tapintás, az ujjnyi gombméret is számít.</li></ul>" +
+      "<div class='note'><b>Szabály:</b> a gombok és linkek érintésre legalább kb. 44 × 44 pixelesek legyenek, és a szöveg ne legyen kisebb 16 pixelnél.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hiányzik a viewport meta.</b> A telefon kicsinyített asztali oldalt mutat.</div>" +
+      "<div class='mistake'><b>Fix pixelszélesség.</b> A <code>width: 800px</code> telefonon vízszintes görgetést okoz. Használj <code>%</code>-ot vagy <code>max-width</code>-et.</div>" +
+      "<div class='mistake'><b>min-width és max-width összekeverése.</b> Mobile first esetén a <code>min-width</code> a bővítés. Ha mindkettőt ugyanarra használod, a szabályok ütköznek.</div>" +
+      "<div class='mistake'><b>A media query a fájl elején.</b> Az azonos erősségű szabályok közül a később írt nyer: a media query-k az alapstílus <b>után</b> jöjjenek.</div>" +
+      "<div class='mistake'><b>Kép ki nem fér.</b> Hiányzik az <code>img { max-width: 100%; }</code>.</div>" },
+    { k: "Trükkök", t: "Jó szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mobile first</span><span>Az alapstílus a telefon, a <code>min-width</code> media query-kkel bővítesz.</span></div>" +
+      "<div class='trick'><span class='t'>Kevés töréspont</span><span>2–3 töréspont általában elég (pl. 600, 900).</span></div>" +
+      "<div class='trick'><span class='t'>Rugalmas méretek</span><span>%, rem, fr, <code>auto-fit</code> és <code>minmax</code>: sok esetben media query sem kell.</span></div>" +
+      "<div class='trick'><span class='t'>Mindig box-sizing</span><span><code>* { box-sizing: border-box; }</code>: így a százalékos szélesség tartalmazza a paddinget is.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const chk = pairs => { const miss = pairs.filter(p => !p[0]).map(p => p[1]); return miss.length ? { ok: false, msg: "Hiányzik vagy hibás: " + miss.join("; ") + "." } : { ok: true, msg: "Helyes!" }; };
+  const COL = { piros: ["red", "rgb(255, 0, 0)"], zöld: ["green", "rgb(0, 128, 0)"], kék: ["blue", "rgb(0, 0, 255)"], narancs: ["orange", "rgb(255, 165, 0)"] };
+  const wrap = (css, body, meta) => (meta === false ? "" : '<meta name="viewport" content="width=device-width, initial-scale=1">\n') + "<style>\n" + css + "\n</style>\n" + body;
+  const kod = (q, starter, check, ans) => ({ q, kind: "code", starter, rows: 12, hint: "írd a style-ba", check: v => check(v.code), answer: "<pre class='code'>" + esc(ans) + "</pre>", sol: "<p>Egy lehetséges megoldás:</p>" + code(ans) });
+  const L1 = [
+    () => { const a = pick([18, 20, 24]), b = pick([36, 40, 48]), bp = pick([500, 600, 700]); const body = "<h1>Cím</h1>\n";
+      return kod("A <b>h1</b> betűmérete legyen alapból <b>" + a + "px</b>, de legalább <b>" + bp + "px</b> széles ablakban <b>" + b + "px</b> (mobile first, <b>min-width</b>).", wrap("/* ide írd */", body), c => chk([[at(c, bp - 100, "h1", "fontSize") === a + "px", "keskeny ablakban " + a + "px"], [at(c, bp + 100, "h1", "fontSize") === b + "px", "széles ablakban " + b + "px"]]), wrap("h1 { font-size: " + a + "px; }\n@media (min-width: " + bp + "px) {\n  h1 { font-size: " + b + "px; }\n}", body)); },
+    () => { const k1 = pick(Object.keys(COL)), k2 = pick(Object.keys(COL).filter(x => x !== k1)); const bp = pick([500, 600, 700]); const body = '<div class="doboz">Doboz</div>\n';
+      return kod("A <b>.doboz</b> háttere legyen <b>" + k1 + "</b> (angolul: " + COL[k1][0] + "), de ha az ablak <b>legfeljebb " + bp + "px</b> széles, akkor <b>" + k2 + "</b> (" + COL[k2][0] + "). Használj <b>max-width</b> media query-t.", wrap(".doboz { padding: 20px; }\n/* ide írd */", body), c => chk([[at(c, bp + 300, ".doboz", "backgroundColor") === COL[k1][1], "széles ablakban " + k1 + " háttér"], [at(c, bp - 100, ".doboz", "backgroundColor") === COL[k2][1], "keskeny ablakban " + k2 + " háttér"]]), wrap(".doboz { padding: 20px; background-color: " + COL[k1][0] + "; }\n@media (max-width: " + bp + "px) {\n  .doboz { background-color: " + COL[k2][0] + "; }\n}", body)); },
+    () => { const body = '<div class="keret"><img src="' + IMG + '" alt="Kép"></div>\n';
+      return kod("A <b>.keret</b> doboz 300px széles, benne egy 800px széles kép. Úgy állítsd be, hogy a <b>kép sose lógjon ki</b> a keretből (<b>max-width: 100%</b>).", wrap(".keret { width: 300px; }\n/* ide írd */", body), c => chk([[at(c, 1000, "img", "$width") <= 300.5, "a kép szélessége legfeljebb 300px"], [at(c, 1000, "img", "$width") > 100, "a kép ne tűnjön el"]]), wrap(".keret { width: 300px; }\nimg { max-width: 100%; height: auto; }", body)); },
+    () => { const a = pick([8, 10, 12]), b = pick([32, 40, 48]); const body = "<p>Szöveg</p>\n";
+      return kod("A <b>body</b> belső margója (<b>padding</b>) legyen <b>" + a + "px</b>, de legalább <b>768px</b> széles ablakban <b>" + b + "px</b>.", wrap("body { margin: 0; }\n/* ide írd */", body), c => chk([[at(c, 400, "body", "paddingLeft") === a + "px", "keskeny ablakban " + a + "px"], [at(c, 1000, "body", "paddingLeft") === b + "px", "széles ablakban " + b + "px"]]), wrap("body { margin: 0; padding: " + a + "px; }\n@media (min-width: 768px) {\n  body { padding: " + b + "px; }\n}", body)); }
+  ];
+  const L2 = [
+    () => { const body = '<div class="sor"><div>A</div><div>B</div><div>C</div></div>\n';
+      return kod("A <b>.sor</b> legyen flex konténer: <b>600px-nél keskenyebb</b> ablakban egymás alatt (<b>flex-direction: column</b>), egyébként egymás mellett (<b>row</b>).", wrap("/* ide írd */", body), c => chk([[at(c, 400, ".sor", "display") === "flex", "display: flex"], [at(c, 400, ".sor", "flexDirection") === "column", "keskeny ablakban column"], [at(c, 800, ".sor", "flexDirection") === "row", "széles ablakban row"]]), wrap(".sor { display: flex; flex-direction: column; }\n@media (min-width: 600px) {\n  .sor { flex-direction: row; }\n}", body)); },
+    () => { const body = '<nav class="menu">Menü</nav><p>Tartalom</p>\n';
+      return kod("A <b>.menu</b> elem <b>600px-nél keskenyebb</b> ablakban ne jelenjen meg (<b>display: none</b>), egyébként legyen <b>block</b>.", wrap("/* ide írd */", body), c => chk([[at(c, 400, ".menu", "display") === "none", "keskeny ablakban display: none"], [at(c, 800, ".menu", "display") === "block", "széles ablakban display: block"]]), wrap(".menu { display: block; }\n@media (max-width: 599px) {\n  .menu { display: none; }\n}", body)); },
+    () => { const body = '<div class="oszlop">Oszlop</div>\n';
+      return kod("Mobile first: a <b>.oszlop</b> szélessége legyen <b>100%</b>, de <b>768px-től</b> <b>50%</b>.", wrap("body { margin: 0; }\n/* ide írd */", body), c => { const w1 = at(c, 400, ".oszlop", "$width"), w2 = at(c, 1000, ".oszlop", "$width"); return chk([[Math.abs(w1 - 400) < 2, "keskeny ablakban 100% (teljes szélesség)"], [Math.abs(w2 - 500) < 2, "széles ablakban 50%"]]); }, wrap("body { margin: 0; }\n.oszlop { width: 100%; }\n@media (min-width: 768px) {\n  .oszlop { width: 50%; }\n}", body)); },
+    () => { const g = pick([8, 10, 12]); const body = '<div class="kartyak"><div>1</div><div>2</div><div>3</div></div>\n';
+      return kod("A <b>.kartyak</b> legyen flex konténer, tördelődjön új sorba, ha nem fér el (<b>flex-wrap: wrap</b>), és legyen <b>" + g + "px</b> hézag (<b>gap</b>) az elemek között.", wrap("/* ide írd */", body), c => chk([[at(c, 800, ".kartyak", "display") === "flex", "display: flex"], [at(c, 800, ".kartyak", "flexWrap") === "wrap", "flex-wrap: wrap"], [at(c, 800, ".kartyak", "columnGap") === g + "px", "gap: " + g + "px"]]), wrap(".kartyak { display: flex; flex-wrap: wrap; gap: " + g + "px; }", body)); }
+  ];
+  const L3 = [
+    () => { const body = '<div class="racs"><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div></div>\n';
+      return kod("A <b>.racs</b> legyen grid: <b>600px alatt 1 oszlop</b>, <b>600–899px között 2 oszlop</b>, <b>900px-től 3 oszlop</b> (mobile first, <b>grid-template-columns</b>).", wrap("/* ide írd */", body), c => { const n = w => { const v = at(c, w, ".racs", "gridTemplateColumns"); return v && v !== "none" ? v.trim().split(/\s+/).length : 0; }; return chk([[at(c, 400, ".racs", "display") === "grid", "display: grid"], [n(400) === 1, "400px-es ablakban 1 oszlop"], [n(700) === 2, "700px-es ablakban 2 oszlop"], [n(1000) === 3, "1000px-es ablakban 3 oszlop"]]); }, wrap(".racs { display: grid; gap: 10px; grid-template-columns: 1fr; }\n@media (min-width: 600px) {\n  .racs { grid-template-columns: 1fr 1fr; }\n}\n@media (min-width: 900px) {\n  .racs { grid-template-columns: 1fr 1fr 1fr; }\n}", body)); },
+    () => { const body = '<h1>Cím</h1><p class="lead">Szöveg</p>\n';
+      return kod("Háromszintű méretezés: a <b>h1</b> alapból <b>24px</b>, <b>600px-től 32px</b>, <b>1000px-től 48px</b> (mobile first).", wrap("/* ide írd */", body), c => chk([[at(c, 400, "h1", "fontSize") === "24px", "400px-en 24px"], [at(c, 700, "h1", "fontSize") === "32px", "700px-en 32px"], [at(c, 1100, "h1", "fontSize") === "48px", "1100px-en 48px"]]), wrap("h1 { font-size: 24px; }\n@media (min-width: 600px) {\n  h1 { font-size: 32px; }\n}\n@media (min-width: 1000px) {\n  h1 { font-size: 48px; }\n}", body)); },
+    () => { const body = '<div class="oldalsav">Oldalsáv</div><div class="tartalom">Tartalom</div>\n';
+      return kod("Két elem: <b>.oldalsav</b> és <b>.tartalom</b>. Keskeny ablakban legyen mindkettő <b>display: block</b>; <b>768px-től</b> legyen <b>.oldalsav</b> <b>float: left</b> és <b>width: 25%</b>.", wrap("/* ide írd */", body), c => chk([[at(c, 400, ".oldalsav", "float") === "none", "keskeny ablakban nincs float"], [at(c, 1000, ".oldalsav", "float") === "left", "széles ablakban float: left"], [Math.abs(at(c, 1000, ".oldalsav", "$width") - 250) < 25, "széles ablakban kb. 25% szélesség"]]), wrap("@media (min-width: 768px) {\n  .oldalsav { float: left; width: 25%; }\n}", body)); }
+  ];
+  const mkcode = l => (l === 1 ? pick(L1) : l === 2 ? pick(L2) : pick(L3))();
+  const whichTask = l => { const t = whichGen(), fr = whichFrames(t); const opts = shuffle([t.d[1], t.d[2], t.d[3]]).map(x => ({ l: x, ok: x === t.val }));
+    return { q: "Egy oldal egyik tulajdonsága: <b>" + t.d[0] + "</b>. Alapból <b>" + t.d[1] + "</b>. <code>@media (min-width: " + t.b1 + "px)</code> esetén <b>" + t.d[2] + "</b>. <code>@media (min-width: " + t.b2 + "px)</code> esetén <b>" + t.d[3] + "</b>. Az ablak <b>" + t.w + "px</b> széles. Mi az érték?", kind: "choice", options: opts, answer: t.val, sol: caps(fr), frames: fr, title: "Melyik szabály él?", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg, melyik töréspontot éri el az ablak (≥), és a legnagyobbat tartsd meg." }) }; };
+  const bsTask = l => { const t = bsGen(), fr = bsFrames(t), n = bsCols(t.cls, t.w), per = 12 / n[1];
+    return { q: "Egy Bootstrap elem osztályai: <code>" + t.cls.join(" ") + "</code>. Hány ilyen elem fér egy sorba, ha az ablak <b>" + t.w + "px</b> széles? (A sor 12 egység. Töréspontok: sm 576, md 768, lg 992, xl 1200.)", kind: "input", mode: "numeric", answer: per, sol: caps(fr), frames: fr, title: "Bootstrap oszlopok", check: v => { const s = norm(v); return /^\d+$/.test(s) && +s === per ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Előbb a töréspont, aztán az érvényes col-osztály egységei, végül 12 : egység." }; } }; };
+  const unitTask = l => {
+    const k = rnd(0, 4); let q, ans, sol;
+    if (k === 0){ const w = pick([320, 500, 800, 1000, 1200, 1500]); ans = w / 100; q = "Az ablak <b>" + w + "px</b> széles. Hány pixel <b>1vw</b>?"; sol = "<p>A vw az ablakszélesség 1 százaléka: " + w + " : 100 = " + ans + ".</p>"; }
+    else if (k === 1){ const p = pick([300, 400, 600, 800]), pc = pick([25, 50, 75]); ans = p * pc / 100; q = "A szülő <b>" + p + "px</b> széles. Hány pixel széles az a gyerek, amelynek <b>width: " + pc + "%</b>?"; sol = "<p>" + p + " · " + pc + " : 100 = " + ans + ".</p>"; }
+    else if (k === 2){ const r = pick([1.25, 1.5, 2, 2.5, 3]); ans = 16 * r; q = "A html elem betűmérete 16px. Hány pixel a <b>" + String(r).replace(".", ",") + "rem</b>?"; sol = "<p>16 · " + String(r).replace(".", ",") + " = " + ans + ".</p>"; }
+    else if (k === 3){ const f = pick([10, 20, 24]), r = pick([1.5, 2]); ans = f * r; q = "Az elem betűmérete <b>" + f + "px</b>. Hány pixel a belső margója, ha <b>padding: " + String(r).replace(".", ",") + "em</b>?"; sol = "<p>Az em az elem saját betűméretéhez viszonyít: " + f + " · " + String(r).replace(".", ",") + " = " + ans + ".</p>"; }
+    else { const h = pick([600, 700, 800, 900]), vh = pick([10, 25, 50]); ans = h * vh / 100; q = "Az ablak <b>" + h + "px</b> magas. Hány pixel magas az az elem, amelynek <b>height: " + vh + "vh</b>?"; sol = "<p>" + h + " · " + vh + " : 100 = " + ans + ".</p>"; }
+    return { q, kind: "input", mode: "numeric", answer: ans, sol, check: v => { const s = norm(v).replace(",", "."); return /^\d+(\.\d+)?$/.test(s) && Math.abs(+s - ans) < 1e-9 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Nézd meg, mihez viszonyít az egység (ablak, szülő, betűméret)." }; } };
+  };
+  const FACTS = [
+    ["Melyik meta elem teszi lehetővé a reszponzív megjelenést telefonon?", "viewport", ["charset", "description", "author"]],
+    ["Mit jelent a <b>mobile first</b> megközelítés?", "előbb a szűk (telefonos) nézetet tervezed, és min-width-tel bővítesz", ["csak telefonra készül az oldal", "a telefon az utolsó lépés", "a monitoros nézet az alap"]],
+    ["Melyik media query érvényes <b>legalább</b> 768px széles ablakban?", "@media (min-width: 768px)", ["@media (max-width: 768px)", "@media (width: 768)", "@media (768px)"]],
+    ["Melyik egység az <b>ablak szélességének</b> 1 százaléka?", "vw", ["vh", "rem", "em"]],
+    ["Melyik egység viszonyít a <b>html elem</b> betűméretéhez?", "rem", ["em", "px", "%"]],
+    ["Melyik szabály gondoskodik arról, hogy a kép ne lógjon ki a szülőjéből?", "img { max-width: 100%; }", ["img { width: 100px; }", "img { float: left; }", "img { display: none; }"]],
+    ["Hány egység széles a Bootstrap sora?", "12", ["10", "16", "24"]],
+    ["Melyik Bootstrap-osztály az, amelyik <b>768px-től</b> a sor feléig ér?", "col-md-6", ["col-sm-6", "col-lg-6", "col-6-md"]],
+    ["Melyik CSS-érték hoz létre rugalmas, tördelődő sort?", "display: flex; flex-wrap: wrap;", ["display: block;", "float: both;", "position: fixed;"]],
+    ["Hogyan próbálhatod ki a reszponzivitást a böngészőben?", "F12, majd az eszközsáv (Ctrl+Shift+M)", ["csak nyomtatással", "a böngésző újratelepítésével", "nem lehet kipróbálni"]]
+  ];
+  const types = [
+    { id: "code", name: "Kódolj reszponzívan", gen: l => mkcode(l) },
+    { id: "which", name: "Melyik szabály él?", gen: l => whichTask(l) },
+    { id: "bs", name: "Bootstrap", gen: l => bsTask(l) },
+    { id: "unit", name: "Mértékegységek", gen: l => unitTask(l) },
+    { id: "facts", name: "Fogalmak", gen(l){ const q = pick(FACTS), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false })))); return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: <b>" + esc(q[1]) + "</b>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) }; } }
+  ];
+  K.practice($("#practice"), { id: "reszponziv", types, play: playTo, examN: 8 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["viewport meta", "kell a telefonos megjelenéshez"], ["@media (min-width: X)", "legalább X széles ablakban érvényes (mobile first)"], ["@media (max-width: X)", "legfeljebb X széles ablakban érvényes"], ["%, rem, em, vw, vh", "relatív mértékegységek"], ["max-width: 100%", "a kép/elem nem lóg ki"], ["display: flex; flex-wrap: wrap", "rugalmas, tördelődő sor"], ["display: grid; grid-template-columns", "rács oszlopai"], ["repeat(auto-fit, minmax(200px, 1fr))", "annyi oszlop, amennyi elfér"], ["col-12 col-md-6 col-lg-4", "Bootstrap: 1 / 2 / 3 elem egy sorban"]];
+  $("#cheat").innerHTML = "<tr><th>Mit?</th><th>Mire való?</th></tr>" + rows.map(r => "<tr><td style='text-align:left'>" + esc(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
