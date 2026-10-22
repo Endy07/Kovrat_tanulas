@@ -1,0 +1,820 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261022075749">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Git és GitHub alapok</title>
+<style>
+.areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.area{background:var(--panel-2);border:1.5px solid #3A4656;border-radius:12px;padding:10px 12px;min-height:118px;display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.85rem;color:var(--panel-ink)}
+.area h4{margin:0 0 4px;font-family:var(--body);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--panel-muted)}
+.file{border-radius:6px;padding:2px 8px;background:#333f4f;display:inline-block;width:max-content;max-width:100%}
+.file.mod{background:#5b4210;color:#FFB01F}
+.file.stg{background:#1d4a31;color:#7fe0a8}
+.commit{border-left:3px solid var(--led);padding-left:8px}
+.cmds{display:flex;flex-wrap:wrap;gap:8px}
+.cmds .btn{font-family:var(--mono);font-size:.85rem;padding:.4em .8em}
+.term{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.82rem;line-height:1.5;white-space:pre-wrap;overflow-x:auto;min-height:60px;max-height:260px;overflow-y:auto}
+.term .p{color:#FFB01F}
+.pb-stage .term{background:#0A0E13;max-height:300px;margin:0}
+.pb-stage .term .cur{background:#4a3a12;color:#FFB01F;display:block}
+.where{font-size:.9rem;color:var(--muted)}
+.hint{font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · verziókezelés</span>
+  <h1>Git és GitHub alapok</h1>
+  <p class="lead">A Git megjegyzi a fájljaid minden korábbi állapotát. Itt egy kis játék-repóval kipróbálhatod a legfontosabb parancsokat.</p>
+  <div class="panel">
+    <span class="eyebrow">Módosíts fájlt, majd vidd végig a változtatást a négy helyen</span>
+    <div class="areas">
+      <div class="area" id="a-work"><h4>Munkamappa</h4></div>
+      <div class="area" id="a-stage"><h4>Staging (előkészítés)</h4></div>
+      <div class="area" id="a-repo"><h4>Helyi repó (commitok)</h4></div>
+      <div class="area" id="a-remote"><h4>GitHub (távoli)</h4></div>
+    </div>
+    <div class="cmds" id="cmds">
+      <button class="btn" data-c="mod1">✎ index.html módosítása</button>
+      <button class="btn" data-c="mod2">✎ stilus.css módosítása</button>
+      <button class="btn" data-c="add1">git add index.html</button>
+      <button class="btn" data-c="addall">git add .</button>
+      <button class="btn" data-c="commit">git commit</button>
+      <button class="btn" data-c="push">git push</button>
+      <button class="btn" data-c="status">git status</button>
+      <button class="btn" data-c="reset">↺ Újra</button>
+    </div>
+    <div class="term" id="term" aria-live="polite"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Három tipikus munkamenet a parancssorban. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="first" aria-selected="true">Az első commit</button>
+    <button class="tab" data-m="branch" aria-selected="false">Ág és összefésülés</button>
+    <button class="tab" data-m="remote" aria-selected="false">GitHub: clone és push</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Az „Írd be a parancsot” feladatoknál a pontos parancsot kell beírnod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Három terület</span><span>munkamappa → <code>git add</code> → staging → <code>git commit</code> → helyi repó → <code>git push</code> → GitHub</span></div>
+    <div class="trick"><span class="t">Egy napi munka</span><pre class="code">git pull
+(dolgozol...)
+git status
+git add .
+git commit -m "Mit csináltam"
+git push</pre></div>
+    <div class="trick"><span class="t">Soha ne commitolj</span><span>jelszót, tokent, API-kulcsot (<code>.env</code>), nagy generált mappát (<code>node_modules</code>), személyes képeket nyilvános repóba. Ami már feltöltődött, azt a GitHub története megőrzi.</span></div>
+    <div class="trick"><span class="t">Jó commit-üzenet</span><span>Rövid, jelen idejű, megmondja, <b>mit</b> és <b>miért</b>: „Menü javítása mobilon”, nem „javítás” vagy „asdf”.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, norm } = K;
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+  const hash = () => Array.from({ length: 7 }, () => "0123456789abcdef"[rnd(0, 15)]).join("");
+
+  /* ---------- Hero: játék-repó ---------- */
+  const G = { files: {}, commits: [], remote: 0, n: 0, out: "" };
+  function reset(){ G.files = { "index.html": "clean", "stilus.css": "clean" }; G.commits = [{ h: "3f2a1bc", m: "Első oldal" }]; G.remote = 1; G.n = 1; G.out = "$ git log --oneline\n" + "3f2a1bc (HEAD -> main, origin/main) Első oldal"; }
+  const fileEl = (n, s) => '<span class="file ' + (s === "mod" ? "mod" : s === "stg" ? "stg" : "") + '">' + n + (s === "mod" ? " ✎" : s === "stg" ? " ✓" : "") + "</span>";
+  function status(){
+    const mod = Object.keys(G.files).filter(f => G.files[f] === "mod"), stg = Object.keys(G.files).filter(f => G.files[f] === "stg");
+    let o = "$ git status\nOn branch main\n";
+    o += G.commits.length > G.remote ? "Your branch is ahead of 'origin/main' by " + (G.commits.length - G.remote) + " commit" + (G.commits.length - G.remote > 1 ? "s" : "") + ".\n" : "Your branch is up to date with 'origin/main'.\n";
+    if (stg.length) o += "\nChanges to be committed:\n" + stg.map(f => "\tmodified:   " + f).join("\n") + "\n";
+    if (mod.length) o += "\nChanges not staged for commit:\n" + mod.map(f => "\tmodified:   " + f).join("\n") + "\n";
+    if (!stg.length && !mod.length) o += "\nnothing to commit, working tree clean";
+    return o;
+  }
+  function render(){
+    const fs = Object.keys(G.files);
+    $("#a-work").innerHTML = "<h4>Munkamappa</h4>" + fs.map(f => fileEl(f, G.files[f] === "mod" ? "mod" : "")).join("");
+    $("#a-stage").innerHTML = "<h4>Staging (előkészítés)</h4>" + (fs.filter(f => G.files[f] === "stg").map(f => fileEl(f, "stg")).join("") || '<span class="hint">üres</span>');
+    $("#a-repo").innerHTML = "<h4>Helyi repó (commitok)</h4>" + G.commits.slice().reverse().map(c => '<span class="commit">' + c.h + " " + esc(c.m) + "</span>").join("");
+    $("#a-remote").innerHTML = "<h4>GitHub (távoli)</h4>" + G.commits.slice(0, G.remote).reverse().map(c => '<span class="commit">' + c.h + " " + esc(c.m) + "</span>").join("");
+    $("#term").textContent = G.out;
+    const mods = fs.some(f => G.files[f] === "mod"), stg = fs.some(f => G.files[f] === "stg");
+    $$("#cmds [data-c]").forEach(b => {
+      const c = b.dataset.c;
+      b.disabled = (c === "add1" && G.files["index.html"] !== "mod") || (c === "addall" && !mods) || (c === "commit" && !stg) || (c === "push" && G.commits.length === G.remote);
+    });
+  }
+  const MSG = ["Menü javítása", "Színek frissítése", "Új bekezdés", "Link hozzáadása", "Betűméret módosítása"];
+  $("#cmds").addEventListener("click", e => {
+    const b = e.target.closest("[data-c]"); if (!b || b.disabled) return;
+    const c = b.dataset.c;
+    if (c === "reset") reset();
+    else if (c === "mod1" || c === "mod2"){ const f = c === "mod1" ? "index.html" : "stilus.css"; G.files[f] = "mod"; G.out = "(átírtad a fájlt: " + f + ")\n\n" + status(); }
+    else if (c === "add1"){ G.files["index.html"] = "stg"; G.out = "$ git add index.html\n\n" + status(); }
+    else if (c === "addall"){ Object.keys(G.files).forEach(f => { if (G.files[f] === "mod") G.files[f] = "stg"; }); G.out = "$ git add .\n\n" + status(); }
+    else if (c === "commit"){ const ch = Object.keys(G.files).filter(f => G.files[f] === "stg"); const m = MSG[G.n % MSG.length]; const h = hash(); G.commits.push({ h, m }); G.n++; ch.forEach(f => G.files[f] = "clean"); G.out = '$ git commit -m "' + m + '"\n[main ' + h + "] " + m + "\n " + ch.length + " file" + (ch.length > 1 ? "s" : "") + " changed"; }
+    else if (c === "push"){ const k = G.commits.length - G.remote; G.remote = G.commits.length; G.out = "$ git push\nEnumerating objects...\nTo https://github.com/felhasznalo/oldal.git\n   " + G.commits[G.commits.length - k - 1].h + ".." + G.commits[G.commits.length - 1].h + "  main -> main"; }
+    else if (c === "status") G.out = status();
+    render();
+  });
+  reset(); render();
+
+  /* ---------- Levezetések: terminál-munkamenetek ---------- */
+  const sess = {
+    first: () => [
+      ["git init", "Initialized empty Git repository in C:/projekt/.git/", "A git init létrehozza a rejtett .git mappát: ebben tárolja a Git az előzményeket. A mappa mostantól repó (tároló)."],
+      ['echo "<h1>Szia</h1>" > index.html', "", "Létrehozunk egy fájlt. Ez még csak a munkamappában van, a Git nem követi."],
+      ["git status", 'On branch main\n\nNo commits yet\n\nUntracked files:\n  (use "git add <file>..." to include in what will be committed)\n\tindex.html\n\nnothing added to commit but untracked files present', "A git status megmutatja, mi a helyzet. Az index.html még követetlen (untracked): a Git tud róla, de nem része a történetnek."],
+      ["git add index.html", "", "A git add az előkészítő területre (staging) teszi a fájlt: ez azt jelenti, hogy a következő commitba bekerül."],
+      ["git status", "On branch main\n\nNo commits yet\n\nChanges to be committed:\n\tnew file:   index.html", "Most a Changes to be committed alatt látszik: a staging területen van, készen áll a commitra."],
+      ['git commit -m "Első oldal"', "[main (root-commit) 3f2a1bc] Első oldal\n 1 file changed, 1 insertion(+)\n create mode 100644 index.html", "A git commit elmenti a pillanatnyi állapotot a történetbe. A -m után az üzenet áll: rövid leírás arról, mit csináltál. A 3f2a1bc a commit azonosítója."],
+      ["git log --oneline", "3f2a1bc (HEAD -> main) Első oldal", "A git log kilistázza a commitokat. Az első verziód biztonságban van: bármikor visszatérhetsz hozzá."]
+    ],
+    branch: () => [
+      ["git branch", "* main", "Az ág (branch) a történet egy külön vonala. Most egy van, a main. A csillag jelöli, melyiken állsz."],
+      ["git switch -c uj-menu", "Switched to a new branch 'uj-menu'", "A git switch -c új ágat hoz létre és át is vált rá. Itt kísérletezhetsz, a main ág érintetlen marad."],
+      ['git commit -am "Új menü"', "[uj-menu 9d4e7a0] Új menü\n 1 file changed, 4 insertions(+)", "Az ágon commitolunk. (A -a a már követett, módosított fájlokat automatikusan előkészíti, a -m az üzenet.) Ez a commit csak az uj-menu ágon van meg."],
+      ["git switch main", "Switched to branch 'main'", "Visszaváltunk a main ágra. A munkamappa fájljai is visszaállnak: az új menü itt még nincs meg."],
+      ["git merge uj-menu", "Updating 3f2a1bc..9d4e7a0\nFast-forward\n index.html | 4 ++++\n 1 file changed, 4 insertions(+)", "A git merge az uj-menu ág változtatásait beolvasztja abba az ágba, amelyen állsz (main). Itt gyorsítva előretekerhető (fast-forward), mert a main közben nem változott."],
+      ["git branch -d uj-menu", "Deleted branch uj-menu (was 9d4e7a0).", "A befejezett ágat törölhetjük, a commit a main ágon megmaradt."],
+      ["git log --oneline", "9d4e7a0 (HEAD -> main) Új menü\n3f2a1bc Első oldal", "Mostantól a main történetében mindkét commit benne van."]
+    ],
+    remote: () => [
+      ["git clone https://github.com/felhasznalo/oldal.git", "Cloning into 'oldal'...\nreceiving objects: 100%, done.", "A git clone letölti a GitHubon lévő repót az összes előzményével. Ez az egyetlen alkalom, amikor klónozol, utána pull-lal frissítesz."],
+      ["cd oldal", "", "Belépünk a letöltött mappába."],
+      ["(átírod a fájlt)", "", "Dolgozol: módosítod az index.html-t a szerkesztőben."],
+      ["git add .", "", "A pont azt jelenti: minden módosított fájlt előkészítünk a commitra."],
+      ['git commit -m "Link javítása"', "[main 7b1c9e2] Link javítása\n 1 file changed, 1 insertion(+), 1 deletion(-)", "Elmentjük a változtatást a helyi repóba. Ez még csak a gépeden van!"],
+      ["git push", "To https://github.com/felhasznalo/oldal.git\n   3f2a1bc..7b1c9e2  main -> main", "A git push feltölti a helyi commitokat a GitHubra. Csak ezután látja más is, és ez lesz a biztonsági mentésed."],
+      ["git pull", "Already up to date.", "A git pull letölti és beolvasztja azt, amit mások (vagy te egy másik gépen) feltöltöttek. Munka előtt mindig pull-oljunk."]
+    ]
+  };
+  const MET = { first: "Az első commit", branch: "Ág és összefésülés", remote: "GitHub: clone és push" };
+  function termFrames(m){
+    const S = sess[m](), F = [];
+    F.push({ cap: MET[m] + ": egy parancssori munkamenetet nézünk végig. A $ jel után a te beírt parancsod áll, alatta a Git válasza.", html: '<div class="term"><span class="p">$</span> </div>' });
+    S.forEach((s, k) => {
+      let html = '<div class="term">';
+      S.slice(0, k + 1).forEach((x, i) => { const line = '<span class="p">$</span> ' + esc(x[0]) + (x[1] ? "\n" + esc(x[1]) : ""); html += (i === k ? '<span class="cur">' + line + "</span>" : line + "\n"); });
+      F.push({ cap: s[2], html: html + "</div>" });
+    });
+    return F;
+  }
+  const pb = K.player($("#pb"));
+  const PB = { m: "first" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(termFrames(PB.m), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mire jó a Git?", h:
+      "<p>A <b>verziókezelő</b> megjegyzi a fájljaid minden korábbi állapotát. Ha elrontasz valamit, visszatérsz egy régi változathoz; ha többen dolgoztok egy projekten, a Git összefésüli a munkátokat.</p>" +
+      "<ul><li><b>Git</b>: a program, a gépeden fut, parancssorból használod.</li><li><b>GitHub</b>: egy weboldal, ahol a repókat (tárolókat) az interneten is tárolhatod és megoszthatod. Ilyen a GitHub Pages, ahol ez az oldal is él.</li></ul>" +
+      "<div class='note'><b>Hasonlat:</b> olyan, mint egy játékban a mentés (save): bármikor mentesz, és bármelyik régi mentésre visszatérhetsz.</div>" },
+    { k: "Területek", t: "Négy hely, egy út", h:
+      "<p>A változtatásod így halad:</p><p class='eq'>munkamappa → <b>git add</b> → staging → <b>git commit</b> → helyi repó → <b>git push</b> → GitHub</p>" +
+      "<ul><li><b>Munkamappa</b>: a fájljaid, ahogy éppen szerkeszted.</li><li><b>Staging</b>: amit a következő commitba szánsz (előkészített változtatások).</li><li><b>Helyi repó</b>: a commitok, vagyis a mentések története, a gépeden.</li><li><b>GitHub (remote, távoli repó)</b>: ugyanez az interneten.</li></ul>" +
+      "<p>A fenti játékban a gombokkal bejárhatod ezt az utat.</p>" },
+    { k: "Parancsok", t: "Az alapparancsok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td><code>git init</code></td><td>új repót hoz létre a mappában</td></tr><tr><td><code>git status</code></td><td>megmutatja, mi változott</td></tr><tr><td><code>git add fájl</code> / <code>git add .</code></td><td>előkészíti a fájlt (vagy mindent) a commitra</td></tr><tr><td><code>git commit -m \"üzenet\"</code></td><td>elmenti a pillanatnyi állapotot a történetbe</td></tr><tr><td><code>git log --oneline</code></td><td>kilistázza a commitokat</td></tr><tr><td><code>git diff</code></td><td>megmutatja, mit módosítottál a fájlokban</td></tr></table></div>" },
+    { k: "Ágak", t: "Ág, váltás, összefésülés", h:
+      "<p>Az <b>ág</b> (branch) a történet külön vonala: kísérletezhetsz anélkül, hogy a működő változatot elrontanád.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td><code>git branch</code></td><td>kilistázza az ágakat (a csillag az aktuális)</td></tr><tr><td><code>git switch -c név</code></td><td>új ágat hoz létre és átvált rá (régebben: <code>git checkout -b név</code>)</td></tr><tr><td><code>git switch név</code></td><td>átvált egy meglévő ágra</td></tr><tr><td><code>git merge név</code></td><td>a név ág változtatásait beolvasztja az aktuális ágba</td></tr></table></div>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "branch"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "branch"))); playTo(termFrames("branch"), MET.branch); }); } },
+    { k: "GitHub", t: "Távoli repó: clone, push, pull", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td><code>git clone cím</code></td><td>letölti a GitHubról a teljes repót (egyszer)</td></tr><tr><td><code>git push</code></td><td>feltölti a helyi commitokat a GitHubra</td></tr><tr><td><code>git pull</code></td><td>letölti és beolvasztja a mások (vagy a másik gépeden lévő) változtatásokat</td></tr><tr><td><code>git remote -v</code></td><td>kiírja, melyik távoli repóhoz kapcsolódsz</td></tr></table></div>" +
+      "<div class='note'><b>Fontos:</b> amíg nem push-olsz, a commit csak a gépeden van. A GitHub ezért egyben biztonsági mentés is.</div>" },
+    { k: "Ellenőrzés", t: "A git status olvasása", h:
+      "<ul><li><b>Untracked files</b>: új fájl, amit a Git még nem követ.</li><li><b>Changes not staged for commit</b>: módosított fájl, amit még nem készítettél elő (<code>git add</code>).</li><li><b>Changes to be committed</b>: előkészítve, jöhet a <code>git commit</code>.</li><li><b>Your branch is ahead of 'origin/main'</b>: van olyan commit, amit még nem töltöttél fel (<code>git push</code>).</li><li><b>nothing to commit, working tree clean</b>: minden elmentve.</li></ul>" +
+      "<p>Szokás: <b>commit előtt mindig git status</b>, hogy lásd, mit mentesz.</p>" },
+    { k: "Mit ne?", t: "Mit ne commitolj!", h:
+      "<div class='mistake'><b>Jelszó, token, API-kulcs.</b> Ha egyszer feltöltöttél egyet, a GitHub története megőrzi, még a törlés után is. Tedd egy <code>.env</code> fájlba, és sorold fel a <code>.gitignore</code>-ban.</div>" +
+      "<p>A <code>.gitignore</code> egy szöveges fájl, amelynek sorai megmondják, mit hagyjon figyelmen kívül a Git:</p>" + code(".env\nnode_modules/\n*.log\nszemelyes-kepek/") +
+      "<p>Nyilvános repóba személyes fényképek, osztálytársak adatai sem valók. Ha nyilvános, bárki látja, az egész világ.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Elfelejtett git add.</b> A commit csak az előkészített fájlokat menti. Ha git add nélkül commitolsz, a „nothing added to commit” üzenetet kapod.</div>" +
+      "<div class='mistake'><b>Elfelejtett push.</b> A commit még csak a gépeden van. A git status ezt mondja: „ahead of origin/main”.</div>" +
+      "<div class='mistake'><b>Rossz ágon dolgozol.</b> Munka előtt nézd meg: <code>git branch</code> vagy <code>git status</code>.</div>" +
+      "<div class='mistake'><b>„asdf” commit-üzenet.</b> Fél év múlva nem fogod tudni, mi volt. Írd le röviden, mit és miért.</div>" +
+      "<div class='mistake'><b>Pull nélkül push.</b> Ha más közben feltöltött, a push elutasítódik. Előbb git pull.</div>" },
+    { k: "Trükkök", t: "Hasznos szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Kis commitok</span><span>Gyakran, kis lépésenként commitolj. Egy commit = egy értelmes változtatás.</span></div>" +
+      "<div class='trick'><span class='t'>Napi rutin</span><span>Munka előtt: <code>git pull</code>. Munka után: <code>git add .</code>, <code>git commit -m ...</code>, <code>git push</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Visszanézés</span><span><code>git log --oneline</code> kilistázza az előzményeket, <code>git diff</code> megmutatja a mostani változást.</span></div>" +
+      "<div class='trick'><span class='t'>Segítség</span><span><code>git status</code> mindig megmondja, mi a következő lépés.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const CMD = [
+    ["Új, üres repót hozol létre a mappában.", "git init"], ["Megnézed, mi változott a munkamappában.", "git status"], ["Előkészíted az index.html fájlt a commitra.", "git add index.html"],
+    ["Mindent előkészítesz a commitra.", "git add ."], ["Elmented az előkészített változtatást a történetbe.", "git commit -m"], ["Kilistázod a commitokat.", "git log"],
+    ["Feltöltöd a commitokat a GitHubra.", "git push"], ["Letöltöd és beolvasztod a GitHubon lévő újdonságokat.", "git pull"], ["Letöltöd a teljes repót a GitHubról (először).", "git clone"],
+    ["Kilistázod az ágakat.", "git branch"], ["Az uj-menu ágat beolvasztod az aktuális ágba.", "git merge uj-menu"], ["Megnézed, pontosan mit módosítottál a fájlokban.", "git diff"]
+  ];
+  const D1 = ["git init", "git status", "git add .", "git commit -m", "git log", "git push", "git pull", "git clone", "git branch", "git diff"];
+  const WHERE = [["Munkamappa (még nincs előkészítve)", 0], ["Staging (előkészítve a commitra)", 1], ["Helyi repó (commitolva, de nincs feltöltve)", 2], ["GitHub (feltöltve)", 3]];
+  const STEPS = ["módosítod a fájlt", "git add .", "git commit -m \"Javítás\"", "git push"];
+  const typeCmds = [
+    ["Hozz létre egy új ágat <b>kiserlet</b> néven, és válts át rá.", s => /^git (switch -c|checkout -b|switch --create) kiserlet$/.test(s), "git switch -c kiserlet"],
+    ["Készíts commitot a már előkészített változtatásról ezzel az üzenettel: <b>Első oldal</b>.", s => /^git commit -m ["']Első oldal["']$/.test(s), 'git commit -m "Első oldal"'],
+    ["Készítsd elő az összes módosított fájlt a commitra.", s => /^git add (\.|-A|--all)$/.test(s), "git add ."],
+    ["Töltsd le a GitHubról ezt a repót: <b>https://github.com/diak/oldal.git</b>.", s => /^git clone https:\/\/github\.com\/diak\/oldal\.git$/.test(s), "git clone https://github.com/diak/oldal.git"],
+    ["Válts át a már létező <b>main</b> ágra.", s => /^git (switch|checkout) main$/.test(s), "git switch main"],
+    ["Olvaszd be a <b>kiserlet</b> ágat az aktuális ágba.", s => /^git merge kiserlet$/.test(s), "git merge kiserlet"],
+    ["Kilistázod egy sorban commitonként a történetet.", s => /^git log --oneline$/.test(s), "git log --oneline"],
+    ["Töltsd fel a helyi commitjaidat a GitHubra.", s => /^git push$/.test(s), "git push"],
+    ["Add hozzá csak az <b>stilus.css</b> fájlt a commit előkészítő területhez.", s => /^git add stilus\.css$/.test(s), "git add stilus.css"]
+  ];
+  const norm2 = v => String(v).trim().replace(/\s+/g, " ").replace(/[“”„]/g, '"');
+  const IGN = [["jelszavak.txt", ["index.html", "stilus.css", "kep.png"]], [".env", ["README.md", "index.html", "app.js"]], ["node_modules/", ["src/", "package.json", "README.md"]], ["titkos-kulcs.pem", ["style.css", "main.py", "index.html"]]];
+  const types = [
+    { id: "which", name: "Melyik parancs?", gen(l){
+      const q = pick(CMD), ok = q[1], pool = D1.filter(x => x !== ok && !(ok.startsWith("git add") && x.startsWith("git add")));
+      const opts = shuffle([{ l: ok, ok: true }].concat(shuffle(pool).slice(0, 3).map(x => ({ l: x, ok: false }))));
+      return { q: "Melyik parancsot használod? " + q[0], kind: "choice", options: opts, answer: ok, sol: "<p>A helyes parancs: <code>" + esc(ok) + "</code>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } },
+    { id: "where", name: "Hol van a változtatás?", gen(l){
+      const k = rnd(0, 3), seq = STEPS.slice(0, k + 1).map(x => "<li>" + esc(x) + "</li>").join("");
+      const opts = WHERE.map(w => ({ l: w[0], ok: w[1] === k }));
+      return { q: "Ezeket a lépéseket végezted el, ebben a sorrendben:<ol>" + seq + "</ol>Hol van most a változtatásod?", kind: "choice", options: opts, answer: WHERE[k][0], sol: "<p>munkamappa → <code>git add</code> → staging → <code>git commit</code> → helyi repó → <code>git push</code> → GitHub. Az utolsó elvégzett lépés dönt.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Kövesd végig: add → commit → push. Az utolsó lépés dönt." }) };
+    } },
+    { id: "order", name: "Sorrend", gen(l){
+      const msg = pick(["Javítás", "Új menü", "Színek", "Link"]);
+      const SC = [
+        ["Módosítottál egy fájlt, és fel akarod tölteni a GitHubra. Melyik a helyes sorrend?", ["git add .", 'git commit -m "' + msg + '"', "git push"], "Előbb előkészíted (add), aztán elmented (commit), végül feltöltöd (push)."],
+        ["Új ágon dolgozol, aztán beolvasztod a main ágba. Melyik a helyes sorrend?", ["git switch -c uj-ag", 'git commit -am "' + msg + '"', "git switch main", "git merge uj-ag"], "Először létrehozod és átváltasz az új ágra, ott commitolsz, visszaváltasz a main ágra, és beolvasztod az új ágat."],
+        ["Letöltesz egy meglévő repót, javítasz benne, és feltöltöd. Melyik a helyes sorrend?", ["git clone https://github.com/diak/oldal.git", "git add .", 'git commit -m "' + msg + '"', "git push"], "A clone letölti a repót, a javítás után add, commit, push következik."],
+        ["Új napot kezdesz egy közös projekten, és a végén feltöltöd a munkádat. Melyik a helyes sorrend?", ["git pull", "git add .", 'git commit -m "' + msg + '"', "git push"], "Munka előtt pull (a többiek változtatásai), a végén add, commit, push."]
+      ];
+      const sc = pick(SC), good = sc[1];
+      const bads = []; let guard = 0;
+      while (bads.length < 3 && guard++ < 60){ const c = shuffle(good); const key = c.join("|"); if (key !== good.join("|") && !bads.some(b => b.join("|") === key)) bads.push(c); }
+      const opts = shuffle([{ l: good.join(" → "), ok: true }].concat(bads.map(b => ({ l: b.join(" → "), ok: false }))));
+      return { q: sc[0], kind: "choice", options: opts, answer: good.join(" → "), sol: "<p>" + sc[2] + "</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Gondold végig, melyik lépés mire épül." }) };
+    } },
+    { id: "type", name: "Írd be a parancsot", gen(l){
+      const t = pick(typeCmds);
+      return { q: t[0] + "<br><span class='hint'>Írd be a pontos parancsot.</span>", kind: "input", answer: "<code>" + esc(t[2]) + "</code>", sol: "<p>Egy lehetséges megoldás: <code>" + esc(t[2]) + "</code></p>", check: v => t[1](norm2(v)) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Figyelj a pontos szavakra, a szóközökre és az idézőjelekre." } };
+    } },
+    { id: "branch", name: "Ágak követése", gen(l){
+      const m = rnd(1, 3), f = rnd(1, 3), g = l === 1 ? 0 : rnd(0, 2), total = m + f + g + (g > 0 ? 1 : 0);
+      const steps = ["Kiindulás: a main ágon " + m + " commit van.", "<code>git switch -c uj</code> (új ág, átváltasz rá)", "Az uj ágon " + f + " commitot készítesz."];
+      if (g) steps.push("<code>git switch main</code>, és a main ágon is készítesz " + g + " commitot.");
+      else steps.push("<code>git switch main</code>");
+      steps.push("<code>git merge uj</code>");
+      return { q: "Mit csinálsz, hány commit lesz a <b>main</b> ágon a végén?<ol>" + steps.map(s => "<li>" + s + "</li>").join("") + "</ol>" + (g ? "<span class='hint'>Ha mindkét ág változott, a merge egy külön <b>összefésülő commitot</b> is készít.</span>" : "<span class='hint'>Ha a main közben nem változott, a merge csak előreteker (fast-forward), nincs külön commit.</span>"), kind: "input", mode: "numeric", answer: total, sol: "<p>A main ágon eleve " + m + " commit van. Hozzájön az uj ág " + f + " commitja" + (g ? ", a main ág " + g + " újabb commitja és az összefésülő commit: " + m + " + " + f + " + " + g + " + 1 = " + total : ": " + m + " + " + f + " = " + total) + ".</p>", check: v => { const s = norm(v); return /^\d+$/.test(s) && +s === total ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Számold össze a main ág commitjait, az uj ág commitjait, és ha mindkét ág változott, az összefésülő commitot is." }; } };
+    } },
+    { id: "ignore", name: "Mit ne commitolj?", gen(l){
+      const q = pick(IGN), opts = shuffle([{ l: q[0], ok: true }].concat(q[1].map(x => ({ l: x, ok: false }))));
+      return { q: "Melyik fájlt vagy mappát kell a <b>.gitignore</b>-ba tenni, hogy ne kerüljön fel a GitHubra?", kind: "choice", options: opts, answer: q[0], sol: "<p>Jelszavakat, kulcsokat, tokeneket tartalmazó fájlt és a generált mappákat (<code>node_modules/</code>) a .gitignore-ba tesszük.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Ami titkot tartalmaz, vagy generált mappa, az ne menjen a repóba." }) };
+    } }
+  ];
+  K.practice($("#practice"), { id: "git", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["git init", "új repó"], ["git status", "mi változott?"], ["git add . / fájl", "előkészítés"], ["git commit -m \"üzenet\"", "mentés a történetbe"], ["git log --oneline", "előzmények"], ["git diff", "mit módosítottál"], ["git branch", "ágak listája"], ["git switch -c név", "új ág + váltás"], ["git switch név", "ágváltás"], ["git merge név", "ág beolvasztása"], ["git clone cím", "repó letöltése"], ["git push", "feltöltés GitHubra"], ["git pull", "letöltés GitHubról"]];
+  $("#cheat").innerHTML = "<tr><th>Parancs</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='text-align:left;font-weight:700'>" + esc(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
