@@ -1,0 +1,304 @@
+<!--@HEAD-->
+<title>CSS alapok</title>
+<style>
+.pb-stage .codewrap{font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;margin:0 0 10px}
+.pb-stage .codewrap .cur{background:#4a3a12;color:#FFB01F;display:inline-block;width:100%}
+.pb-stage .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;margin:6px 0}
+.pb-stage iframe{width:100%;height:170px;border:0;border-radius:8px;background:#fff}
+.bm{display:flex;justify-content:center;padding:14px;background:var(--surface-2);border-radius:14px;overflow-x:auto}
+.bm .m{background:#F8CB9C;color:#5a3500;padding:var(--mg);border:1.5px dashed #b8793a;position:relative}
+.bm .b{background:#FDDD9B;border:var(--bd) solid #8a6a1e;padding:var(--pd);box-sizing:content-box}
+.bm .p{background:#C3D08B;padding:var(--pd)}
+.bm .c{background:#8DB6E6;color:#0b2a52;width:var(--w);min-height:36px;display:grid;place-items:center;font-family:var(--mono);font-size:.8rem}
+.bmc{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.bmc label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:2px}
+.bmc input[type=range]{width:100%}
+.rules{display:flex;flex-direction:column;gap:6px}
+.rule{font-family:var(--mono);background:var(--surface-2);border-radius:8px;padding:6px 10px}
+.tagtbl td:first-child{font-family:var(--mono);font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · weboldalak</span>
+  <h1>CSS alapok</h1>
+  <p class="lead">A HTML a szerkezet, a CSS a kinézet. Írj szabályokat, és nézd, hogyan változik az oldal.</p>
+  <div class="panel">
+    <span class="eyebrow">Szerkeszd a bal oldalt, a jobb oldal azonnal frissül</span>
+    <div class="row" id="ex-btns"></div>
+    <div id="hero-ed"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Válassz módszert. Az „Új példa” új számokat és szabályokat húz. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="style" aria-selected="true">Oldal stílusozása</button>
+    <button class="tab" data-m="box" aria-selected="false">Dobozmodell számolás</button>
+    <button class="tab" data-m="spec" aria-selected="false">Melyik szabály nyer?</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A „Kódolj CSS-t” feladatoknál te írod a szabályt, az ellenőrzés a böngésző tényleges megjelenéséből dönt. A „Próbadolgozat” 8 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt tagtbl" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Szabály</span><pre class="code">szelektor {
+  tulajdonság: érték;
+}</pre></div>
+    <div class="trick"><span class="t">Dobozmodell</span><span>content → padding → border → margin. Teljes szélesség (content-box) = width + 2·padding + 2·border + 2·margin. Border-box: a width már tartalmazza a paddinget és a bordert.</span></div>
+    <div class="trick"><span class="t">Erősség</span><span>inline style (1000) &gt; #id (100) &gt; .osztály (10) &gt; elem (1). Egyenlő erősségnél a későbbi szabály nyer. A !important mindent felülír.</span></div>
+    <div class="trick"><span class="t">Színek</span><span>névvel (<code>red</code>), tizenhatosan (<code>#FF0000</code>) vagy <code>rgb(255, 0, 0)</code>.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, norm } = K;
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+  const HEX = n => n.toString(16).toUpperCase().padStart(2, "0");
+  const CN = { piros: ["red", [255, 0, 0]], kék: ["blue", [0, 0, 255]], zöld: ["green", [0, 128, 0]], narancs: ["orange", [255, 165, 0]], lila: ["purple", [128, 0, 128]] };
+  const rgbStr = a => "rgb(" + a.join(", ") + ")";
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+
+  const EX = {
+    "Alap oldal": '<style>\nbody { font-family: sans-serif; }\nh1 { color: #1B5CBA; text-align: center; }\np { font-size: 18px; line-height: 1.5; }\n.kiemelt { background-color: yellow; padding: 8px; }\n</style>\n<h1>Üdv a CSS-ben!</h1>\n<p>Ez egy sima bekezdés.</p>\n<p class="kiemelt">Ez egy kiemelt bekezdés.</p>\n',
+    "Dobozmodell": '<style>\n.doboz {\n  width: 200px;\n  padding: 20px;\n  border: 4px solid #1B5CBA;\n  margin: 16px;\n  background: #DCE7F7;\n}\n</style>\n<div class="doboz">Egy doboz: tartalom, padding, border, margin.</div>\n',
+    "Menü": '<style>\nnav a {\n  display: inline-block;\n  padding: 8px 14px;\n  background: #1B5CBA;\n  color: white;\n  text-decoration: none;\n  border-radius: 6px;\n}\nnav a:hover { background: #F29E0C; color: black; }\n</style>\n<nav>\n  <a href="#">Főoldal</a>\n  <a href="#">Rólam</a>\n  <a href="#">Kapcsolat</a>\n</nav>\n',
+    "Pozíció": '<style>\n.szulo { position: relative; height: 120px; background: #EDF0F4; }\n.gyerek {\n  position: absolute;\n  top: 10px; right: 10px;\n  background: #F29E0C; padding: 8px;\n}\n</style>\n<div class="szulo">\n  <div class="gyerek">Jobb felső sarok</div>\n</div>\n'
+  };
+  const hero = K.editor($("#hero-ed"), { code: EX["Alap oldal"], rows: 14 });
+  Object.keys(EX).forEach(k => { const b = document.createElement("button"); b.className = "btn"; b.textContent = k; b.addEventListener("click", () => hero.set(EX[k])); $("#ex-btns").appendChild(b); });
+  const loadHero = k => { hero.set(EX[k]); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const loadBtn = k => "<p><button class='btn' data-load='" + k + "'>↑ Betöltés a szerkesztőbe</button></p>";
+  const wire = el => $$("[data-load]", el).forEach(b => b.addEventListener("click", () => loadHero(b.dataset.load)));
+
+  /* ---------- Levezetések ---------- */
+  const frame = (body, css) => '<iframe sandbox="allow-same-origin" title="Előnézet" srcdoc="' + esc("<style>body{font-family:sans-serif;margin:8px}" + css + "</style>" + body) + '"></iframe>';
+  function styleFrames(){
+    const body = '<h1>Üdv!</h1><p>Első bekezdés.</p><p class="kiemelt">Kiemelt bekezdés.</p>';
+    const R = [
+      ["h1 {", "  color: #1B5CBA;", "}", "A h1 szelektor minden első szintű címsorra vonatkozik. A color tulajdonság a betű színét állítja, itt tizenhatos színkóddal."],
+      ["p {", "  font-size: 20px;", "}", "A p minden bekezdést kijelöl. A font-size a betűméret, pixelben (px)."],
+      [".kiemelt {", "  background-color: yellow;", "  padding: 8px;", "}", "A pont az osztály szelektora: csak azt az elemet jelöli, amelyiknek class=\"kiemelt\" attribútuma van. A háttérszín sárga, a padding a belső margó."],
+      ["h1 {", "  text-align: center;", "}", "Ugyanarra a szelektorra több szabály is írható. A text-align a szöveg igazítása: center, vagyis középre."]
+    ];
+    const F = [{ cap: "Adott egy HTML-oldal stílus nélkül. Szabályokat írunk hozzá, egyenként. Egy szabály: szelektor, majd kapcsos zárójelben tulajdonság: érték; párok.", html: '<div class="lbl">Eredmény</div>' + frame(body, "") }];
+    let css = "";
+    R.forEach(r => {
+      const cap = r.pop(); css += r.join("\n") + "\n";
+      F.push({ cap, html: '<div class="lbl">Új szabály</div><pre class="codewrap"><span class="cur">' + esc(r.join("\n")) + '</span></pre><div class="lbl">Eredmény</div>' + frame(body, css) });
+    });
+    return F;
+  }
+  function boxFrames(w, p, b, m, bs){
+    const base = bs ? w : w + 2 * p + 2 * b, tot = base + 2 * m;
+    const F = [{ cap: "A doboz beállításai: width " + w + " px, padding " + p + " px, border " + b + " px, margin " + m + " px, box-sizing: " + (bs ? "border-box" : "content-box") + ". Mekkora helyet foglal el vízszintesen?", html: '<pre class="codewrap">width: ' + w + "px;\npadding: " + p + "px;\nborder: " + b + "px solid;\nmargin: " + m + "px;\nbox-sizing: " + (bs ? "border-box" : "content-box") + ";</pre>" }];
+    if (bs){
+      F.push({ cap: "Border-box esetén a megadott width már tartalmazza a paddinget és a bordert. A doboz látható szélessége tehát " + w + " px.", html: '<p class="big">látható szélesség = <span class="cur">' + w + "</span> px</p>" });
+      F.push({ cap: "A margó kívül van: mindkét oldalon " + m + " px. Összesen " + w + " + 2 · " + m + " = " + tot + " px.", html: '<p class="big">' + w + " + 2 · " + m + ' = <span class="cur">' + tot + "</span> px</p>" });
+    } else {
+      F.push({ cap: "Content-box esetén a width csak a tartalom szélessége. A paddingot mindkét oldalon hozzá kell adni: 2 · " + p + " = " + 2 * p + " px.", html: '<p class="big">' + w + " + <span class=\"cur\">" + 2 * p + "</span></p>" });
+      F.push({ cap: "A border is kétoldali: 2 · " + b + " = " + 2 * b + " px. A látható doboz: " + w + " + " + 2 * p + " + " + 2 * b + " = " + base + " px.", html: '<p class="big">' + w + " + " + 2 * p + " + <span class=\"cur\">" + 2 * b + "</span> = " + base + " px</p>" });
+      F.push({ cap: "A margó kívül van, mindkét oldalon " + m + " px: 2 · " + m + " = " + 2 * m + " px. Összesen " + base + " + " + 2 * m + " = " + tot + " px.", html: '<p class="big">' + base + " + <span class=\"cur\">" + 2 * m + "</span> = " + tot + " px</p>" });
+    }
+    F.push({ cap: "Összesen " + tot + " px helyet foglal a doboz vízszintesen.", html: '<p class="big cur">' + tot + " px</p>" });
+    return F;
+  }
+  /* Specificitás */
+  const CAND = [["p", 1], [".x", 10], ["#y", 100], ["div p", 2], ["p.x", 11], ["div .x", 11], ["#y.x", 110]];
+  const COL = { red: "piros", blue: "kék", green: "zöld" };
+  function specGen(level){
+    const cs = shuffle(["red", "blue", "green"]), pool = level === 1 ? CAND.slice(0, 3) : CAND;
+    let sel = shuffle(pool).slice(0, 3);
+    const rules = sel.map((s, i) => ({ sel: s[0], spec: s[1], color: cs[i], imp: false, idx: i }));
+    let inline = null;
+    if (level === 3){ if (Math.random() < 0.5) inline = pick(cs); else pick(rules).imp = true; }
+    return { rules, inline };
+  }
+  function specWin(t){
+    const imp = t.rules.filter(r => r.imp);
+    if (imp.length) return imp.reduce((a, r) => (r.spec > a.spec || (r.spec === a.spec && r.idx > a.idx)) ? r : a).color;
+    if (t.inline) return t.inline;
+    return t.rules.reduce((a, r) => (r.spec > a.spec || (r.spec === a.spec && r.idx > a.idx)) ? r : a).color;
+  }
+  const specCode = t => t.rules.map(r => r.sel + " { color: " + r.color + (r.imp ? " !important" : "") + "; }").join("\n");
+  const specElem = t => '<p class="x" id="y"' + (t.inline ? ' style="color: ' + t.inline + '"' : "") + ">Szöveg</p>  (egy div-ben)";
+  function specFrames(t){
+    const F = [{ cap: "Melyik színű lesz a szöveg? Az elem több szabálynak is megfelel, a legerősebb nyer.", html: '<pre class="codewrap">' + esc(specCode(t)) + "\n\n" + esc(specElem(t)) + "</pre>" }];
+    t.rules.forEach(r => F.push({ cap: "A szabály: " + r.sel + ". Erőssége: " + r.spec + " pont" + (r.spec >= 100 ? " (azonosító)" : r.spec >= 10 ? " (osztály)" : " (elem)") + ". Színe: " + COL[r.color] + (r.imp ? ". A !important minden más szabályt felülír." : "."), html: '<pre class="codewrap">' + esc(specCode(t)) + "</pre><p>" + esc(r.sel) + " → " + r.spec + " pont" + (r.imp ? ", !important" : "") + "</p>" }));
+    if (t.inline) F.push({ cap: "Az elemen inline style is van (" + COL[t.inline] + "), ez 1000 pont, erősebb minden szelektornál (a !important kivételével).", html: '<pre class="codewrap">' + esc(specElem(t)) + "</pre><p>inline → 1000 pont</p>" });
+    const w = specWin(t);
+    F.push({ cap: "A nyertes szín: " + COL[w] + "." + (t.rules.some(r => r.spec === 11) && !t.inline && !t.rules.some(r => r.imp) && t.rules.filter(r => r.spec === 11).length > 1 ? " A két 11 pontos szabály közül a később írt nyer." : ""), html: '<p class="big cur">' + COL[w] + "</p>" });
+    return F;
+  }
+  const pb = K.player($("#pb"));
+  const PB = { m: "style" };
+  function pbNew(auto){
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m)));
+    if (PB.m === "style") pb.load(styleFrames(), "Oldal stílusozása", auto);
+    else if (PB.m === "box") pb.load(boxFrames(pick([100, 150, 200, 300]), pick([10, 15, 20]), pick([2, 4, 5]), pick([10, 20]), Math.random() < 0.3), "Dobozmodell számolás", auto);
+    else pb.load(specFrames(specGen(rnd(2, 3))), "Melyik szabály nyer?", auto);
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mire való a CSS?", h:
+      "<p>A HTML megmondja, <b>mi</b> van az oldalon, a CSS megmondja, <b>hogyan néz ki</b>: szín, betű, méret, elrendezés. A CSS szabályokból áll:</p>" + code("szelektor {\n  tulajdonság: érték;\n  másik-tulajdonság: érték;\n}") +
+      "<ul><li>a <b>szelektor</b> kiválasztja az elemeket (pl. <code>h1</code>)</li><li>a <b>tulajdonság</b> azt nevezi meg, mit állítunk (pl. <code>color</code>)</li><li>az <b>érték</b> azt, hogy mire (pl. <code>red</code>)</li></ul>" +
+      "<div class='note'><b>Figyelem:</b> minden tulajdonság végén pontosvessző van, a szabály kapcsos zárójelben. A hiányzó <code>;</code> az egyik leggyakoribb hiba.</div>" },
+    { k: "Hely", t: "Hová írjuk a CSS-t?", h:
+      code('<!-- 1) inline: az elemen -->\n<p style="color: red;">Piros</p>\n\n<!-- 2) belső: a head-ben -->\n<style>\n  p { color: red; }\n</style>\n\n<!-- 3) külső fájl -->\n<link rel="stylesheet" href="stilus.css">') +
+      "<p>A <b>külső fájl</b> a legjobb: egy helyen módosítod, az egész oldal változik. A tanórán belső <code>style</code>-t és külső fájlt is használtok.</p>" },
+    { k: "Szelektorok", t: "Mit jelölünk ki?", h:
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Szelektor</th><th>Mit választ ki?</th></tr><tr><td>p</td><td>minden p elem</td></tr><tr><td>.kiemelt</td><td>minden elem, aminek class=\"kiemelt\"</td></tr><tr><td>#fo</td><td>az az egy elem, aminek id=\"fo\"</td></tr><tr><td>nav a</td><td>a nav-on belüli összes a (leszármazott)</td></tr><tr><td>h1, h2</td><td>mindkét fajta elem (csoport)</td></tr><tr><td>p.kiemelt</td><td>p, amelyiknek class=\"kiemelt\"</td></tr><tr><td>a:hover</td><td>a hivatkozás, amikor fölé visszük az egeret</td></tr><tr><td>*</td><td>minden elem</td></tr></table></div>" +
+      "<div class='note'><b>Id vagy class?</b> Az id egyedi (oldalanként egyszer), a class többször is használható. Formázáshoz általában a class a jobb.</div>" },
+    { k: "Szín, betű", t: "Szín és szöveg", h: () =>
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Tulajdonság</th><th>Mit állít</th><th>Példa</th></tr><tr><td>color</td><td>betűszín</td><td>color: #1B5CBA;</td></tr><tr><td>background-color</td><td>háttérszín</td><td>background-color: yellow;</td></tr><tr><td>font-size</td><td>betűméret</td><td>font-size: 18px;</td></tr><tr><td>font-family</td><td>betűtípus</td><td>font-family: Arial, sans-serif;</td></tr><tr><td>font-weight / font-style</td><td>vastag / dőlt</td><td>font-weight: bold;</td></tr><tr><td>text-align</td><td>igazítás</td><td>text-align: center;</td></tr><tr><td>text-decoration</td><td>aláhúzás</td><td>text-decoration: none;</td></tr><tr><td>line-height</td><td>sortávolság</td><td>line-height: 1.5;</td></tr></table></div>" +
+      "<p><b>Színek:</b> névvel (<code>red</code>), <b>tizenhatos színkóddal</b> (<code>#FF8000</code>: piros FF, zöld 80, kék 00, ez az előző leckéből ismerős), vagy <code>rgb(255, 128, 0)</code>.</p>" + loadBtn("Alap oldal"), init: wire },
+    { k: "Mértékegységek", t: "px, %, em, rem", h:
+      "<ul><li><b>px</b>: pixel, fix méret.</li><li><b>%</b>: a szülő méretének százaléka (<code>width: 50%</code>).</li><li><b>em</b>: az elem betűméretének többszöröse. <b>rem</b>: a gyökérelem betűméretének többszöröse.</li><li><b>vw / vh</b>: a böngészőablak szélességének / magasságának 1 százaléka.</li></ul>" +
+      "<p>A relatív mértékegységekkel (em, rem, %, vw) lesz az oldal <b>reszponzív</b>, vagyis jó mobilon és monitoron is. Ez a tanév későbbi leckéje.</p>" },
+    { k: "Dobozmodell", t: "Minden elem egy doboz", h: () =>
+      "<p>Minden HTML-elem téglalap, négy rétegből: <b>content</b> (tartalom), <b>padding</b> (belső margó), <b>border</b> (keret), <b>margin</b> (külső margó). Mozgasd a csúszkákat:</p>" +
+      "<div class='bm'><div class='m' id='bm-m'><div class='b' id='bm-b'><div class='p'><div class='c' id='bm-c'>content</div></div></div></div></div>" +
+      "<div class='bmc'><label>width <input type='range' id='bm-w' min='60' max='220' value='120'></label><label>padding <input type='range' id='bm-p' min='0' max='30' value='12'></label><label>border <input type='range' id='bm-bd' min='0' max='12' value='4'></label><label>margin <input type='range' id='bm-mg' min='0' max='30' value='10'></label></div>" +
+      "<p class='eq' id='bm-out'></p>" +
+      "<div class='note'><b>box-sizing: border-box;</b> esetén a width már tartalmazza a paddinget és a bordert, ezért sokkal könnyebb vele számolni. Sok oldal ezt állítja be mindenre: <code>* { box-sizing: border-box; }</code></div>",
+      init(el){
+        const r = () => { const w = +$("#bm-w", el).value, p = +$("#bm-p", el).value, b = +$("#bm-bd", el).value, m = +$("#bm-mg", el).value;
+          const root = $(".bm", el); root.style.setProperty("--w", w + "px"); root.style.setProperty("--pd", p + "px"); root.style.setProperty("--bd", b + "px"); root.style.setProperty("--mg", m + "px");
+          $("#bm-out", el).textContent = w + " + 2·" + p + " + 2·" + b + " + 2·" + m + " = " + (w + 2 * p + 2 * b + 2 * m) + " px (content-box)"; };
+        $$("input[type=range]", el).forEach(i => i.addEventListener("input", r)); r();
+      } },
+    { k: "Elrendezés", t: "display, position, float", h:
+      "<ul><li><code>display: block</code>: új sorban, teljes szélességben (p, div, h1). <code>inline</code>: a szöveg közt folyik (span, a). <code>inline-block</code>: sorban marad, de méretezhető. <code>none</code>: eltűnik.</li><li><code>position: relative</code>: az eredeti helyéhez képest tolható; <code>absolute</code>: a legközelebbi pozicionált szülőhöz képest; <code>fixed</code>: az ablakhoz rögzített. Hozzá: <code>top, right, bottom, left</code>.</li><li><code>z-index</code>: ki van felül, ha átfedik egymást.</li><li><code>float: left | right</code>: a szöveg köré húz egy elemet (régebbi módszer, ma már <code>flex</code> vagy <code>grid</code> a jobb).</li></ul>" + loadBtn("Pozíció"), init: wire },
+    { k: "Erősség", t: "Melyik szabály nyer?", h: () =>
+      "<p>Ha több szabály is vonatkozik ugyanarra az elemre, a böngésző az erősebbet választja:</p>" +
+      "<ol><li><b>inline style</b> (1000)</li><li><b>#id</b> (100)</li><li><b>.osztály</b>, :hover (10)</li><li><b>elem</b> (1)</li></ol>" +
+      "<p>Az erősségek összeadódnak: <code>p.x</code> = 1 + 10 = 11. <b>Egyenlő</b> erősségnél a <b>később írt</b> szabály nyer. A <code>!important</code> mindent felülír (ritkán használd).</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTo(specFrames({ rules: [{ sel: "p", spec: 1, color: "red", imp: false, idx: 0 }, { sel: ".x", spec: 10, color: "blue", imp: false, idx: 1 }, { sel: "#y", spec: 100, color: "green", imp: false, idx: 2 }], inline: null }), "Melyik szabály nyer?")); } },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hiányzó pontosvessző vagy kapcsos zárójel.</b> A hibás sor után a böngésző a többit is figyelmen kívül hagyhatja.</div>" +
+      "<div class='mistake'><b>Pont vagy kettőskereszt kimarad.</b> <code>kiemelt { … }</code> egy kiemelt nevű <i>elemet</i> keres. Az osztály: <code>.kiemelt</code>, az azonosító: <code>#fo</code>.</div>" +
+      "<div class='mistake'><b>Mértékegység nélküli szám.</b> <code>font-size: 20</code> nem működik, <code>20px</code> igen. (A 0 és a line-height kivétel.)</div>" +
+      "<div class='mistake'><b>Elírt tulajdonságnév.</b> <code>colour</code>, <code>background</code>-szín: a böngésző nem szól, csak nem történik semmi. F12 → Styles: áthúzva látszik.</div>" +
+      "<div class='mistake'><b>Padding hozzáadódik.</b> A 300 px széles doboz padding és border után szélesebb lesz, ha nincs border-box.</div>" },
+    { k: "Trükkök", t: "Hasznos szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>F12 → Elements → Styles</span><span>Itt látod élőben, melyik szabály érvényes, és ki is próbálhatod az értékeket.</span></div>" +
+      "<div class='trick'><span class='t'>Osztályok</span><span>Adj az elemeknek osztályt (<code>class</code>), és azt stílusozd. Így nem keveredik össze a szerkezet és a kinézet.</span></div>" +
+      "<div class='trick'><span class='t'>Mindenre border-box</span><span><code>* { box-sizing: border-box; }</code> az oldal elején sok számolást megspórol.</span></div>" +
+      "<div class='trick'><span class='t'>Kommentár</span><span><code>/* ez megjegyzés */</code>: a böngésző nem veszi figyelembe.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const txt = el => el ? el.textContent.trim().replace(/\s+/g, " ") : "";
+  const chk = pairs => { const miss = pairs.filter(p => !p[0]).map(p => p[1]); return miss.length ? { ok: false, msg: "Hiányzik vagy hibás: " + miss.join("; ") + "." } : { ok: true, msg: "Helyes!" }; };
+  const cs = (v, sel, prop) => { const e = v.doc.querySelector(sel); return e ? v.win.getComputedStyle(e)[prop] : null; };
+  const tmpl = (inner, body) => "<style>\n" + inner + "\n</style>\n" + body;
+  const kod = (q, starter, check, ans) => ({ q, kind: "code", starter, rows: 11, hint: "írd a style-ba", check, answer: "<pre class='code'>" + esc(ans) + "</pre>", sol: "<p>Egy lehetséges megoldás:</p>" + code(ans) });
+  const BODY = "<h1>Cím</h1>\n<p>Szöveg</p>\n";
+  const L1 = [
+    () => { const k = pick(Object.keys(CN)), c = CN[k]; return kod("A <b>h1</b> betűszíne legyen <b>" + k + "</b> a <b>color</b> tulajdonsággal (az angol neve: <b>" + c[0] + "</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "color") === rgbStr(c[1]), "a h1 színe: " + c[0]]]), tmpl("h1 { color: " + c[0] + "; }", BODY)); },
+    () => { const h = pick(["#FFFF00", "#00FF00", "#FFC0CB", "#ADD8E6", "#FFA500"]); return kod("A <b>p</b> háttérszíne legyen <b>" + h + "</b> (<b>background-color</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "p", "backgroundColor") === rgbStr(hexRgb(h)), "a p háttere: " + h]]), tmpl("p { background-color: " + h + "; }", BODY)); },
+    () => { const s = pick([18, 24, 40, 48]); return kod("A <b>h1</b> betűmérete legyen <b>" + s + "px</b> (<b>font-size</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "fontSize") === s + "px", "font-size: " + s + "px a h1-en"]]), tmpl("h1 { font-size: " + s + "px; }", BODY)); },
+    () => { const a = pick(["center", "right"]); return kod("A <b>p</b> szövegét igazítsd <b>" + (a === "center" ? "középre" : "jobbra") + "</b> (<b>text-align: " + a + "</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "p", "textAlign") === a, "text-align: " + a + " a p-n"]]), tmpl("p { text-align: " + a + "; }", BODY)); },
+    () => kod("A <b>h1</b> legyen <b>dőlt</b> (<b>font-style: italic</b>) és <b>aláhúzott</b> (<b>text-decoration: underline</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "fontStyle") === "italic", "font-style: italic"], [/underline/.test(cs(v, "h1", "textDecorationLine") || ""), "text-decoration: underline"]]), tmpl("h1 { font-style: italic; text-decoration: underline; }", BODY))
+  ];
+  const BODY2 = '<h1 id="fo">Főcím</h1>\n<p>Sima bekezdés.</p>\n<p class="kiemelt">Kiemelt bekezdés.</p>\n<nav><a href="#">Egy</a> <a href="#">Kettő</a></nav>\n';
+  const L2 = [
+    () => { const c = pick(["red", "blue", "green"]); return kod("Csak a <b>kiemelt</b> osztályú elem betűje legyen <b>" + c + "</b>, a többi p maradjon fekete. (Osztály szelektor: pont a név előtt.)", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, ".kiemelt", "color") === rgbStr(c === "red" ? [255, 0, 0] : c === "blue" ? [0, 0, 255] : [0, 128, 0]), "a .kiemelt színe: " + c], [cs(v, "p:not(.kiemelt)", "color") === "rgb(0, 0, 0)", "a többi p maradjon fekete"]]), tmpl(".kiemelt { color: " + c + "; }", BODY2)); },
+    () => { const px = pick([12, 16, 20]); return kod("Az <b>#fo</b> azonosítójú elem (a főcím) <b>alatt</b> legyen <b>" + px + "px</b> padding, és <b>2px solid</b> keret (<b>padding</b> és <b>border</b>), az azonosító szelektorral.", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "#fo", "paddingTop") === px + "px", "padding: " + px + "px"], [cs(v, "#fo", "borderTopWidth") === "2px" && cs(v, "#fo", "borderTopStyle") === "solid", "border: 2px solid"]]), tmpl("#fo { padding: " + px + "px; border: 2px solid black; }", BODY2)); },
+    () => kod("A <b>nav</b>-on belüli hivatkozások (a) ne legyenek aláhúzva (<b>text-decoration: none</b>) és legyen vastag a betűjük (<b>font-weight: bold</b>). Használj leszármazott szelektort: <b>nav a</b>.", tmpl("/* ide írd */", BODY2), v => chk([[!/underline/.test(cs(v, "nav a", "textDecorationLine") || ""), "nav a: text-decoration: none"], [+cs(v, "nav a", "fontWeight") >= 700, "nav a: font-weight: bold"]]), tmpl("nav a { text-decoration: none; font-weight: bold; }", BODY2)),
+    () => { const m = pick([10, 20, 30]); return kod("Minden <b>p</b>-nek legyen <b>" + m + "px</b> felső margója (<b>margin-top</b>) és <b>sárga</b> háttere (<b>background-color: yellow</b>).", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "p", "marginTop") === m + "px", "margin-top: " + m + "px"], [cs(v, "p", "backgroundColor") === "rgb(255, 255, 0)", "background-color: yellow"]]), tmpl("p { margin-top: " + m + "px; background-color: yellow; }", BODY2)); }
+  ];
+  const L3 = [
+    () => kod("Tedd <b>gombszerűvé</b> a <b>nav a</b> elemeket: <b>display: inline-block</b>, <b>padding: 8px 14px</b>, kék háttér (<b>background-color: #1B5CBA</b>), fehér betű (<b>color: white</b>), kerekített sarok (<b>border-radius: 6px</b>).", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "nav a", "display") === "inline-block", "display: inline-block"], [cs(v, "nav a", "paddingTop") === "8px" && cs(v, "nav a", "paddingLeft") === "14px", "padding: 8px 14px"], [cs(v, "nav a", "backgroundColor") === "rgb(27, 92, 186)", "background-color: #1B5CBA"], [cs(v, "nav a", "color") === "rgb(255, 255, 255)", "color: white"], [cs(v, "nav a", "borderTopLeftRadius") === "6px", "border-radius: 6px"]]), tmpl("nav a {\n  display: inline-block;\n  padding: 8px 14px;\n  background-color: #1B5CBA;\n  color: white;\n  border-radius: 6px;\n}", BODY2)),
+    () => { const w = pick([200, 300, 400]); return kod("Az <b>.doboz</b> elem <b>width</b>-je legyen <b>" + w + "px</b>, <b>padding: 20px</b> és <b>border: 5px solid</b>, de a látható szélessége a <b>box-sizing: border-box</b> miatt maradjon pontosan " + w + "px.", tmpl("/* ide írd */", '<div class="doboz">Doboz</div>\n'), v => { const e = v.doc.querySelector(".doboz"); const r = e && e.getBoundingClientRect(); return chk([[cs(v, ".doboz", "boxSizing") === "border-box", "box-sizing: border-box"], [cs(v, ".doboz", "paddingLeft") === "20px", "padding: 20px"], [cs(v, ".doboz", "borderLeftWidth") === "5px", "border: 5px"], [r && Math.round(r.width) === w, "a doboz látható szélessége " + w + "px"]]); }, tmpl(".doboz {\n  box-sizing: border-box;\n  width: " + w + "px;\n  padding: 20px;\n  border: 5px solid black;\n}", '<div class="doboz">Doboz</div>\n')); },
+    () => kod("Az <b>.eltuno</b> osztályú bekezdés ne jelenjen meg az oldalon (<b>display: none</b>), a másik maradjon látható.", tmpl("/* ide írd */", '<p class="eltuno">Ezt ne lásd!</p>\n<p>Ezt látni kell.</p>\n'), v => chk([[cs(v, ".eltuno", "display") === "none", ".eltuno: display: none"], [cs(v, "p:not(.eltuno)", "display") === "block", "a másik p maradjon látható"]]), tmpl(".eltuno { display: none; }", '<p class="eltuno">Ezt ne lásd!</p>\n<p>Ezt látni kell.</p>\n')),
+    () => kod("Helyezd a <b>.jelvény</b> elemet a <b>.kartya</b> <b>jobb felső sarkába</b>: a .kartya legyen <b>position: relative</b>, a .jelvény <b>position: absolute</b>, <b>top: 0</b> és <b>right: 0</b>.", tmpl("/* ide írd */", '<div class="kartya">Kártya<span class="jelvény">új</span></div>\n'), v => chk([[cs(v, ".kartya", "position") === "relative", ".kartya: position: relative"], [cs(v, ".jelvény", "position") === "absolute", ".jelvény: position: absolute"], [cs(v, ".jelvény", "top") === "0px" && cs(v, ".jelvény", "right") === "0px", "top: 0 és right: 0"]]), tmpl(".kartya { position: relative; }\n.jelvény { position: absolute; top: 0; right: 0; }", '<div class="kartya">Kártya<span class="jelvény">új</span></div>\n'))
+  ];
+  const mkcode = l => (l === 1 ? pick(L1) : l === 2 ? pick(L2) : pick(L3))();
+  const SEL = [
+    ["Melyik szelektor jelöli ki az <b>összes bekezdést</b>?", "p", [".p", "#p", "<p>"]],
+    ["Melyik szelektor jelöli ki a <b>kiemelt</b> osztályú elemeket?", ".kiemelt", ["kiemelt", "#kiemelt", "*kiemelt"]],
+    ["Melyik szelektor jelöli ki a <b>fo</b> azonosítójú elemet?", "#fo", [".fo", "fo", "@fo"]],
+    ["Melyik szelektor jelöli ki a <b>nav-on belüli</b> hivatkozásokat?", "nav a", ["nav, a", "nav.a", "a nav"]],
+    ["Melyik szelektor jelöli ki egyszerre a <b>h1</b> és <b>h2</b> elemeket?", "h1, h2", ["h1 h2", "h1.h2", "h1 + h2"]],
+    ["Melyik szelektor jelöli ki a hivatkozást, <b>amikor fölé visszük az egeret</b>?", "a:hover", ["a:over", "a.hover", "a#hover"]],
+    ["Melyik tulajdonság állítja a <b>betű színét</b>?", "color", ["font-color", "text-color", "background-color"]],
+    ["Melyik tulajdonság állítja a <b>háttér színét</b>?", "background-color", ["color", "bg", "back-color"]],
+    ["Melyik tulajdonság állítja a <b>betűméretet</b>?", "font-size", ["text-size", "size", "font-style"]],
+    ["Melyik tulajdonság a <b>belső margó</b> (a tartalom és a keret közt)?", "padding", ["margin", "border", "spacing"]],
+    ["Melyik tulajdonság a <b>külső margó</b> (a keret és a szomszéd közt)?", "margin", ["padding", "border", "gap"]],
+    ["Melyik érték tünteti el az elemet az oldalról?", "display: none", ["visibility: off", "hide: true", "opacity: 0 (de a helye is eltűnik)"]],
+    ["Hogyan írod a tizenhatos színkódot?", "#1B5CBA", ["1B5CBA", "$1B5CBA", "0x1B5CBA#"]],
+    ["Melyik <b>mértékegység</b> relatív (a szülőhöz vagy a betűmérethez igazodik)?", "%", ["px", "pt", "cm"]]
+  ];
+  const boxTask = l => {
+    const w = pick([100, 120, 150, 200, 250]), p = pick([10, 15, 20, 25]), b = pick([2, 4, 5]), m = pick([10, 20, 30]), bs = l === 3 && Math.random() < 0.5;
+    const base = bs ? w : w + 2 * p + 2 * b, tot = base + 2 * m, fr = boxFrames(w, p, b, m, bs);
+    const ask = l === 1 ? "látható szélessége (a margó nélkül)" : "teljes vízszintes helyfoglalása (a margóval együtt)";
+    const ans = l === 1 ? base : tot;
+    const q = "Egy doboz CSS-e: <code>width: " + w + "px; padding: " + (l === 1 ? p : p) + "px; " + (l === 1 ? "" : "border: " + b + "px solid; ") + (l === 1 ? "" : "margin: " + m + "px; ") + "box-sizing: " + (bs ? "border-box" : "content-box") + ";</code> Mekkora a doboz " + ask + " pixelben?";
+    const base1 = l === 1 ? w + 2 * p : base, tot1 = l === 1 ? base1 : tot;
+    const frames = l === 1 ? boxFrames(w, p, 0, 0, false) : fr;
+    return { q, kind: "input", mode: "numeric", answer: l === 1 ? base1 : ans, sol: caps(frames), frames, title: "Dobozmodell számolás", check: v => { const s = norm(v); const a = l === 1 ? base1 : ans; if (!/^\d+$/.test(s)) return { ok: false, msg: "Egész számot (px) várok." }; if (+s === a) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: l === 1 ? "Nem jó. A padding mindkét oldalon hozzáadódik: width + 2 · padding." : bs ? "Nem jó. Border-box esetén a width már tartalmazza a paddinget és a bordert, csak a margót kell hozzáadni (2 · margin)." : "Nem jó. Mindegyik réteg mindkét oldalon számít: width + 2·padding + 2·border + 2·margin." }; } };
+  };
+  const specTask = l => {
+    const t = specGen(l === 1 ? 1 : l === 2 ? 2 : 3), win = specWin(t), fr = specFrames(t);
+    const opts = ["red", "blue", "green"].map(c => ({ l: COL[c], ok: c === win }));
+    return { q: "Melyik színű lesz a bekezdés szövege?<pre class='code'>" + esc(specCode(t)) + "</pre>Az elem: <code>" + esc(specElem(t)) + "</code>", kind: "choice", options: opts, answer: COL[win], sol: caps(fr), frames: fr, title: "Melyik szabály nyer?", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Add össze a szelektorok erősségét: azonosító 100, osztály 10, elem 1; inline style 1000; egyenlőnél a későbbi nyer." }) };
+  };
+  const colTask = l => {
+    if (Math.random() < 0.5){
+      const ch = l === 1 ? [0, 64, 128, 192, 255] : null, c = [0, 1, 2].map(() => ch ? pick(ch) : rnd(0, 255)), ans = "#" + c.map(HEX).join("");
+      return { q: "Írd át <code>rgb(" + c.join(", ") + ")</code> színt tizenhatos színkóddá (#RRGGBB)!", kind: "input", answer: ans, sol: "<p>" + c.map((x, i) => ["piros", "zöld", "kék"][i] + ": " + x + " = " + HEX(x)).join(", ") + ".</p>", check: v => { const s = norm(v).replace(/^#/, ""); return s === ans.slice(1) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Mindhárom csatornát külön váltsd tizenhatosba, kétjegyűre kiegészítve (5 → 05)." }; } };
+    }
+    const c = [0, 1, 2].map(() => rnd(0, l === 1 ? 4 : 15) * 16 + (l === 1 ? 0 : rnd(0, 15)));
+    const h = "#" + c.map(HEX).join(""), idx = rnd(0, 2);
+    return { q: "A színkód <code>" + h + "</code>. Mennyi a <b>" + ["piros", "zöld", "kék"][idx] + "</b> csatorna értéke tízesben (0–255)?", kind: "input", mode: "numeric", answer: c[idx], sol: "<p>Csatorna: " + ["piros", "zöld", "kék"][idx] + ". Jegyei: " + HEX(c[idx]) + " = " + parseInt(HEX(c[idx])[0], 16) + " · 16 + " + parseInt(HEX(c[idx])[1], 16) + " = " + c[idx] + ".</p>", check: v => { const s = norm(v); return /^\d+$/.test(s) && +s === c[idx] ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első jegy · 16 + a második jegy." }; } };
+  };
+  const types = [
+    { id: "code", name: "Kódolj CSS-t", gen: l => mkcode(l) },
+    { id: "box", name: "Dobozmodell", gen: l => boxTask(l) },
+    { id: "spec", name: "Melyik szabály nyer?", gen: l => specTask(l) },
+    { id: "color", name: "Színek", gen: l => colTask(l) },
+    { id: "sel", name: "Szelektor, tulajdonság", gen(l){
+      const q = pick(SEL), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false }))));
+      return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: <b>" + esc(q[1]) + "</b>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } }
+  ];
+  K.practice($("#practice"), { id: "css", types, play: playTo, examN: 8 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["color", "betűszín"], ["background-color", "háttérszín"], ["font-size / font-family", "betűméret / betűtípus"], ["font-weight / font-style", "vastag (bold) / dőlt (italic)"], ["text-align", "left, center, right"], ["text-decoration", "none, underline"], ["width / height", "szélesség / magasság"], ["padding / margin", "belső / külső margó"], ["border", "keret: 2px solid black"], ["border-radius", "kerekített sarok"], ["display", "block, inline, inline-block, none"], ["position, top, left…", "relative, absolute, fixed"], ["box-sizing", "content-box / border-box"]];
+  $("#cheat").innerHTML = "<tr><th>Tulajdonság</th><th>Mit állít</th></tr>" + rows.map(t => "<tr><td>" + t[0] + "</td><td style='text-align:left'>" + t[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

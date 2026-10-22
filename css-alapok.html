@@ -1,0 +1,824 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261022075044">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>CSS alapok</title>
+<style>
+.pb-stage .codewrap{font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;margin:0 0 10px}
+.pb-stage .codewrap .cur{background:#4a3a12;color:#FFB01F;display:inline-block;width:100%}
+.pb-stage .lbl{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;margin:6px 0}
+.pb-stage iframe{width:100%;height:170px;border:0;border-radius:8px;background:#fff}
+.bm{display:flex;justify-content:center;padding:14px;background:var(--surface-2);border-radius:14px;overflow-x:auto}
+.bm .m{background:#F8CB9C;color:#5a3500;padding:var(--mg);border:1.5px dashed #b8793a;position:relative}
+.bm .b{background:#FDDD9B;border:var(--bd) solid #8a6a1e;padding:var(--pd);box-sizing:content-box}
+.bm .p{background:#C3D08B;padding:var(--pd)}
+.bm .c{background:#8DB6E6;color:#0b2a52;width:var(--w);min-height:36px;display:grid;place-items:center;font-family:var(--mono);font-size:.8rem}
+.bmc{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.bmc label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:2px}
+.bmc input[type=range]{width:100%}
+.rules{display:flex;flex-direction:column;gap:6px}
+.rule{font-family:var(--mono);background:var(--surface-2);border-radius:8px;padding:6px 10px}
+.tagtbl td:first-child{font-family:var(--mono);font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · weboldalak</span>
+  <h1>CSS alapok</h1>
+  <p class="lead">A HTML a szerkezet, a CSS a kinézet. Írj szabályokat, és nézd, hogyan változik az oldal.</p>
+  <div class="panel">
+    <span class="eyebrow">Szerkeszd a bal oldalt, a jobb oldal azonnal frissül</span>
+    <div class="row" id="ex-btns"></div>
+    <div id="hero-ed"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Válassz módszert. Az „Új példa” új számokat és szabályokat húz. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="style" aria-selected="true">Oldal stílusozása</button>
+    <button class="tab" data-m="box" aria-selected="false">Dobozmodell számolás</button>
+    <button class="tab" data-m="spec" aria-selected="false">Melyik szabály nyer?</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A „Kódolj CSS-t” feladatoknál te írod a szabályt, az ellenőrzés a böngésző tényleges megjelenéséből dönt. A „Próbadolgozat” 8 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt tagtbl" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Szabály</span><pre class="code">szelektor {
+  tulajdonság: érték;
+}</pre></div>
+    <div class="trick"><span class="t">Dobozmodell</span><span>content → padding → border → margin. Teljes szélesség (content-box) = width + 2·padding + 2·border + 2·margin. Border-box: a width már tartalmazza a paddinget és a bordert.</span></div>
+    <div class="trick"><span class="t">Erősség</span><span>inline style (1000) &gt; #id (100) &gt; .osztály (10) &gt; elem (1). Egyenlő erősségnél a későbbi szabály nyer. A !important mindent felülír.</span></div>
+    <div class="trick"><span class="t">Színek</span><span>névvel (<code>red</code>), tizenhatosan (<code>#FF0000</code>) vagy <code>rgb(255, 0, 0)</code>.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, norm } = K;
+  K.tts.rules.push([/<code>.*?<\/code>/g, ""], [/\s*\(\s*\)/g, ""]);
+  const HEX = n => n.toString(16).toUpperCase().padStart(2, "0");
+  const CN = { piros: ["red", [255, 0, 0]], kék: ["blue", [0, 0, 255]], zöld: ["green", [0, 128, 0]], narancs: ["orange", [255, 165, 0]], lila: ["purple", [128, 0, 128]] };
+  const rgbStr = a => "rgb(" + a.join(", ") + ")";
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+
+  const EX = {
+    "Alap oldal": '<style>\nbody { font-family: sans-serif; }\nh1 { color: #1B5CBA; text-align: center; }\np { font-size: 18px; line-height: 1.5; }\n.kiemelt { background-color: yellow; padding: 8px; }\n</style>\n<h1>Üdv a CSS-ben!</h1>\n<p>Ez egy sima bekezdés.</p>\n<p class="kiemelt">Ez egy kiemelt bekezdés.</p>\n',
+    "Dobozmodell": '<style>\n.doboz {\n  width: 200px;\n  padding: 20px;\n  border: 4px solid #1B5CBA;\n  margin: 16px;\n  background: #DCE7F7;\n}\n</style>\n<div class="doboz">Egy doboz: tartalom, padding, border, margin.</div>\n',
+    "Menü": '<style>\nnav a {\n  display: inline-block;\n  padding: 8px 14px;\n  background: #1B5CBA;\n  color: white;\n  text-decoration: none;\n  border-radius: 6px;\n}\nnav a:hover { background: #F29E0C; color: black; }\n</style>\n<nav>\n  <a href="#">Főoldal</a>\n  <a href="#">Rólam</a>\n  <a href="#">Kapcsolat</a>\n</nav>\n',
+    "Pozíció": '<style>\n.szulo { position: relative; height: 120px; background: #EDF0F4; }\n.gyerek {\n  position: absolute;\n  top: 10px; right: 10px;\n  background: #F29E0C; padding: 8px;\n}\n</style>\n<div class="szulo">\n  <div class="gyerek">Jobb felső sarok</div>\n</div>\n'
+  };
+  const hero = K.editor($("#hero-ed"), { code: EX["Alap oldal"], rows: 14 });
+  Object.keys(EX).forEach(k => { const b = document.createElement("button"); b.className = "btn"; b.textContent = k; b.addEventListener("click", () => hero.set(EX[k])); $("#ex-btns").appendChild(b); });
+  const loadHero = k => { hero.set(EX[k]); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const loadBtn = k => "<p><button class='btn' data-load='" + k + "'>↑ Betöltés a szerkesztőbe</button></p>";
+  const wire = el => $$("[data-load]", el).forEach(b => b.addEventListener("click", () => loadHero(b.dataset.load)));
+
+  /* ---------- Levezetések ---------- */
+  const frame = (body, css) => '<iframe sandbox="allow-same-origin" title="Előnézet" srcdoc="' + esc("<style>body{font-family:sans-serif;margin:8px}" + css + "</style>" + body) + '"></iframe>';
+  function styleFrames(){
+    const body = '<h1>Üdv!</h1><p>Első bekezdés.</p><p class="kiemelt">Kiemelt bekezdés.</p>';
+    const R = [
+      ["h1 {", "  color: #1B5CBA;", "}", "A h1 szelektor minden első szintű címsorra vonatkozik. A color tulajdonság a betű színét állítja, itt tizenhatos színkóddal."],
+      ["p {", "  font-size: 20px;", "}", "A p minden bekezdést kijelöl. A font-size a betűméret, pixelben (px)."],
+      [".kiemelt {", "  background-color: yellow;", "  padding: 8px;", "}", "A pont az osztály szelektora: csak azt az elemet jelöli, amelyiknek class=\"kiemelt\" attribútuma van. A háttérszín sárga, a padding a belső margó."],
+      ["h1 {", "  text-align: center;", "}", "Ugyanarra a szelektorra több szabály is írható. A text-align a szöveg igazítása: center, vagyis középre."]
+    ];
+    const F = [{ cap: "Adott egy HTML-oldal stílus nélkül. Szabályokat írunk hozzá, egyenként. Egy szabály: szelektor, majd kapcsos zárójelben tulajdonság: érték; párok.", html: '<div class="lbl">Eredmény</div>' + frame(body, "") }];
+    let css = "";
+    R.forEach(r => {
+      const cap = r.pop(); css += r.join("\n") + "\n";
+      F.push({ cap, html: '<div class="lbl">Új szabály</div><pre class="codewrap"><span class="cur">' + esc(r.join("\n")) + '</span></pre><div class="lbl">Eredmény</div>' + frame(body, css) });
+    });
+    return F;
+  }
+  function boxFrames(w, p, b, m, bs){
+    const base = bs ? w : w + 2 * p + 2 * b, tot = base + 2 * m;
+    const F = [{ cap: "A doboz beállításai: width " + w + " px, padding " + p + " px, border " + b + " px, margin " + m + " px, box-sizing: " + (bs ? "border-box" : "content-box") + ". Mekkora helyet foglal el vízszintesen?", html: '<pre class="codewrap">width: ' + w + "px;\npadding: " + p + "px;\nborder: " + b + "px solid;\nmargin: " + m + "px;\nbox-sizing: " + (bs ? "border-box" : "content-box") + ";</pre>" }];
+    if (bs){
+      F.push({ cap: "Border-box esetén a megadott width már tartalmazza a paddinget és a bordert. A doboz látható szélessége tehát " + w + " px.", html: '<p class="big">látható szélesség = <span class="cur">' + w + "</span> px</p>" });
+      F.push({ cap: "A margó kívül van: mindkét oldalon " + m + " px. Összesen " + w + " + 2 · " + m + " = " + tot + " px.", html: '<p class="big">' + w + " + 2 · " + m + ' = <span class="cur">' + tot + "</span> px</p>" });
+    } else {
+      F.push({ cap: "Content-box esetén a width csak a tartalom szélessége. A paddingot mindkét oldalon hozzá kell adni: 2 · " + p + " = " + 2 * p + " px.", html: '<p class="big">' + w + " + <span class=\"cur\">" + 2 * p + "</span></p>" });
+      F.push({ cap: "A border is kétoldali: 2 · " + b + " = " + 2 * b + " px. A látható doboz: " + w + " + " + 2 * p + " + " + 2 * b + " = " + base + " px.", html: '<p class="big">' + w + " + " + 2 * p + " + <span class=\"cur\">" + 2 * b + "</span> = " + base + " px</p>" });
+      F.push({ cap: "A margó kívül van, mindkét oldalon " + m + " px: 2 · " + m + " = " + 2 * m + " px. Összesen " + base + " + " + 2 * m + " = " + tot + " px.", html: '<p class="big">' + base + " + <span class=\"cur\">" + 2 * m + "</span> = " + tot + " px</p>" });
+    }
+    F.push({ cap: "Összesen " + tot + " px helyet foglal a doboz vízszintesen.", html: '<p class="big cur">' + tot + " px</p>" });
+    return F;
+  }
+  /* Specificitás */
+  const CAND = [["p", 1], [".x", 10], ["#y", 100], ["div p", 2], ["p.x", 11], ["div .x", 11], ["#y.x", 110]];
+  const COL = { red: "piros", blue: "kék", green: "zöld" };
+  function specGen(level){
+    const cs = shuffle(["red", "blue", "green"]), pool = level === 1 ? CAND.slice(0, 3) : CAND;
+    let sel = shuffle(pool).slice(0, 3);
+    const rules = sel.map((s, i) => ({ sel: s[0], spec: s[1], color: cs[i], imp: false, idx: i }));
+    let inline = null;
+    if (level === 3){ if (Math.random() < 0.5) inline = pick(cs); else pick(rules).imp = true; }
+    return { rules, inline };
+  }
+  function specWin(t){
+    const imp = t.rules.filter(r => r.imp);
+    if (imp.length) return imp.reduce((a, r) => (r.spec > a.spec || (r.spec === a.spec && r.idx > a.idx)) ? r : a).color;
+    if (t.inline) return t.inline;
+    return t.rules.reduce((a, r) => (r.spec > a.spec || (r.spec === a.spec && r.idx > a.idx)) ? r : a).color;
+  }
+  const specCode = t => t.rules.map(r => r.sel + " { color: " + r.color + (r.imp ? " !important" : "") + "; }").join("\n");
+  const specElem = t => '<p class="x" id="y"' + (t.inline ? ' style="color: ' + t.inline + '"' : "") + ">Szöveg</p>  (egy div-ben)";
+  function specFrames(t){
+    const F = [{ cap: "Melyik színű lesz a szöveg? Az elem több szabálynak is megfelel, a legerősebb nyer.", html: '<pre class="codewrap">' + esc(specCode(t)) + "\n\n" + esc(specElem(t)) + "</pre>" }];
+    t.rules.forEach(r => F.push({ cap: "A szabály: " + r.sel + ". Erőssége: " + r.spec + " pont" + (r.spec >= 100 ? " (azonosító)" : r.spec >= 10 ? " (osztály)" : " (elem)") + ". Színe: " + COL[r.color] + (r.imp ? ". A !important minden más szabályt felülír." : "."), html: '<pre class="codewrap">' + esc(specCode(t)) + "</pre><p>" + esc(r.sel) + " → " + r.spec + " pont" + (r.imp ? ", !important" : "") + "</p>" }));
+    if (t.inline) F.push({ cap: "Az elemen inline style is van (" + COL[t.inline] + "), ez 1000 pont, erősebb minden szelektornál (a !important kivételével).", html: '<pre class="codewrap">' + esc(specElem(t)) + "</pre><p>inline → 1000 pont</p>" });
+    const w = specWin(t);
+    F.push({ cap: "A nyertes szín: " + COL[w] + "." + (t.rules.some(r => r.spec === 11) && !t.inline && !t.rules.some(r => r.imp) && t.rules.filter(r => r.spec === 11).length > 1 ? " A két 11 pontos szabály közül a később írt nyer." : ""), html: '<p class="big cur">' + COL[w] + "</p>" });
+    return F;
+  }
+  const pb = K.player($("#pb"));
+  const PB = { m: "style" };
+  function pbNew(auto){
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m)));
+    if (PB.m === "style") pb.load(styleFrames(), "Oldal stílusozása", auto);
+    else if (PB.m === "box") pb.load(boxFrames(pick([100, 150, 200, 300]), pick([10, 15, 20]), pick([2, 4, 5]), pick([10, 20]), Math.random() < 0.3), "Dobozmodell számolás", auto);
+    else pb.load(specFrames(specGen(rnd(2, 3))), "Melyik szabály nyer?", auto);
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mire való a CSS?", h:
+      "<p>A HTML megmondja, <b>mi</b> van az oldalon, a CSS megmondja, <b>hogyan néz ki</b>: szín, betű, méret, elrendezés. A CSS szabályokból áll:</p>" + code("szelektor {\n  tulajdonság: érték;\n  másik-tulajdonság: érték;\n}") +
+      "<ul><li>a <b>szelektor</b> kiválasztja az elemeket (pl. <code>h1</code>)</li><li>a <b>tulajdonság</b> azt nevezi meg, mit állítunk (pl. <code>color</code>)</li><li>az <b>érték</b> azt, hogy mire (pl. <code>red</code>)</li></ul>" +
+      "<div class='note'><b>Figyelem:</b> minden tulajdonság végén pontosvessző van, a szabály kapcsos zárójelben. A hiányzó <code>;</code> az egyik leggyakoribb hiba.</div>" },
+    { k: "Hely", t: "Hová írjuk a CSS-t?", h:
+      code('<!-- 1) inline: az elemen -->\n<p style="color: red;">Piros</p>\n\n<!-- 2) belső: a head-ben -->\n<style>\n  p { color: red; }\n</style>\n\n<!-- 3) külső fájl -->\n<link rel="stylesheet" href="stilus.css">') +
+      "<p>A <b>külső fájl</b> a legjobb: egy helyen módosítod, az egész oldal változik. A tanórán belső <code>style</code>-t és külső fájlt is használtok.</p>" },
+    { k: "Szelektorok", t: "Mit jelölünk ki?", h:
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Szelektor</th><th>Mit választ ki?</th></tr><tr><td>p</td><td>minden p elem</td></tr><tr><td>.kiemelt</td><td>minden elem, aminek class=\"kiemelt\"</td></tr><tr><td>#fo</td><td>az az egy elem, aminek id=\"fo\"</td></tr><tr><td>nav a</td><td>a nav-on belüli összes a (leszármazott)</td></tr><tr><td>h1, h2</td><td>mindkét fajta elem (csoport)</td></tr><tr><td>p.kiemelt</td><td>p, amelyiknek class=\"kiemelt\"</td></tr><tr><td>a:hover</td><td>a hivatkozás, amikor fölé visszük az egeret</td></tr><tr><td>*</td><td>minden elem</td></tr></table></div>" +
+      "<div class='note'><b>Id vagy class?</b> Az id egyedi (oldalanként egyszer), a class többször is használható. Formázáshoz általában a class a jobb.</div>" },
+    { k: "Szín, betű", t: "Szín és szöveg", h: () =>
+      "<div class='ptwrap'><table class='pt tagtbl'><tr><th>Tulajdonság</th><th>Mit állít</th><th>Példa</th></tr><tr><td>color</td><td>betűszín</td><td>color: #1B5CBA;</td></tr><tr><td>background-color</td><td>háttérszín</td><td>background-color: yellow;</td></tr><tr><td>font-size</td><td>betűméret</td><td>font-size: 18px;</td></tr><tr><td>font-family</td><td>betűtípus</td><td>font-family: Arial, sans-serif;</td></tr><tr><td>font-weight / font-style</td><td>vastag / dőlt</td><td>font-weight: bold;</td></tr><tr><td>text-align</td><td>igazítás</td><td>text-align: center;</td></tr><tr><td>text-decoration</td><td>aláhúzás</td><td>text-decoration: none;</td></tr><tr><td>line-height</td><td>sortávolság</td><td>line-height: 1.5;</td></tr></table></div>" +
+      "<p><b>Színek:</b> névvel (<code>red</code>), <b>tizenhatos színkóddal</b> (<code>#FF8000</code>: piros FF, zöld 80, kék 00, ez az előző leckéből ismerős), vagy <code>rgb(255, 128, 0)</code>.</p>" + loadBtn("Alap oldal"), init: wire },
+    { k: "Mértékegységek", t: "px, %, em, rem", h:
+      "<ul><li><b>px</b>: pixel, fix méret.</li><li><b>%</b>: a szülő méretének százaléka (<code>width: 50%</code>).</li><li><b>em</b>: az elem betűméretének többszöröse. <b>rem</b>: a gyökérelem betűméretének többszöröse.</li><li><b>vw / vh</b>: a böngészőablak szélességének / magasságának 1 százaléka.</li></ul>" +
+      "<p>A relatív mértékegységekkel (em, rem, %, vw) lesz az oldal <b>reszponzív</b>, vagyis jó mobilon és monitoron is. Ez a tanév későbbi leckéje.</p>" },
+    { k: "Dobozmodell", t: "Minden elem egy doboz", h: () =>
+      "<p>Minden HTML-elem téglalap, négy rétegből: <b>content</b> (tartalom), <b>padding</b> (belső margó), <b>border</b> (keret), <b>margin</b> (külső margó). Mozgasd a csúszkákat:</p>" +
+      "<div class='bm'><div class='m' id='bm-m'><div class='b' id='bm-b'><div class='p'><div class='c' id='bm-c'>content</div></div></div></div></div>" +
+      "<div class='bmc'><label>width <input type='range' id='bm-w' min='60' max='220' value='120'></label><label>padding <input type='range' id='bm-p' min='0' max='30' value='12'></label><label>border <input type='range' id='bm-bd' min='0' max='12' value='4'></label><label>margin <input type='range' id='bm-mg' min='0' max='30' value='10'></label></div>" +
+      "<p class='eq' id='bm-out'></p>" +
+      "<div class='note'><b>box-sizing: border-box;</b> esetén a width már tartalmazza a paddinget és a bordert, ezért sokkal könnyebb vele számolni. Sok oldal ezt állítja be mindenre: <code>* { box-sizing: border-box; }</code></div>",
+      init(el){
+        const r = () => { const w = +$("#bm-w", el).value, p = +$("#bm-p", el).value, b = +$("#bm-bd", el).value, m = +$("#bm-mg", el).value;
+          const root = $(".bm", el); root.style.setProperty("--w", w + "px"); root.style.setProperty("--pd", p + "px"); root.style.setProperty("--bd", b + "px"); root.style.setProperty("--mg", m + "px");
+          $("#bm-out", el).textContent = w + " + 2·" + p + " + 2·" + b + " + 2·" + m + " = " + (w + 2 * p + 2 * b + 2 * m) + " px (content-box)"; };
+        $$("input[type=range]", el).forEach(i => i.addEventListener("input", r)); r();
+      } },
+    { k: "Elrendezés", t: "display, position, float", h:
+      "<ul><li><code>display: block</code>: új sorban, teljes szélességben (p, div, h1). <code>inline</code>: a szöveg közt folyik (span, a). <code>inline-block</code>: sorban marad, de méretezhető. <code>none</code>: eltűnik.</li><li><code>position: relative</code>: az eredeti helyéhez képest tolható; <code>absolute</code>: a legközelebbi pozicionált szülőhöz képest; <code>fixed</code>: az ablakhoz rögzített. Hozzá: <code>top, right, bottom, left</code>.</li><li><code>z-index</code>: ki van felül, ha átfedik egymást.</li><li><code>float: left | right</code>: a szöveg köré húz egy elemet (régebbi módszer, ma már <code>flex</code> vagy <code>grid</code> a jobb).</li></ul>" + loadBtn("Pozíció"), init: wire },
+    { k: "Erősség", t: "Melyik szabály nyer?", h: () =>
+      "<p>Ha több szabály is vonatkozik ugyanarra az elemre, a böngésző az erősebbet választja:</p>" +
+      "<ol><li><b>inline style</b> (1000)</li><li><b>#id</b> (100)</li><li><b>.osztály</b>, :hover (10)</li><li><b>elem</b> (1)</li></ol>" +
+      "<p>Az erősségek összeadódnak: <code>p.x</code> = 1 + 10 = 11. <b>Egyenlő</b> erősségnél a <b>később írt</b> szabály nyer. A <code>!important</code> mindent felülír (ritkán használd).</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTo(specFrames({ rules: [{ sel: "p", spec: 1, color: "red", imp: false, idx: 0 }, { sel: ".x", spec: 10, color: "blue", imp: false, idx: 1 }, { sel: "#y", spec: 100, color: "green", imp: false, idx: 2 }], inline: null }), "Melyik szabály nyer?")); } },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hiányzó pontosvessző vagy kapcsos zárójel.</b> A hibás sor után a böngésző a többit is figyelmen kívül hagyhatja.</div>" +
+      "<div class='mistake'><b>Pont vagy kettőskereszt kimarad.</b> <code>kiemelt { … }</code> egy kiemelt nevű <i>elemet</i> keres. Az osztály: <code>.kiemelt</code>, az azonosító: <code>#fo</code>.</div>" +
+      "<div class='mistake'><b>Mértékegység nélküli szám.</b> <code>font-size: 20</code> nem működik, <code>20px</code> igen. (A 0 és a line-height kivétel.)</div>" +
+      "<div class='mistake'><b>Elírt tulajdonságnév.</b> <code>colour</code>, <code>background</code>-szín: a böngésző nem szól, csak nem történik semmi. F12 → Styles: áthúzva látszik.</div>" +
+      "<div class='mistake'><b>Padding hozzáadódik.</b> A 300 px széles doboz padding és border után szélesebb lesz, ha nincs border-box.</div>" },
+    { k: "Trükkök", t: "Hasznos szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>F12 → Elements → Styles</span><span>Itt látod élőben, melyik szabály érvényes, és ki is próbálhatod az értékeket.</span></div>" +
+      "<div class='trick'><span class='t'>Osztályok</span><span>Adj az elemeknek osztályt (<code>class</code>), és azt stílusozd. Így nem keveredik össze a szerkezet és a kinézet.</span></div>" +
+      "<div class='trick'><span class='t'>Mindenre border-box</span><span><code>* { box-sizing: border-box; }</code> az oldal elején sok számolást megspórol.</span></div>" +
+      "<div class='trick'><span class='t'>Kommentár</span><span><code>/* ez megjegyzés */</code>: a böngésző nem veszi figyelembe.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const txt = el => el ? el.textContent.trim().replace(/\s+/g, " ") : "";
+  const chk = pairs => { const miss = pairs.filter(p => !p[0]).map(p => p[1]); return miss.length ? { ok: false, msg: "Hiányzik vagy hibás: " + miss.join("; ") + "." } : { ok: true, msg: "Helyes!" }; };
+  const cs = (v, sel, prop) => { const e = v.doc.querySelector(sel); return e ? v.win.getComputedStyle(e)[prop] : null; };
+  const tmpl = (inner, body) => "<style>\n" + inner + "\n</style>\n" + body;
+  const kod = (q, starter, check, ans) => ({ q, kind: "code", starter, rows: 11, hint: "írd a style-ba", check, answer: "<pre class='code'>" + esc(ans) + "</pre>", sol: "<p>Egy lehetséges megoldás:</p>" + code(ans) });
+  const BODY = "<h1>Cím</h1>\n<p>Szöveg</p>\n";
+  const L1 = [
+    () => { const k = pick(Object.keys(CN)), c = CN[k]; return kod("A <b>h1</b> betűszíne legyen <b>" + k + "</b> a <b>color</b> tulajdonsággal (az angol neve: <b>" + c[0] + "</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "color") === rgbStr(c[1]), "a h1 színe: " + c[0]]]), tmpl("h1 { color: " + c[0] + "; }", BODY)); },
+    () => { const h = pick(["#FFFF00", "#00FF00", "#FFC0CB", "#ADD8E6", "#FFA500"]); return kod("A <b>p</b> háttérszíne legyen <b>" + h + "</b> (<b>background-color</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "p", "backgroundColor") === rgbStr(hexRgb(h)), "a p háttere: " + h]]), tmpl("p { background-color: " + h + "; }", BODY)); },
+    () => { const s = pick([18, 24, 40, 48]); return kod("A <b>h1</b> betűmérete legyen <b>" + s + "px</b> (<b>font-size</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "fontSize") === s + "px", "font-size: " + s + "px a h1-en"]]), tmpl("h1 { font-size: " + s + "px; }", BODY)); },
+    () => { const a = pick(["center", "right"]); return kod("A <b>p</b> szövegét igazítsd <b>" + (a === "center" ? "középre" : "jobbra") + "</b> (<b>text-align: " + a + "</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "p", "textAlign") === a, "text-align: " + a + " a p-n"]]), tmpl("p { text-align: " + a + "; }", BODY)); },
+    () => kod("A <b>h1</b> legyen <b>dőlt</b> (<b>font-style: italic</b>) és <b>aláhúzott</b> (<b>text-decoration: underline</b>).", tmpl("/* ide írd */", BODY), v => chk([[cs(v, "h1", "fontStyle") === "italic", "font-style: italic"], [/underline/.test(cs(v, "h1", "textDecorationLine") || ""), "text-decoration: underline"]]), tmpl("h1 { font-style: italic; text-decoration: underline; }", BODY))
+  ];
+  const BODY2 = '<h1 id="fo">Főcím</h1>\n<p>Sima bekezdés.</p>\n<p class="kiemelt">Kiemelt bekezdés.</p>\n<nav><a href="#">Egy</a> <a href="#">Kettő</a></nav>\n';
+  const L2 = [
+    () => { const c = pick(["red", "blue", "green"]); return kod("Csak a <b>kiemelt</b> osztályú elem betűje legyen <b>" + c + "</b>, a többi p maradjon fekete. (Osztály szelektor: pont a név előtt.)", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, ".kiemelt", "color") === rgbStr(c === "red" ? [255, 0, 0] : c === "blue" ? [0, 0, 255] : [0, 128, 0]), "a .kiemelt színe: " + c], [cs(v, "p:not(.kiemelt)", "color") === "rgb(0, 0, 0)", "a többi p maradjon fekete"]]), tmpl(".kiemelt { color: " + c + "; }", BODY2)); },
+    () => { const px = pick([12, 16, 20]); return kod("Az <b>#fo</b> azonosítójú elem (a főcím) <b>alatt</b> legyen <b>" + px + "px</b> padding, és <b>2px solid</b> keret (<b>padding</b> és <b>border</b>), az azonosító szelektorral.", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "#fo", "paddingTop") === px + "px", "padding: " + px + "px"], [cs(v, "#fo", "borderTopWidth") === "2px" && cs(v, "#fo", "borderTopStyle") === "solid", "border: 2px solid"]]), tmpl("#fo { padding: " + px + "px; border: 2px solid black; }", BODY2)); },
+    () => kod("A <b>nav</b>-on belüli hivatkozások (a) ne legyenek aláhúzva (<b>text-decoration: none</b>) és legyen vastag a betűjük (<b>font-weight: bold</b>). Használj leszármazott szelektort: <b>nav a</b>.", tmpl("/* ide írd */", BODY2), v => chk([[!/underline/.test(cs(v, "nav a", "textDecorationLine") || ""), "nav a: text-decoration: none"], [+cs(v, "nav a", "fontWeight") >= 700, "nav a: font-weight: bold"]]), tmpl("nav a { text-decoration: none; font-weight: bold; }", BODY2)),
+    () => { const m = pick([10, 20, 30]); return kod("Minden <b>p</b>-nek legyen <b>" + m + "px</b> felső margója (<b>margin-top</b>) és <b>sárga</b> háttere (<b>background-color: yellow</b>).", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "p", "marginTop") === m + "px", "margin-top: " + m + "px"], [cs(v, "p", "backgroundColor") === "rgb(255, 255, 0)", "background-color: yellow"]]), tmpl("p { margin-top: " + m + "px; background-color: yellow; }", BODY2)); }
+  ];
+  const L3 = [
+    () => kod("Tedd <b>gombszerűvé</b> a <b>nav a</b> elemeket: <b>display: inline-block</b>, <b>padding: 8px 14px</b>, kék háttér (<b>background-color: #1B5CBA</b>), fehér betű (<b>color: white</b>), kerekített sarok (<b>border-radius: 6px</b>).", tmpl("/* ide írd */", BODY2), v => chk([[cs(v, "nav a", "display") === "inline-block", "display: inline-block"], [cs(v, "nav a", "paddingTop") === "8px" && cs(v, "nav a", "paddingLeft") === "14px", "padding: 8px 14px"], [cs(v, "nav a", "backgroundColor") === "rgb(27, 92, 186)", "background-color: #1B5CBA"], [cs(v, "nav a", "color") === "rgb(255, 255, 255)", "color: white"], [cs(v, "nav a", "borderTopLeftRadius") === "6px", "border-radius: 6px"]]), tmpl("nav a {\n  display: inline-block;\n  padding: 8px 14px;\n  background-color: #1B5CBA;\n  color: white;\n  border-radius: 6px;\n}", BODY2)),
+    () => { const w = pick([200, 300, 400]); return kod("Az <b>.doboz</b> elem <b>width</b>-je legyen <b>" + w + "px</b>, <b>padding: 20px</b> és <b>border: 5px solid</b>, de a látható szélessége a <b>box-sizing: border-box</b> miatt maradjon pontosan " + w + "px.", tmpl("/* ide írd */", '<div class="doboz">Doboz</div>\n'), v => { const e = v.doc.querySelector(".doboz"); const r = e && e.getBoundingClientRect(); return chk([[cs(v, ".doboz", "boxSizing") === "border-box", "box-sizing: border-box"], [cs(v, ".doboz", "paddingLeft") === "20px", "padding: 20px"], [cs(v, ".doboz", "borderLeftWidth") === "5px", "border: 5px"], [r && Math.round(r.width) === w, "a doboz látható szélessége " + w + "px"]]); }, tmpl(".doboz {\n  box-sizing: border-box;\n  width: " + w + "px;\n  padding: 20px;\n  border: 5px solid black;\n}", '<div class="doboz">Doboz</div>\n')); },
+    () => kod("Az <b>.eltuno</b> osztályú bekezdés ne jelenjen meg az oldalon (<b>display: none</b>), a másik maradjon látható.", tmpl("/* ide írd */", '<p class="eltuno">Ezt ne lásd!</p>\n<p>Ezt látni kell.</p>\n'), v => chk([[cs(v, ".eltuno", "display") === "none", ".eltuno: display: none"], [cs(v, "p:not(.eltuno)", "display") === "block", "a másik p maradjon látható"]]), tmpl(".eltuno { display: none; }", '<p class="eltuno">Ezt ne lásd!</p>\n<p>Ezt látni kell.</p>\n')),
+    () => kod("Helyezd a <b>.jelvény</b> elemet a <b>.kartya</b> <b>jobb felső sarkába</b>: a .kartya legyen <b>position: relative</b>, a .jelvény <b>position: absolute</b>, <b>top: 0</b> és <b>right: 0</b>.", tmpl("/* ide írd */", '<div class="kartya">Kártya<span class="jelvény">új</span></div>\n'), v => chk([[cs(v, ".kartya", "position") === "relative", ".kartya: position: relative"], [cs(v, ".jelvény", "position") === "absolute", ".jelvény: position: absolute"], [cs(v, ".jelvény", "top") === "0px" && cs(v, ".jelvény", "right") === "0px", "top: 0 és right: 0"]]), tmpl(".kartya { position: relative; }\n.jelvény { position: absolute; top: 0; right: 0; }", '<div class="kartya">Kártya<span class="jelvény">új</span></div>\n'))
+  ];
+  const mkcode = l => (l === 1 ? pick(L1) : l === 2 ? pick(L2) : pick(L3))();
+  const SEL = [
+    ["Melyik szelektor jelöli ki az <b>összes bekezdést</b>?", "p", [".p", "#p", "<p>"]],
+    ["Melyik szelektor jelöli ki a <b>kiemelt</b> osztályú elemeket?", ".kiemelt", ["kiemelt", "#kiemelt", "*kiemelt"]],
+    ["Melyik szelektor jelöli ki a <b>fo</b> azonosítójú elemet?", "#fo", [".fo", "fo", "@fo"]],
+    ["Melyik szelektor jelöli ki a <b>nav-on belüli</b> hivatkozásokat?", "nav a", ["nav, a", "nav.a", "a nav"]],
+    ["Melyik szelektor jelöli ki egyszerre a <b>h1</b> és <b>h2</b> elemeket?", "h1, h2", ["h1 h2", "h1.h2", "h1 + h2"]],
+    ["Melyik szelektor jelöli ki a hivatkozást, <b>amikor fölé visszük az egeret</b>?", "a:hover", ["a:over", "a.hover", "a#hover"]],
+    ["Melyik tulajdonság állítja a <b>betű színét</b>?", "color", ["font-color", "text-color", "background-color"]],
+    ["Melyik tulajdonság állítja a <b>háttér színét</b>?", "background-color", ["color", "bg", "back-color"]],
+    ["Melyik tulajdonság állítja a <b>betűméretet</b>?", "font-size", ["text-size", "size", "font-style"]],
+    ["Melyik tulajdonság a <b>belső margó</b> (a tartalom és a keret közt)?", "padding", ["margin", "border", "spacing"]],
+    ["Melyik tulajdonság a <b>külső margó</b> (a keret és a szomszéd közt)?", "margin", ["padding", "border", "gap"]],
+    ["Melyik érték tünteti el az elemet az oldalról?", "display: none", ["visibility: off", "hide: true", "opacity: 0 (de a helye is eltűnik)"]],
+    ["Hogyan írod a tizenhatos színkódot?", "#1B5CBA", ["1B5CBA", "$1B5CBA", "0x1B5CBA#"]],
+    ["Melyik <b>mértékegység</b> relatív (a szülőhöz vagy a betűmérethez igazodik)?", "%", ["px", "pt", "cm"]]
+  ];
+  const boxTask = l => {
+    const w = pick([100, 120, 150, 200, 250]), p = pick([10, 15, 20, 25]), b = pick([2, 4, 5]), m = pick([10, 20, 30]), bs = l === 3 && Math.random() < 0.5;
+    const base = bs ? w : w + 2 * p + 2 * b, tot = base + 2 * m, fr = boxFrames(w, p, b, m, bs);
+    const ask = l === 1 ? "látható szélessége (a margó nélkül)" : "teljes vízszintes helyfoglalása (a margóval együtt)";
+    const ans = l === 1 ? base : tot;
+    const q = "Egy doboz CSS-e: <code>width: " + w + "px; padding: " + (l === 1 ? p : p) + "px; " + (l === 1 ? "" : "border: " + b + "px solid; ") + (l === 1 ? "" : "margin: " + m + "px; ") + "box-sizing: " + (bs ? "border-box" : "content-box") + ";</code> Mekkora a doboz " + ask + " pixelben?";
+    const base1 = l === 1 ? w + 2 * p : base, tot1 = l === 1 ? base1 : tot;
+    const frames = l === 1 ? boxFrames(w, p, 0, 0, false) : fr;
+    return { q, kind: "input", mode: "numeric", answer: l === 1 ? base1 : ans, sol: caps(frames), frames, title: "Dobozmodell számolás", check: v => { const s = norm(v); const a = l === 1 ? base1 : ans; if (!/^\d+$/.test(s)) return { ok: false, msg: "Egész számot (px) várok." }; if (+s === a) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: l === 1 ? "Nem jó. A padding mindkét oldalon hozzáadódik: width + 2 · padding." : bs ? "Nem jó. Border-box esetén a width már tartalmazza a paddinget és a bordert, csak a margót kell hozzáadni (2 · margin)." : "Nem jó. Mindegyik réteg mindkét oldalon számít: width + 2·padding + 2·border + 2·margin." }; } };
+  };
+  const specTask = l => {
+    const t = specGen(l === 1 ? 1 : l === 2 ? 2 : 3), win = specWin(t), fr = specFrames(t);
+    const opts = ["red", "blue", "green"].map(c => ({ l: COL[c], ok: c === win }));
+    return { q: "Melyik színű lesz a bekezdés szövege?<pre class='code'>" + esc(specCode(t)) + "</pre>Az elem: <code>" + esc(specElem(t)) + "</code>", kind: "choice", options: opts, answer: COL[win], sol: caps(fr), frames: fr, title: "Melyik szabály nyer?", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Add össze a szelektorok erősségét: azonosító 100, osztály 10, elem 1; inline style 1000; egyenlőnél a későbbi nyer." }) };
+  };
+  const colTask = l => {
+    if (Math.random() < 0.5){
+      const ch = l === 1 ? [0, 64, 128, 192, 255] : null, c = [0, 1, 2].map(() => ch ? pick(ch) : rnd(0, 255)), ans = "#" + c.map(HEX).join("");
+      return { q: "Írd át <code>rgb(" + c.join(", ") + ")</code> színt tizenhatos színkóddá (#RRGGBB)!", kind: "input", answer: ans, sol: "<p>" + c.map((x, i) => ["piros", "zöld", "kék"][i] + ": " + x + " = " + HEX(x)).join(", ") + ".</p>", check: v => { const s = norm(v).replace(/^#/, ""); return s === ans.slice(1) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Mindhárom csatornát külön váltsd tizenhatosba, kétjegyűre kiegészítve (5 → 05)." }; } };
+    }
+    const c = [0, 1, 2].map(() => rnd(0, l === 1 ? 4 : 15) * 16 + (l === 1 ? 0 : rnd(0, 15)));
+    const h = "#" + c.map(HEX).join(""), idx = rnd(0, 2);
+    return { q: "A színkód <code>" + h + "</code>. Mennyi a <b>" + ["piros", "zöld", "kék"][idx] + "</b> csatorna értéke tízesben (0–255)?", kind: "input", mode: "numeric", answer: c[idx], sol: "<p>Csatorna: " + ["piros", "zöld", "kék"][idx] + ". Jegyei: " + HEX(c[idx]) + " = " + parseInt(HEX(c[idx])[0], 16) + " · 16 + " + parseInt(HEX(c[idx])[1], 16) + " = " + c[idx] + ".</p>", check: v => { const s = norm(v); return /^\d+$/.test(s) && +s === c[idx] ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első jegy · 16 + a második jegy." }; } };
+  };
+  const types = [
+    { id: "code", name: "Kódolj CSS-t", gen: l => mkcode(l) },
+    { id: "box", name: "Dobozmodell", gen: l => boxTask(l) },
+    { id: "spec", name: "Melyik szabály nyer?", gen: l => specTask(l) },
+    { id: "color", name: "Színek", gen: l => colTask(l) },
+    { id: "sel", name: "Szelektor, tulajdonság", gen(l){
+      const q = pick(SEL), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false }))));
+      return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: <b>" + esc(q[1]) + "</b>. Nézd meg a puskát.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } }
+  ];
+  K.practice($("#practice"), { id: "css", types, play: playTo, examN: 8 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["color", "betűszín"], ["background-color", "háttérszín"], ["font-size / font-family", "betűméret / betűtípus"], ["font-weight / font-style", "vastag (bold) / dőlt (italic)"], ["text-align", "left, center, right"], ["text-decoration", "none, underline"], ["width / height", "szélesség / magasság"], ["padding / margin", "belső / külső margó"], ["border", "keret: 2px solid black"], ["border-radius", "kerekített sarok"], ["display", "block, inline, inline-block, none"], ["position, top, left…", "relative, absolute, fixed"], ["box-sizing", "content-box / border-box"]];
+  $("#cheat").innerHTML = "<tr><th>Tulajdonság</th><th>Mit állít</th></tr>" + rows.map(t => "<tr><td>" + t[0] + "</td><td style='text-align:left'>" + t[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
