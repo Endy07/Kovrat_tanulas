@@ -1,0 +1,835 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261022074500">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Szöveg és kép kódolása</title>
+<style>
+.chartbl td.ch{font-weight:700;font-size:1.15rem}
+.pix{display:grid;grid-template-columns:repeat(8,34px);gap:3px;width:max-content;max-width:100%}
+.px{width:34px;height:34px;border:1.5px solid var(--line);border-radius:5px;background:var(--surface);padding:0}
+.px.on{background:var(--ink);border-color:var(--ink)}
+.pixwrap{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.pb-stage table.pt td{border-color:#3A4656}
+.pb-stage table.pt tr.cur td{background:#4a3a12;color:#FFB01F;font-weight:700}
+.pb-stage .big{font-size:1.25rem;line-height:1.7}
+.az{display:flex;flex-wrap:wrap;gap:3px;font-family:var(--mono);font-size:.95rem}
+.az span{width:1.5em;text-align:center;border-radius:4px;background:#27313E;color:#DCE3EC}
+.az span.cur{background:var(--led);color:var(--led-ink);font-weight:700}
+.az span.to{background:#2f5fb3;color:#fff;font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · digitális jelek</span>
+  <h1>Szöveg és kép kódolása</h1>
+  <p class="lead">A gép csak számokat ismer. Írj be egy szöveget, és nézd meg, milyen számok lesznek belőle.</p>
+  <div class="panel">
+    <span class="eyebrow">Írj be szöveget (legfeljebb 12 jel; próbálj ki ékezetet és emojit is)</span>
+    <div class="row"><input type="text" id="h-in" value="Szia, ő!" maxlength="24" aria-label="Szöveg" style="width:min(100%,22em)"></div>
+    <div class="ptwrap"><table class="pt" id="h-tbl"></table></div>
+    <div class="readout"><div><div class="eyebrow">Karakter</div><div class="big" id="h-n">0</div></div><div><div class="eyebrow">Bájt UTF-8-ban</div><div class="big led" id="h-b">0</div></div><div><div class="eyebrow">Bit</div><div class="big" id="h-bits">0</div></div></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Dia: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Válassz módszert. Az „Új példa” új adatot húz. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="text" aria-selected="true">Szöveg számokká</button>
+    <button class="tab" data-m="caesar" aria-selected="false">Caesar-kód</button>
+    <button class="tab" data-m="img" aria-selected="false">Képméret</button>
+    <button class="tab" data-m="rle" aria-selected="false">Tömörítés (RLE)</button>
+  </div>
+  <div class="row"><button class="btn" id="pb-new">🎲 Új példa</button></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint, azonnali visszajelzés. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="two-col">
+    <div class="trick"><span class="t">ASCII</span><span>szóköz = 32 · 0–9 = 48–57 · A–Z = 65–90 · a–z = 97–122. A kisbetű kódja a nagybetűé + 32.</span></div>
+    <div class="trick"><span class="t">UTF-8</span><span>ASCII: 1 bájt · ékezetes magyar betű (á, ő, ű…): 2 bájt · € : 3 bájt · emoji: 4 bájt.</span></div>
+    <div class="trick"><span class="t">Képméret</span><span>szélesség · magasság · színmélység (bit) ÷ 8 = bájt. 1 KB = 1024 bájt.</span></div>
+    <div class="trick"><span class="t">Színek száma</span><span>n bit = 2<sup>n</sup> szín: 1 bit 2, 8 bit 256, 24 bit 16 777 216.</span></div>
+    <div class="trick"><span class="t">Veszteséges / veszteségmentes</span><span>JPG, MP3: veszteséges. PNG, ZIP, FLAC: veszteségmentes. BMP: tömörítetlen.</span></div>
+    <div class="trick"><span class="t">Raszter / vektor</span><span>Raszter: pixelek (JPG, PNG, BMP, GIF). Vektor: alakzatok képlete (SVG). A vektoros kép nagyítva sem pixeles.</span></div>
+    <div class="trick"><span class="t">Caesar</span><span>Minden betűt k hellyel arrébb tolunk az ábécében, a Z után az A jön. Visszafejtés: −k.</span></div>
+    <div class="trick"><span class="t">RLE</span><span>AAABB → 3A2B: ismétlődés helyett szám + jel.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, norm } = K;
+  const ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const bin8 = n => n.toString(2).padStart(8, "0");
+  const BIN = s => '<span class="mono bin">' + s + "</span>";
+  const enc = new TextEncoder();
+  const bytesOf = s => Array.from(enc.encode(s));
+  const DW = ["nulla","egy","kettő","három","négy","öt","hat","hét","nyolc","kilenc"];
+  K.tts.rules.push([/<span class="mono bin">([01]+)<\/span>/g, (m, s) => [...s].map(c => DW[c]).join(" ") + ", "]);
+
+  /* ---------- Hero ---------- */
+  function heroRender(){
+    const chars = Array.from($("#h-in").value).slice(0, 12), all = chars.join("");
+    let t = "<tr><th>Jel</th><th>Kódpont</th><th>UTF-8 bájtok (tízes)</th><th>Bájtok (kettes)</th></tr>";
+    chars.forEach(c => {
+      const cp = c.codePointAt(0), b = bytesOf(c);
+      t += "<tr><td class='ch'><b>" + (c === " " ? "␣" : K.esc(c)) + "</b></td><td>" + (cp < 128 ? cp : "U+" + cp.toString(16).toUpperCase().padStart(4, "0")) + "</td><td>" + b.join(" ") + "</td><td>" + b.map(bin8).join(" ") + "</td></tr>";
+    });
+    $("#h-tbl").innerHTML = t;
+    const nb = bytesOf(all).length;
+    $("#h-n").textContent = chars.length; $("#h-b").textContent = nb; $("#h-bits").textContent = nb * 8;
+  }
+  $("#h-in").addEventListener("input", heroRender); heroRender();
+
+  /* ---------- Segédek ---------- */
+  const caesar = (s, k) => [...s].map(c => { const i = ALPHA.indexOf(c); return i < 0 ? c : ALPHA[(i + k + 26 * 10) % 26]; }).join("");
+  const vig = (s, key) => { let j = 0; return [...s].map(c => { const i = ALPHA.indexOf(c); if (i < 0) return c; const r = ALPHA[(i + ALPHA.indexOf(key[j % key.length])) % 26]; j++; return r; }).join(""); };
+  const rleEnc = s => s.replace(/(.)\1*/g, m => m.length + m[0]);
+  const rleDec = s => s.replace(/(\d+)(\D)/g, (m, n, c) => c.repeat(+n));
+  const WORDS = ["ALMA", "KUTYA", "MACSKA", "SZIA", "ISKOLA", "KOD", "PYTHON", "LOGIKA", "DIAK", "TANAR", "HALO", "BIT", "BAJT", "WEB", "ZENE", "XYLO"];
+  const rleWord = n => { let s = "", prev = ""; while (s.length < n){ let c; do { c = pick(["A", "B", "C", "D"]); } while (c === prev); prev = c; s += c.repeat(rnd(1, 4)); } return s; };
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+  const sizeText = b => b >= 1048576 ? (b / 1048576).toFixed(2).replace(".", ",") + " MB" : b >= 1024 ? (b / 1024).toFixed(1).replace(".", ",") + " KB" : b + " bájt";
+
+  /* ---------- Levezetések ---------- */
+  function textFrames(s){
+    const F = [], rows = [];
+    const tb = cur => '<div class="ptwrap"><table class="pt"><tr><th>Jel</th><th>Kód</th><th>Kettes</th></tr>' + rows.map((r, i) => '<tr class="' + (i === cur ? "cur" : "") + '"><td>' + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>").join("") + "</table></div>";
+    F.push({ cap: "A szöveg: " + s + ". A számítógép minden jelhez egy kódot rendel, és azt kettesben tárolja, 8 biten.", html: '<p class="big">' + s + "</p>" });
+    [...s].forEach((c, i) => {
+      const cd = c.charCodeAt(0); rows.push([c === " " ? "␣" : c, cd, bin8(cd)]);
+      F.push({ cap: "Jel: „" + c + "”. ASCII-kódja: " + cd + ". Kettesben, 8 biten: " + BIN(bin8(cd)) + ".", html: tb(i) });
+    });
+    F.push({ cap: s.length + " jel, jelenként 1 bájt (8 bit): összesen " + s.length + " bájt, vagyis " + s.length * 8 + " bit.", html: tb(-1) + '<p class="big cur">' + s.length + " bájt</p>" });
+    return F;
+  }
+  function caesarFrames(s, k){
+    const F = [], out = [];
+    const az = (cur, to) => '<div class="az">' + [...ALPHA].map((c, i) => '<span class="' + (i === cur ? "cur" : i === to ? "to" : "") + '">' + c + "</span>").join("") + "</div>";
+    const ln = cur => '<p class="big">Nyílt szöveg: ' + [...s].map((c, i) => i === cur ? '<span class="cur">' + c + "</span>" : c).join("") + "<br>Rejtjel: " + out.join("") + "</p>";
+    F.push({ cap: "Caesar-kód: minden betűt " + k + " hellyel előrébb tolunk az ábécében. A szöveg: " + s + ". Az angol ábécé 26 betűjét használjuk, a Z után újra az A jön.", html: az(-1, -1) + ln(-1) });
+    [...s].forEach((c, i) => {
+      const p = ALPHA.indexOf(c), q = (p + k) % 26, wrap = p + k >= 26;
+      out.push(ALPHA[q]);
+      F.push({ cap: c + ": az ábécé " + (p + 1) + ". betűje. " + (p + 1) + " + " + k + " = " + (p + 1 + k) + (wrap ? ", ez 26-nál több, ezért 26-ot kivonunk: " + (p + 1 + k - 26) + "." : ".") + " Ez a betű: " + ALPHA[q] + ".", html: az(p, q) + ln(i) });
+    });
+    F.push({ cap: "Kész: " + s + " → " + out.join("") + ". Visszafejtéshez ugyanennyivel visszafelé toljuk.", html: az(-1, -1) + ln(-1) });
+    return F;
+  }
+  function imgFrames(w, h, bits){
+    const px = w * h, tb = px * bits, by = tb / 8;
+    return [
+      { cap: "Egy kép mérete: szélesség " + w + ", magasság " + h + " pixel, színmélység " + bits + " bit pixelenként.", html: '<p class="big">' + w + " × " + h + ", " + bits + " bit/pixel</p>" },
+      { cap: "Hány pixel van? " + w + " · " + h + " = " + px + ".", html: '<p class="big">' + w + " · " + h + ' = <span class="cur">' + px + "</span> pixel</p>" },
+      { cap: "Mindegyik " + bits + " bit: " + px + " · " + bits + " = " + tb + " bit.", html: '<p class="big">' + px + " · " + bits + ' = <span class="cur">' + tb + "</span> bit</p>" },
+      { cap: "Egy bájt 8 bit, ezért osztunk 8-cal: " + tb + " : 8 = " + by + " bájt.", html: '<p class="big">' + tb + " : 8 = <span class=\"cur\">" + by + "</span> bájt</p>" },
+      { cap: "Ez " + sizeText(by) + " (1 KB = 1024 bájt, 1 MB = 1024 KB).", html: '<p class="big cur">' + sizeText(by) + "</p>" }
+    ];
+  }
+  function rleFrames(s){
+    const F = [], runs = s.match(/(.)\1*/g), out = [];
+    const ln = cur => '<p class="big">' + runs.map((r, i) => i === cur ? '<span class="cur">' + r + "</span>" : r).join(" ") + "</p><p class='big'>Tömörítve: " + out.join("") + "</p>";
+    F.push({ cap: "Futamhossz-kódolás (RLE): az egymás utáni egyforma jeleket egy szám és a jel helyettesíti. A szöveg: " + s + ".", html: ln(-1) });
+    runs.forEach((r, i) => { out.push(r.length + r[0]); F.push({ cap: "Csoport: " + r + ". " + r.length + " db " + r[0] + ", ezért: " + r.length + r[0] + ".", html: ln(i) }); });
+    F.push({ cap: "Kész: " + s + " (" + s.length + " jel) → " + out.join("") + " (" + out.join("").length + " jel).", html: ln(-1) });
+    return F;
+  }
+
+  const pb = K.player($("#pb"));
+  const PB = { m: "text" };
+  function pbNew(auto){
+    const m = PB.m;
+    $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === m)));
+    if (m === "text"){ const w = pick(["Hello", "Kod", "Bit", "Web", "Sziasztok", "Hi!"]); pb.load(textFrames(w), "Szöveg számokká: " + w, auto); }
+    else if (m === "caesar"){ const w = pick(WORDS), k = rnd(1, 5); pb.load(caesarFrames(w, k), "Caesar-kód: " + w + ", eltolás " + k, auto); }
+    else if (m === "img"){ const w = pick([16, 32, 64, 100, 640]), h = pick([16, 32, 48, 100, 480]), b = pick([1, 8, 24]); pb.load(imgFrames(w, h, b), "Képméret", auto); }
+    else { const s = rleWord(rnd(8, 12)); pb.load(rleFrames(s), "RLE: " + s, auto); }
+  }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  $("#pb-new").addEventListener("click", () => pbNew(true));
+  pb.load(textFrames("Hello"), "Szöveg számokká: Hello", false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const asciiRows = (lo, hi) => '<div class="ptwrap"><table class="pt chartbl"><tr><th>Kód</th>' + Array.from({ length: hi - lo + 1 }, (_, i) => "<td>" + (lo + i) + "</td>").join("") + "</tr><tr><th>Jel</th>" + Array.from({ length: hi - lo + 1 }, (_, i) => "<td class='ch hl'>" + String.fromCharCode(lo + i) + "</td>").join("") + "</tr></table></div>";
+  const slides = [
+    { k: "Alap", t: "A gép csak számokat ismer", h:
+      "<p>A számítógép memóriájában minden bitek sorozata. Hogy lesz ebből betű, kép, hang? <b>Megállapodunk egy kódban</b>: melyik szám melyik jelet jelenti.</p>" +
+      "<p>Ezt hívjuk <b>kódolásnak</b>. A betűk kódtáblája az ASCII, a képeké a pixelek színkódja.</p>" +
+      "<div class='note'><b>Emlékeztető:</b> 1 bájt = 8 bit, ezért egy bájt 256 különböző értéket vehet fel (0–255).</div>" },
+    { k: "ASCII", t: "Az ASCII kódtábla", h:
+      "<p>Az ASCII 128 jelet kódol 7 biten (a gyakorlatban 8 bitnek, azaz 1 bájtnak tároljuk): számjegyek, angol betűk, írásjelek, vezérlőjelek.</p>" + asciiRows(65, 78) + asciiRows(97, 110) + asciiRows(48, 57) +
+      "<ul><li>szóköz = 32, számjegyek = 48–57, nagybetűk = 65–90, kisbetűk = 97–122</li><li>A kisbetű kódja a nagybetűé <b>+ 32</b>: A = 65, a = 97</li><li>A „0” jel kódja 48, nem 0!</li></ul>" },
+    { k: "Unicode", t: "Az ékezetekkel mi lesz? Unicode és UTF-8", h: () =>
+      "<p>Az ASCII-ban nincs <b>ő</b>, <b>ű</b>, <b>á</b>, és persze kínai jel vagy emoji sem. Ezért jött a <b>Unicode</b>: több mint egymillió jelnek van helye, mindegyiknek van egy <b>kódpontja</b> (pl. ő = U+0151).</p>" +
+      "<p>Az <b>UTF-8</b> megmondja, hogyan tároljuk bájtokban: az ASCII-jelek 1 bájtosak, az ékezetes magyar betűk 2, az euró jel 3, az emoji 4 bájtosak.</p>" +
+      "<p>Próbáld ki: <input type='text' id='s3-in' value='ő' maxlength='4' aria-label='Jel' style='width:5em'> <span class='eq' id='s3-out'></span></p>",
+      init(el){
+        const i = $("#s3-in", el), o = $("#s3-out", el);
+        const f = () => { const c = Array.from(i.value)[0]; if (!c){ o.textContent = ""; return; } const b = bytesOf(c); o.textContent = "U+" + c.codePointAt(0).toString(16).toUpperCase().padStart(4, "0") + " → " + b.length + " bájt: " + b.map(x => x.toString(16).toUpperCase().padStart(2, "0")).join(" "); };
+        i.addEventListener("input", f); f();
+      } },
+    { k: "Képek", t: "A kép pixelekből áll", h: () =>
+      "<p>A <b>raszteres kép</b> apró négyzetekből, <b>pixelekből</b> áll. Fekete-fehér képen minden pixel 1 bit: 0 fehér, 1 fekete. Rajzolj egy 8×8-as képet:</p>" +
+      "<div class='pixwrap'><div class='pix' id='px'></div><div><div class='eq' id='px-bin' style='line-height:1.8'></div><p>Mérete: <b>8 × 8 = 64 bit = 8 bájt</b>. Egy sor = 1 bájt.</p></div></div>",
+      init(el){
+        const g = $("#px", el), cells = [];
+        for (let i = 0; i < 64; i++){ const b = document.createElement("button"); b.className = "px"; b.setAttribute("aria-label", "Pixel " + (i + 1)); b.addEventListener("click", () => { b.classList.toggle("on"); r(); }); g.appendChild(b); cells.push(b); }
+        // egy kis smiley az induláshoz
+        [18, 21, 41, 46, 50, 51, 52, 53].forEach(i => cells[i].classList.add("on"));
+        function r(){ let t = ""; for (let y = 0; y < 8; y++){ const row = cells.slice(y * 8, y * 8 + 8).map(c => c.classList.contains("on") ? 1 : 0).join(""); t += row + " = " + parseInt(row, 2).toString(16).toUpperCase().padStart(2, "0") + "<br>"; } $("#px-bin", el).innerHTML = t; }
+        r();
+      } },
+    { k: "Színek", t: "Színmélység: hány bit egy pixel?", h:
+      "<p>Ha egy pixelre több bitet adunk, több szín fér bele: <b>n bit = 2<sup>n</sup> szín</b>.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Színmélység</th><th>Színek száma</th><th>Mire jó</th></tr><tr><td>1 bit</td><td>2</td><td>fekete-fehér</td></tr><tr><td>8 bit</td><td>256</td><td>szürkeárnyalat, régi GIF</td></tr><tr><td>24 bit</td><td>16 777 216</td><td>valódi szín (R, G, B egyenként 8 bit)</td></tr></table></div>" +
+      "<p>A <b>24 bites</b> szín három bájt: piros, zöld, kék, mindegyik 0–255 (tizenhatosban 00–FF, mint a <code>#RRGGBB</code> színkód).</p>" },
+    { k: "Méret", t: "Mekkora egy kép tömörítés nélkül?", h: () =>
+      "<p class='eq'>méret (bájt) = szélesség · magasság · színmélység ÷ 8</p>" +
+      "<p>Példa: 1920 · 1080 pixel, 24 bit: 1920 · 1080 · 24 ÷ 8 = <b>6 220 800 bájt</b>, ez kb. 5,9 MB.</p>" +
+      "<p>Ezért tömörítik a képeket: a telefonod fotója nem 6 MB-nál nagyobb tömörítetlen fájl, hanem kb. 1–3 MB-os JPG.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTo(imgFrames(1920, 1080, 24), "Képméret: 1920 × 1080")); } },
+    { k: "Formátumok", t: "Raszter és vektor, képformátumok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Raszter</span><span>Pixelekből áll. Nagyítva szemcsés. Fotókhoz. Formátumok: <b>BMP</b> (tömörítetlen), <b>JPG</b> (veszteséges), <b>PNG</b> (veszteségmentes, átlátszó háttér), <b>GIF</b>, <b>RAW</b> (nyers fényképezőgép-adat).</span></div>" +
+      "<div class='trick'><span class='t'>Vektor</span><span>Alakzatokat ír le képlettel (vonal, kör, szín). Nagyítva is éles. Logókhoz, ábrákhoz. Formátum: <b>SVG</b>. Ilyen az oldal ikonja is.</span></div></div>" +
+      "<p><b>DPI</b> (dots per inch): hány pont jut egy hüvelykre. Nyomtatásnál számít: több DPI = élesebb, de nagyobb fájl.</p>" },
+    { k: "Tömörítés", t: "Veszteséges és veszteségmentes tömörítés", h: () =>
+      "<p><b>Veszteségmentes</b> (ZIP, PNG, FLAC): visszaállítható az eredeti, bitre pontosan. <b>Veszteséges</b> (JPG, MP3): olyan részleteket dob el, amit alig vesz észre az ember, ezért sokkal kisebb, de az eredeti nem állítható vissza.</p>" +
+      "<p>Az egyik legegyszerűbb veszteségmentes módszer az <b>RLE</b> (futamhossz-kódolás): <span class='mono'>AAABBBBCC → 3A4B2C</span>. Próbáld ki:</p>" +
+      "<p><input type='text' id='s8-in' value='AAAABBBCCD' maxlength='30' aria-label='Szöveg' style='width:16em'> <span class='eq' id='s8-out'></span></p>",
+      init(el){ const i = $("#s8-in", el), o = $("#s8-out", el); const f = () => { const v = i.value.toUpperCase().replace(/[0-9\s]/g, ""); o.textContent = v ? "→ " + rleEnc(v) + " (" + v.length + " → " + rleEnc(v).length + " jel)" : ""; }; i.addEventListener("input", f); f(); } },
+    { k: "Rejtjelezés", t: "Caesar és Vigenère", h: () =>
+      "<p>A <b>Caesar-kód</b> minden betűt ugyanannyi hellyel arrébb tol az ábécében. Eltolás 3: A→D, B→E, … X→A, Y→B, Z→C. Visszafejtés: ugyanannyival visszafelé.</p>" +
+      "<p>A <b>Vigenère-kód</b> kulcsszót használ: a kulcs betűi adják az eltolásokat, és ismétlődnek. Kulcs KEY: első betű +10 (K), második +4 (E), harmadik +24 (Y), aztán újra elölről.</p>" +
+      "<p>Próbáld ki: <input type='text' id='s9-in' value='HELLO' maxlength='20' aria-label='Szöveg' style='width:11em'> eltolás <select id='s9-k' aria-label='Eltolás'>" + Array.from({ length: 25 }, (_, i) => "<option>" + (i + 1) + "</option>").join("") + "</select> <span class='eq' id='s9-out'></span></p>" +
+      "<div class='note'><b>Figyelem:</b> a Caesar-kódot egy perc alatt fel lehet törni (csak 25 lehetőség van), ma már csak játék. Az igazi titkosítás sokkal erősebb.</div>",
+      init(el){ const i = $("#s9-in", el), k = $("#s9-k", el), o = $("#s9-out", el); k.value = "3"; const f = () => { o.textContent = "→ " + caesar(i.value.toUpperCase(), Number(k.value)); }; i.addEventListener("input", f); k.addEventListener("change", f); f(); } },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>A „0” jel és a 0 szám keverése.</b> A „0” karakter ASCII-kódja 48.</div>" +
+      "<div class='mistake'><b>Bit és bájt.</b> A képméretnél a színmélység bitben van, az eredmény bájtban kell: oszd 8-cal.</div>" +
+      "<div class='mistake'><b>1 KB = 1000?</b> Az iskolában és ezen az oldalon 1 KB = 1024 bájt, 1 MB = 1024 KB.</div>" +
+      "<div class='mistake'><b>Caesar: a Z után nem 0 jön.</b> Körbeér: Z + 1 = A. Számolj 26-tal körbe.</div>" +
+      "<div class='mistake'><b>UTF-8: minden jel 1 bájt.</b> Csak az ASCII-jelek. Az ő, ű, á 2 bájt, az emoji 4.</div>" },
+    { k: "Trükkök", t: "Amit érdemes fejben tudni", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Kis → nagy</span><span>Kisbetűből nagybetű: −32. A = 65, a = 97.</span></div>" +
+      "<div class='trick'><span class='t'>Színek</span><span>8 bit: 256 szín, 24 bit: 16,7 millió. Mindig 2 az n-ediken.</span></div>" +
+      "<div class='trick'><span class='t'>Gyors méret</span><span>Egy pixel 24 biten 3 bájt. 1 millió pixel (1 megapixel) ≈ 3 MB tömörítés nélkül.</span></div>" +
+      "<div class='trick'><span class='t'>Fájlformátum</span><span>Fotó: JPG. Ábra, képernyőkép, átlátszó háttér: PNG. Logó, ikon: SVG.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const intCheck = (n, tip) => v => { const s = norm(v).replace(/ /g, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egész számot (számjegyeket) várok." }; if (+s === n) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (tip && tip(+s)) || "Nem jó. Próbáld újra, vagy nézd meg a megoldást lépésenként." }; };
+  const types = [
+    { id: "ascii", name: "ASCII-kód", gen(l){
+      if (l === 3 && Math.random() < 0.5){
+        const code = pick([72, 101, 107, 109, 84, 89, 80, 121, 51, 63]), c = String.fromCharCode(code);
+        return { q: "Melyik jel ASCII-kódja <span class='num'>" + code + "</span>? (Segítség: A = 65, a = 97, 0 = 48.)", kind: "input", answer: c, sol: "<p>A = 65, ezért " + code + " = A + " + (code - 65) + ".</p>", check: v => { const s = String(v).trim(); return s === c ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Számolj az A (65), az a (97) vagy a 0 (48) kódjától." }; } };
+      }
+      const pool = l === 1 ? [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"] : l === 2 ? [..."abcdefghijklmnopqrstuvwxyz0123456789"] : [..."XYZxyz!?#09 "];
+      const c = pick(pool), code = c.charCodeAt(0);
+      return { q: "Mi ennek a jelnek az ASCII-kódja (tízes számrendszerben): <span class='num'>" + (c === " " ? "␣ (szóköz)" : c) + "</span>? (Segítség: A = 65, a = 97, 0 = 48.)", kind: "input", mode: "numeric", answer: code, sol: "<p>" + (/[A-Z]/.test(c) ? "A = 65, ezért " + c + " = 65 + " + (code - 65) + "." : /[a-z]/.test(c) ? "a = 97, ezért " + c + " = 97 + " + (code - 97) + "." : /\d/.test(c) ? "A 0 jel kódja 48, ezért ennek a számjegynek (" + c + ") a kódja 48 + " + c + "." : "Ezt a kódtáblából kell tudni.") + "</p>",
+        check: intCheck(code, x => c >= "0" && c <= "9" && x === +c ? "Ez a számjegy értéke, nem a jel kódja. A 0 jel kódja 48." : (/[a-z]/.test(c) && x === code - 32) ? "Ez a nagybetű kódja. A kisbetű kódja 32-vel nagyobb." : null) };
+    } },
+    { id: "utf", name: "UTF-8 bájtok", gen(l){
+      const A = ["kód", "Szia", "bit", "web", "Hello", "Python"], B = ["tűz", "ő", "ház", "Géza", "fűtő", "érték", "szőlő"], C = ["10€", "5 €", "€"], D = ["Hi 😀", "😀", "kód 🙂"];
+      const s = l === 1 ? pick(A.concat(B.slice(0, 3))) : l === 2 ? pick(B.concat(A)) : pick(C.concat(D).concat(B)), n = bytesOf(s).length;
+      const parts = Array.from(s).map(c => c + ": " + bytesOf(c).length).join(", ");
+      return { q: "Hány bájt a szöveg UTF-8 kódolásban? <span class='num'>" + s + "</span>", kind: "input", mode: "numeric", answer: n, sol: "<p>Jelenként: " + parts + ". (ASCII 1, ékezetes magyar betű 2, € 3, emoji 4 bájt.)</p>",
+        check: intCheck(n, x => x === Array.from(s).length ? "Ez a jelek száma. Az ékezetes és különleges jelek több bájtosak." : null) };
+    } },
+    { id: "img", name: "Képméret", gen(l){
+      let w, h, b, unit = 1;
+      if (l === 1){ w = pick([8, 16, 32]); h = pick([8, 16, 32]); b = 1; }
+      else if (l === 2){ w = pick([10, 20, 40, 100]); h = pick([10, 20, 50, 100]); b = pick([8, 24]); }
+      else { w = pick([64, 128, 256, 512]); h = pick([64, 128, 256]); b = pick([8, 16, 24]); const by = w * h * b / 8; if (by % 1024 === 0) unit = 1024; }
+      const by = w * h * b / 8, ans = by / unit, fr = imgFrames(w, h, b);
+      return { q: "Egy tömörítetlen kép " + w + " × " + h + " pixel, színmélysége " + b + " bit. Hány " + (unit === 1 ? "bájt" : "KB (1 KB = 1024 bájt)") + " a mérete?", kind: "input", mode: "numeric", answer: ans, sol: caps(fr), frames: fr, title: "Képméret: " + w + " × " + h,
+        check: intCheck(ans, x => x === w * h * b ? "Ez bitben van. Oszd 8-cal, hogy bájt legyen." + (unit > 1 ? " Aztán 1024-gyel a KB-hoz." : "") : x === w * h ? "Ez a pixelek száma. Szorozd a színmélységgel, és oszd 8-cal." : (unit > 1 && x === by) ? "Ez bájt. A kérdés KB-ban kéri: oszd 1024-gyel." : null) };
+    } },
+    { id: "color", name: "Színmélység", gen(l){
+      if (Math.random() < 0.5){
+        const n = l === 1 ? rnd(1, 4) : l === 2 ? rnd(4, 8) : rnd(9, 16), ans = Math.pow(2, n);
+        return { q: "Hány különböző színt tud megadni egy <span class='num'>" + n + "</span> bites színmélység?", kind: "input", mode: "numeric", answer: ans, sol: "<p>n bit = 2<sup>n</sup> szín: 2<sup>" + n + "</sup> = " + ans + ".</p>", check: intCheck(ans, x => x === n * 2 ? "Ez 2 · n. A színek száma 2 az n-ediken, azaz n darab kettes szorzata." : null) };
+      }
+      const n = l === 1 ? rnd(1, 4) : l === 2 ? rnd(4, 8) : rnd(9, 16), c = Math.pow(2, n);
+      return { q: "Legalább hány bit kell, hogy <span class='num'>" + c + "</span> különböző színt meg lehessen különböztetni?", kind: "input", mode: "numeric", answer: n, sol: "<p>2<sup>" + n + "</sup> = " + c + ", tehát " + n + " bit.</p>", check: intCheck(n) };
+    } },
+    { id: "caesar", name: "Caesar és Vigenère", gen(l){
+      const w = pick(WORDS);
+      if (l === 1){ const k = rnd(1, 3), fr = caesarFrames(w, k), ans = caesar(w, k);
+        return { q: "Titkosítsd Caesar-kóddal (angol ábécé, eltolás +" + k + "): <span class='num'>" + w + "</span>", kind: "input", answer: ans, sol: caps(fr), frames: fr, title: "Caesar-kód: " + w, check: v => { const s = norm(v); return s === ans ? { ok: true, msg: "Helyes!" } : s === caesar(w, -k) ? { ok: false, msg: "Visszafelé tolltad el. Titkosításnál előre kell." } : { ok: false, msg: "Nem jó. Minden betűt tolj előre; Z után A jön." }; } }; }
+      if (l === 2 || Math.random() < 0.4){ const k = rnd(2, 12), c = caesar(w, k);
+        if (l === 2) return { q: "Fejtsd vissza! Caesar-kód, eltolás +" + k + ", a titkos szöveg: <span class='num'>" + c + "</span>", kind: "input", answer: w, sol: "<p>Visszafejtésnél ugyanennyivel visszafelé toljuk (−" + k + ").</p>" + caps(caesarFrames(c, 26 - k)), frames: caesarFrames(c, 26 - k), title: "Visszafejtés", check: v => norm(v) === w ? { ok: true, msg: "Helyes!" } : norm(v) === caesar(c, k) ? { ok: false, msg: "Előre tolltad. Visszafejtésnél hátra kell." } : { ok: false, msg: "Nem jó. Tolj minden betűt " + k + " hellyel hátra." } };
+        return { q: "Mekkora volt a Caesar-eltolás? Nyílt szöveg: <span class='num'>" + w + "</span>, titkos: <span class='num'>" + c + "</span>", kind: "input", mode: "numeric", answer: k, sol: "<p>Nézd meg az első betűt: " + w[0] + " → " + c[0] + ". A kettő távolsága az ábécében " + k + ".</p>", check: intCheck(k) }; }
+      const key = pick(["KEY", "ABC", "KOD", "ZED"]), ans = vig(w, key);
+      return { q: "Titkosítsd Vigenère-kóddal! Szöveg: <span class='num'>" + w + "</span>, kulcs: <span class='num'>" + key + "</span> (a kulcs betűi az eltolások: A = 0, B = 1, C = 2, …)", kind: "input", answer: ans, sol: "<p>Betűnként a kulcs megfelelő betűjével tolunk, a kulcs ismétlődik. " + w.split("").map((c, i) => c + "+" + key[i % key.length] + "(" + ALPHA.indexOf(key[i % key.length]) + ")→" + ans[i]).join(", ") + ".</p>", check: v => norm(v) === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első betűt a kulcs első betűje tolja, a másodikat a második, a kulcs ismétlődik." } };
+    } },
+    { id: "rle", name: "Tömörítés", gen(l){
+      if (l === 1 || (l === 3 && Math.random() < 0.5)){
+        const s = l === 1 ? rleWord(rnd(6, 9)) : rleWord(rnd(10, 14)), ans = rleEnc(s), fr = rleFrames(s);
+        return { q: "Tömörítsd RLE-vel (szám + jel): <span class='num'>" + s + "</span>", kind: "input", answer: ans, sol: caps(fr), frames: fr, title: "RLE: " + s, check: v => norm(v) === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Csoportonként: hány egyforma jel, utána maga a jel." } };
+      }
+      if (l === 2){ const s = rleWord(rnd(7, 11)), c = rleEnc(s);
+        return { q: "Bontsd ki az RLE-ből: <span class='num'>" + c + "</span>", kind: "input", answer: s, sol: "<p>Minden szám megmondja, hányszor írjuk le a mögötte lévő jelet.</p>", check: v => norm(v) === s ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. A szám a mögötte álló jelre vonatkozik." } }; }
+      const s = rleWord(rnd(12, 16)), c = rleEnc(s);
+      return { q: "Hány jelből áll a tömörített változat? Eredeti: <span class='num'>" + s + "</span> (RLE: szám + jel csoportonként; a számokat is jelnek számoljuk, egy számjegy = 1 jel.)", kind: "input", mode: "numeric", answer: c.length, sol: "<p>Tömörítve: " + c + " = " + c.length + " jel.</p>", check: intCheck(c.length) };
+    } },
+    { id: "facts", name: "Fogalmak", gen(l){
+      const Q = [
+        ["Melyik képformátum <b>vektoros</b>?", "SVG", ["JPG", "PNG", "BMP"]],
+        ["Melyik formátum <b>veszteséges</b> tömörítésű?", "JPG", ["PNG", "BMP", "ZIP"]],
+        ["Melyik tömörítés <b>veszteségmentes</b>?", "ZIP", ["JPG", "MP3", "mindegyik veszteséges"]],
+        ["Melyik képformátum <b>tömörítetlen</b>?", "BMP", ["JPG", "PNG", "SVG"]],
+        ["Mit jelent a DPI?", "pont/hüvelyk (felbontás)", ["színek száma", "fájlméret", "képarány"]],
+        ["Mi a pixel?", "a raszteres kép legkisebb egysége", ["a vektoros kép képlete", "egy képformátum", "színmélység egysége"]],
+        ["Hány bit egy bájt?", "8", ["4", "16", "10"]],
+        ["Melyik kódolás nem tudja tárolni az ő betűt?", "ASCII", ["UTF-8", "Unicode", "mindegyik tudja"]],
+        ["Mi a rejtjelezés célja?", "hogy illetéktelen ne olvashassa", ["hogy kisebb legyen a fájl", "hogy gyorsabb legyen a gép", "hogy szebb legyen a kép"]],
+        ["Melyik kép marad nagyítva is éles?", "vektoros", ["raszteres", "JPG", "BMP"]],
+        ["Melyik a legnagyobb tömörítetlen kép?", "ugyanakkora felbontásnál 24 bites", ["8 bites", "1 bites", "mind ugyanakkora"]],
+        ["Melyik nem veszteséges tömörítésű?", "PNG", ["JPG", "MP3", "mind veszteséges"]]
+      ];
+      const q = pick(Q), opts = shuffle([{ l: q[1], ok: true }].concat(q[2].map(x => ({ l: x, ok: false }))));
+      return { q: q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>A helyes válasz: " + q[1] + ".</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Nézd meg a puskát." }) };
+    } }
+  ];
+  K.practice($("#practice"), { id: "szoveg-kep", types, play: playTo });
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
