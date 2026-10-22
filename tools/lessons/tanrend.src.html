@@ -1,0 +1,71 @@
+<!--@HEAD-->
+<title>Éves tanrend</title>
+<style>
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:700;border-radius:999px;padding:.1em .7em;margin-left:.4em;vertical-align:middle;white-space:nowrap}
+.tag.k{background:var(--ok-bg);color:var(--ok)}
+.tag.t{background:var(--accent-soft);color:var(--accent)}
+.tag.f{background:var(--surface-2);color:var(--muted)}
+.mo{font-family:var(--mono);font-weight:700;white-space:nowrap}
+table.pt td{text-align:left;vertical-align:top}
+table.pt td ul{margin:0;padding-left:1.1em}
+.legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.sem{display:flex;flex-direction:column;gap:12px}
+.months{display:flex;flex-direction:column;gap:12px}
+.mrow{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 18px}
+.mh{grid-column:1/-1;font-family:var(--mono);font-weight:700;color:var(--led)}
+.ml{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:2px}
+.mc ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+a.ls{color:var(--accent);font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">9. évfolyam · Mechwart, szoftverfejlesztő és -tesztelő technikus</span>
+  <h1>Éves tanrend</h1>
+  <p class="lead">Mit tanultok az idén, hónapról hónapra, és melyik témához van már lecke ezen az oldalon.</p>
+  <div class="note"><b>Mennyire biztos ez?</b> A tantárgyak, az óraszámok és a témák az országos programtantervből valók (Informatika és távközlés ágazat, ágazati alapoktatás). A <b>hónapokra bontás becslés</b>: az iskola saját tanmenete nincs fent az interneten. Ha a tanárotok más sorrendben halad, a leckék attól még jók, csak a hónapok csúsznak.</div>
+  <div class="legend"><span><span class="tag k">kész lecke</span> megnyitható</span><span><span class="tag t">tervezett</span> még nincs lecke</span><span><span class="tag f">iskolában</span> gyakorlati, nem tanuló-oldal</span></div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">Óraszámok</span><h2>Két tantárgy a 9.-ben</h2>
+  <div class="ptwrap"><table class="pt">
+    <tr><th>Tantárgy</th><th>9. évf.</th><th>10. évf.</th><th>Mi ez?</th></tr>
+    <tr><td>Informatikai és távközlési alapok</td><td>108 óra <span class="tag k">programtanterv</span></td><td>144 óra</td><td>hardver, hálózat, számrendszerek, kódolás, logika (gyakorlati óra)</td></tr>
+    <tr><td>Programozási alapok</td><td>72 óra <span class="tag k">programtanterv</span></td><td>72 óra</td><td>játékos kódolás, weboldalak (HTML, CSS, JavaScript), Git. <b>A Python a 10. évfolyamon jön.</b></td></tr>
+  </table></div>
+  <p>Egy tanév kb. 36 hét: ez heti kb. 3 óra informatikai alapok és 2 óra programozás. A 10. év végén ágazati alapvizsga van.</p>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">Előkészítés</span><h2>Visszatekintés a 8. osztályra</h2>
+  <p>Hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség: ezek kellenek a számrendszerekhez, a képméretekhez és a programozáshoz. <a class="ls" href="8-visszatekintes.html">Megnyitom →</a> <span class="tag k">kész lecke</span></p>
+</section>
+
+<section class="section-head sem">
+  <span class="eyebrow">1. félév · szeptember–január</span><h2>Első félév</h2>
+  <div class="months"><div class="mrow"><div class="mh">Szeptember</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="kettes-szamrendszer.html">Kettes számrendszer</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Játékos kódolás (Scratch és társai), algoritmus, folyamatábra <span class="tag f">iskolában</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Október</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="szamrendszerek.html">Hármas, ötös, hatos, hetes számrendszer</a> <span class="tag k">kész lecke</span></li><li><a class="ls" href="tizenhatos-szamrendszer.html">Tizenhatos számrendszer</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Játékos kódolás vége <span class="tag f">iskolában</span></li><li>Webszerkesztés kezdete: <a class="ls" href="html-alapok.html">HTML alapok</a> <span class="tag k">kész lecke</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">November</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="logikai-muveletek.html">Logikai műveletek</a> <span class="tag k">kész lecke</span></li><li><a class="ls" href="szoveg-es-kep.html">Szöveg és kép kódolása</a> (ASCII, Unicode, pixelek) <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>HTML: szöveg, kép, link, lista, táblázat; VS Code <a class="ls" href="html-alapok.html">(lecke)</a></li></ul></div></div>
+    <div class="mrow"><div class="mh">December</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Tömörítés és rejtjelezés (Caesar, Vigenère) <a class="ls" href="szoveg-es-kep.html">(a kódolás leckében)</a> <span class="tag k">kész lecke</span></li><li>Mikroprocesszor, PC alkatrészei <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Hibakeresés (DevTools), <b>Git és GitHub</b> <span class="tag t">tervezett</span></li><li>CSS kezdete: <a class="ls" href="css-alapok.html">CSS alapok</a> <span class="tag k">kész lecke</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Január</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>PC-összeszerelés <span class="tag f">iskolában</span></li><li>Félévi összefoglalás</li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>CSS: szelektorok, dobozmodell <a class="ls" href="css-alapok.html">(lecke)</a></li></ul></div></div></div>
+</section>
+
+<section class="section-head sem">
+  <span class="eyebrow">2. félév · február–június</span><h2>Második félév</h2>
+  <p>A második félév leckéi a becsült sorrendben következnek. Ami kész, megnyitható, a többi a tanév során készül el.</p>
+  <div class="months"><div class="mrow"><div class="mh">Február</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Elektronika alapjai: Ohm-törvény, teljesítmény <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>CSS: elrendezés (display, position) <a class="ls" href="css-alapok.html">(a CSS leckében)</a></li></ul></div></div>
+    <div class="mrow"><div class="mh">Március</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Karbantartás, hibakeresés, laptopok, nyomtatók <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Reszponzív weboldalak, Bootstrap <span class="tag t">tervezett</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Április</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Virtualizáció, felhő; Windows telepítése <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>JavaScript-bevezető <span class="tag t">tervezett</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Május</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>A dolgok internete, hálózatok alapjai <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Év végi weboldal-projekt</li></ul></div></div>
+    <div class="mrow"><div class="mh">Június</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Összefoglalás</li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Projektbemutató</li></ul></div></div></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">Jövőre</span><h2>10. évfolyam: itt jön a Python</h2>
+  <p>A Python (változók, elágazás, ciklus, listák, függvények, sztringek, fájlkezelés) a programtanterv szerint a 10. évfolyamra esik. A logikai műveletek és a számrendszerek leckéje ehhez is előkészít.</p>
+</section>
+
+</div>
+<!--@UPDATE-->

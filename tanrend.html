@@ -1,0 +1,246 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261022075436">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Éves tanrend</title>
+<style>
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;font-weight:700;border-radius:999px;padding:.1em .7em;margin-left:.4em;vertical-align:middle;white-space:nowrap}
+.tag.k{background:var(--ok-bg);color:var(--ok)}
+.tag.t{background:var(--accent-soft);color:var(--accent)}
+.tag.f{background:var(--surface-2);color:var(--muted)}
+.mo{font-family:var(--mono);font-weight:700;white-space:nowrap}
+table.pt td{text-align:left;vertical-align:top}
+table.pt td ul{margin:0;padding-left:1.1em}
+.legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.sem{display:flex;flex-direction:column;gap:12px}
+.months{display:flex;flex-direction:column;gap:12px}
+.mrow{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 18px}
+.mh{grid-column:1/-1;font-family:var(--mono);font-weight:700;color:var(--led)}
+.ml{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);margin-bottom:2px}
+.mc ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+a.ls{color:var(--accent);font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">9. évfolyam · Mechwart, szoftverfejlesztő és -tesztelő technikus</span>
+  <h1>Éves tanrend</h1>
+  <p class="lead">Mit tanultok az idén, hónapról hónapra, és melyik témához van már lecke ezen az oldalon.</p>
+  <div class="note"><b>Mennyire biztos ez?</b> A tantárgyak, az óraszámok és a témák az országos programtantervből valók (Informatika és távközlés ágazat, ágazati alapoktatás). A <b>hónapokra bontás becslés</b>: az iskola saját tanmenete nincs fent az interneten. Ha a tanárotok más sorrendben halad, a leckék attól még jók, csak a hónapok csúsznak.</div>
+  <div class="legend"><span><span class="tag k">kész lecke</span> megnyitható</span><span><span class="tag t">tervezett</span> még nincs lecke</span><span><span class="tag f">iskolában</span> gyakorlati, nem tanuló-oldal</span></div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">Óraszámok</span><h2>Két tantárgy a 9.-ben</h2>
+  <div class="ptwrap"><table class="pt">
+    <tr><th>Tantárgy</th><th>9. évf.</th><th>10. évf.</th><th>Mi ez?</th></tr>
+    <tr><td>Informatikai és távközlési alapok</td><td>108 óra <span class="tag k">programtanterv</span></td><td>144 óra</td><td>hardver, hálózat, számrendszerek, kódolás, logika (gyakorlati óra)</td></tr>
+    <tr><td>Programozási alapok</td><td>72 óra <span class="tag k">programtanterv</span></td><td>72 óra</td><td>játékos kódolás, weboldalak (HTML, CSS, JavaScript), Git. <b>A Python a 10. évfolyamon jön.</b></td></tr>
+  </table></div>
+  <p>Egy tanév kb. 36 hét: ez heti kb. 3 óra informatikai alapok és 2 óra programozás. A 10. év végén ágazati alapvizsga van.</p>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">Előkészítés</span><h2>Visszatekintés a 8. osztályra</h2>
+  <p>Hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség: ezek kellenek a számrendszerekhez, a képméretekhez és a programozáshoz. <a class="ls" href="8-visszatekintes.html">Megnyitom →</a> <span class="tag k">kész lecke</span></p>
+</section>
+
+<section class="section-head sem">
+  <span class="eyebrow">1. félév · szeptember–január</span><h2>Első félév</h2>
+  <div class="months"><div class="mrow"><div class="mh">Szeptember</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="kettes-szamrendszer.html">Kettes számrendszer</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Játékos kódolás (Scratch és társai), algoritmus, folyamatábra <span class="tag f">iskolában</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Október</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="szamrendszerek.html">Hármas, ötös, hatos, hetes számrendszer</a> <span class="tag k">kész lecke</span></li><li><a class="ls" href="tizenhatos-szamrendszer.html">Tizenhatos számrendszer</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Játékos kódolás vége <span class="tag f">iskolában</span></li><li>Webszerkesztés kezdete: <a class="ls" href="html-alapok.html">HTML alapok</a> <span class="tag k">kész lecke</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">November</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="logikai-muveletek.html">Logikai műveletek</a> <span class="tag k">kész lecke</span></li><li><a class="ls" href="szoveg-es-kep.html">Szöveg és kép kódolása</a> (ASCII, Unicode, pixelek) <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>HTML: szöveg, kép, link, lista, táblázat; VS Code <a class="ls" href="html-alapok.html">(lecke)</a></li></ul></div></div>
+    <div class="mrow"><div class="mh">December</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Tömörítés és rejtjelezés (Caesar, Vigenère) <a class="ls" href="szoveg-es-kep.html">(a kódolás leckében)</a> <span class="tag k">kész lecke</span></li><li>Mikroprocesszor, PC alkatrészei <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Hibakeresés (DevTools), <b>Git és GitHub</b> <span class="tag t">tervezett</span></li><li>CSS kezdete: <a class="ls" href="css-alapok.html">CSS alapok</a> <span class="tag k">kész lecke</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Január</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>PC-összeszerelés <span class="tag f">iskolában</span></li><li>Félévi összefoglalás</li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>CSS: szelektorok, dobozmodell <a class="ls" href="css-alapok.html">(lecke)</a></li></ul></div></div></div>
+</section>
+
+<section class="section-head sem">
+  <span class="eyebrow">2. félév · február–június</span><h2>Második félév</h2>
+  <p>A második félév leckéi a becsült sorrendben következnek. Ami kész, megnyitható, a többi a tanév során készül el.</p>
+  <div class="months"><div class="mrow"><div class="mh">Február</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Elektronika alapjai: Ohm-törvény, teljesítmény <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>CSS: elrendezés (display, position) <a class="ls" href="css-alapok.html">(a CSS leckében)</a></li></ul></div></div>
+    <div class="mrow"><div class="mh">Március</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Karbantartás, hibakeresés, laptopok, nyomtatók <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Reszponzív weboldalak, Bootstrap <span class="tag t">tervezett</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Április</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Virtualizáció, felhő; Windows telepítése <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>JavaScript-bevezető <span class="tag t">tervezett</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Május</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>A dolgok internete, hálózatok alapjai <span class="tag t">tervezett</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Év végi weboldal-projekt</li></ul></div></div>
+    <div class="mrow"><div class="mh">Június</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Összefoglalás</li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Projektbemutató</li></ul></div></div></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">Jövőre</span><h2>10. évfolyam: itt jön a Python</h2>
+  <p>A Python (változók, elágazás, ciklus, listák, függvények, sztringek, fájlkezelés) a programtanterv szerint a 10. évfolyamra esik. A logikai műveletek és a számrendszerek leckéje ehhez is előkészít.</p>
+</section>
+
+</div>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
