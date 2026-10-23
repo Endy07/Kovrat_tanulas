@@ -1,0 +1,355 @@
+<!--@HEAD-->
+<title>Linux parancssor</title>
+<style>
+.term{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:.85rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;min-height:180px;max-height:320px;overflow-y:auto;font-variant-ligatures:none}
+.term .p{color:#7fe0a8}
+.term .d{color:#72A6F2;font-weight:700}
+.term .e{color:#F2796C}
+.tin{display:flex;gap:8px;align-items:center;font-family:var(--mono);flex-wrap:wrap}
+.tin .p{color:#7fe0a8;font-size:.85rem;overflow-wrap:anywhere}
+.tin input{flex:1;min-width:10em;width:auto!important;font-variant-ligatures:none}
+.tree{font-family:var(--mono);font-size:.82rem;line-height:1.45;white-space:pre;overflow-x:auto;color:var(--panel-ink)}
+.tree .cur{color:#FFB01F;font-weight:700}
+.tree .dd{color:#72A6F2}
+.cmds{display:flex;flex-wrap:wrap;gap:6px}
+.cmds .btn{font-family:var(--mono);font-size:.8rem;padding:.3em .7em}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+.perm{font-family:var(--mono);letter-spacing:.08em}
+.pb-stage .term{max-height:300px;margin:0}
+.pb-stage .term .cur{background:#4a3a12;color:#FFB01F;display:block}
+.slide .eq{white-space:normal}
+.prompt code,.opt{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · operációs rendszer</span>
+  <h1>Linux parancssor</h1>
+  <p class="lead">A szerverek, a routerek, az Android és a felhő mind Linuxon fut, és a parancssorból irányítjuk őket. Itt egy kis játék-gépen kipróbálhatod: semmit nem tudsz elrontani.</p>
+  <div class="panel">
+    <span class="eyebrow">Gépelj parancsot, vagy kattints egy gombra (help: a parancsok listája)</span>
+    <div class="hero-grid">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="term" id="term" aria-live="polite"></div>
+        <form class="tin" id="tform" autocomplete="off"><span class="p" id="tprompt"></span><input type="text" id="tin" aria-label="Parancs" autocapitalize="off" spellcheck="false"></form>
+        <div class="cmds" id="tcmds">
+          <button class="btn" data-c="pwd">pwd</button><button class="btn" data-c="ls">ls</button><button class="btn" data-c="ls -l">ls -l</button><button class="btn" data-c="cd iskola">cd iskola</button><button class="btn" data-c="cd ..">cd ..</button><button class="btn" data-c="cd ~">cd ~</button><button class="btn" data-c="cat jegyzet.txt">cat jegyzet.txt</button><button class="btn" data-c="mkdir proba">mkdir proba</button><button class="btn" data-c="help">help</button><button class="btn" data-c="reset">↺ Újra</button>
+        </div>
+      </div>
+      <div><div class="eyebrow">A fájlrendszer (sárga: itt állsz)</div><div class="tree" id="tree"></div></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Terminálos munkamenetek lépésenként. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="nav" aria-selected="true">Közlekedés a mappák között</button>
+    <button class="tab" data-m="file" aria-selected="false">Fájlműveletek</button>
+    <button class="tab" data-m="perm" aria-selected="false">Jogosultság számmal</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Az útvonalat a gyökértől írd (például /home/kovrat/iskola). A parancsoknál a pontos parancsot kell beírnod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Útvonalak</span><span class="mono">/ gyökér · ~ saját mappa · . ez a mappa · .. a szülő</span><span>Ami /-rel kezdődik, az abszolút (a gyökértől), a többi relatív (onnan, ahol állsz).</span></div>
+    <div class="trick"><span class="t">Jogosultság</span><span class="mono">r = 4 · w = 2 · x = 1</span><span>Tulajdonos, csoport, mindenki más: rwxr-xr-x = 755.</span></div>
+    <div class="trick"><span class="t">Gyorsítás</span><span>Tab: kiegészíti a nevet · ↑: az előző parancs · Ctrl+C: leállítja a futó parancsot · <code>man ls</code>: súgó.</span></div>
+    <div class="trick"><span class="t">Vigyázz!</span><span><code>rm</code> nem kukába töröl, hanem végleg. A <code>sudo</code> rendszergazdaként futtat: csak ha tudod, mit csinálsz.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\bcd \.\./g, "cd pont pont"], [/~/g, " hullámvonal "]);
+  const HOME = "/home/kovrat";
+
+  /* ---------- Útvonalak ---------- */
+  function resolve(cwd, p){
+    if (!p || p === "~") return HOME;
+    let parts = p.startsWith("/") ? [] : p.startsWith("~") ? HOME.split("/").filter(Boolean) : cwd.split("/").filter(Boolean);
+    if (p.startsWith("~")) p = p.slice(1);
+    p.split("/").forEach(s => { if (!s || s === ".") return; if (s === "..") parts.pop(); else parts.push(s); });
+    return "/" + parts.join("/");
+  }
+  const short = p => p === HOME ? "~" : p.startsWith(HOME + "/") ? "~" + p.slice(HOME.length) : p;
+
+  /* ---------- Játék-fájlrendszer ---------- */
+  const FS0 = () => ({
+    "/": { d: 1 }, "/home": { d: 1 }, "/home/kovrat": { d: 1 }, "/etc": { d: 1 }, "/tmp": { d: 1 },
+    "/home/kovrat/iskola": { d: 1 }, "/home/kovrat/kepek": { d: 1 }, "/home/kovrat/iskola/projekt": { d: 1 },
+    "/home/kovrat/jegyzet.txt": { t: "Holnap: matekdolgozat, a halmazokból.\n" }, "/home/kovrat/.bash_history": { t: "ls\ncd iskola\n" },
+    "/home/kovrat/iskola/matek.txt": { t: "Halmazok, egyenletek.\n" }, "/home/kovrat/iskola/info.txt": { t: "Hálózatok: IP-cím, maszk.\n" },
+    "/home/kovrat/iskola/projekt/index.html": { t: "<h1>Szia!</h1>\n" }, "/home/kovrat/kepek/macska.png": { t: "(kép)\n" },
+    "/etc/hostname": { t: "gep\n" }, "/etc/passwd": { t: "root:x:0:0:root:/root:/bin/bash\nkovrat:x:1000:1000::/home/kovrat:/bin/bash\n" }
+  });
+  const T = { fs: FS0(), cwd: HOME, out: "" };
+  const kids = (fs, d) => Object.keys(fs).filter(k => k !== d && k.startsWith(d === "/" ? "/" : d + "/") && !k.slice(d === "/" ? 1 : d.length + 1).includes("/")).map(k => k.slice(k.lastIndexOf("/") + 1)).sort();
+  const isDir = (fs, p) => fs[p] && fs[p].d;
+  function run(line){
+    const fs = T.fs, a = line.trim().split(/\s+/).filter(Boolean), c = a[0], args = a.slice(1);
+    const opts = args.filter(x => x.startsWith("-")).join(""), pos = args.filter(x => !x.startsWith("-"));
+    const err = m => '<span class="e">' + esc(m) + "</span>";
+    const nm = p => esc(p);
+    if (!c) return "";
+    if (c === "pwd") return T.cwd;
+    if (c === "whoami") return "kovrat";
+    if (c === "clear"){ T.out = ""; return null; }
+    if (c === "help") return "Parancsok: pwd, ls [-l] [-a], cd, mkdir, touch, cat, echo szöveg > fájl, cp, mv, rm, rmdir, chmod, whoami, clear";
+    if (c === "ls"){
+      const p = resolve(T.cwd, pos[0] || "."); if (!fs[p]) return err("ls: nem található: " + (pos[0] || ""));
+      if (!isDir(fs, p)) return nm(pos[0]);
+      const ks = kids(fs, p).filter(k => opts.includes("a") || !k.startsWith("."));
+      if (opts.includes("l")) return ks.map(k => { const q = (p === "/" ? "" : p) + "/" + k, d = isDir(fs, q); return (d ? "d" : "-") + (fs[q].m ? numPerm(fs[q].m) : d ? "rwxr-xr-x" : "rw-r--r--") + " kovrat kovrat " + String(d ? 4096 : (fs[q].t || "").length).padStart(5) + " okt 23 " + (d ? '<span class="d">' + nm(k) + "</span>" : nm(k)); }).join("\n") || "";
+      return ks.map(k => isDir(fs, (p === "/" ? "" : p) + "/" + k) ? '<span class="d">' + nm(k) + "</span>" : nm(k)).join("  ");
+    }
+    if (c === "cd"){ const p = resolve(T.cwd, pos[0] || "~"); if (!fs[p]) return err("cd: nincs ilyen mappa: " + pos[0]); if (!isDir(fs, p)) return err("cd: nem mappa: " + pos[0]); T.cwd = p; return ""; }
+    if (c === "mkdir"){ if (!pos.length) return err("mkdir: add meg a nevét"); for (const x of pos){ const p = resolve(T.cwd, x); if (fs[p]) return err("mkdir: már létezik: " + x); if (!isDir(fs, p.slice(0, p.lastIndexOf("/")) || "/")) return err("mkdir: a szülőmappa nem létezik"); fs[p] = { d: 1 }; } return ""; }
+    if (c === "touch"){ if (!pos.length) return err("touch: add meg a nevét"); pos.forEach(x => { const p = resolve(T.cwd, x); if (!fs[p]) fs[p] = { t: "" }; }); return ""; }
+    if (c === "cat"){ const p = resolve(T.cwd, pos[0] || ""); if (!fs[p]) return err("cat: nincs ilyen fájl: " + (pos[0] || "")); if (isDir(fs, p)) return err("cat: ez mappa: " + pos[0]); return nm(fs[p].t.replace(/\n$/, "")); }
+    if (c === "echo"){ const i = a.indexOf(">"); if (i < 0) return nm(a.slice(1).join(" ").replace(/^["']|["']$/g, "")); const p = resolve(T.cwd, a[i + 1] || ""); if (!a[i + 1]) return err("echo: hiányzik a fájlnév"); if (isDir(fs, p)) return err("echo: ez mappa"); fs[p] = { t: a.slice(1, i).join(" ").replace(/^["']|["']$/g, "") + "\n" }; return ""; }
+    if (c === "rm"){ if (!pos.length) return err("rm: add meg a nevét"); for (const x of pos){ const p = resolve(T.cwd, x); if (!fs[p]) return err("rm: nincs ilyen: " + x); if (isDir(fs, p) && !opts.includes("r")) return err("rm: ez mappa (mappához: rmdir, vagy rm -r)"); Object.keys(fs).forEach(k => { if (k === p || k.startsWith(p + "/")) delete fs[k]; }); if (T.cwd === p || T.cwd.startsWith(p + "/")) T.cwd = HOME; } return ""; }
+    if (c === "rmdir"){ const p = resolve(T.cwd, pos[0] || ""); if (!isDir(fs, p)) return err("rmdir: nincs ilyen mappa"); if (kids(fs, p).length) return err("rmdir: a mappa nem üres"); delete fs[p]; return ""; }
+    if (c === "cp" || c === "mv"){
+      if (pos.length < 2) return err(c + ": két név kell: honnan és hová");
+      const s = resolve(T.cwd, pos[0]); let d = resolve(T.cwd, pos[1]);
+      if (!fs[s]) return err(c + ": nincs ilyen: " + pos[0]);
+      if (isDir(fs, d)) d = (d === "/" ? "" : d) + "/" + s.slice(s.lastIndexOf("/") + 1);
+      if (isDir(fs, s) && c === "cp" && !opts.includes("r")) return err("cp: mappához cp -r kell");
+      Object.keys(fs).filter(k => k === s || k.startsWith(s + "/")).forEach(k => { fs[d + k.slice(s.length)] = JSON.parse(JSON.stringify(fs[k])); if (c === "mv") delete fs[k]; });
+      return "";
+    }
+    if (c === "chmod"){ if (pos.length < 2 || !/^[0-7]{3}$/.test(pos[0])) return err("chmod: így használd: chmod 755 fájlnév"); const p = resolve(T.cwd, pos[1]); if (!fs[p]) return err("chmod: nincs ilyen: " + pos[1]); fs[p].m = pos[0]; return ""; }
+    if (c === "sudo") return err("Ezen a játék-gépen nincs rendszergazda. A valódi gépen a sudo jelszót kér, és vigyázni kell vele.");
+    return err(c + ": nincs ilyen parancs (help: a parancsok listája)");
+  }
+  function treeHtml(fs, cwd){
+    const out = [];
+    const walk = (p, pre) => { const ks = kids(fs, p).filter(k => !k.startsWith(".")); ks.forEach((k, i) => { const q = (p === "/" ? "" : p) + "/" + k, last = i === ks.length - 1, d = isDir(fs, q); out.push(pre + (last ? "└─ " : "├─ ") + '<span class="' + (q === cwd ? "cur" : d ? "dd" : "") + '">' + esc(k) + (d ? "/" : "") + "</span>"); if (d) walk(q, pre + (last ? "   " : "│  ")); }); };
+    out.push('<span class="' + (cwd === "/" ? "cur" : "dd") + '">/</span>'); walk("/", "");
+    return out.join("\n");
+  }
+  const promptStr = () => "kovrat@gep:" + short(T.cwd) + "$";
+  function render(){ $("#term").innerHTML = T.out; $("#term").scrollTop = 1e6; $("#tprompt").textContent = promptStr(); $("#tree").innerHTML = treeHtml(T.fs, T.cwd); }
+  function exec(line){
+    if (line.trim() === "reset"){ T.fs = FS0(); T.cwd = HOME; T.out = ""; render(); return; }
+    const pr = promptStr(), r = run(line);
+    if (r === null){ render(); return; }
+    T.out += '<span class="p">' + esc(pr) + "</span> " + esc(line) + "\n" + (r ? r + "\n" : "");
+    render();
+  }
+  $("#tform").addEventListener("submit", e => { e.preventDefault(); const i = $("#tin"); exec(i.value); i.value = ""; });
+  $("#tcmds").addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) exec(b.dataset.c); });
+  T.out = "Üdv a játék-gépen! Írd be: help\n"; render();
+
+  /* ---------- Levezetések ---------- */
+  function sessFrames(title, steps){
+    const F = [{ cap: title + ": egy terminálos munkamenetet nézünk végig. A $ előtt látszik, hol állsz, utána a beírt parancs, alatta a gép válasza.", html: '<div class="term"></div>' }];
+    const S = { fs: FS0(), cwd: HOME };
+    const lines = [];
+    steps.forEach(st => {
+      const save = { fs: T.fs, cwd: T.cwd }; T.fs = S.fs; T.cwd = S.cwd;
+      const pr = promptStr(), r = run(st[0]); S.cwd = T.cwd; T.fs = save.fs; T.cwd = save.cwd;
+      lines.push('<span class="p">' + esc(pr) + "</span> " + esc(st[0]) + (r ? "\n" + r : ""));
+      F.push({ cap: st[1], html: '<div class="term">' + lines.map((l, i) => i === lines.length - 1 ? '<span class="cur">' + l + "</span>" : l + "\n").join("") + "</div>" });
+    });
+    return F;
+  }
+  const NAV = () => sessFrames("Közlekedés", [
+    ["pwd", "A pwd kiírja, hol állsz: a saját mappádban, a /home/kovrat helyen. A rövid jele a hullámvonal."],
+    ["ls", "Az ls kilistázza, mi van itt. A kék nevek mappák, a többi fájl."],
+    ["cd iskola", "A cd beléptet egy mappába. Ez relatív út: onnan indul, ahol állsz."],
+    ["ls", "Az iskola mappában két fájl és egy projekt mappa van."],
+    ["cd ..", "A két pont a szülőmappa: egy szinttel feljebb lépünk, vissza a saját mappába."],
+    ["cd /etc", "Ami perjellel kezdődik, az abszolút út: a gyökértől indul, bárhonnan ugyanoda visz."],
+    ["pwd", "Most az /etc mappában állunk. Itt a rendszer beállításai vannak."],
+    ["cd ~", "A cd hullámvonal (vagy csak cd) mindig hazavisz, a saját mappádba."]
+  ]);
+  const FILE = () => sessFrames("Fájlműveletek", [
+    ["mkdir mentes", "A mkdir új mappát hoz létre, a neve: mentes."],
+    ["cp jegyzet.txt mentes", "A cp másol: honnan, hová. Ha a cél mappa, a fájl ugyanazzal a névvel bekerül."],
+    ["ls mentes", "Az ls után mappanevet is írhatsz: most a mentes tartalmát látjuk."],
+    ["mv jegyzet.txt teendok.txt", "Az mv áthelyez, vagy ha ugyanabban a mappában maradunk, átnevez."],
+    ['echo "Kenyeret venni" > lista.txt', "Az echo kiír egy szöveget, a > jel pedig fájlba irányítja. Így új fájl lett: lista.txt."],
+    ["cat lista.txt", "A cat kiírja egy fájl tartalmát."],
+    ["rm lista.txt", "Az rm véglegesen töröl, nincs kuka! Gondold meg kétszer."],
+    ["ls", "A végeredmény: a jegyzet új neve teendok.txt, és van egy mentes mappánk benne a másolattal."]
+  ]);
+  const permTbl = (p, k) => { const bits = p.split("").map(c => c === "-" ? 0 : 1), w = [4, 2, 1, 4, 2, 1, 4, 2, 1], g = ["tulajdonos", "csoport", "mindenki más"];
+    return '<div class="ptwrap"><table class="pt"><tr>' + g.map((x, i) => '<th colspan="3"' + (i === k ? ' class="hl"' : "") + ">" + x + "</th>").join("") + "</tr><tr>" + p.split("").map((c, i) => "<td" + (Math.floor(i / 3) === k ? ' class="hl"' : "") + ">" + c + "</td>").join("") + "</tr><tr>" + w.map((x, i) => "<td>" + (bits[i] ? x : 0) + "</td>").join("") + "</tr></table></div>"; };
+  function permFrames(p){
+    const d = [0, 1, 2].map(g => p.slice(g * 3, g * 3 + 3).split("").reduce((s, c, i) => s + (c === "-" ? 0 : [4, 2, 1][i]), 0)), F = [];
+    F.push({ cap: "A jogosultság " + p + ". Három hármas csoport: a tulajdonosé, a csoporté és mindenki másé. Mindegyikben r: olvasás, w: írás, x: futtatás; a kötőjel azt jelenti, hogy nincs.", html: permTbl(p, -1) });
+    [0, 1, 2].forEach(g => { const t = p.slice(g * 3, g * 3 + 3); F.push({ cap: ["A tulajdonos", "A csoport", "Mindenki más"][g] + ": " + t + ". Az r értéke 4, a w értéke 2, az x értéke 1. Ami megvan, azt összeadjuk: " + (t.split("").map((c, i) => c === "-" ? "0" : String([4, 2, 1][i])).join(" + ")) + " = " + d[g] + ".", html: permTbl(p, g) }); });
+    F.push({ cap: "A három számjegy egymás után: " + d.join("") + ". A parancs: chmod " + d.join("") + " fájlnév. Ez valójában kettes számrendszer: az rwx három bit, 111 kettesben = 7.", html: permTbl(p, -1) + '<p class="big led" style="margin-top:10px">chmod ' + d.join("") + "</p>" });
+    return F;
+  }
+  const MET = { nav: "Közlekedés a mappák között", file: "Fájlműveletek", perm: "Jogosultság számmal" };
+  const MF = { nav: NAV, file: FILE, perm: () => permFrames("rwxr-x---") };
+  const pb = K.player($("#pb"));
+  const PB = { m: "nav" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a Linux?", h:
+      "<p>A <b>Linux</b> egy ingyenes, nyílt forráskódú operációsrendszer-mag (kernel). Köré épülnek a <b>disztribúciók</b>: Ubuntu, Debian, Fedora, Linux Mint.</p>" +
+      "<ul><li>A webszerverek nagy része Linuxon fut (ez az oldal is egy Linux-szerverről jön).</li><li>Az Android is Linux-magot használ, és sok router, okostévé, autó is.</li><li>A szervereken nincs egér és ablak: <b>parancssorból</b> (terminálból) dolgozunk.</li></ul>" +
+      "<div class='note'><b>Shell:</b> a program, amely a beírt parancsot értelmezi és lefuttatja (általában a bash). Windowson a PowerShell és a cmd a megfelelője.</div>" },
+    { k: "Fa", t: "A fájlrendszer egy fa", h:
+      "<p>Linuxon nincs C: meghajtó: minden egyetlen fában van, a teteje a <b>gyökér</b>, a jele <b>/</b>.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Mappa</th><th>Mi van benne?</th></tr><tr><td>/home</td><td style='text-align:left'>a felhasználók saját mappái (/home/kovrat)</td></tr><tr><td>/etc</td><td style='text-align:left'>beállítások</td></tr><tr><td>/bin, /usr/bin</td><td style='text-align:left'>programok</td></tr><tr><td>/var</td><td style='text-align:left'>változó adatok, naplók</td></tr><tr><td>/tmp</td><td style='text-align:left'>ideiglenes fájlok</td></tr><tr><td>/root</td><td style='text-align:left'>a rendszergazda mappája</td></tr></table></div>" +
+      "<p>A mappák között <b>/</b> (perjel) áll, nem fordított perjel, mint Windowson. A kis- és nagybetű <b>számít</b>: a Kep.png és a kep.png két külön fájl.</p>" },
+    { k: "Útvonal", t: "Abszolút és relatív útvonal", h:
+      "<ul><li><b>Abszolút</b>: a gyökértől indul, perjellel kezdődik: <code>/home/kovrat/iskola</code>. Bárhol állsz, ugyanoda visz.</li><li><b>Relatív</b>: onnan indul, ahol állsz: <code>iskola/projekt</code>.</li></ul>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Jelentése</th></tr><tr><td>/</td><td style='text-align:left'>gyökér</td></tr><tr><td>~</td><td style='text-align:left'>a saját mappád (/home/kovrat)</td></tr><tr><td>.</td><td style='text-align:left'>ez a mappa</td></tr><tr><td>..</td><td style='text-align:left'>a szülőmappa (egy szinttel feljebb)</td></tr></table></div>" +
+      "<p class='eq'>/home/kovrat/iskola + ../kepek → /home/kovrat/kepek</p>" + playBtn("nav"), init: playInit },
+    { k: "Közlekedés", t: "pwd, ls, cd", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td>pwd</td><td style='text-align:left'>kiírja, hol állsz (print working directory)</td></tr><tr><td>ls</td><td style='text-align:left'>kilistázza a mappa tartalmát</td></tr><tr><td>ls -l</td><td style='text-align:left'>részletes lista (jogok, méret, dátum)</td></tr><tr><td>ls -a</td><td style='text-align:left'>a rejtett fájlokat is (a ponttal kezdődőket)</td></tr><tr><td>cd mappa</td><td style='text-align:left'>belép a mappába</td></tr><tr><td>cd ..</td><td style='text-align:left'>egy szinttel feljebb</td></tr><tr><td>cd vagy cd ~</td><td style='text-align:left'>haza, a saját mappádba</td></tr></table></div>" +
+      "<p>A kapcsolók (<code>-l</code>, <code>-a</code>) kötőjellel kezdődnek, és összevonhatók: <code>ls -la</code>.</p>" },
+    { k: "Fájlok", t: "Fájlok és mappák kezelése", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td>mkdir név</td><td style='text-align:left'>új mappa</td></tr><tr><td>touch név</td><td style='text-align:left'>új, üres fájl</td></tr><tr><td>cat fájl</td><td style='text-align:left'>kiírja a tartalmát</td></tr><tr><td>cp honnan hová</td><td style='text-align:left'>másol (mappához: cp -r)</td></tr><tr><td>mv honnan hová</td><td style='text-align:left'>áthelyez vagy átnevez</td></tr><tr><td>rm fájl</td><td style='text-align:left'>töröl, <b>véglegesen</b></td></tr><tr><td>rmdir mappa</td><td style='text-align:left'>üres mappát töröl</td></tr><tr><td>echo szöveg &gt; fájl</td><td style='text-align:left'>szöveget ír egy fájlba</td></tr></table></div>" + playBtn("file"), init: playInit },
+    { k: "Jogok", t: "Jogosultságok: rwx", h:
+      "<p>Az <code>ls -l</code> elején ilyen sor áll: <b class='perm'>-rwxr-xr--</b>. Az első jel a típus (- fájl, d mappa), utána három hármas:</p>" +
+      "<ul><li>a <b>tulajdonos</b>, a <b>csoport</b> és <b>mindenki más</b> joga,</li><li><b>r</b> = olvasás (4), <b>w</b> = írás (2), <b>x</b> = futtatás (1), <b>-</b> = nincs.</li></ul>" +
+      "<p class='eq'>rwx r-x r-- = 4+2+1, 4+0+1, 4+0+0 = 754</p>" +
+      "<p>A <code>chmod 754 fájl</code> így állítja be. Ez kettes számrendszer: rwx = 111 = 7, r-x = 101 = 5.</p>" + playBtn("perm"), init: playInit },
+    { k: "Rendszergazda", t: "sudo és csomagkezelés", h:
+      "<p>A <b>root</b> a rendszergazda, mindent megtehet. A <code>sudo</code> egyetlen parancsot futtat root-ként (jelszót kér).</p>" +
+      code("sudo apt update          # a csomaglista frissítése\nsudo apt install git     # program telepítése\nsudo apt upgrade         # minden frissítése") +
+      "<div class='mistake'><b>Óvatosan!</b> Root-ként egy elgépelt törlés az egész rendszert tönkreteheti. Internetről másolt parancsot soha ne futtass sudo-val, ha nem érted.</div>" },
+    { k: "Továbbiak", t: "Hasznos parancsok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td>man ls</td><td style='text-align:left'>súgó egy parancshoz (q: kilépés)</td></tr><tr><td>nano fájl</td><td style='text-align:left'>egyszerű szövegszerkesztő</td></tr><tr><td>grep szó fájl</td><td style='text-align:left'>keresés a fájlban</td></tr><tr><td>ip a</td><td style='text-align:left'>a gép IP-címei (a hálózatok leckéből)</td></tr><tr><td>ping cím</td><td style='text-align:left'>elérhető-e a gép</td></tr><tr><td>ls | grep txt</td><td style='text-align:left'>a | (cső) az egyik parancs kimenetét a másiknak adja</td></tr></table></div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Kis- és nagybetű.</b> A <code>cd Iskola</code> nem jó, ha a mappa neve iskola.</div>" +
+      "<div class='mistake'><b>Szóköz a névben.</b> A <code>cd uj mappa</code> két nevet lát. Idézőjel kell: <code>cd \"uj mappa\"</code>, vagy ne használj szóközt.</div>" +
+      "<div class='mistake'><b>Fordított perjel.</b> Linuxon / kell, nem \\.</div>" +
+      "<div class='mistake'><b>rm -r rossz helyen.</b> Mappát tartalmával együtt töröl, végleg. Előtte <code>pwd</code> és <code>ls</code>!</div>" +
+      "<div class='mistake'><b>Hiányzó szóköz.</b> <code>cd..</code> helyett <code>cd ..</code> kell.</div>" },
+    { k: "Trükkök", t: "Gyorsabban a terminálban", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Tab</span><span>Kiegészíti a fájl- és mappaneveket: írd be az elejét, és nyomd meg.</span></div>" +
+      "<div class='trick'><span class='t'>↑ és ↓</span><span>Lapozás a korábbi parancsok között.</span></div>" +
+      "<div class='trick'><span class='t'>Ctrl+C</span><span>Leállítja a futó parancsot (például egy végtelen ping-et).</span></div>" +
+      "<div class='trick'><span class='t'>Mielőtt törölsz</span><span><code>pwd</code>, aztán <code>ls</code>: biztos, hogy jó helyen állsz?</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const DIRS = ["/home/kovrat", "/home/kovrat/iskola", "/home/kovrat/iskola/projekt", "/home/kovrat/kepek", "/etc", "/tmp", "/home"];
+  const SUBN = ["iskola", "kepek", "projekt", "zene", "jatekok", "mentes", "matek", "info"];
+  const normPath = v => { let s = String(v).trim().replace(/\\/g, "/"); if (s.length > 1) s = s.replace(/\/+$/, ""); return s.replace(/^~(?=\/|$)/, HOME); };
+  const pathCheck = (ans, extra) => v => { const s = normPath(v); if (s === ans) return { ok: true, msg: "Helyes!" }; if (!s.startsWith("/")) return { ok: false, msg: "Abszolút utat írj: perjellel kezdődjön, a gyökértől." }; return { ok: false, msg: (extra && extra(s)) || "Nem jó. Lépésenként kövesd: a .. egy szinttel feljebb visz, a / a gyökérre, a ~ haza." }; };
+  const CMDQ = [
+    [["Kiírja, melyik mappában állsz.", "pwd"], ["Kilistázza a mappa tartalmát.", "ls"], ["Belép egy mappába.", "cd"], ["Új mappát hoz létre.", "mkdir"], ["Kiírja egy fájl tartalmát.", "cat"], ["Töröl egy fájlt.", "rm"]],
+    [["Fájlt másol.", "cp"], ["Fájlt áthelyez vagy átnevez.", "mv"], ["Új, üres fájlt hoz létre.", "touch"], ["Üres mappát töröl.", "rmdir"], ["Súgót mutat egy parancshoz.", "man"], ["Szöveget ír ki (vagy fájlba, a > jellel).", "echo"]],
+    [["Megváltoztatja egy fájl jogosultságait.", "chmod"], ["Egy parancsot rendszergazdaként futtat.", "sudo"], ["Szót keres egy fájlban.", "grep"], ["Programot telepít (Debian, Ubuntu).", "apt"], ["Kiírja a gép IP-címeit.", "ip a"], ["Egyszerű szövegszerkesztő a terminálban.", "nano"]]
+  ];
+  const TYPEQ = [
+    [["Lépj egy szinttel feljebb, a szülőmappába.", /^cd \.\.\/?$/, "cd .."], ["Menj haza, a saját mappádba.", /^cd( ~\/?)?$/, "cd ~"], ["Írd ki, hol állsz.", /^pwd$/, "pwd"], ["Hozz létre egy mappát, a neve: projekt.", /^mkdir projekt\/?$/, "mkdir projekt"], ["Írd ki a jegyzet.txt tartalmát.", /^cat jegyzet\.txt$/, "cat jegyzet.txt"], ["Listázd ki a mappa tartalmát részletesen.", /^ls -l$/, "ls -l"]],
+    [["Listázd ki részletesen a rejtett fájlokat is.", /^ls (-la|-al|-l -a|-a -l)$/, "ls -la"], ["Lépj be az /etc mappába.", /^cd \/etc\/?$/, "cd /etc"], ["Másold a jegyzet.txt fájlt a mentes mappába.", /^cp jegyzet\.txt mentes\/?$/, "cp jegyzet.txt mentes"], ["Nevezd át a regi.txt fájlt, az új neve: uj.txt.", /^mv regi\.txt uj\.txt$/, "mv regi.txt uj.txt"], ["Hozz létre egy üres fájlt, a neve: lista.txt.", /^touch lista\.txt$/, "touch lista.txt"], ["Töröld a szemet.txt fájlt.", /^rm szemet\.txt$/, "rm szemet.txt"]],
+    [["Töröld a regi mappát a teljes tartalmával együtt.", /^rm (-r|-rf|-fr|-R) regi\/?$/, "rm -r regi"], ["Másold át a kepek mappát a tartalmával együtt a mentes mappába.", /^cp (-r|-R|-a) kepek\/? mentes\/?$/, "cp -r kepek mentes"], ["Állítsd be a script.sh jogait: a tulajdonos mindent, a többiek csak olvasást és futtatást.", /^chmod 755 script\.sh$/, "chmod 755 script.sh"], ["Írd bele a hello.txt fájlba ezt a szót: szia.", /^echo ["']?szia["']? > ?hello\.txt$/, "echo szia > hello.txt"], ["Telepítsd a git programot rendszergazdaként.", /^sudo apt(-get)? install git$/, "sudo apt install git"], ["Lépj a saját mappád kepek almappájába, bárhol is állsz.", /^cd (~\/kepek|\/home\/kovrat\/kepek)\/?$/, "cd ~/kepek"]]
+  ];
+  const randPerm = () => Array.from({ length: 9 }, (_, i) => i % 3 === 0 ? (Math.random() < 0.9 ? "r" : "-") : i % 3 === 1 ? (Math.random() < 0.45 ? "w" : "-") : (Math.random() < 0.5 ? "x" : "-")).join("");
+  const permNum = p => [0, 1, 2].map(g => p.slice(g * 3, g * 3 + 3).split("").reduce((s, c, i) => s + (c === "-" ? 0 : [4, 2, 1][i]), 0)).join("");
+  const numPerm = n => String(n).split("").map(d => { d = +d; return (d & 4 ? "r" : "-") + (d & 2 ? "w" : "-") + (d & 1 ? "x" : "-"); }).join("");
+  const types = [
+    { id: "hol", name: "Hol leszel?", gen(l){
+      let cwd = l === 1 ? pick(["/home/kovrat", "/home/kovrat/iskola"]) : pick(DIRS); const start = cwd, cmds = [], n = l === 1 ? 2 : l === 2 ? 3 : 4;
+      for (let i = 0; i < n; i++){
+        let a;
+        if (l === 1) a = pick(["..", pick(SUBN)]);
+        else if (l === 2) a = pick(["..", pick(SUBN), pick(SUBN) + "/" + pick(SUBN), "~", "../" + pick(SUBN)]);
+        else a = pick(["../..", "/" + pick(["etc", "tmp", "home/kovrat"]), "./" + pick(SUBN), "~/" + pick(SUBN), "../" + pick(SUBN) + "/..", pick(SUBN) + "/../" + pick(SUBN)]);
+        if (a === ".." && cwd === "/") a = pick(SUBN);
+        cmds.push("cd " + a); cwd = resolve(cwd, a);
+      }
+      return { q: "Itt állsz: <code>" + start + "</code>. Ezeket a parancsokat adod ki (minden mappa létezik):" + code(cmds.join("\n")) + "Hol állsz a végén? (abszolút út)", kind: "input", ph: "/home/kovrat", answer: cwd,
+        sol: "<p>" + cmds.map((c, i) => { const p = cmds.slice(0, i + 1).reduce((w, x) => resolve(w, x.slice(3)), start); return "<code>" + esc(c) + "</code> → " + p; }).join("<br>") + "</p>", check: pathCheck(cwd) };
+    } },
+    { id: "abs", name: "Abszolút út", gen(l){
+      const cwd = pick(DIRS.slice(0, 4)); let rel;
+      if (l === 1) rel = pick(SUBN) + "/" + pick(["matek.txt", "kep.png", "index.html"]);
+      else if (l === 2) rel = pick(["../", "../../"]) + pick(SUBN) + "/" + pick(["a.txt", "b.txt"]);
+      else rel = pick(["./", "../", "~/"]) + pick(SUBN) + "/../" + pick(SUBN) + "/" + pick(["x.txt", "y.txt"]);
+      const ans = resolve(cwd, rel);
+      return { q: "Itt állsz: <code>" + cwd + "</code>. Mi ennek a relatív útnak az abszolút alakja? <code>" + esc(rel) + "</code>", kind: "input", ph: "/home/...", answer: ans,
+        sol: "<p>Indulj a mostani helyről (" + cwd + "), és lépj végig a részeken: a .. egyet feljebb, a . helyben marad, a ~ haza visz.</p>", check: pathCheck(ans) };
+    } },
+    { id: "melyik", name: "Melyik parancs?", gen(l){
+      const pool = CMDQ[l - 1], q = pick(pool), o = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Melyik parancs ez? " + q[0], q[1], o, "<p>" + q[0] + " → <code>" + esc(q[1]) + "</code>.</p>", "Nem ez. Nézd meg a puskát.");
+    } },
+    { id: "irj", name: "Írd be a parancsot", gen(l){
+      const t = pick(TYPEQ[l - 1]);
+      return { q: t[0] + "<br><span class='eyebrow'>Írd be a pontos parancsot.</span>", kind: "input", answer: t[2], sol: "<p>Egy jó megoldás: <code>" + esc(t[2]) + "</code></p>",
+        check: v => { const s = String(v).trim().replace(/\s+/g, " ").replace(/[“”„]/g, '"'); if (t[1].test(s)) return { ok: true, msg: "Helyes!" }; if (/^cd\.\./.test(s)) return { ok: false, msg: "A cd és a .. közé szóköz kell." }; if (/[A-Z]/.test(s)) return { ok: false, msg: "A parancsok kisbetűsek, és a kis- és nagybetű számít." }; return { ok: false, msg: "Nem jó. Figyelj a parancs nevére, a kapcsolókra és a szóközökre." }; } };
+    } },
+    { id: "chmod", name: "Jogosultság", gen(l){
+      if (l === 1){ const t = randPerm().slice(0, 3), d = permNum(t + "------")[0];
+        return { q: "Melyik számjegy jelenti ezt a jogot? <span class='num perm'>" + t + "</span>", kind: "input", mode: "numeric", answer: d, sol: "<p>r = 4, w = 2, x = 1, a kötőjel 0. " + t.split("").map((c, i) => c === "-" ? "0" : [4, 2, 1][i]).join(" + ") + " = " + d + ".</p>", check: v => String(v).trim() === d ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Add össze: r = 4, w = 2, x = 1." } };
+      }
+      if (l === 2){ const p = randPerm(), n = permNum(p);
+        return { q: "Mi a chmod-szám ehhez? <span class='num perm'>" + p + "</span>", kind: "input", mode: "numeric", ph: "pl. 755", answer: n, frames: permFrames(p), title: "Jogosultság számmal",
+          sol: "<p>Hármasával: " + [0, 1, 2].map(g => p.slice(g * 3, g * 3 + 3) + " = " + n[g]).join(", ") + ". Együtt: " + n + ".</p>", check: v => String(v).trim() === n ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Három csoport, mindegyikben r = 4, w = 2, x = 1; az összegeket írd egymás mellé." } };
+      }
+      const n = pick(["755", "644", "700", "600", "750", "640", "711", "775", "664", "754"]), p = numPerm(n);
+      return { q: "Hogy néz ki betűkkel ez a jogosultság: <code>chmod " + n + "</code>? (9 jel, például rwxr-xr-x)", kind: "input", ph: "rwxr-xr-x", answer: p, frames: permFrames(p), title: "Jogosultság számmal",
+        sol: "<p>Minden jegyet bontsunk 4 + 2 + 1-re: " + n.split("").map((d, i) => d + " = " + p.slice(i * 3, i * 3 + 3)).join(", ") + ".</p>",
+        check: v => { const s = String(v).trim().replace(/^-/, ""); return s === p ? { ok: true, msg: "Helyes!" } : { ok: false, msg: s.length === 9 ? "Nem jó. Minden jegy egy hármas: 4 = r, 2 = w, 1 = x." : "Pontosan 9 jelet írj (r, w, x vagy kötőjel)." }; } };
+    } },
+    { id: "darab", name: "Mi lesz a mappában?", gen(l){
+      let files = ["jegyzet.txt", "kep.png"].concat(l > 1 ? ["regi.txt"] : []); const dirs = ["iskola"], cmds = [];
+      const n = l === 1 ? 3 : l === 2 ? 4 : 5, NEW = ["a.txt", "b.txt", "c.txt", "lista.txt", "zene.mp3"], ND = ["mentes", "projekt", "jatek"];
+      for (let i = 0; i < n; i++){
+        const ops = ["touch", "mkdir"].concat(files.length ? ["rm"] : []).concat(l > 1 && files.length ? ["cp", "mv"] : []).concat(l > 2 && files.length && dirs.length ? ["mvdir"] : []);
+        const op = pick(ops);
+        if (op === "touch"){ const f = pick(NEW.filter(x => !files.includes(x)).concat(["d.txt"])); if (!files.includes(f)) files.push(f); cmds.push("touch " + f); }
+        else if (op === "mkdir"){ const d = pick(ND.filter(x => !dirs.includes(x)).concat(["uj"])); if (!dirs.includes(d)){ dirs.push(d); cmds.push("mkdir " + d); } else cmds.push("ls"); }
+        else if (op === "rm"){ const f = pick(files); files = files.filter(x => x !== f); cmds.push("rm " + f); }
+        else if (op === "cp"){ const f = pick(files), g = "masolat-" + f; if (!files.includes(g)) files.push(g); cmds.push("cp " + f + " " + g); }
+        else if (op === "mv"){ const f = pick(files), g = "uj-" + f; files = files.filter(x => x !== f); if (!files.includes(g)) files.push(g); cmds.push("mv " + f + " " + g); }
+        else { const f = pick(files), d = pick(dirs); files = files.filter(x => x !== f); cmds.push("mv " + f + " " + d); }
+      }
+      const total = files.length + dirs.length;
+      return { q: "A mappában most ennyi van: <code>jegyzet.txt</code>, <code>kep.png</code>" + (l > 1 ? ", <code>regi.txt</code>" : "") + " és az <code>iskola</code> mappa. Ezeket adod ki:" + code(cmds.join("\n")) + "Hány elem (fájl és mappa együtt) lesz a mappában a végén? (Ami egy almappába került, az már nem itt van.)", kind: "input", mode: "numeric", answer: total,
+        sol: "<p>A végén: " + files.concat(dirs.map(d => d + "/")).join(", ") + ". Összesen " + total + ".</p>",
+        check: v => { const s = String(v).trim(); return /^\d+$/.test(s) && +s === total ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Kövesd soronként: a touch és a mkdir hozzáad, az rm elvesz, a cp hozzáad, az mv átnevez (ha mappába mozgat, innen eltűnik)." }; } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "linux", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["pwd", "hol állok?"], ["ls -la", "lista, részletesen, rejtettekkel"], ["cd mappa · cd .. · cd ~", "belépés · feljebb · haza"], ["mkdir · rmdir", "mappa létrehozása · törlése (üres)"], ["touch · cat", "üres fájl · tartalom kiírása"], ["cp · mv · rm", "másolás · áthelyezés/átnevezés · törlés"], ["chmod 755 fájl", "jogosultság"], ["sudo apt install név", "telepítés rendszergazdaként"], ["man parancs", "súgó"]];
+  $("#cheat").innerHTML = "<tr><th>Parancs</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='text-align:left'>" + esc(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
