@@ -1,0 +1,461 @@
+<!--@HEAD-->
+<title>Halmazok</title>
+<style>
+.vn{width:100%;max-width:400px;height:auto;display:block;color:inherit}
+.vn .rg{fill:transparent;stroke:none;transition:fill .2s}
+.vn .rg.on{fill:rgba(242,158,12,.5)}
+.vn.click .rg{cursor:pointer}
+.vn .ol{fill:none;stroke:currentColor;stroke-width:1.8;opacity:.85}
+.vn .ur{fill:none;stroke:currentColor;stroke-width:1.2;opacity:.5}
+.vn text{fill:currentColor;font-family:var(--mono);font-size:12px;font-weight:700;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.vn text.lb{font-size:16px;font-family:var(--display)}
+.vn text.n{font-size:18px}
+.ops{display:flex;flex-wrap:wrap;gap:8px}
+.ops .btn{font-family:var(--mono);font-size:.9rem;padding:.35em .8em}
+.ops .btn[aria-pressed="true"]{background:var(--led);border-color:var(--led);color:#2A1A00}
+.vrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;align-items:center}
+.vinfo{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);font-size:.9rem;color:var(--panel-muted)}
+.vinfo b{color:#fff}
+.nl{width:100%;max-width:420px;height:auto;display:block;color:inherit}
+.nl .ax{stroke:currentColor;opacity:.6;stroke-width:1.4}
+.nl text{fill:currentColor;font-family:var(--mono);font-size:10px;text-anchor:middle}
+.nl .s1{stroke:#3FA9F5;stroke-width:5}
+.nl .s2{stroke:#52C584;stroke-width:5}
+.nl .s3{stroke:#F29E0C;stroke-width:6}
+.nl circle{stroke-width:2.2}
+.nl .c1{stroke:#3FA9F5}.nl .c2{stroke:#52C584}.nl .c3{stroke:#F29E0C}
+.nl .cl1{fill:#3FA9F5}.nl .cl2{fill:#52C584}.nl .cl3{fill:#F29E0C}
+.nl .hol{fill:var(--surface)}
+.pb-stage .nl .hol,.panel .nl .hol{fill:var(--panel)}
+.slide .eq{white-space:normal}
+table.pt,code,pre.code{font-variant-ligatures:none}
+.prompt .vn,.prompt .nl{margin-top:10px}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek · 9. évfolyam · halmazok</span>
+  <h1>Halmazok</h1>
+  <p class="lead">Unió, metszet, különbség, komplementer: ugyanaz, mint a logikában a VAGY, az ÉS és a NEM, és ugyanaz, mint a Python halmazai. Válassz műveletet, vagy kattints a tartományokra.</p>
+  <div class="panel">
+    <span class="eyebrow">Venn-diagram · U = {1, 2, …, 12}</span>
+    <div class="ops" id="ops">
+      <button class="btn" data-k="a+ab+b">A ∪ B</button>
+      <button class="btn" data-k="ab">A ∩ B</button>
+      <button class="btn" data-k="a">A \ B</button>
+      <button class="btn" data-k="b">B \ A</button>
+      <button class="btn" data-k="b+o">A'</button>
+      <button class="btn" data-k="o">(A ∪ B)'</button>
+      <button class="btn" id="next">↻ Másik példa</button>
+    </div>
+    <div class="vrow">
+      <div id="hv"></div>
+      <div class="vinfo" id="hinfo"></div>
+    </div>
+    <div class="readout">
+      <div><div class="eyebrow">Kifejezés</div><div class="big led" id="hexp"></div></div>
+      <div><div class="eyebrow">Eredmény</div><div class="big" id="hres" style="font-size:clamp(1.1rem,4.5vw,1.6rem);overflow-wrap:anywhere"></div></div>
+      <div class="expr" id="hpy"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="muv" aria-selected="true">Halmazműveletek</button>
+    <button class="tab" data-m="szita" aria-selected="false">Szöveges feladat Venn-diagrammal</button>
+    <button class="tab" data-m="int" aria-selected="false">Intervallumok metszete</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A halmazt így írd: {1, 3, 5} (a kapcsos zárójel elhagyható, a sorrend nem számít), az üres halmazt így: ∅ vagy {}. Az intervallumot így: [2; 5[ (a nyitott végén kifelé fordul a zárójel). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Logikai szita</span><span class="mono">|A ∪ B| = |A| + |B| − |A ∩ B|</span><span>Háromra: |A ∪ B ∪ C| = |A| + |B| + |C| − |A ∩ B| − |A ∩ C| − |B ∩ C| + |A ∩ B ∩ C|</span></div>
+    <div class="trick"><span class="t">Részhalmazok száma</span><span class="mono">n elemű halmaz → 2<sup>n</sup> részhalmaz</span><span>Minden elem vagy benne van, vagy nincs: mint egy n bites kettes szám.</span></div>
+    <div class="trick"><span class="t">Számhalmazok</span><span class="mono">N ⊂ Z ⊂ Q ⊂ R</span><span>N: 0, 1, 2, … · Z: egészek · Q: törtek · R: valós (a √2 és a π is)</span></div>
+    <div class="trick"><span class="t">Intervallum</span><span class="mono">[2; 5] zárt · ]2; 5[ nyílt · [2; 5[ balról zárt</span><span>A zárt végpont benne van (teli karika), a nyitott nincs (üres karika).</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/∪/g, " unió "], [/∩/g, " metszet "], [/\s\\\s/g, " mínusz "], [/∅/g, " üres halmaz "], [/⊆/g, " részhalmaza "], [/∉/g, " nem eleme "], [/∈/g, " eleme "], [/([AB])'/g, "$1 komplementere"], [/\)'/g, ") komplementere"], [/[{}]/g, " "], [/\|([A-Z∪∩ ]+)\|/g, " $1 számossága "]);
+
+  /* ---------- Segédek ---------- */
+  const srt = a => Array.from(new Set(a)).sort((p, q) => p - q);
+  const setStr = a => a.length ? "{" + srt(a).join(", ") + "}" : "∅";
+  const uni = (a, b) => srt(a.concat(b));
+  const cap = (a, b) => srt(a.filter(x => b.includes(x)));
+  const dif = (a, b) => srt(a.filter(x => !b.includes(x)));
+  const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+  const rndSet = (k, lo, hi) => srt(shuffle(range(lo, hi)).slice(0, k));
+  const same = (a, b) => a.length === b.length && srt(a).every((x, i) => x === srt(b)[i]);
+  const parseSet = v => {
+    const s = String(v).replace(/\s+/g, "").replace(/−/g, "-");
+    if (/^(∅|\{\}|\[\]|üres(halmaz)?|ures)$/i.test(s)) return [];
+    const t = s.replace(/^[{\[]|[}\]]$/g, "");
+    if (!t) return [];
+    const p = t.split(/[,;]/);
+    if (!p.every(x => /^-?\d+$/.test(x))) return null;
+    return p.map(Number);
+  };
+  const setCheck = (ans, msgs) => v => {
+    const a = parseSet(v);
+    if (!a) return { ok: false, msg: "Így írd: {1, 3, 5}, vagy ∅, ha üres." };
+    if (same(a, ans)) return { ok: true, msg: srt(a).length !== a.length ? "Helyes! (A halmazban az ismétlés nem számít, egyszer is elég leírni.)" : "Helyes!" };
+    return { ok: false, msg: (msgs && msgs(srt(a))) || "Nem jó. Nézd végig az elemeket egyenként." };
+  };
+  const intCheck = (ans, hint) => v => { const s = String(v).replace(/\s+/g, ""); if (!/^-?\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: hint }; };
+
+  /* ---------- Venn-diagram (két halmaz) ----------
+     tartományok: a = csak A, ab = A és B, b = csak B, o = egyikben sem (az alaphalmazon belül) */
+  const RP = {
+    a: "M160 49.38A70 70 0 1 0 160 170.62A70 70 0 0 1 160 49.38Z",
+    ab: "M160 49.38A70 70 0 0 1 160 170.62A70 70 0 0 1 160 49.38Z",
+    b: "M160 49.38A70 70 0 1 1 160 170.62A70 70 0 0 0 160 49.38Z",
+    o: "M10 10H310V210H10ZM160 49.38A70 70 0 1 0 160 170.62A70 70 0 1 0 160 49.38Z"
+  };
+  const SL = {
+    a: [[90, 85], [108, 110], [90, 135], [70, 110], [112, 80], [112, 140]],
+    ab: [[160, 66], [160, 90], [150, 103], [160, 115], [170, 128], [160, 140], [160, 160]],
+    b: [[230, 85], [212, 110], [230, 135], [250, 110], [208, 80], [208, 140]],
+    o: [[45, 30], [275, 30], [45, 195], [275, 195], [100, 200], [220, 200], [160, 24], [30, 110]]
+  };
+  const CENTER = { a: [92, 110], ab: [160, 110], b: [228, 110], o: [40, 190] };
+  const ORD = ["a", "ab", "b", "o"];
+  const keyOf = hl => ORD.filter(r => hl.includes(r)).join("+");
+  const NAMES = { "": "∅", "a": "A \\ B", "ab": "A ∩ B", "b": "B \\ A", "o": "(A ∪ B)'", "a+ab": "A", "ab+b": "B", "a+b": "(A \\ B) ∪ (B \\ A)", "a+o": "B'", "b+o": "A'",
+    "ab+o": "(A ∩ B) ∪ (A ∪ B)'", "a+ab+b": "A ∪ B", "a+ab+o": "A ∪ B'", "ab+b+o": "A' ∪ B", "a+b+o": "(A ∩ B)'", "a+ab+b+o": "U" };
+  const PY = { "a+ab+b": "A | B", "ab": "A & B", "a": "A - B", "b": "B - A", "a+b": "A ^ B", "b+o": "U - A", "a+o": "U - B", "o": "U - (A | B)", "a+ab": "A", "ab+b": "B", "a+ab+b+o": "U", "": "set()" };
+  // o: { el: {a:[…], ab:[…], b:[…], o:[…]} (elemek vagy számok), hl: [tartományok], u: alaphalmaz kell-e, click }
+  function venn(o){
+    o = o || {}; const hl = o.hl || [], el = o.el || {}, showU = o.u !== false;
+    let s = '<svg class="vn' + (o.click ? " click" : "") + '" viewBox="0 0 320 220" role="img" aria-label="Venn-diagram">';
+    if (showU) s += '<path class="rg' + (hl.includes("o") ? " on" : "") + '" data-r="o" fill-rule="evenodd" d="' + RP.o + '"/>';
+    ["a", "ab", "b"].forEach(r => { s += '<path class="rg' + (hl.includes(r) ? " on" : "") + '" data-r="' + r + '" d="' + RP[r] + '"/>'; });
+    if (showU) s += '<rect class="ur" x="10" y="10" width="300" height="200" rx="6"/><text class="lb" x="22" y="24">U</text>';
+    s += '<circle class="ol" cx="125" cy="110" r="70"/><circle class="ol" cx="195" cy="110" r="70"/>';
+    s += '<text class="lb" x="66" y="46">' + (o.la || "A") + '</text><text class="lb" x="254" y="46">' + (o.lb || "B") + "</text>";
+    ORD.forEach(r => {
+      const v = el[r]; if (v == null) return;
+      if (!Array.isArray(v)){ const c = CENTER[r]; s += '<text class="n" x="' + c[0] + '" y="' + c[1] + '">' + v + "</text>"; return; }
+      v.slice(0, SL[r].length).forEach((x, i) => { s += '<text x="' + SL[r][i][0] + '" y="' + SL[r][i][1] + '">' + x + "</text>"; });
+    });
+    return s + "</svg>";
+  }
+  const regions = (A, B, U) => ({ a: dif(A, B), ab: cap(A, B), b: dif(B, A), o: U ? dif(U, uni(A, B)) : [] });
+  const pickRegions = (R, hl) => srt([].concat(...hl.map(r => R[r])));
+
+  /* ---------- Intervallumok, számegyenes ---------- */
+  const ivStr = iv => (iv.lc ? "[" : "]") + String(iv.lo).replace("-", "−") + "; " + String(iv.hi).replace("-", "−") + (iv.rc ? "]" : "[");
+  const ivIn = (iv, x) => (x > iv.lo || (x === iv.lo && iv.lc)) && (x < iv.hi || (x === iv.hi && iv.rc));
+  const ivCap = (p, q) => {
+    const lo = Math.max(p.lo, q.lo), hi = Math.min(p.hi, q.hi);
+    const lc = p.lo > q.lo ? p.lc : q.lo > p.lo ? q.lc : p.lc && q.lc, rc = p.hi < q.hi ? p.rc : q.hi < p.hi ? q.rc : p.rc && q.rc;
+    if (lo > hi || (lo === hi && !(lc && rc))) return null;
+    return { lo, hi, lc, rc };
+  };
+  const ivCup = (p, q) => {
+    const lo = Math.min(p.lo, q.lo), hi = Math.max(p.hi, q.hi);
+    const lc = p.lo < q.lo ? p.lc : q.lo < p.lo ? q.lc : p.lc || q.lc, rc = p.hi > q.hi ? p.rc : q.hi > p.hi ? q.rc : p.rc || q.rc;
+    return { lo, hi, lc, rc };
+  };
+  const ivCount = iv => range(Math.ceil(iv.lo), Math.floor(iv.hi)).filter(x => ivIn(iv, x)).length;
+  const rndIv = (a, b) => { let lo, hi; do { lo = rnd(a, b); hi = rnd(a, b); } while (hi - lo < 2); return { lo, hi, lc: Math.random() < 0.5, rc: Math.random() < 0.5 }; };
+  const parseIv = v => {
+    const s = String(v).replace(/\s+/g, "").replace(/−/g, "-");
+    if (/^(∅|\{\}|üres(halmaz)?)$/i.test(s)) return "empty";
+    const m = /^([\[\]])(-?\d+)[;,](-?\d+)([\[\]])$/.exec(s);
+    return m ? { lo: +m[2], hi: +m[3], lc: m[1] === "[", rc: m[4] === "]" } : null;
+  };
+  const ivSame = (p, q) => p && q && p.lo === q.lo && p.hi === q.hi && p.lc === q.lc && p.rc === q.rc;
+  // számegyenes −6 és 8 között; ivs: [{iv, c: 1|2|3}]
+  function numline(ivs, pts){
+    const X = v => 15 + (v + 6) * 290 / 14, H = 34 + 16 * ivs.length;
+    let s = '<svg class="nl" viewBox="0 0 320 ' + (H + 20) + '" role="img" aria-label="Számegyenes"><line class="ax" x1="8" y1="' + H + '" x2="312" y2="' + H + '"/>';
+    for (let v = -6; v <= 8; v++) s += '<line class="ax" x1="' + X(v) + '" y1="' + (H - 4) + '" x2="' + X(v) + '" y2="' + (H + 4) + '"/>' + (v % 2 === 0 ? '<text x="' + X(v) + '" y="' + (H + 16) + '">' + String(v).replace("-", "−") + "</text>" : "");
+    ivs.forEach((d, i) => {
+      const y = 20 + 16 * i, iv = d.iv;
+      s += '<line class="s' + d.c + '" x1="' + X(iv.lo) + '" y1="' + y + '" x2="' + X(iv.hi) + '" y2="' + y + '"/>';
+      [[iv.lo, iv.lc], [iv.hi, iv.rc]].forEach(e => { s += '<circle class="c' + d.c + " " + (e[1] ? "cl" + d.c : "hol") + '" cx="' + X(e[0]) + '" cy="' + y + '" r="5"/>'; });
+    });
+    (pts || []).forEach(p => { s += '<circle class="c3 cl3" cx="' + X(p) + '" cy="' + H + '" r="4"/>'; });
+    return s + "</svg>";
+  }
+
+  /* ---------- Hero ---------- */
+  const U12 = range(1, 12), PRIM = [2, 3, 5, 7, 11];
+  const PRESETS = [
+    ["páros számok", U12.filter(x => x % 2 === 0), "3 többszörösei", U12.filter(x => x % 3 === 0)],
+    ["prímszámok", PRIM, "páratlan számok", U12.filter(x => x % 2)],
+    ["1-től 6-ig", range(1, 6), "4-től 9-ig", range(4, 9)]
+  ];
+  const H = { p: 0, hl: ["a", "ab", "b"] };
+  function hero(){
+    const P = PRESETS[H.p], R = regions(P[1], P[3], U12), k = keyOf(H.hl), res = pickRegions(R, H.hl);
+    $("#hv").innerHTML = venn({ el: R, hl: H.hl, click: true });
+    $("#hinfo").innerHTML = "<span>A = <b>" + setStr(P[1]) + "</b></span><span>(" + P[0] + ")</span><span>B = <b>" + setStr(P[3]) + "</b></span><span>(" + P[2] + ")</span><span>Kattints egy tartományra: ki- és bekapcsolja.</span>";
+    $("#hexp").textContent = NAMES[k];
+    $("#hres").textContent = setStr(res);
+    $("#hpy").innerHTML = "Elemszám: |" + esc(NAMES[k]) + "| = " + res.length + (PY[k] ? " · Pythonban: <b>" + esc(PY[k]) + "</b>" : "");
+    $$("#ops [data-k]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.k === k)));
+  }
+  $("#ops").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.id === "next"){ H.p = (H.p + 1) % PRESETS.length; } else H.hl = b.dataset.k.split("+");
+    hero();
+  });
+  $("#hv").addEventListener("click", e => {
+    const r = e.target.closest("[data-r]"); if (!r) return;
+    const k = r.dataset.r; H.hl = H.hl.includes(k) ? H.hl.filter(x => x !== k) : H.hl.concat(k);
+    hero();
+  });
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  function muvFrames(A, B, U){
+    const R = regions(A, B, U), el = U ? R : { a: R.a, ab: R.ab, b: R.b }, F = [];
+    const v = hl => venn({ el, hl, u: !!U });
+    F.push({ cap: "Két halmaz: A = " + setStr(A) + ", B = " + setStr(B) + (U ? ", az alaphalmaz U = " + setStr(U) : "") + ". Rajzoljuk be az elemeket a Venn-diagramba.", html: v([]) });
+    F.push({ cap: "Először a közös elemeket keressük: amelyek mindkét halmazban benne vannak. " + (R.ab.length ? "Ezek: " + R.ab.join(", ") + ". Ezek a két kör közös részébe kerülnek." : "Nincs ilyen: a közös rész üres."), html: v(["ab"]) });
+    F.push({ cap: "Ami csak az A halmaz eleme: " + (R.a.join(", ") || "semmi") + ". Ami csak a B halmazé: " + (R.b.join(", ") || "semmi") + "." + (U ? " Ami egyikben sincs: " + (R.o.join(", ") || "semmi") + "." : ""), html: v(["a", "b"]) });
+    F.push({ cap: "Unió: A ∪ B = " + setStr(uni(A, B)) + ". Minden elem, ami legalább az egyikben benne van. Ez a VAGY.", html: v(["a", "ab", "b"]) });
+    F.push({ cap: "Metszet: A ∩ B = " + setStr(cap(A, B)) + ". Csak a közös elemek. Ez az ÉS.", html: v(["ab"]) });
+    F.push({ cap: "Különbség: A \\ B = " + setStr(dif(A, B)) + ". Az A elemei, kivéve azokat, amelyek B-ben is benne vannak.", html: v(["a"]) });
+    if (U) F.push({ cap: "Komplementer: A' = " + setStr(dif(U, A)) + ". Az alaphalmaz minden eleme, ami nincs az A halmazban. Ez a NEM.", html: v(["b", "o"]) });
+    return F;
+  }
+  function szitaFrames(T, nA, nB, nAB, wA, wB){
+    const oa = nA - nAB, ob = nB - nAB, ne = T - (oa + nAB + ob), F = [];
+    const v = (el, hl) => venn({ el, hl, la: wA, lb: wB });
+    F.push({ cap: "Az osztályba " + T + " diák jár. " + nA + " diák " + wA + ", " + nB + " diák " + wB + ", és " + nAB + " diákra mindkettő igaz. Hányan nem tartoznak egyikhez sem?", html: v({}, []) });
+    F.push({ cap: "A Venn-diagramot belülről kifelé töltjük ki. A közös részbe kerül, akire mindkettő igaz: " + nAB + ".", html: v({ ab: nAB }, ["ab"]) });
+    F.push({ cap: "Csak az első csoportba tartozik: " + nA + " − " + nAB + " = " + oa + ". Csak a másodikba: " + nB + " − " + nAB + " = " + ob + ".", html: v({ a: oa, ab: nAB, b: ob }, ["a", "b"]) });
+    F.push({ cap: "Legalább az egyikbe tartozik: " + oa + " + " + nAB + " + " + ob + " = " + (oa + nAB + ob) + ". Képlettel: " + nA + " + " + nB + " − " + nAB + " = " + (oa + nAB + ob) + ". A közöseket nem számoljuk kétszer!", html: v({ a: oa, ab: nAB, b: ob }, ["a", "ab", "b"]) });
+    F.push({ cap: "Egyikhez sem tartozik: " + T + " − " + (oa + nAB + ob) + " = " + ne + ".", html: v({ a: oa, ab: nAB, b: ob, o: ne }, ["o"]) });
+    return F;
+  }
+  function intFrames(p, q, op){
+    const r = op === "cap" ? ivCap(p, q) : ivCup(p, q), F = [];
+    F.push({ cap: "Két intervallum: kék " + ivStr(p) + ", zöld " + ivStr(q) + ". A teli karika azt jelenti, hogy a végpont benne van, az üres, hogy nincs.", html: numline([{ iv: p, c: 1 }, { iv: q, c: 2 }]) });
+    if (op === "cap"){
+      F.push({ cap: "A metszet az, ami mindkettőben benne van. A bal vég a nagyobbik bal végpont: " + String(Math.max(p.lo, q.lo)).replace("-", "−") + ". A jobb vég a kisebbik jobb végpont: " + String(Math.min(p.hi, q.hi)).replace("-", "−") + ".", html: numline([{ iv: p, c: 1 }, { iv: q, c: 2 }]) });
+      F.push({ cap: r ? "A végpontoknál az dönt, hogy melyik intervallumtól jön a végpont, és ott zárt-e. Ha mindkettőtől jön, csak akkor zárt, ha mindkettőben zárt. Eredmény: " + ivStr(r) + "." : "Nincs közös rész: a metszet üres, ∅.", html: numline(r ? [{ iv: p, c: 1 }, { iv: q, c: 2 }, { iv: r, c: 3 }] : [{ iv: p, c: 1 }, { iv: q, c: 2 }]) });
+    } else {
+      F.push({ cap: "Az unió az, ami legalább az egyikben benne van. Mivel a két intervallum átfed, az unió egyetlen intervallum: a kisebbik bal végponttól a nagyobbik jobb végpontig.", html: numline([{ iv: p, c: 1 }, { iv: q, c: 2 }]) });
+      F.push({ cap: "Eredmény: " + ivStr(r) + ". A végpont akkor zárt, ha abban az intervallumban zárt, ahonnan jön.", html: numline([{ iv: p, c: 1 }, { iv: q, c: 2 }, { iv: r, c: 3 }]) });
+    }
+    return F;
+  }
+  const MET = { muv: "Halmazműveletek", szita: "Szöveges feladat Venn-diagrammal", int: "Intervallumok metszete" };
+  const MF = { muv: () => muvFrames([1, 2, 3, 4, 5, 6], [4, 5, 6, 7, 8], range(1, 10)), szita: () => szitaFrames(30, 18, 12, 5, "focizik", "kosarazik"), int: () => intFrames({ lo: -2, hi: 4, lc: true, rc: true }, { lo: 1, hi: 6, lc: false, rc: true }, "cap") };
+  const pb = K.player($("#pb"));
+  const PB = { m: "muv" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a halmaz?", h:
+      "<p>A <b>halmaz</b> dolgok összessége. A dolgok a halmaz <b>elemei</b>. Egy dologról mindig eldönthető, hogy eleme-e a halmaznak.</p>" +
+      "<ul><li><b>Felsorolással:</b> A = {2, 4, 6, 8}</li><li><b>Tulajdonsággal:</b> A = {x | x páros, és 0 &lt; x &lt; 10}</li></ul>" +
+      "<p class='eq'>4 ∈ A (a 4 eleme az A halmaznak) &nbsp;·&nbsp; 5 ∉ A (az 5 nem eleme)</p>" +
+      "<div class='note'><b>Fontos:</b> a sorrend és az ismétlés nem számít. {1, 2, 3} = {3, 1, 2} = {1, 1, 2, 3}.</div>" },
+    { k: "Üres, számosság", t: "Üres halmaz és elemszám", h:
+      "<ul><li>Az <b>üres halmaz</b> (∅) egyetlen elemet sem tartalmaz. Például: a 20-nál nagyobb egyjegyű számok halmaza.</li>" +
+      "<li>A halmaz <b>számossága</b> (elemszáma): |A|. Ha A = {2, 4, 6, 8}, akkor |A| = 4. |∅| = 0.</li>" +
+      "<li>Egy halmaz lehet <b>véges</b> (a hét napjai) vagy <b>végtelen</b> (a páros számok).</li></ul>" +
+      "<p>Programozásban (Python): <code>len({2, 4, 6, 8})</code> = 4, az üres halmaz <code>set()</code>.</p>" },
+    { k: "Részhalmaz", t: "Részhalmaz és egyenlőség", h:
+      "<p>B <b>részhalmaza</b> A-nak (B ⊆ A), ha B minden eleme A-nak is eleme. {2, 4} ⊆ {1, 2, 3, 4}.</p>" +
+      "<ul><li>Minden halmaz részhalmaza önmagának: A ⊆ A.</li><li>Az üres halmaz minden halmaznak részhalmaza: ∅ ⊆ A.</li><li>Két halmaz <b>egyenlő</b>, ha ugyanazok az elemeik: A ⊆ B és B ⊆ A.</li></ul>" +
+      "<p><b>Hány részhalmaza van?</b> Egy n elemű halmaznak 2<sup>n</sup>. Minden elemről eldöntöd: benne van (1) vagy nincs (0), mint egy n bites kettes számnál. A {a, b, c} részhalmazai: ∅, {a}, {b}, {c}, {a, b}, {a, c}, {b, c}, {a, b, c}: 2<sup>3</sup> = 8.</p>" },
+    { k: "Műveletek", t: "Unió, metszet, különbség", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Unió: A ∪ B</span><span>ami legalább az egyikben benne van</span>" + venn({ hl: ["a", "ab", "b"], u: false }) + "</div>" +
+      "<div class='trick'><span class='t'>Metszet: A ∩ B</span><span>ami mindkettőben benne van</span>" + venn({ hl: ["ab"], u: false }) + "</div>" +
+      "<div class='trick'><span class='t'>Különbség: A \\ B</span><span>ami A-ban benne van, de B-ben nincs</span>" + venn({ hl: ["a"], u: false }) + "</div></div>" +
+      "<p>Példa: A = {1, 2, 3, 4}, B = {3, 4, 5}. A ∪ B = {1, 2, 3, 4, 5}, A ∩ B = {3, 4}, A \\ B = {1, 2}, B \\ A = {5}.</p>" + playBtn("muv"), init: playInit },
+    { k: "Komplementer", t: "Alaphalmaz és komplementer", h:
+      "<p>Az <b>alaphalmaz</b> (U) az összes szóba jövő elem: például az osztály összes tanulója, vagy a számok 1-től 12-ig. A Venn-diagramon ez a téglalap.</p>" +
+      "<p>Az A <b>komplementere</b> (A', más jelöléssel A felülvonással): az alaphalmaz azon elemei, amelyek <b>nincsenek</b> A-ban.</p>" +
+      venn({ hl: ["b", "o"] }) + "<p>U = {1, …, 10}, A = {1, 2, 3} → A' = {4, 5, 6, 7, 8, 9, 10}.</p>" },
+    { k: "Logika", t: "Halmazok és logika: ugyanaz!", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Halmaz</th><th>Logika</th><th>Python</th></tr><tr><td>A ∪ B (unió)</td><td>VAGY</td><td><code>A | B</code></td></tr><tr><td>A ∩ B (metszet)</td><td>ÉS</td><td><code>A &amp; B</code></td></tr><tr><td>A' (komplementer)</td><td>NEM</td><td><code>U - A</code></td></tr><tr><td>A \\ B (különbség)</td><td>A ÉS NEM B</td><td><code>A - B</code></td></tr><tr><td>x ∈ A</td><td>igaz / hamis</td><td><code>x in A</code></td></tr></table></div>" +
+      "<p>Ha x ∈ A ∪ B, az azt jelenti: x ∈ A <b>VAGY</b> x ∈ B. A logikai műveletek leckéjében tanult igazságtáblák itt is működnek.</p>" +
+      "<pre class='code'>A = {1, 2, 3, 4}\nB = {3, 4, 5}\nprint(A | B)   # {1, 2, 3, 4, 5}\nprint(A &amp; B)   # {3, 4}\nprint(len(A - B))   # 2</pre>" },
+    { k: "Számosság", t: "Logikai szita: ne számold kétszer!", h:
+      "<p>30 diák: 18 focizik, 12 kosarazik, 5 mindkettőt. Hányan sportolnak legalább az egyiket? Nem 18 + 12 = 30, mert az 5 diákot kétszer számoltuk!</p>" +
+      "<p class='eq'>|A ∪ B| = |A| + |B| − |A ∩ B| = 18 + 12 − 5 = 25</p>" +
+      "<p>Egyiket sem: 30 − 25 = 5. Három halmaznál: |A ∪ B ∪ C| = |A| + |B| + |C| − |A ∩ B| − |A ∩ C| − |B ∩ C| + |A ∩ B ∩ C|.</p>" +
+      "<div class='note'><b>Biztos módszer:</b> a Venn-diagramot belülről kifelé töltsd ki: előbb a közös rész, aztán a „csak az egyik” részek, végül a kívül lévők.</div>" + playBtn("szita"), init: playInit },
+    { k: "Számhalmazok", t: "N, Z, Q, R", h:
+      "<ul><li><b>N</b>, természetes számok: 0, 1, 2, 3, … (a magyar iskolában a 0 is benne van)</li><li><b>Z</b>, egész számok: …, −2, −1, 0, 1, 2, …</li><li><b>Q</b>, racionális számok: két egész hányadosa, például 1/2, −0,75, 3</li><li><b>R</b>, valós számok: a számegyenes összes pontja, a √2 és a π is (ezek irracionálisak: nem írhatók fel törtként)</li></ul>" +
+      "<p class='eq'>N ⊂ Z ⊂ Q ⊂ R</p><p>Vigyázz: a √9 = 3, ez természetes szám; a 12/4 = 3 is.</p>" },
+    { k: "Intervallum", t: "Intervallumok a számegyenesen", h:
+      "<p>Az <b>intervallum</b> a számegyenes egy szakasza, minden valós számmal a két végpont között.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jelölés</th><th>Jelentés</th></tr><tr><td>[2; 5]</td><td>2 ≤ x ≤ 5 (zárt)</td></tr><tr><td>]2; 5[</td><td>2 &lt; x &lt; 5 (nyílt)</td></tr><tr><td>[2; 5[</td><td>2 ≤ x &lt; 5 (balról zárt)</td></tr><tr><td>]2; 5]</td><td>2 &lt; x ≤ 5 (jobbról zárt)</td></tr></table></div>" +
+      numline([{ iv: { lo: -2, hi: 4, lc: true, rc: true }, c: 1 }, { iv: { lo: 1, hi: 6, lc: false, rc: true }, c: 2 }]) +
+      "<p>Kék: [−2; 4], zöld: ]1; 6]. A metszetük ]1; 4], az uniójuk [−2; 6].</p>" + playBtn("int"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>A közös elemek kétszer.</b> |A ∪ B| nem |A| + |B|: a metszetet le kell vonni.</div>" +
+      "<div class='mistake'><b>Unió és metszet felcserélése.</b> Unió: VAGY (több elem), metszet: ÉS (kevesebb elem).</div>" +
+      "<div class='mistake'><b>A \\ B és B \\ A összekeverése.</b> A különbség nem cserélhető fel: A \\ B az A „maradéka”.</div>" +
+      "<div class='mistake'><b>Elem és részhalmaz összekeverése.</b> 2 ∈ {1, 2, 3}, de {2} ⊆ {1, 2, 3}. A 2 elem, a {2} halmaz.</div>" +
+      "<div class='mistake'><b>Nyílt végpont.</b> A ]2; 5[ intervallumban a 2 és az 5 nincs benne.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Ellenőrzés elemszámmal</span><span>|A ∩ B| ≤ |A| és |A ∪ B| ≥ |A|. Ha nem így jött ki, valami elcsúszott.</span></div>" +
+      "<div class='trick'><span class='t'>Rendezd sorba</span><span>Írd fel mindkét halmazt növekvő sorrendben: a közös elemek így azonnal látszanak.</span></div>" +
+      "<div class='trick'><span class='t'>Venn belülről kifelé</span><span>Szöveges feladatban mindig a „mindkettő” (vagy „mindhárom”) számmal kezdd.</span></div>" +
+      "<div class='trick'><span class='t'>Intervallum-metszet</span><span>Bal vég: a nagyobbik bal végpont. Jobb vég: a kisebbik jobb végpont. Ha a bal nagyobb a jobbnál: ∅.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const tf = (q, truth, sol) => { const opts = [{ l: "Igaz", ok: truth }, { l: "Hamis", ok: !truth }]; return { q, kind: "choice", options: opts, answer: truth ? "Igaz" : "Hamis", sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem jó. Nézd meg a megoldást." }) }; };
+  const CTX2 = [["focizik", "kosarazik"], ["tanul angolt", "tanul németet"], ["szereti a matekot", "szereti az informatikát"], ["jár szakkörre", "jár edzésre"]];
+  const NUMS = [["0", 0], ["7", 0], ["√9", 0], ["12/4", 0], ["−3", 1], ["−10", 1], ["−8/2", 1], ["1/2", 2], ["0,75", 2], ["−2,5", 2], ["−1/3", 2], ["√2", 3], ["π", 3], ["√5", 3]];
+  const NSET = ["N", "Z", "Q", "R"], NNAME = ["természetes szám", "egész szám", "racionális szám", "irracionális (csak valós) szám"];
+  const types = [
+    { id: "muv", name: "Halmazművelet", gen(l){
+      if (l < 3){
+        const A = rndSet(rnd(4, 6), 1, 12), B = rndSet(rnd(4, 6), 1, 12), op = pick(l === 1 ? ["∪", "∩"] : ["∪", "∩", "A\\B", "B\\A"]);
+        const res = op === "∪" ? uni(A, B) : op === "∩" ? cap(A, B) : op === "A\\B" ? dif(A, B) : dif(B, A);
+        const ex = op === "∪" ? "A ∪ B" : op === "∩" ? "A ∩ B" : op === "A\\B" ? "A \\ B" : "B \\ A";
+        const expl = { "∪": "Minden elem, ami legalább az egyikben benne van.", "∩": "Csak a közös elemek.", "A\\B": "Az A elemei, kivéve a B-ben is meglévőket.", "B\\A": "A B elemei, kivéve az A-ban is meglévőket." }[op];
+        return { q: "A = <span class='num'>" + setStr(A) + "</span>, B = <span class='num'>" + setStr(B) + "</span>. Mi lesz <b>" + ex + "</b>?", kind: "input", ph: "{1, 2, 3}", answer: setStr(res), frames: muvFrames(A, B), title: "Halmazműveletek",
+          sol: "<p>" + expl + " Közös elemek: " + (cap(A, B).join(", ") || "nincs") + ".</p>",
+          check: setCheck(res, a => same(a, uni(A, B)) ? "Ez az unió (VAGY). Itt más kell." : same(a, cap(A, B)) ? "Ez a metszet (ÉS). Itt más kell." : same(a, op === "A\\B" ? dif(B, A) : dif(A, B)) && op.includes("\\") ? "Fordítva vontál ki: " + ex + " kell." : "") };
+      }
+      const U = range(1, 10), A = rndSet(rnd(3, 6), 1, 10), B = rndSet(rnd(3, 6), 1, 10), C = rndSet(rnd(3, 6), 1, 10);
+      const E = pick([
+        ["(A ∪ B) ∩ C", () => cap(uni(A, B), C), "Előbb a zárójel: A ∪ B = " + setStr(uni(A, B)) + ". Ennek a metszete C halmazzal."],
+        ["A ∩ (B ∪ C)", () => cap(A, uni(B, C)), "Előbb a zárójel: B ∪ C = " + setStr(uni(B, C)) + ". Ennek a metszete A halmazzal."],
+        ["(A ∩ B) ∪ C", () => uni(cap(A, B), C), "Előbb a zárójel: A ∩ B = " + setStr(cap(A, B)) + ". Ehhez hozzávesszük C elemeit."],
+        ["A \\ (B ∪ C)", () => dif(A, uni(B, C)), "Előbb a zárójel: B ∪ C = " + setStr(uni(B, C)) + ". Az A elemei közül ezeket elhagyjuk."],
+        ["A' ∩ B", () => cap(dif(U, A), B), "A' = " + setStr(dif(U, A)) + " (ami nincs A-ban). Ennek a metszete B halmazzal."],
+        ["(A ∪ B)'", () => dif(U, uni(A, B)), "A ∪ B = " + setStr(uni(A, B)) + ". A komplementere: U elemei, amelyek ebben nincsenek."]
+      ]);
+      const res = E[1]();
+      return { q: "U = {1, 2, …, 10}, A = <span class='num'>" + setStr(A) + "</span>, B = <span class='num'>" + setStr(B) + "</span>, C = <span class='num'>" + setStr(C) + "</span>. Mi lesz <b>" + E[0] + "</b>?", kind: "input", ph: "{1, 2, 3}", answer: setStr(res),
+        sol: "<p>" + E[2] + " Eredmény: " + setStr(res) + ".</p>", check: setCheck(res, () => "Nem jó. Előbb a zárójeles részt számold ki, és írd le köztes eredményként.") };
+    } },
+    { id: "venn", name: "Venn-tartomány", gen(l){
+      const POOL = [["a"], ["ab"], ["b"], ["a", "ab"], ["ab", "b"], ["a", "ab", "b"]].concat(l >= 2 ? [["o"], ["b", "o"], ["a", "o"]] : []).concat(l === 3 ? [["a", "b"], ["ab", "o"], ["a", "ab", "o"], ["ab", "b", "o"], ["a", "b", "o"]] : []);
+      const hl = pick(POOL), good = NAMES[keyOf(hl)], others = shuffle(POOL.filter(p => keyOf(p) !== keyOf(hl)).map(p => NAMES[keyOf(p)])).slice(0, 3);
+      return choice("Melyik halmazt jelöli a színezett rész?" + venn({ hl }), good, others, "<p>A színezett tartományok: " + hl.map(r => ({ a: "csak A", ab: "A és B közös része", b: "csak B", o: "egyikben sem" })[r]).join(", ") + ". Ez: <b>" + good + "</b>.</p>", "Nem jó. Nézd meg tartományonként: benne van-e A-ban, benne van-e B-ben.");
+    } },
+    { id: "szita", name: "Hányan?", gen(l){
+      const c = pick(CTX2);
+      if (l < 3){
+        const ab = rnd(1, 8), oa = rnd(2, 12), ob = rnd(2, 12), nA = oa + ab, nB = ob + ab, ne = rnd(0, 8), T = oa + ab + ob + ne;
+        if (l === 1) return { q: "Egy osztályban " + nA + " diák " + c[0] + ", " + nB + " diák " + c[1] + ", és " + ab + " diákra mindkettő igaz. Hány diákra igaz legalább az egyik?", kind: "input", mode: "numeric", answer: oa + ab + ob, frames: szitaFrames(T, nA, nB, ab, c[0], c[1]), title: "Szöveges feladat Venn-diagrammal",
+          sol: "<p>|A ∪ B| = |A| + |B| − |A ∩ B| = " + nA + " + " + nB + " − " + ab + " = " + (oa + ab + ob) + ".</p>", check: intCheck(oa + ab + ob, "Nem jó. A mindkettőt csinálókat ne számold kétszer: vond le őket egyszer.") };
+        if (Math.random() < 0.5) return { q: "Egy osztályba " + T + " diák jár. " + nA + " diák " + c[0] + ", " + nB + " diák " + c[1] + ", és " + ab + " diákra mindkettő igaz. Hány diákra nem igaz egyik sem?", kind: "input", mode: "numeric", answer: ne, frames: szitaFrames(T, nA, nB, ab, c[0], c[1]), title: "Szöveges feladat Venn-diagrammal",
+          sol: "<p>Legalább az egyik: " + nA + " + " + nB + " − " + ab + " = " + (oa + ab + ob) + ". Egyik sem: " + T + " − " + (oa + ab + ob) + " = " + ne + ".</p>", check: intCheck(ne, "Nem jó. Előbb számold ki, hányan tartoznak legalább az egyikhez, és vond ki az összesből.") };
+        return { q: "Egy osztályba " + T + " diák jár. " + nA + " diák " + c[0] + ", " + nB + " diák " + c[1] + ", és " + ne + " diákra egyik sem igaz. Hány diákra igaz mindkettő?", kind: "input", mode: "numeric", answer: ab, frames: szitaFrames(T, nA, nB, ab, c[0], c[1]), title: "Szöveges feladat Venn-diagrammal",
+          sol: "<p>Legalább az egyikhez tartozik: " + T + " − " + ne + " = " + (T - ne) + ". De " + nA + " + " + nB + " = " + (nA + nB) + ", ez " + ab + " diákkal több: őket számoltuk kétszer. Mindkettő: " + ab + ".</p>", check: intCheck(ab, "Nem jó. Az összes mínusz az egyiket sem: ennyien tartoznak legalább az egyikhez. Az |A| + |B| ennél annyival több, ahányan mindkettőhöz tartoznak.") };
+      }
+      const r = { a: rnd(1, 6), b: rnd(1, 6), c: rnd(1, 6), ab: rnd(0, 4), ac: rnd(0, 4), bc: rnd(0, 4), abc: rnd(1, 3) }, ne = rnd(0, 6);
+      const nA = r.a + r.ab + r.ac + r.abc, nB = r.b + r.ab + r.bc + r.abc, nC = r.c + r.ac + r.bc + r.abc, pAB = r.ab + r.abc, pAC = r.ac + r.abc, pBC = r.bc + r.abc;
+      const un = nA + nB + nC - pAB - pAC - pBC + r.abc, T = un + ne;
+      const askOnly = Math.random() < 0.4, ans = askOnly ? r.a : ne;
+      return { q: "Egy évfolyamra " + T + " diák jár. Angolt " + nA + ", németet " + nB + ", franciát " + nC + " diák tanul. Angolt és németet is " + pAB + ", angolt és franciát is " + pAC + ", németet és franciát is " + pBC + " diák tanul, mindhármat " + r.abc + ". " + (askOnly ? "Hány diák tanul <b>csak angolt</b>?" : "Hány diák nem tanul <b>egyiket sem</b>?"), kind: "input", mode: "numeric", answer: ans,
+        sol: askOnly ? "<p>Belülről kifelé: mindhárom " + r.abc + ". Csak angol és német: " + pAB + " − " + r.abc + " = " + r.ab + ", csak angol és francia: " + pAC + " − " + r.abc + " = " + r.ac + ". Csak angol: " + nA + " − " + r.ab + " − " + r.ac + " − " + r.abc + " = " + r.a + ".</p>"
+          : "<p>|A ∪ N ∪ F| = " + nA + " + " + nB + " + " + nC + " − " + pAB + " − " + pAC + " − " + pBC + " + " + r.abc + " = " + un + ". Egyik sem: " + T + " − " + un + " = " + ne + ".</p>",
+        check: intCheck(ans, askOnly ? "Nem jó. Töltsd ki a Venn-diagramot belülről: előbb a mindhárom, aztán a pontosan kettő, végül a csak egy." : "Nem jó. Háromra a szita: az egyesek összege, mínusz a párok, plusz a mindhárom.") };
+    } },
+    { id: "elem", name: "Igaz vagy hamis?", gen(l){
+      if (l === 1){ const A = rndSet(rnd(4, 6), 1, 15), inA = Math.random() < 0.5, x = inA ? pick(A) : pick(range(1, 15).filter(y => !A.includes(y))), neg = Math.random() < 0.4;
+        return tf("Igaz vagy hamis? <span class='num'>" + x + " " + (neg ? "∉" : "∈") + " " + setStr(A) + "</span>", neg ? !inA : inA, "<p>A " + (inA ? "halmaz tartalmazza" : "halmaz nem tartalmazza") + " ezt a számot: " + x + ". A ∈ jelentése: eleme, a ∉ jelentése: nem eleme.</p>"); }
+      if (l === 2){
+        const A = rndSet(rnd(4, 6), 1, 12), k = rnd(0, 4);
+        if (k === 0){ const sub = Math.random() < 0.5; let B = shuffle(A).slice(0, rnd(1, A.length - 1)); if (!sub) B = srt(B.concat(pick(range(1, 12).filter(y => !A.includes(y))))); B = srt(B);
+          return tf("Igaz vagy hamis? <span class='num'>" + setStr(B) + " ⊆ " + setStr(A) + "</span>", sub, "<p>" + (sub ? "A bal oldali halmaz minden eleme a jobb oldaliban is benne van." : "Van olyan eleme a bal oldalinak, ami a jobb oldaliban nincs: " + B.filter(y => !A.includes(y)).join(", ") + ".") + "</p>"); }
+        if (k === 1) return tf("Igaz vagy hamis? <span class='num'>∅ ⊆ " + setStr(A) + "</span>", true, "<p>Az üres halmaz minden halmaznak részhalmaza: nincs olyan eleme, ami hiányozna.</p>");
+        if (k === 2){ const eq = Math.random() < 0.5, B = eq ? shuffle(A) : shuffle(A.slice(1).concat(pick(range(1, 12).filter(y => !A.includes(y)))));
+          return tf("Igaz vagy hamis? <span class='num'>{" + A.join(", ") + "} = {" + B.join(", ") + "}</span>", eq, "<p>" + (eq ? "Ugyanazok az elemek, csak más sorrendben: a sorrend nem számít." : "Nem ugyanazok az elemek.") + "</p>"); }
+        if (k === 3){ const a = pick(A), d = Math.random() < 0.5; return tf("Igaz vagy hamis? <span class='num'>|{" + A.concat(d ? [a] : []).join(", ") + "}| = " + (A.length + (d ? 1 : 0)) + "</span>", !d, "<p>" + (d ? "Az ismétlődő elemet csak egyszer számoljuk: a halmaz elemszáma " + A.length + "." : "A halmaznak " + A.length + " eleme van.") + "</p>"); }
+        const x = pick(A); return tf("Igaz vagy hamis? <span class='num'>{" + x + "} ∈ " + setStr(A) + "</span>", false, "<p>A {" + x + "} egy halmaz, nem elem. Helyesen: {" + x + "} ⊆ " + setStr(A) + ", vagy " + x + " ∈ " + setStr(A) + ".</p>");
+      }
+      const n = pick(NUMS), si = rnd(0, 3), truth = n[1] <= si;
+      return tf("Igaz vagy hamis? <span class='num'>" + n[0] + " ∈ " + NSET[si] + "</span>", truth, "<p>A " + n[0] + " " + NNAME[n[1]] + ". N ⊂ Z ⊂ Q ⊂ R, ezért " + (truth ? "benne van ebben: " + NSET[si] + "." : "nincs benne ebben: " + NSET[si] + ".") + "</p>");
+    } },
+    { id: "resz", name: "Részhalmazok száma", gen(l){
+      const n = l === 1 ? rnd(1, 5) : rnd(3, 8), A = range(1, n);
+      if (l === 1) return { q: "Hány részhalmaza van ennek a halmaznak? <span class='num'>" + setStr(A) + "</span>", kind: "input", mode: "numeric", answer: Math.pow(2, n),
+        sol: "<p>" + n + " elem, mindegyik vagy benne van, vagy nincs: 2<sup>" + n + "</sup> = " + Math.pow(2, n) + ". (Az üres halmaz és maga a halmaz is számít.)</p>", check: intCheck(Math.pow(2, n), "Nem jó. Egy n elemű halmaznak 2 a n-ediken részhalmaza van.") };
+      if (l === 2){ const k = Math.random() < 0.5;
+        return k ? { q: "Hány <b>valódi</b> részhalmaza van egy <span class='num'>" + n + "</span> elemű halmaznak? (A valódi részhalmaz nem egyenlő magával a halmazzal.)", kind: "input", mode: "numeric", answer: Math.pow(2, n) - 1,
+          sol: "<p>Összes részhalmaz: 2<sup>" + n + "</sup> = " + Math.pow(2, n) + ". Ebből maga a halmaz nem valódi: " + Math.pow(2, n) + " − 1 = " + (Math.pow(2, n) - 1) + ".</p>", check: intCheck(Math.pow(2, n) - 1, "Nem jó. Az összes részhalmazból vond le magát a halmazt.") }
+          : { q: "Hány elemű az a halmaz, amelynek <span class='num'>" + Math.pow(2, n) + "</span> részhalmaza van?", kind: "input", mode: "numeric", answer: n,
+          sol: "<p>2<sup>n</sup> = " + Math.pow(2, n) + ", tehát n = " + n + ".</p>", check: intCheck(n, "Nem jó. Melyik kitevőre lesz a 2 hatványa ennyi?") }; }
+      const x = pick(A);
+      return { q: "Az <span class='num'>" + setStr(A) + "</span> halmaznak hány olyan részhalmaza van, amelyben a <span class='num'>" + x + "</span> benne van?", kind: "input", mode: "numeric", answer: Math.pow(2, n - 1),
+        sol: "<p>Erről az egy elemről már döntöttünk (benne van), a többi " + (n - 1) + " elem szabadon választható: 2<sup>" + (n - 1) + "</sup> = " + Math.pow(2, n - 1) + ". Ez pont a részhalmazok fele.</p>", check: intCheck(Math.pow(2, n - 1), "Nem jó. A rögzített elemről nem kell dönteni, csak a többiről: 2 a (n − 1)-ediken.") };
+    } },
+    { id: "int", name: "Intervallumok", gen(l){
+      if (l === 1){ const iv = rndIv(-5, 7), x = Math.random() < 0.5 ? pick([iv.lo, iv.hi]) : rnd(-6, 8), t = ivIn(iv, x);
+        return tf("Igaz vagy hamis? <span class='num'>" + String(x).replace("-", "−") + " ∈ " + ivStr(iv) + "</span>" + numline([{ iv, c: 1 }], [x]), t, "<p>" + (x === iv.lo || x === iv.hi ? "Ez végpont. " + (t ? "Ezen az oldalon zárt (a zárójel befelé néz), tehát benne van." : "Ezen az oldalon nyílt (a zárójel kifelé néz), tehát nincs benne.") : (t ? "A két végpont között van." : "Kívül esik az intervallumon.")) + "</p>"); }
+      let p, q, r, guard = 0;
+      do { p = rndIv(-6, 6); q = rndIv(-4, 8); r = ivCap(p, q); } while ((!r || r.lo === r.hi) && guard++ < 100);
+      if (l === 2) return { q: "Mi a két intervallum metszete? <span class='num'>" + ivStr(p) + " ∩ " + ivStr(q) + "</span>", kind: "input", ph: "]1; 4]", answer: ivStr(r), frames: intFrames(p, q, "cap"), title: "Intervallumok metszete",
+        sol: "<p>Bal vég: a nagyobbik bal végpont, jobb vég: a kisebbik jobb végpont. A végpont ott zárt, ahol abban az intervallumban is zárt, amelyiktől jön (ha mindkettőtől jön, mindkettőben zártnak kell lennie).</p>",
+        check: v => { const a = parseIv(v); if (!a) return { ok: false, msg: "Így írd: ]1; 4] (zárt végen befelé, nyílt végen kifelé fordul a zárójel)." }; if (ivSame(a, r)) return { ok: true, msg: "Helyes!" }; if (a !== "empty" && a.lo === r.lo && a.hi === r.hi) return { ok: false, msg: "A végpontok jók, de a zárójelek nem: nézd meg, melyik végpont benne van." }; if (ivSame(a, ivCup(p, q))) return { ok: false, msg: "Ez az unió. A metszet kell: ami mindkettőben benne van." }; return { ok: false, msg: "Nem jó. Rajzold fel a számegyenesre mindkettőt." }; } };
+      if (Math.random() < 0.5){ const u = ivCup(p, q);
+        return { q: "Mi a két intervallum uniója? <span class='num'>" + ivStr(p) + " ∪ " + ivStr(q) + "</span>", kind: "input", ph: "[−2; 6]", answer: ivStr(u), frames: intFrames(p, q, "cup"), title: "Intervallumok uniója",
+          sol: "<p>A két intervallum átfed, ezért az unió egyetlen intervallum: a kisebbik bal végponttól a nagyobbik jobb végpontig. A végpont akkor zárt, ha abban az intervallumban zárt, ahonnan jön.</p>",
+          check: v => { const a = parseIv(v); if (!a) return { ok: false, msg: "Így írd: [−2; 6]." }; if (ivSame(a, u)) return { ok: true, msg: "Helyes!" }; if (ivSame(a, r)) return { ok: false, msg: "Ez a metszet. Az unió kell: ami legalább az egyikben benne van." }; return { ok: false, msg: a !== "empty" && a.lo === u.lo && a.hi === u.hi ? "A végpontok jók, a zárójeleket nézd meg." : "Nem jó. Rajzold fel a számegyenesre mindkettőt." }; } };
+      }
+      const cnt = ivCount(r), ints = range(Math.ceil(r.lo), Math.floor(r.hi)).filter(x => ivIn(r, x));
+      return { q: "Hány egész szám van a két intervallum metszetében? <span class='num'>" + ivStr(p) + " ∩ " + ivStr(q) + "</span>", kind: "input", mode: "numeric", answer: cnt, frames: intFrames(p, q, "cap"), title: "Intervallumok metszete",
+        sol: "<p>A metszet: " + ivStr(r) + ". Egész számok benne: " + (ints.map(x => String(x).replace("-", "−")).join(", ") || "nincs") + ". Darabszám: " + cnt + ".</p>", check: intCheck(cnt, "Nem jó. Előbb a metszet, aztán számold meg az egészeket; a nyílt végpont nem számít.") };
+    } },
+    { id: "py", name: "Python-halmazok", gen(l){
+      const A = rndSet(rnd(3, 5), 1, 9), B = rndSet(rnd(3, 5), 1, 9), pyS = a => "{" + a.join(", ") + "}";
+      if (l === 1){ const x = rnd(1, 9), t = A.includes(x), ans = t ? "True" : "False";
+        return { q: "Mit ír ki ez a Python-program?<pre class='code'>A = " + pyS(A) + "\nprint(" + x + " in A)</pre>", kind: "input", answer: ans,
+          sol: "<p>Az <code>in</code> azt nézi, eleme-e a halmaznak (∈). " + (t ? "Benne van, ezért True (igaz)." : "Nincs benne, ezért False (hamis).") + "</p>", check: v => String(v).trim().toLowerCase() === ans.toLowerCase() ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. A válasz True (igaz) vagy False (hamis)." } }; }
+      const op = pick(["|", "&", "-"]), res = op === "|" ? uni(A, B) : op === "&" ? cap(A, B) : dif(A, B), nm = { "|": "unió", "&": "metszet", "-": "különbség" }[op];
+      if (l === 2) return { q: "Mit ír ki ez a Python-program?<pre class='code'>A = " + pyS(A) + "\nB = " + pyS(B) + "\nprint(len(A " + op + " B))</pre>", kind: "input", mode: "numeric", answer: res.length,
+        sol: "<p>A <code>" + op + "</code> a " + nm + ": " + setStr(res) + ". A <code>len</code> az elemszám: " + res.length + ".</p>", check: intCheck(res.length, "Nem jó. | az unió, & a metszet, − a különbség; a len az elemszám.") };
+      const ans = "[" + res.join(", ") + "]";
+      return { q: "Mit ír ki ez a Python-program? (A <code>sorted</code> növekvő sorrendű listát ad.)<pre class='code'>A = " + pyS(A) + "\nB = " + pyS(B) + "\nprint(sorted(A " + op + " B))</pre>", kind: "input", ph: "[1, 2, 3]", answer: ans,
+        sol: "<p>A <code>" + op + "</code> a " + nm + ": " + setStr(res) + ". Listaként, sorba rendezve: " + ans + ".</p>", check: setCheck(res, () => "Nem jó. | az unió, & a metszet, − a különbség (A elemei, amelyek B-ben nincsenek).") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "halmazok", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["x ∈ A", "x eleme A-nak", "x in A"], ["x ∉ A", "x nem eleme A-nak", "x not in A"], ["B ⊆ A", "B részhalmaza A-nak", "B &lt;= A"], ["A ∪ B", "unió (VAGY)", "A | B"], ["A ∩ B", "metszet (ÉS)", "A &amp; B"], ["A \\ B", "különbség", "A - B"], ["A'", "komplementer (NEM)", "U - A"], ["∅", "üres halmaz", "set()"], ["|A|", "elemszám", "len(A)"]];
+  $("#cheat").innerHTML = "<tr><th>Jel</th><th>Jelentés</th><th>Python</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td><td>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
