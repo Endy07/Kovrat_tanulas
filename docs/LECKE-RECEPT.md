@@ -307,8 +307,9 @@ megnyitott megoldásnál méri a vízszintes túllógást (a bűnös elemekkel);
 
 - **A tesztelő néma legyen.** Windowson a headless Chromium is **kimondja** a felolvasást, ha a lejátszót léptetik (Endit
   éjjel zavarta). Ezért `--mute-audio`, és az init-szkript kikapcsolja a felolvasást (`kovrat-tts` = 0, `speak` üres).
-- **Csak akkor megbízható, ha a „Jó válasz” pontosan a beírandó szöveg.** A `logikai-muveletek` igazságtáblájánál és a
-  `tizenhatos-szamrendszer` átváltásainál a „Jó válasz” magyarázatot vagy alsó indexet is tartalmaz: ott hamis hibát jelez.
+- **A „Jó válasz” legyen a beírandó szöveg.** A tesztelő az alsó indexet (`92<sub>16</sub>`) és beírós feladatnál a záró
+  zárójeles megjegyzést („3 (a 4 sorból)”) levágja, így a régi `logikai-muveletek` és `tizenhatos-szamrendszer` is átmegy.
+  Választós feladatnál a teljes szöveget keresi a gombok között („NEM (A ÉS B)”).
 - **Végtelen ciklus a generátorban:** a tesztelő ilyenkor nem ér véget (a böngésző lefagy). Ok: `do { x2 = … } while (… x1 …)`,
   ahol a feltétel olyan változótól is függ, amit a ciklus nem sorsol újra. **Minden változót, amitől a feltétel függ, a
   ciklusban sorsolj**, vagy tegyél bele őrszámlálót. Lefagyott tesztnél a saját `node` folyamatot állítsd le (PID alapján).

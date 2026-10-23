@@ -66,7 +66,9 @@ const SHOTS = "C:/xampp/htdocs/Kovrat/.playwright-mcp/";
           box.querySelector('[data-a="sol"]').click();
           const sd = [...box.querySelectorAll(".solution > div")].pop();
           const ansEl = sd && (sd.querySelector("pre") || sd.querySelector("b"));
-          const ans = ansEl ? ansEl.textContent : "";
+          // a beírandó szöveg: alsó index (számrendszer jele) és zárójeles megjegyzés nélkül („92₁₆”, „3 (a 4 sorból)”)
+          let ans = "";
+          if (ansEl){ const c = ansEl.cloneNode(true); c.querySelectorAll("sub").forEach(s => s.remove()); ans = c.textContent; if (!c.querySelector("pre") && !box.querySelector(".opt")) ans = ans.replace(/\s+\([^()]*\)$/, ""); }
           st.n++;
           if (ta) {
             ta.value = ans; ta.dispatchEvent(new Event("input"));
