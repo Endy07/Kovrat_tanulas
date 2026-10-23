@@ -131,7 +131,7 @@ gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek
 - **A tesztelő néma:** a headless Chromium Windowson kimondta a felolvasást, és Endit éjjel zavarta. Azóta `--mute-audio`
   és kikapcsolt felolvasás.
 - **Kezdőlap:** csoportok: Előkészítés · Első félév · Második félév · Matek, 9. évfolyam · Gondolkodás · Digitális kultúra.
-- **Push nincs:** minden helyben commitolva, a push (= GitHub Pages élesítés) Endi döntése.
+- **Push:** reggel Endi jóváhagyta (a pulton át), élesben van (`928b1e6`).
 
 ## Döntések és indokaik
 
@@ -173,8 +173,9 @@ gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek
 - **A 9.-es tanrend minden programozás- és informatikai témája le van fedve** (a tantermi gyakorlatok kivételével).
   Következő lehetőségek: Python-leckék futtatóval a 10.-re (döntés kell: Pyodide CDN-ről kb. 10 MB, vagy saját részhalmaz-
   értelmező), IT-biztonság bővítése, SQL-alapok. Lásd `docs/tanrend-10.md` és `docs/leckek-terv.md`.
-- **Push**: az október 22-i és 23-i leckék helyben commitolva vannak, a push (= GitHub Pages élesítés) Endi jóváhagyására vár.
-  Push után: `gh api repos/Endy07/Kovrat_tanulas/pages/builds/latest --jq .status`, és nézz meg élesben néhány új leckét.
+- **Élesben** (2026-10-23 reggel, Endi jóváhagyásával a pulton át): `dd3ee0d..928b1e6` push, a Pages-build `built`, az élő
+  `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
+  a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 
 ## Munkastílus Endivel

@@ -27,9 +27,8 @@ HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pag
 - Kezdőlap szakaszokra bontva, a tanrend-oldallal; nyilvános GitHub Pages oldal
 
 ## Ami hátra van / most ezen dolgozunk
-- Push (GitHub Pages élesítés): a felhasználó jóváhagyására vár
 - Kovrat válaszai: mit használnak programozásórán, a tanár sorrendje (a tanrend becslés)
-- A 10. évfolyamra: Python-leckék futtatható kóddal (döntés kell a böngészős Python-futtatóról), IT-biztonság bővítése
+- A 10. évfolyamra: Python-leckék futtatható kóddal (döntés: Pyodide CDN-ről, lustán; még nem épül), IT-biztonság bővítése
 
 ## Jövőbeni tervek
 - Rövid animált magyarázó videók a leckékhez
