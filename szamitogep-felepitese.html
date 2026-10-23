@@ -1,0 +1,945 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023041459">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>A számítógép felépítése</title>
+<style>
+.cpu{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+.mem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.cell{border:1.5px solid #3A4656;border-radius:8px;padding:3px 5px;font-family:var(--mono);font-size:clamp(.66rem,2.9vw,.82rem);min-height:40px;display:flex;flex-direction:column;overflow-wrap:anywhere;color:var(--panel-ink)}
+.cell small{font-size:.68rem;color:#7E8B9C}
+.cell.ins span{color:#9DC0F5}
+.cell.pc{border-color:#9DC0F5;box-shadow:0 0 0 1px #9DC0F5 inset}
+.cell.hl{border-color:var(--led);background:#4a3a12}
+.cell.hl span{color:#FFB01F;font-weight:700}
+.regs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.reg{border:1.5px solid #3A4656;border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;font-family:var(--mono);color:var(--panel-ink)}
+.reg small{font-size:.7rem;color:#7E8B9C;letter-spacing:.06em}
+.reg b{font-size:1.15rem;overflow-wrap:anywhere}
+.reg.on{border-color:var(--led)}
+.reg.on b{color:#FFB01F}
+.phases{display:flex;gap:6px;flex-wrap:wrap}
+.ph{font-family:var(--mono);font-size:.78rem;border:1.5px solid #3A4656;border-radius:999px;padding:.15em .8em;color:#7E8B9C}
+.ph.on{border-color:var(--led);color:#FFB01F;font-weight:700}
+.cpucap{font-family:var(--body);font-size:1rem;min-height:3em;color:var(--panel-ink)}
+.panel select{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.panel input[type=number]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656;width:5em}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ctl label{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.pb-stage .cpucap{display:none}
+.pb-stage .cpu{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.steps{display:flex;flex-direction:column;gap:6px;font-family:var(--body)}
+.stp{border:1.5px solid #3A4656;border-radius:10px;padding:6px 10px;color:#7E8B9C}
+.stp.done{color:var(--panel-ink)}
+.stp.on{border-color:var(--led);background:#4a3a12;color:#FFB01F;font-weight:700}
+.prog{font-family:var(--mono);margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.prog li{white-space:nowrap}
+.prog small{color:var(--muted);display:inline-block;width:2.2em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · hardver</span>
+  <h1>A számítógép felépítése</h1>
+  <p class="lead">Mi van a gépházban, és hogyan hajtja végre a processzor a programot? Indítsd el a játék-processzort, és kövesd lépésenként: lehívás, dekódolás, végrehajtás.</p>
+  <div class="panel">
+    <span class="eyebrow">Játék-processzor: a program és az adat ugyanabban a memóriában</span>
+    <div class="ctl">
+      <label>Program <select id="c-prog" aria-label="Program"><option value="sum">Összeadás</option><option value="down">Visszaszámlálás</option><option value="mul">Szorzás ciklussal</option></select></label>
+      <label><span id="c-la">1. adat</span><input type="number" id="c-a" min="0" max="20" value="5"></label>
+      <label><span id="c-lb">2. adat</span><input type="number" id="c-b" min="0" max="20" value="7"></label>
+    </div>
+    <div class="cpu" id="c-view"></div>
+    <div class="cpucap" id="c-cap" aria-live="polite"></div>
+    <div class="ctl">
+      <button class="btn" id="c-step">Következő fázis ▶</button>
+      <button class="btn" id="c-run">▶ Futtatás</button>
+      <button class="btn" id="c-reset">↺ Újra</button>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: mi van a gépben?</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="sum" aria-selected="true">Egy program lépésenként</button>
+    <button class="tab" data-m="mul" aria-selected="false">Ciklus: szorzás</button>
+    <button class="tab" data-m="boot" aria-selected="false">Bekapcsolástól az asztalig</button>
+    <button class="tab" data-m="clock" aria-selected="false">Órajel: mennyi idő?</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A tizedes számot vesszővel vagy ponttal is írhatod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A gépi ciklus</span><span>lehívás (PC → utasítás, PC eggyel nő) → dekódolás (mit jelent?) → végrehajtás</span></div>
+    <div class="trick"><span class="t">Játék-utasítások</span><span class="mono">LOAD c · ADD c · SUB c · STORE c · JMP c · JZ c · HALT</span><span>c egy memóriacella címe. JZ: ugrás, ha ACC = 0.</span></div>
+    <div class="trick"><span class="t">Órajel</span><span class="mono">1 GHz = 10<sup>9</sup> ciklus/s · 1 ciklus = 1 : f ns (f GHz-ben)</span></div>
+    <div class="trick"><span class="t">Másolási idő</span><span class="mono">idő (s) = méret (MB) : sebesség (MB/s) · 1 GB = 1024 MB</span></div>
+    <div class="trick"><span class="t">RAID</span><span>RAID 0: összeadódik (a legkisebb lemez × darabszám), gyors, nem biztonságos. RAID 1: tükrözés, a kapacitás egy lemezé.</span></div>
+    <div class="trick"><span class="t">Bootolás</span><span>tápegység → POST → UEFI/BIOS → rendszerbetöltő → operációs rendszer → bejelentkezés</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push(
+    [/M\[(\d+)\]/g, "cella $1"], [/\bACC\b/g, "akkumulátor"], [/\bGHz\b/g, "gigahertz"], [/\bMHz\b/g, "megahertz"],
+    [/\bns\b/g, "nanoszekundum"], [/MB\/s/g, "megabájt per másodperc"], [/\bMB\b/g, "megabájt"], [/\bGB\b/g, "gigabájt"], [/\bTB\b/g, "terabájt"],
+    [/\s:\s/g, " osztva "], [/\s×\s/g, " szorozva "]
+  );
+  const num = s => String(s).replace(/\s+/g, "").replace(",", ".");
+  const hu = x => String(Math.round(x * 1000) / 1000).replace(".", ",");
+  const numCheck = (ans, hint, extra) => v => {
+    const s = num(v);
+    if (!/^-?\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." };
+    if (Math.abs(+s - ans) < 1e-9) return { ok: true, msg: "Helyes!" };
+    const e = extra && extra(+s); if (e) return { ok: false, msg: e };
+    return { ok: false, msg: hint };
+  };
+
+  /* ---------- Játék-processzor ----------
+     16 memóriacella (0–15). A program a 0. cellától, az adat a 12–15. cellában.
+     Utasítás: [op, cím]. Fázisonként lépünk: lehívás, dekódolás, végrehajtás. */
+  const MEANING = {
+    LOAD: c => "az akkumulátorba (ACC) betöltjük az M[" + c + "] értékét",
+    ADD: c => "az ACC értékéhez hozzáadjuk az M[" + c + "] értékét",
+    SUB: c => "az ACC értékéből kivonjuk az M[" + c + "] értékét",
+    STORE: c => "az ACC értékét kiírjuk ide: M[" + c + "]",
+    JMP: c => "ugrás: a következő utasítás innen jön: M[" + c + "]",
+    JZ: c => "ha ACC = 0, ugrás ide: M[" + c + "], különben megyünk tovább",
+    HALT: () => "a program leáll"
+  };
+  function cpuRun(prog, data, limit){
+    const mem = new Array(16).fill(null);
+    prog.forEach((ins, i) => mem[i] = ins);
+    Object.keys(data).forEach(a => mem[a] = data[a]);
+    const st = { pc: 0, ir: null, acc: 0, mem, phase: "", halted: false, count: {}, n: 0 };
+    const steps = [];
+    const snap = (phase, cap, hl, on) => steps.push({ phase, cap, hl: hl || [], on: on || [], pc: st.pc, ir: st.ir, acc: st.acc, mem: st.mem.slice() });
+    snap("", "Kezdés: PC = 0, ACC = 0. A program a 0. cellától kezdődik, az adatok a 12–15. cellában vannak.");
+    while (!st.halted && st.n < (limit || 120)){
+      const at = st.pc, ins = st.mem[at];
+      if (!Array.isArray(ins)){ snap("lehívás", "Hiba: itt nincs utasítás (M[" + at + "]). A processzor megáll.", [at]); st.halted = true; break; }
+      st.ir = ins; st.pc = at + 1; st.n++;
+      st.count[ins[0]] = (st.count[ins[0]] || 0) + 1;
+      snap("lehívás", "Lehívás: az utasítás innen jön: M[" + at + "], vagyis " + ins.join(" ") + ". Az utasításszámláló eggyel nő: PC = " + st.pc + ".", [at], ["PC", "IR"]);
+      snap("dekódolás", "Dekódolás: " + ins.join(" ") + " jelentése: " + MEANING[ins[0]](ins[1]) + ".", ins[1] != null ? [ins[1]] : [], ["IR"]);
+      const op = ins[0], c = ins[1];
+      if (op === "LOAD"){ st.acc = st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = M[" + c + "] = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "ADD"){ const o = st.acc; st.acc = o + st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = " + o + " + " + st.mem[c] + " = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "SUB"){ const o = st.acc; st.acc = o - st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = " + o + " − " + st.mem[c] + " = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "STORE"){ st.mem[c] = st.acc; snap("végrehajtás", "Végrehajtás: M[" + c + "] = " + st.acc + ".", [c], []); }
+      else if (op === "JMP"){ st.pc = c; snap("végrehajtás", "Végrehajtás: ugrás, PC = " + c + ".", [], ["PC"]); }
+      else if (op === "JZ"){ if (st.acc === 0){ st.pc = c; snap("végrehajtás", "Végrehajtás: ACC = 0, ezért ugrunk: PC = " + c + ".", [], ["PC"]); } else snap("végrehajtás", "Végrehajtás: ACC = " + st.acc + ", ez nem 0, ezért nincs ugrás, PC marad " + st.pc + ".", [], []); }
+      else if (op === "HALT"){ st.halted = true; snap("végrehajtás", "Végrehajtás: HALT, a program leáll. Az eredmény: ACC = " + st.acc + ".", [], ["ACC"]); }
+    }
+    if (!st.halted) snap("", "A program " + st.n + " utasítás után sem állt le: végtelen ciklus! A játék-processzort itt leállítottuk.", []);
+    return { steps, st };
+  }
+  const PROGS = {
+    sum: { a: 5, b: 7, la: "1. adat (M[12])", lb: "2. adat (M[13])", make: (a, b) => [[["LOAD", 12], ["ADD", 13], ["STORE", 14], ["HALT"]], { 12: a, 13: b, 14: 0 }] },
+    down: { a: 3, b: 1, la: "Kezdőérték (M[12])", lb: "Lépésköz (M[13])", make: (a, b) => [[["LOAD", 12], ["SUB", 13], ["STORE", 12], ["JZ", 5], ["JMP", 0], ["HALT"]], { 12: a, 13: b }] },
+    mul: { a: 4, b: 3, la: "Szorzandó (M[12])", lb: "Szorzó (M[13])", make: (a, b) => [[["LOAD", 14], ["ADD", 12], ["STORE", 14], ["LOAD", 13], ["SUB", 15], ["STORE", 13], ["JZ", 8], ["JMP", 0], ["HALT"]], { 12: a, 13: b, 14: 0, 15: 1 }] }
+  };
+  const cellTxt = c => c == null ? "—" : Array.isArray(c) ? c.join(" ") : String(c);
+  const PHASES = ["lehívás", "dekódolás", "végrehajtás"];
+  function cpuHtml(s){
+    const mem = '<div class="mem">' + s.mem.map((c, i) => '<div class="cell' + (Array.isArray(c) ? " ins" : "") + (i === s.pc ? " pc" : "") + (s.hl.includes(i) ? " hl" : "") + '"><small>' + i + "</small><span>" + cellTxt(c) + "</span></div>").join("") + "</div>";
+    const reg = (k, v, t) => '<div class="reg' + (s.on.includes(k) ? " on" : "") + '"><small>' + t + "</small><b>" + v + "</b></div>";
+    const regs = '<div style="display:flex;flex-direction:column;gap:10px"><div class="phases">' + PHASES.map(p => '<span class="ph' + (p === s.phase ? " on" : "") + '">' + p + "</span>").join("") + '</div><div class="regs">' +
+      reg("PC", s.pc, "PC · utasításszámláló") + reg("IR", s.ir ? s.ir.join(" ") : "—", "IR · utasításregiszter") + reg("ACC", s.acc, "ACC · akkumulátor") + reg("-", s.phase || "—", "Fázis") + "</div></div>";
+    return '<div class="cpu">' + mem + regs + "</div>";
+  }
+  const cpuFrames = (prog, data, compact) => {
+    const r = cpuRun(prog, data);
+    if (!compact) return r.steps.map(s => ({ cap: s.cap, html: cpuHtml(s) }));
+    // tömör: utasításonként egy kocka (a végrehajtás pillanata, a lehívás felirata elé fűzve)
+    const F = [{ cap: r.steps[0].cap, html: cpuHtml(r.steps[0]) }];
+    for (let i = 1; i < r.steps.length; i++){
+      const s = r.steps[i];
+      if (s.phase === "végrehajtás") F.push({ cap: s.ir.join(" ") + ". " + s.cap, html: cpuHtml(s) });
+      else if (s.phase === "") F.push({ cap: s.cap, html: cpuHtml(s) });
+    }
+    return F;
+  };
+
+  /* ---------- Hero ---------- */
+  const H = { k: 0, steps: [], timer: null };
+  function heroLoad(){
+    const p = PROGS[$("#c-prog").value];
+    const a = Math.max(0, Math.min(20, Math.round(Number($("#c-a").value) || 0))), b = Math.max(0, Math.min(20, Math.round(Number($("#c-b").value) || 0)));
+    const [prog, data] = p.make(a, b);
+    H.steps = cpuRun(prog, data).steps; H.k = 0; heroShow();
+  }
+  function heroShow(){
+    const s = H.steps[H.k];
+    $("#c-view").innerHTML = cpuHtml(s).replace(/^<div class="cpu">|<\/div>$/g, "");
+    $("#c-cap").textContent = s.cap.replace(/<[^>]+>/g, "");
+    $("#c-step").disabled = H.k >= H.steps.length - 1;
+    $("#c-run").textContent = H.timer ? "⏸ Szünet" : "▶ Futtatás";
+  }
+  function heroStop(){ clearInterval(H.timer); H.timer = null; heroShow(); }
+  $("#c-step").addEventListener("click", () => { heroStop(); if (H.k < H.steps.length - 1){ H.k++; heroShow(); } });
+  $("#c-run").addEventListener("click", () => {
+    if (H.timer) return heroStop();
+    if (H.k >= H.steps.length - 1) H.k = 0;
+    H.timer = setInterval(() => { if (H.k >= H.steps.length - 1) return heroStop(); H.k++; heroShow(); }, 900);
+    heroShow();
+  });
+  $("#c-reset").addEventListener("click", () => { heroStop(); heroLoad(); });
+  $("#c-prog").addEventListener("change", () => { const p = PROGS[$("#c-prog").value]; $("#c-a").value = p.a; $("#c-b").value = p.b; $("#c-la").textContent = p.la; $("#c-lb").textContent = p.lb; heroStop(); heroLoad(); });
+  ["#c-a", "#c-b"].forEach(s => $(s).addEventListener("input", () => { heroStop(); heroLoad(); }));
+  $("#c-la").textContent = PROGS.sum.la; $("#c-lb").textContent = PROGS.sum.lb;
+  heroLoad();
+
+  /* ---------- Levezetések ---------- */
+  const BOOT = [
+    ["Bekapcsolás", "Megnyomod a bekapcsológombot. A tápegység a konnektor váltakozó áramából egyenáramot készít, és ellátja az alaplapot."],
+    ["POST", "Az alaplap ROM-jában lévő UEFI (régebben BIOS) elindul, és lefuttatja a POST-ot, vagyis az öntesztet: megvan-e a RAM, a videokártya, a billentyűzet. Ha valami hibás, csipogással jelez."],
+    ["Rendszerlemez keresése", "Az UEFI a beállított sorrendben megkeresi azt a háttértárat, amelyről indulni lehet: például az NVMe SSD-t."],
+    ["Rendszerbetöltő", "Elindul a rendszerbetöltő (bootloader), egy kis program a lemezen. Az ő dolga, hogy az operációs rendszer magját a RAM-ba töltse."],
+    ["Operációs rendszer", "Betölt az operációs rendszer, például a Windows: elindulnak az illesztőprogramok (driverek) és a háttérszolgáltatások."],
+    ["Bejelentkezés", "Megjelenik a bejelentkező képernyő. Innen a programok már a RAM-ban futnak, a processzor hajtja végre az utasításaikat."]
+  ];
+  function bootFrames(){
+    return BOOT.map((b, k) => ({ cap: b[1], html: '<div class="steps">' + BOOT.map((x, i) => '<div class="stp' + (i < k ? " done" : i === k ? " on" : "") + '">' + (i + 1) + ". " + x[0] + "</div>").join("") + "</div>" }));
+  }
+  function clockFrames(f, N, c){
+    const ns = N * c / f;
+    return [
+      { cap: "Egy " + hu(f) + " GHz-es processzor másodpercenként " + hu(f) + " milliárd órajelciklust tesz meg. Kérdés: mennyi idő alatt fut le egy program, amely " + N + " utasításból áll, és utasításonként átlagosan " + c + " ciklus kell?", html: '<p class="big">f = ' + hu(f) + " GHz · " + N + " utasítás · " + c + " ciklus/utasítás</p>" },
+      { cap: "Először az összes ciklus: " + N + " · " + c + " = " + N * c + " ciklus.", html: '<p class="big">' + N + " · " + c + " = <span class='cur'>" + N * c + "</span> ciklus</p>" },
+      { cap: "Egy ciklus ideje: 1 : " + hu(f) + " = " + hu(1 / f) + " ns, mert 1 GHz-en egy ciklus pont 1 nanoszekundum.", html: '<p class="big">1 ciklus = 1 : ' + hu(f) + " = <span class='cur'>" + hu(1 / f) + "</span> ns</p>" },
+      { cap: "Az idő: " + N * c + " : " + hu(f) + " = " + hu(ns) + " ns, ami " + hu(ns / 1000) + " mikroszekundum. Egy szempillantás kb. 100 000 mikroszekundum!", html: '<p class="big">' + N * c + " : " + hu(f) + " = <span class='cur'>" + hu(ns) + "</span> ns</p>" }
+    ];
+  }
+  const MET = { sum: "Egy program lépésenként", mul: "Ciklus: szorzás", boot: "Bekapcsolástól az asztalig", clock: "Órajel: mennyi idő?" };
+  const MF = { sum: () => cpuFrames(...PROGS.sum.make(5, 7)), mul: () => cpuFrames(...PROGS.mul.make(4, 3), true), boot: bootFrames, clock: () => clockFrames(2, 3000, 2) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "sum" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const tb = rows => "<div class='ptwrap'><table class='pt'>" + rows.map((r, i) => "<tr>" + r.map(c => i ? "<td style='text-align:left'>" + c + "</td>" : "<th>" + c + "</th>").join("") + "</tr>").join("") + "</table></div>";
+  const slides = [
+    { k: "Alap", t: "Neumann János elvei", h:
+      "<p>A mai számítógépek szinte mind Neumann János 1945-ös elvei szerint működnek:</p>" +
+      "<ul><li><b>Kettes számrendszer</b>: minden adat és utasítás 0 és 1.</li><li><b>Tárolt program</b>: a program és az adat <b>ugyanabban a memóriában</b> van. (A fenti játék-processzorban a 0. cellától a program, a 12. cellától az adat.)</li><li><b>Soros végrehajtás</b>: az utasítások egymás után, egyesével futnak.</li><li><b>Részei</b>: központi egység (processzor), memória, be- és kimeneti egységek.</li><li><b>Univerzális</b>: ugyanaz a gép más programmal más feladatot old meg.</li></ul>" },
+    { k: "A gépház", t: "Mi van a gépházban?", h: tb([["Alkatrész", "Feladata"],
+      ["alaplap", "erre csatlakozik minden; rajta vannak a buszok és az UEFI"], ["processzor (CPU)", "végrehajtja a program utasításait"], ["RAM", "munkamemória: a futó programok és adataik, kikapcsoláskor törlődik"],
+      ["háttértár (SSD, HDD)", "tartósan tárolja a fájlokat és az operációs rendszert"], ["videokártya (GPU)", "kiszámolja a képet, és a monitorra küldi"], ["tápegység", "egyenáramot ad az alkatrészeknek; teljesítménye wattban (W), például 650 W"], ["hűtés", "ventilátor, hűtőborda: a processzor és a GPU hőt termel"]]) },
+    { k: "Processzor", t: "A processzor belseje", h:
+      "<ul><li><b>Vezérlőegység</b> (CU): lehívja és értelmezi az utasításokat, irányítja a többi részt.</li><li><b>Aritmetikai-logikai egység</b> (ALU): számol (+, −) és logikai műveleteket végez (ÉS, VAGY, NEM).</li>" +
+      "<li><b>Regiszterek</b>: a processzoron belüli, nagyon gyors, apró tárolók. Például: <b>PC</b> (utasításszámláló, hol tart a program), <b>IR</b> (utasításregiszter, a mostani utasítás), <b>ACC</b> (akkumulátor, a számolás eredménye).</li><li><b>Gyorsítótár</b> (cache): kicsi, gyors memória a processzor mellett.</li></ul>" +
+      "<div class='note'><b>Hasonlat:</b> a vezérlőegység a szakács, aki olvassa a receptet, az ALU a kés és a tűzhely, a regiszterek a vágódeszka, a RAM a hűtő, a háttértár a kamra.</div>" },
+    { k: "Gépi ciklus", t: "Lehívás, dekódolás, végrehajtás", h:
+      "<ol><li><b>Lehívás</b> (fetch): a vezérlőegység a PC által mutatott cellából behozza az utasítást az IR-be, és a PC-t eggyel növeli.</li><li><b>Dekódolás</b> (decode): megállapítja, mit jelent az utasítás, és mi kell hozzá.</li><li><b>Végrehajtás</b> (execute): az ALU elvégzi a műveletet, az eredmény a regiszterbe vagy a memóriába kerül.</li></ol>" +
+      "<p>Ez ismétlődik milliárdszor másodpercenként. Az ugró utasítás (JMP, JZ) a PC-t írja át: így lesz ciklus és elágazás.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "sum"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "sum"))); playTo(MF.sum(), MET.sum); }); } },
+    { k: "Órajel", t: "GHz, magok, szálak", h:
+      "<p>Az <b>órajel</b> ütemezi a processzort. Mértékegysége a hertz (Hz): ennyi ciklus másodpercenként. <b>3 GHz</b> = 3 milliárd ciklus másodpercenként, egy ciklus kb. 0,33 nanoszekundum.</p>" +
+      "<p class='eq'>1 ciklus ideje (ns) = 1 : f (GHz)</p>" +
+      "<ul><li><b>Mag</b> (core): egy processzorban több teljes végrehajtó egység. 8 mag egyszerre 8 dolgot csinálhat.</li><li>A sebesség nem csak a GHz-en múlik: számít, hány ciklus kell egy utasításhoz, mekkora a gyorsítótár, és hány mag dolgozik.</li></ul>" },
+    { k: "Memóriák", t: "A memóriahierarchia", h: tb([["Szint", "Méret", "Elérési idő"],
+      ["regiszter", "néhány bájt", "kevesebb mint 1 ns"], ["L1 gyorsítótár", "kb. 64 KB / mag", "kb. 1 ns"], ["L2, L3 gyorsítótár", "1–64 MB", "3–15 ns"], ["RAM", "8–64 GB", "kb. 80 ns"], ["SSD", "0,5–4 TB", "kb. 0,1 ms"], ["HDD", "1–20 TB", "kb. 10 ms"]]) +
+      "<p>Fentről lefelé: egyre nagyobb, egyre lassabb, és GB-onként egyre olcsóbb. A gyakran használt adat ezért feljebb kerül.</p>" },
+    { k: "Tárolók", t: "RAM, ROM, háttértárak", h:
+      "<ul><li><b>RAM</b> (írható-olvasható): gyors, de kikapcsoláskor törlődik. Ezért kell menteni!</li><li><b>ROM</b> (csak olvasható, ma flash): megmarad áram nélkül is; az alaplapon ebben van az UEFI.</li></ul>" +
+      tb([["Háttértár", "Hogyan?", "Sebesség (kb.)"], ["HDD", "forgó mágneslemez, olvasófej", "150 MB/s"], ["SATA SSD", "flash memória, nincs mozgó része", "500 MB/s"], ["NVMe SSD", "flash, PCIe-buszon (M.2 foglalat)", "3000–7000 MB/s"]]) },
+    { k: "Csatlakozók", t: "Buszok és csatlakozók", h: tb([["Csatlakozó", "Mire jó?"],
+      ["PCIe", "videokártya, NVMe SSD (M.2): a leggyorsabb bővítés"], ["SATA", "2,5 colos SSD és HDD kábellel"], ["USB", "egér, billentyűzet, pendrive, telefon"], ["HDMI, DisplayPort", "kép (és hang) a monitorra, tévére"], ["RJ45", "hálózati kábel"], ["3,5 mm jack", "fülhallgató, mikrofon"]]) +
+      "<p>A <b>busz</b> az alkatrészek közötti adatút az alaplapon. A <b>perifériák</b> a gépházon kívüli eszközök: bemeneti (billentyűzet, egér, mikrofon), kimeneti (monitor, nyomtató, hangszóró), vagy mindkettő (érintőképernyő, headset).</p>" },
+    { k: "Indulás", t: "BIOS, UEFI, POST, bootolás", h:
+      "<p>Bekapcsoláskor a processzor először az alaplap <b>UEFI</b>-jét (régebben <b>BIOS</b>) futtatja. Ez végzi a <b>POST</b>-ot (Power-On Self-Test, önteszt), aztán megkeresi a rendszerlemezt, és átadja a vezérlést a <b>rendszerbetöltőnek</b>, amely betölti az operációs rendszert.</p>" +
+      "<p>A POST hibát csipogással jelezheti: például ha nincs RAM a gépben, a gép nem indul, csak sípol.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "boot"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "boot"))); playTo(bootFrames(), MET.boot); }); } },
+    { k: "RAID", t: "Több lemez együtt: RAID", h:
+      "<ul><li><b>RAID 0</b> (csíkozás): az adatot felváltva írja a lemezekre. Gyorsabb, és a kapacitás összeadódik, de ha <b>egy</b> lemez elromlik, <b>minden</b> elvész.</li><li><b>RAID 1</b> (tükrözés): ugyanaz az adat mindkét lemezen. Ha az egyik elromlik, a másikon megvan. A kapacitás csak egy lemezé.</li></ul>" +
+      "<p>Különböző méretű lemezeknél a <b>legkisebb</b> számít: RAID 0-ban a legkisebb mérete × a lemezek száma, RAID 1-ben a legkisebb mérete.</p>" +
+      "<div class='mistake'><b>A RAID nem biztonsági mentés!</b> Ha véletlenül törölsz egy fájlt, a RAID 1 azonnal a tükörből is törli.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>RAM és háttértár összekeverése.</b> „16 GB memória” a RAM, „1 TB tárhely” a háttértár.</div>" +
+      "<div class='mistake'><b>Csak a GHz számít.</b> Egy új, 3 GHz-es processzor gyorsabb lehet egy régi 4 GHz-esnél: több mag, nagyobb gyorsítótár, kevesebb ciklus utasításonként.</div>" +
+      "<div class='mistake'><b>A PC növelése.</b> A lehíváskor a PC már eggyel nő, még a végrehajtás előtt. Ugrásnál a végrehajtás írja át.</div>" +
+      "<div class='mistake'><b>Mbit és MB.</b> A háttértár sebességét általában MB/s-ban adják meg, a hálózatét Mbit/s-ban.</div>" +
+      "<div class='mistake'><b>RAID 0 a biztonságért.</b> Pont fordítva: a RAID 0 kockázatosabb, mint egy lemez.</div>" },
+    { k: "Trükkök", t: "Jó, ha tudod", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Gépi ciklus</span><span>lehívás → dekódolás → végrehajtás, újra és újra.</span></div>" +
+      "<div class='trick'><span class='t'>Ciklusidő fejben</span><span>1 GHz → 1 ns · 2 GHz → 0,5 ns · 4 GHz → 0,25 ns · 5 GHz → 0,2 ns</span></div>" +
+      "<div class='trick'><span class='t'>Gyors gép</span><span>SSD a HDD helyett: a legnagyobb érezhető gyorsulás egy régi gépnél.</span></div>" +
+      "<div class='trick'><span class='t'>Az ACC követése</span><span>Programkövetésnél írd fel egy táblázatba a PC és az ACC értékét minden utasítás után.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const ALK = [
+    [["A számítógép „agya”: végrehajtja a program utasításait.", "processzor (CPU)"], ["Ideiglenes munkamemória a futó programoknak, kikapcsoláskor törlődik.", "RAM"], ["Forgó mágneslemezes háttértár: olcsó és nagy, de lassú.", "HDD"], ["Mozgó alkatrész nélküli, gyors háttértár flash memóriával.", "SSD"], ["Nagy nyomtatott áramköri lap, erre csatlakozik minden alkatrész.", "alaplap"], ["A konnektor váltakozó áramából egyenáramot készít az alkatrészeknek.", "tápegység"], ["Kiszámolja a képet, és a monitorra küldi; saját memóriája van.", "videokártya"]],
+    [["A processzor része, amely a számolást és a logikai műveleteket végzi.", "ALU"], ["A processzor része, amely lehívja és értelmezi az utasításokat, és irányítja a többi részt.", "vezérlőegység"], ["A processzoron belüli, nagyon kicsi és nagyon gyors tároló egy-egy értéknek.", "regiszter"], ["Megmutatja, melyik memóriacellában van a következő utasítás.", "utasításszámláló"], ["Kicsi, gyors memória a processzor mellett a gyakran használt adatoknak.", "gyorsítótár"], ["Áram nélkül is megmaradó, csak olvasható memória; az indítóprogram van benne.", "ROM"], ["Ütemezi a processzor működését; a frekvenciáját GHz-ben mérjük.", "órajel"]],
+    [["Az alaplap firmware-je, amely bekapcsoláskor elsőként fut, és elindítja a rendszert (a BIOS utódja).", "UEFI"], ["Bekapcsolás utáni önteszt: megvan-e és működik-e a RAM, a videokártya, a billentyűzet.", "POST"], ["Gyors bővítőcsatlakozó a videokártyának és az NVMe SSD-nek.", "PCIe"], ["Kábeles csatlakozó a 2,5 colos SSD-hez és a HDD-hez.", "SATA"], ["Univerzális soros csatlakozó perifériáknak: egér, pendrive, telefon.", "USB"], ["Digitális kép- és hangkimenet a monitorhoz vagy a tévéhez.", "HDMI"], ["Két lemez, mindkettőn ugyanaz az adat: ha az egyik elromlik, az adat megmarad.", "RAID 1"], ["Több lemez, az adatot felváltva írja rájuk: gyors, de ha egy elromlik, minden elvész.", "RAID 0"], ["Kis program a lemezen, amely az operációs rendszert a RAM-ba tölti.", "rendszerbetöltő"]]
+  ];
+  const PER = [
+    [["billentyűzet", 0], ["egér", 0], ["monitor", 1], ["nyomtató", 1], ["hangszóró", 1], ["mikrofon", 0], ["webkamera", 0]],
+    [["szkenner", 0], ["projektor", 1], ["érintőképernyő", 2], ["játékvezérlő (kontroller)", 0], ["fejhallgató", 1], ["vonalkódolvasó", 0], ["headset (fülhallgató mikrofonnal)", 2]],
+    [["multifunkciós nyomtató (szkenner is)", 2], ["3D-nyomtató", 1], ["rajztábla (digitalizáló tábla)", 0], ["érintőképernyős okostábla", 2], ["VR-szemüveg mozgásérzékelővel", 2], ["webkamera", 0], ["projektor", 1]]
+  ];
+  const PCAT = ["bemeneti", "kimeneti", "be- és kimeneti"];
+  const SPEEDS = [["HDD", 150], ["SATA SSD", 500], ["NVMe SSD", 3000]];
+  const HIER_C = ["regiszter", "gyorsítótár", "RAM", "SSD", "HDD"], HIER_F = ["regiszter", "L1 gyorsítótár", "L2 gyorsítótár", "L3 gyorsítótár", "RAM", "NVMe SSD", "HDD"];
+  const subset = (arr, k) => shuffle(arr.map((x, i) => i)).slice(0, k).sort((a, b) => a - b).map(i => arr[i]);
+  function orderTask(q, good, sol){
+    const bads = []; let guard = 0;
+    while (bads.length < 3 && guard++ < 80){ const c = shuffle(good), key = c.join("|"); if (key !== good.join("|") && !bads.some(b => b.join("|") === key)) bads.push(c); }
+    const opts = shuffle([{ l: good.join(" → "), ok: true }].concat(bads.map(b => ({ l: b.join(" → "), ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good.join(" → "), sol: "<p>" + sol + "</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Gondold végig, mi mire épül." }) };
+  }
+  const progList = prog => "<ol class='prog' start='0'>" + prog.map((ins, i) => "<li><small>" + i + ":</small>" + ins.join(" ") + "</li>").join("") + "</ol>";
+  const dataList = data => Object.keys(data).map(a => "M[" + a + "] = " + data[a]).join(" · ");
+  const types = [
+    { id: "alk", name: "Melyik alkatrész?", gen(l){
+      const pool = ALK[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3);
+      const opts = shuffle([{ l: q[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
+      return { q: "Mire illik ez a leírás? " + q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg a diákat.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + q[1] + "." }) };
+    } },
+    { id: "cpu", name: "Programkövetés", gen(l){
+      let prog, data, ask, title;
+      const ops = () => pick(["ADD", "SUB"]);
+      if (l === 1){
+        const a = rnd(2, 15), b = rnd(1, 9), c = rnd(1, 9), o1 = ops(), o2 = ops();
+        prog = [["LOAD", 12], [o1, 13], [o2, 14], ["HALT"]]; data = { 12: a, 13: b, 14: c }; ask = "acc";
+      } else if (l === 2){
+        const a = rnd(2, 12), b = rnd(1, 9), c = rnd(5, 20), o1 = ops(), o2 = ops();
+        prog = [["LOAD", 12], [o1, 13], ["STORE", 15], ["LOAD", 14], [o2, 15], ["STORE", 14], ["HALT"]]; data = { 12: a, 13: b, 14: c, 15: 0 }; ask = pick(["acc", 15, 14]);
+      } else if (Math.random() < 0.5){
+        const a = rnd(2, 7), b = rnd(2, 5); [prog, data] = PROGS.mul.make(a, b); ask = 14;
+      } else {
+        const s = rnd(1, 3), k = rnd(2, 6); [prog, data] = PROGS.down.make(s * k, s); ask = pick(["SUB", "JMP"]);
+      }
+      const r = cpuRun(prog, data), st = r.st;
+      const ans = ask === "acc" ? st.acc : typeof ask === "number" ? st.mem[ask] : (st.count[ask] || 0);
+      const qq = ask === "acc" ? "Mi lesz az ACC értéke, amikor a program leáll?" : typeof ask === "number" ? "Mi lesz az M[" + ask + "] cella értéke, amikor a program leáll?" : "Hányszor hajtódik végre a " + ask + " utasítás, amíg a program leáll?";
+      return { q: qq + "<div class='row' style='align-items:flex-start;gap:24px'>" + progList(prog) + "<div><b>Adatok:</b><br>" + dataList(data) + "</div></div>", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Kövesd a programot utasításonként: írd fel a PC és az ACC értékét. A végén " + (ask === "acc" ? "ACC = " + st.acc : typeof ask === "number" ? "M[" + ask + "] = " + st.mem[ask] : "a " + ask + " utasítás " + ans + " alkalommal futott le") + ". Összesen " + st.n + " utasítás futott le.</p>",
+        frames: cpuFrames(prog, data, true), title: "Programkövetés",
+        check: numCheck(ans, "Nem jó. Kövesd lépésenként: a STORE csak kiírja az ACC-t, a LOAD felülírja az ACC-t, a JZ csak akkor ugrik, ha ACC = 0.") };
+    } },
+    { id: "clock", name: "Órajel és idő", gen(l){
+      if (l === 1){
+        if (Math.random() < 0.5){ const f = pick([1, 2, 4, 5]), ans = 1 / f;
+          return { q: "Mennyi ideig tart egy órajelciklus egy <span class='num'>" + f + " GHz</span> órajelű processzorban? (nanoszekundumban)", kind: "input", mode: "decimal", answer: hu(ans), sol: "<p>1 GHz-en egy ciklus 1 ns. Egy ciklus ideje: 1 : " + f + " = " + hu(ans) + " ns.</p>", check: numCheck(ans, "Nem jó. Egy ciklus ideje (ns) = 1 : f (GHz).", x => Math.abs(x - f) < 1e-9 ? "Ez a frekvencia. Az idő ennek a fordítottja: 1 : f." : null) }; }
+        const f = pick([1.5, 2, 2.5, 3, 3.2, 3.6, 4, 4.5]), ans = Math.round(f * 1000);
+        return { q: "Hány órajelciklust tesz meg egy <span class='num'>" + hu(f) + " GHz</span> órajelű processzor 1 mikroszekundum alatt? (1 mikroszekundum = 1000 ns)", kind: "input", mode: "numeric", answer: ans, sol: "<p>" + hu(f) + " GHz = " + hu(f) + " ciklus nanoszekundumonként. 1000 ns alatt: " + hu(f) + " · 1000 = " + ans + " ciklus.</p>", check: numCheck(ans, "Nem jó. f GHz = f ciklus nanoszekundumonként; szorozd 1000-rel.") };
+      }
+      if (l === 2){
+        const f = pick([2, 2.5, 3, 3.5, 4]), t = rnd(1, 10), ans = Math.round(f * t * 10) / 10;
+        return { q: "Hány <b>millió</b> órajelciklus telik el egy <span class='num'>" + hu(f) + " GHz</span> órajelű processzorban <span class='num'>" + t + " ms</span> alatt?", kind: "input", mode: "decimal", answer: hu(ans),
+          sol: "<p>" + hu(f) + " GHz = " + hu(f) + " milliárd ciklus másodpercenként = " + hu(f) + " millió ciklus milliszekundumonként. " + t + " ms alatt: " + hu(f) + " · " + t + " = " + hu(ans) + " millió ciklus.</p>",
+          check: numCheck(ans, "Nem jó. 1 ms alatt f millió ciklus telik el (f GHz-ben), ezt szorozd az idővel.") };
+      }
+      const f = pick([1, 2, 4]), c = pick([1, 2, 4]), N = pick([400, 800, 1600, 2000, 4000, 8000]), cores = pick([1, 1, 2, 4]), ans = N * c / f / cores;
+      return { q: "Egy program <span class='num'>" + N + "</span> utasításból áll, utasításonként átlagosan <span class='num'>" + c + "</span> órajelciklus kell. A processzor órajele <span class='num'>" + f + " GHz</span>" + (cores > 1 ? ", és a munka egyenlően oszlik el <span class='num'>" + cores + "</span> mag között" : "") + ". Hány nanoszekundum alatt fut le?",
+        kind: "input", mode: "numeric", answer: ans, frames: cores === 1 ? clockFrames(f, N, c) : null, title: "Órajel: mennyi idő?",
+        sol: "<p>Ciklusok: " + N + " · " + c + " = " + N * c + ". Egy ciklus: 1 : " + f + " = " + hu(1 / f) + " ns. Idő: " + N * c + " : " + f + " = " + hu(N * c / f) + " ns" + (cores > 1 ? ", " + cores + " magon : " + cores + " = " + hu(ans) + " ns" : "") + ".</p>",
+        check: numCheck(ans, "Nem jó. Idő (ns) = utasítások · ciklus/utasítás : f (GHz)" + (cores > 1 ? " : magok száma." : "."), x => cores > 1 && Math.abs(x - N * c / f) < 1e-9 ? "Majdnem: a magok száma még kimaradt." : null) };
+    } },
+    { id: "hier", name: "Memóriahierarchia", gen(l){
+      if (l < 3){
+        const items = subset(HIER_C, l === 1 ? 3 : 4), rev = l === 2 && Math.random() < 0.5;
+        return orderTask("Rendezd " + (rev ? "a <b>leglassabbtól a leggyorsabbig</b>" : "a <b>leggyorsabbtól a leglassabbig</b>") + ":", rev ? items.slice().reverse() : items, "A sorrend a leggyorsabbtól: regiszter → gyorsítótár → RAM → SSD → HDD.");
+      }
+      const items = subset(HIER_F, 4), v = rnd(0, 3);
+      const Q = ["a <b>leggyorsabbtól a leglassabbig</b>", "a <b>leglassabbtól a leggyorsabbig</b>", "a <b>legkisebb kapacitásútól a legnagyobbig</b>", "<b>GB-onként a legolcsóbbtól a legdrágábbig</b>"];
+      const rev = v === 1 || v === 3;
+      return orderTask("Rendezd " + Q[v] + ":", rev ? items.slice().reverse() : items, "A hierarchia: regiszter → L1 → L2 → L3 → RAM → SSD → HDD. Lefelé egyre nagyobb, egyre lassabb, és GB-onként egyre olcsóbb.");
+    } },
+    { id: "copy", name: "Másolási idő", gen(l){
+      if (l === 1){
+        const d = pick(SPEEDS.slice(0, 2)), t = rnd(2, 20), mb = d[1] * t;
+        return { q: "Hány másodperc alatt olvasható be egy <span class='num'>" + mb + " MB</span> méretű fájl egy " + d[0] + " háttértárról, amely <span class='num'>" + d[1] + " MB/s</span> sebességű?", kind: "input", mode: "numeric", answer: t, sol: "<p>Idő = méret : sebesség = " + mb + " : " + d[1] + " = " + t + " másodperc.</p>", check: numCheck(t, "Nem jó. Idő = méret (MB) : sebesség (MB/s).") };
+      }
+      if (l === 2){
+        const d = pick(SPEEDS.slice(1)), g = rnd(2, 40), t = Math.round(g * 1024 / d[1]);
+        return { q: "Hány másodperc alatt másolható egy <span class='num'>" + g + " GB</span> méretű játék egy " + d[0] + " háttértárra, amely <span class='num'>" + d[1] + " MB/s</span> sebességű? Kerekíts egészre. (1 GB = 1024 MB)", kind: "input", mode: "numeric", answer: t,
+          sol: "<p>" + g + " GB = " + g + " · 1024 = " + g * 1024 + " MB. Idő: " + g * 1024 + " : " + d[1] + " ≈ " + t + " másodperc.</p>",
+          check: v => { const s = num(v); if (!/^\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." }; if (Math.round(+s) === t) return { ok: true, msg: "Helyes!" }; if (Math.round(+s) === Math.round(g * 1000 / d[1])) return { ok: false, msg: "Majdnem: 1 GB = 1024 MB, nem 1000." }; return { ok: false, msg: "Nem jó. GB → MB (· 1024), aztán osztás a sebességgel." }; } };
+      }
+      const g = pick([3, 6, 9, 12, 15, 30]), th = g * 1024 / 150, tn = g * 1024 / 3000, ans = Math.round(th - tn);
+      return { q: "Egy <span class='num'>" + g + " GB</span> méretű mappát másolsz. Hány másodperccel gyorsabb ez egy NVMe SSD-n (3000 MB/s), mint egy HDD-n (150 MB/s)? Számold ki mindkét időt, és a különbséget kerekítsd egészre.", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>" + g + " GB = " + g * 1024 + " MB. HDD: " + g * 1024 + " : 150 ≈ " + hu(Math.round(th * 100) / 100) + " s. NVMe: " + g * 1024 + " : 3000 ≈ " + hu(Math.round(tn * 100) / 100) + " s. Különbség: kb. " + ans + " s.</p>",
+        check: v => { const s = num(v); if (!/^\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." }; return Math.abs(+s - ans) <= 1 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Számold ki külön a HDD és az NVMe idejét (MB : MB/s), aztán vond ki őket egymásból." }; } };
+    } },
+    { id: "raid", name: "RAID-kapacitás", gen(l){
+      let disks, unit, lvl;
+      if (l === 1){ const x = pick([1, 2, 4, 8]); disks = [x, x]; unit = "TB"; lvl = pick([0, 1]); }
+      else if (l === 2){ const x = pick([1, 2, 4, 6, 8]); lvl = pick([0, 0, 1]); disks = new Array(lvl ? 2 : rnd(2, 4)).fill(x); unit = "TB"; }
+      else { lvl = pick([0, 1]); disks = lvl ? shuffle([pick([250, 500]), pick([1000, 2000])]) : shuffle([pick([250, 500]), pick([1000, 2000]), pick([500, 1000])]); unit = "GB"; }
+      const mn = Math.min(...disks), ans = lvl ? mn : mn * disks.length;
+      return { q: "Mekkora a hasznos kapacitás <b>RAID " + lvl + "</b> esetén, ha a lemezek: " + disks.map(d => "<span class='num'>" + d + " " + unit + "</span>").join(" + ") + "? (" + unit + "-ban)", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>" + (lvl ? "RAID 1 (tükrözés): a kapacitás a legkisebb lemezé: " + ans + " " + unit + "." : "RAID 0 (csíkozás): a legkisebb lemez mérete × a lemezek száma: " + mn + " · " + disks.length + " = " + ans + " " + unit + ".") + "</p>",
+        check: numCheck(ans, lvl ? "Nem jó. Tükrözésnél mindkét lemezen ugyanaz van, ezért csak a legkisebb lemez mérete használható." : "Nem jó. Csíkozásnál minden lemezből annyi használható, amennyi a legkisebb.", x => Math.abs(x - disks.reduce((a, b) => a + b, 0)) < 1e-9 && (lvl || disks.some(d => d !== mn)) ? "Nem egyszerűen összeadódik: " + (lvl ? "a RAID 1 tükröz." : "a legkisebb lemez számít.") : null) };
+    } },
+    { id: "per", name: "Perifériák", gen(l){
+      const d = pick(PER[l - 1]), opts = PCAT.map((c, i) => ({ l: c, ok: i === d[1] }));
+      return { q: "Milyen periféria ez? <b>" + d[0] + "</b>", kind: "choice", options: opts, answer: PCAT[d[1]], sol: "<p>Bemeneti: adatot visz a gépbe. Kimeneti: a gép ad ki rajta adatot. Ha mindkettő, be- és kimeneti.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Kérdezd meg: a gépbe visz adatot, a gépből hoz ki, vagy mindkettő?" }) };
+    } },
+    { id: "order", name: "Sorrend", gen(l){
+      const BS = BOOT.map(b => b[0]);
+      if (l === 1){
+        if (Math.random() < 0.5) return orderTask("Melyik a gépi ciklus helyes sorrendje?", ["lehívás", "dekódolás", "végrehajtás"], "Először behozza az utasítást (lehívás), aztán értelmezi (dekódolás), végül elvégzi (végrehajtás).");
+        return orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 3), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+      }
+      if (l === 2) return orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 4), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+      const KEY = ["megnyomod a billentyűt", "a billentyűzet USB-n jelet küld", "a processzor feldolgozza", "a videokártya kirajzolja a betűt", "megjelenik a monitoron"];
+      return Math.random() < 0.5 ? orderTask("Leütsz egy betűt. Melyik a helyes sorrend?", KEY, "Bemenet (billentyűzet) → feldolgozás (processzor) → kimenet (videokártya, monitor).")
+        : orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 5), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "szamitogep", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["CPU", "utasítások végrehajtása (CU + ALU + regiszterek)"], ["RAM", "munkamemória, kikapcsoláskor törlődik"], ["ROM / UEFI", "indítóprogram, megmarad"], ["SSD / HDD", "tartós tárolás"], ["GPU", "kép számolása"], ["tápegység", "egyenáram, W"], ["PCIe · SATA · USB · HDMI", "bővítés · lemez · periféria · kép"], ["POST", "önteszt bekapcsoláskor"]];
+  $("#cheat").innerHTML = "<tr><th>Mi?</th><th>Mire jó?</th></tr>" + rows.map(r => "<tr><td style='text-align:left;font-weight:700'>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>

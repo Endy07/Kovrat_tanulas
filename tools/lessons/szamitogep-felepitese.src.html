@@ -1,0 +1,424 @@
+<!--@HEAD-->
+<title>A számítógép felépítése</title>
+<style>
+.cpu{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+.mem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.cell{border:1.5px solid #3A4656;border-radius:8px;padding:3px 5px;font-family:var(--mono);font-size:clamp(.66rem,2.9vw,.82rem);min-height:40px;display:flex;flex-direction:column;overflow-wrap:anywhere;color:var(--panel-ink)}
+.cell small{font-size:.68rem;color:#7E8B9C}
+.cell.ins span{color:#9DC0F5}
+.cell.pc{border-color:#9DC0F5;box-shadow:0 0 0 1px #9DC0F5 inset}
+.cell.hl{border-color:var(--led);background:#4a3a12}
+.cell.hl span{color:#FFB01F;font-weight:700}
+.regs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.reg{border:1.5px solid #3A4656;border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;font-family:var(--mono);color:var(--panel-ink)}
+.reg small{font-size:.7rem;color:#7E8B9C;letter-spacing:.06em}
+.reg b{font-size:1.15rem;overflow-wrap:anywhere}
+.reg.on{border-color:var(--led)}
+.reg.on b{color:#FFB01F}
+.phases{display:flex;gap:6px;flex-wrap:wrap}
+.ph{font-family:var(--mono);font-size:.78rem;border:1.5px solid #3A4656;border-radius:999px;padding:.15em .8em;color:#7E8B9C}
+.ph.on{border-color:var(--led);color:#FFB01F;font-weight:700}
+.cpucap{font-family:var(--body);font-size:1rem;min-height:3em;color:var(--panel-ink)}
+.panel select{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.panel input[type=number]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656;width:5em}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ctl label{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.pb-stage .cpucap{display:none}
+.pb-stage .cpu{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.steps{display:flex;flex-direction:column;gap:6px;font-family:var(--body)}
+.stp{border:1.5px solid #3A4656;border-radius:10px;padding:6px 10px;color:#7E8B9C}
+.stp.done{color:var(--panel-ink)}
+.stp.on{border-color:var(--led);background:#4a3a12;color:#FFB01F;font-weight:700}
+.prog{font-family:var(--mono);margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.prog li{white-space:nowrap}
+.prog small{color:var(--muted);display:inline-block;width:2.2em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · hardver</span>
+  <h1>A számítógép felépítése</h1>
+  <p class="lead">Mi van a gépházban, és hogyan hajtja végre a processzor a programot? Indítsd el a játék-processzort, és kövesd lépésenként: lehívás, dekódolás, végrehajtás.</p>
+  <div class="panel">
+    <span class="eyebrow">Játék-processzor: a program és az adat ugyanabban a memóriában</span>
+    <div class="ctl">
+      <label>Program <select id="c-prog" aria-label="Program"><option value="sum">Összeadás</option><option value="down">Visszaszámlálás</option><option value="mul">Szorzás ciklussal</option></select></label>
+      <label><span id="c-la">1. adat</span><input type="number" id="c-a" min="0" max="20" value="5"></label>
+      <label><span id="c-lb">2. adat</span><input type="number" id="c-b" min="0" max="20" value="7"></label>
+    </div>
+    <div class="cpu" id="c-view"></div>
+    <div class="cpucap" id="c-cap" aria-live="polite"></div>
+    <div class="ctl">
+      <button class="btn" id="c-step">Következő fázis ▶</button>
+      <button class="btn" id="c-run">▶ Futtatás</button>
+      <button class="btn" id="c-reset">↺ Újra</button>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: mi van a gépben?</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="sum" aria-selected="true">Egy program lépésenként</button>
+    <button class="tab" data-m="mul" aria-selected="false">Ciklus: szorzás</button>
+    <button class="tab" data-m="boot" aria-selected="false">Bekapcsolástól az asztalig</button>
+    <button class="tab" data-m="clock" aria-selected="false">Órajel: mennyi idő?</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A tizedes számot vesszővel vagy ponttal is írhatod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A gépi ciklus</span><span>lehívás (PC → utasítás, PC eggyel nő) → dekódolás (mit jelent?) → végrehajtás</span></div>
+    <div class="trick"><span class="t">Játék-utasítások</span><span class="mono">LOAD c · ADD c · SUB c · STORE c · JMP c · JZ c · HALT</span><span>c egy memóriacella címe. JZ: ugrás, ha ACC = 0.</span></div>
+    <div class="trick"><span class="t">Órajel</span><span class="mono">1 GHz = 10<sup>9</sup> ciklus/s · 1 ciklus = 1 : f ns (f GHz-ben)</span></div>
+    <div class="trick"><span class="t">Másolási idő</span><span class="mono">idő (s) = méret (MB) : sebesség (MB/s) · 1 GB = 1024 MB</span></div>
+    <div class="trick"><span class="t">RAID</span><span>RAID 0: összeadódik (a legkisebb lemez × darabszám), gyors, nem biztonságos. RAID 1: tükrözés, a kapacitás egy lemezé.</span></div>
+    <div class="trick"><span class="t">Bootolás</span><span>tápegység → POST → UEFI/BIOS → rendszerbetöltő → operációs rendszer → bejelentkezés</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push(
+    [/M\[(\d+)\]/g, "cella $1"], [/\bACC\b/g, "akkumulátor"], [/\bGHz\b/g, "gigahertz"], [/\bMHz\b/g, "megahertz"],
+    [/\bns\b/g, "nanoszekundum"], [/MB\/s/g, "megabájt per másodperc"], [/\bMB\b/g, "megabájt"], [/\bGB\b/g, "gigabájt"], [/\bTB\b/g, "terabájt"],
+    [/\s:\s/g, " osztva "], [/\s×\s/g, " szorozva "]
+  );
+  const num = s => String(s).replace(/\s+/g, "").replace(",", ".");
+  const hu = x => String(Math.round(x * 1000) / 1000).replace(".", ",");
+  const numCheck = (ans, hint, extra) => v => {
+    const s = num(v);
+    if (!/^-?\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." };
+    if (Math.abs(+s - ans) < 1e-9) return { ok: true, msg: "Helyes!" };
+    const e = extra && extra(+s); if (e) return { ok: false, msg: e };
+    return { ok: false, msg: hint };
+  };
+
+  /* ---------- Játék-processzor ----------
+     16 memóriacella (0–15). A program a 0. cellától, az adat a 12–15. cellában.
+     Utasítás: [op, cím]. Fázisonként lépünk: lehívás, dekódolás, végrehajtás. */
+  const MEANING = {
+    LOAD: c => "az akkumulátorba (ACC) betöltjük az M[" + c + "] értékét",
+    ADD: c => "az ACC értékéhez hozzáadjuk az M[" + c + "] értékét",
+    SUB: c => "az ACC értékéből kivonjuk az M[" + c + "] értékét",
+    STORE: c => "az ACC értékét kiírjuk ide: M[" + c + "]",
+    JMP: c => "ugrás: a következő utasítás innen jön: M[" + c + "]",
+    JZ: c => "ha ACC = 0, ugrás ide: M[" + c + "], különben megyünk tovább",
+    HALT: () => "a program leáll"
+  };
+  function cpuRun(prog, data, limit){
+    const mem = new Array(16).fill(null);
+    prog.forEach((ins, i) => mem[i] = ins);
+    Object.keys(data).forEach(a => mem[a] = data[a]);
+    const st = { pc: 0, ir: null, acc: 0, mem, phase: "", halted: false, count: {}, n: 0 };
+    const steps = [];
+    const snap = (phase, cap, hl, on) => steps.push({ phase, cap, hl: hl || [], on: on || [], pc: st.pc, ir: st.ir, acc: st.acc, mem: st.mem.slice() });
+    snap("", "Kezdés: PC = 0, ACC = 0. A program a 0. cellától kezdődik, az adatok a 12–15. cellában vannak.");
+    while (!st.halted && st.n < (limit || 120)){
+      const at = st.pc, ins = st.mem[at];
+      if (!Array.isArray(ins)){ snap("lehívás", "Hiba: itt nincs utasítás (M[" + at + "]). A processzor megáll.", [at]); st.halted = true; break; }
+      st.ir = ins; st.pc = at + 1; st.n++;
+      st.count[ins[0]] = (st.count[ins[0]] || 0) + 1;
+      snap("lehívás", "Lehívás: az utasítás innen jön: M[" + at + "], vagyis " + ins.join(" ") + ". Az utasításszámláló eggyel nő: PC = " + st.pc + ".", [at], ["PC", "IR"]);
+      snap("dekódolás", "Dekódolás: " + ins.join(" ") + " jelentése: " + MEANING[ins[0]](ins[1]) + ".", ins[1] != null ? [ins[1]] : [], ["IR"]);
+      const op = ins[0], c = ins[1];
+      if (op === "LOAD"){ st.acc = st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = M[" + c + "] = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "ADD"){ const o = st.acc; st.acc = o + st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = " + o + " + " + st.mem[c] + " = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "SUB"){ const o = st.acc; st.acc = o - st.mem[c]; snap("végrehajtás", "Végrehajtás: ACC = " + o + " − " + st.mem[c] + " = " + st.acc + ".", [c], ["ACC"]); }
+      else if (op === "STORE"){ st.mem[c] = st.acc; snap("végrehajtás", "Végrehajtás: M[" + c + "] = " + st.acc + ".", [c], []); }
+      else if (op === "JMP"){ st.pc = c; snap("végrehajtás", "Végrehajtás: ugrás, PC = " + c + ".", [], ["PC"]); }
+      else if (op === "JZ"){ if (st.acc === 0){ st.pc = c; snap("végrehajtás", "Végrehajtás: ACC = 0, ezért ugrunk: PC = " + c + ".", [], ["PC"]); } else snap("végrehajtás", "Végrehajtás: ACC = " + st.acc + ", ez nem 0, ezért nincs ugrás, PC marad " + st.pc + ".", [], []); }
+      else if (op === "HALT"){ st.halted = true; snap("végrehajtás", "Végrehajtás: HALT, a program leáll. Az eredmény: ACC = " + st.acc + ".", [], ["ACC"]); }
+    }
+    if (!st.halted) snap("", "A program " + st.n + " utasítás után sem állt le: végtelen ciklus! A játék-processzort itt leállítottuk.", []);
+    return { steps, st };
+  }
+  const PROGS = {
+    sum: { a: 5, b: 7, la: "1. adat (M[12])", lb: "2. adat (M[13])", make: (a, b) => [[["LOAD", 12], ["ADD", 13], ["STORE", 14], ["HALT"]], { 12: a, 13: b, 14: 0 }] },
+    down: { a: 3, b: 1, la: "Kezdőérték (M[12])", lb: "Lépésköz (M[13])", make: (a, b) => [[["LOAD", 12], ["SUB", 13], ["STORE", 12], ["JZ", 5], ["JMP", 0], ["HALT"]], { 12: a, 13: b }] },
+    mul: { a: 4, b: 3, la: "Szorzandó (M[12])", lb: "Szorzó (M[13])", make: (a, b) => [[["LOAD", 14], ["ADD", 12], ["STORE", 14], ["LOAD", 13], ["SUB", 15], ["STORE", 13], ["JZ", 8], ["JMP", 0], ["HALT"]], { 12: a, 13: b, 14: 0, 15: 1 }] }
+  };
+  const cellTxt = c => c == null ? "—" : Array.isArray(c) ? c.join(" ") : String(c);
+  const PHASES = ["lehívás", "dekódolás", "végrehajtás"];
+  function cpuHtml(s){
+    const mem = '<div class="mem">' + s.mem.map((c, i) => '<div class="cell' + (Array.isArray(c) ? " ins" : "") + (i === s.pc ? " pc" : "") + (s.hl.includes(i) ? " hl" : "") + '"><small>' + i + "</small><span>" + cellTxt(c) + "</span></div>").join("") + "</div>";
+    const reg = (k, v, t) => '<div class="reg' + (s.on.includes(k) ? " on" : "") + '"><small>' + t + "</small><b>" + v + "</b></div>";
+    const regs = '<div style="display:flex;flex-direction:column;gap:10px"><div class="phases">' + PHASES.map(p => '<span class="ph' + (p === s.phase ? " on" : "") + '">' + p + "</span>").join("") + '</div><div class="regs">' +
+      reg("PC", s.pc, "PC · utasításszámláló") + reg("IR", s.ir ? s.ir.join(" ") : "—", "IR · utasításregiszter") + reg("ACC", s.acc, "ACC · akkumulátor") + reg("-", s.phase || "—", "Fázis") + "</div></div>";
+    return '<div class="cpu">' + mem + regs + "</div>";
+  }
+  const cpuFrames = (prog, data, compact) => {
+    const r = cpuRun(prog, data);
+    if (!compact) return r.steps.map(s => ({ cap: s.cap, html: cpuHtml(s) }));
+    // tömör: utasításonként egy kocka (a végrehajtás pillanata, a lehívás felirata elé fűzve)
+    const F = [{ cap: r.steps[0].cap, html: cpuHtml(r.steps[0]) }];
+    for (let i = 1; i < r.steps.length; i++){
+      const s = r.steps[i];
+      if (s.phase === "végrehajtás") F.push({ cap: s.ir.join(" ") + ". " + s.cap, html: cpuHtml(s) });
+      else if (s.phase === "") F.push({ cap: s.cap, html: cpuHtml(s) });
+    }
+    return F;
+  };
+
+  /* ---------- Hero ---------- */
+  const H = { k: 0, steps: [], timer: null };
+  function heroLoad(){
+    const p = PROGS[$("#c-prog").value];
+    const a = Math.max(0, Math.min(20, Math.round(Number($("#c-a").value) || 0))), b = Math.max(0, Math.min(20, Math.round(Number($("#c-b").value) || 0)));
+    const [prog, data] = p.make(a, b);
+    H.steps = cpuRun(prog, data).steps; H.k = 0; heroShow();
+  }
+  function heroShow(){
+    const s = H.steps[H.k];
+    $("#c-view").innerHTML = cpuHtml(s).replace(/^<div class="cpu">|<\/div>$/g, "");
+    $("#c-cap").textContent = s.cap.replace(/<[^>]+>/g, "");
+    $("#c-step").disabled = H.k >= H.steps.length - 1;
+    $("#c-run").textContent = H.timer ? "⏸ Szünet" : "▶ Futtatás";
+  }
+  function heroStop(){ clearInterval(H.timer); H.timer = null; heroShow(); }
+  $("#c-step").addEventListener("click", () => { heroStop(); if (H.k < H.steps.length - 1){ H.k++; heroShow(); } });
+  $("#c-run").addEventListener("click", () => {
+    if (H.timer) return heroStop();
+    if (H.k >= H.steps.length - 1) H.k = 0;
+    H.timer = setInterval(() => { if (H.k >= H.steps.length - 1) return heroStop(); H.k++; heroShow(); }, 900);
+    heroShow();
+  });
+  $("#c-reset").addEventListener("click", () => { heroStop(); heroLoad(); });
+  $("#c-prog").addEventListener("change", () => { const p = PROGS[$("#c-prog").value]; $("#c-a").value = p.a; $("#c-b").value = p.b; $("#c-la").textContent = p.la; $("#c-lb").textContent = p.lb; heroStop(); heroLoad(); });
+  ["#c-a", "#c-b"].forEach(s => $(s).addEventListener("input", () => { heroStop(); heroLoad(); }));
+  $("#c-la").textContent = PROGS.sum.la; $("#c-lb").textContent = PROGS.sum.lb;
+  heroLoad();
+
+  /* ---------- Levezetések ---------- */
+  const BOOT = [
+    ["Bekapcsolás", "Megnyomod a bekapcsológombot. A tápegység a konnektor váltakozó áramából egyenáramot készít, és ellátja az alaplapot."],
+    ["POST", "Az alaplap ROM-jában lévő UEFI (régebben BIOS) elindul, és lefuttatja a POST-ot, vagyis az öntesztet: megvan-e a RAM, a videokártya, a billentyűzet. Ha valami hibás, csipogással jelez."],
+    ["Rendszerlemez keresése", "Az UEFI a beállított sorrendben megkeresi azt a háttértárat, amelyről indulni lehet: például az NVMe SSD-t."],
+    ["Rendszerbetöltő", "Elindul a rendszerbetöltő (bootloader), egy kis program a lemezen. Az ő dolga, hogy az operációs rendszer magját a RAM-ba töltse."],
+    ["Operációs rendszer", "Betölt az operációs rendszer, például a Windows: elindulnak az illesztőprogramok (driverek) és a háttérszolgáltatások."],
+    ["Bejelentkezés", "Megjelenik a bejelentkező képernyő. Innen a programok már a RAM-ban futnak, a processzor hajtja végre az utasításaikat."]
+  ];
+  function bootFrames(){
+    return BOOT.map((b, k) => ({ cap: b[1], html: '<div class="steps">' + BOOT.map((x, i) => '<div class="stp' + (i < k ? " done" : i === k ? " on" : "") + '">' + (i + 1) + ". " + x[0] + "</div>").join("") + "</div>" }));
+  }
+  function clockFrames(f, N, c){
+    const ns = N * c / f;
+    return [
+      { cap: "Egy " + hu(f) + " GHz-es processzor másodpercenként " + hu(f) + " milliárd órajelciklust tesz meg. Kérdés: mennyi idő alatt fut le egy program, amely " + N + " utasításból áll, és utasításonként átlagosan " + c + " ciklus kell?", html: '<p class="big">f = ' + hu(f) + " GHz · " + N + " utasítás · " + c + " ciklus/utasítás</p>" },
+      { cap: "Először az összes ciklus: " + N + " · " + c + " = " + N * c + " ciklus.", html: '<p class="big">' + N + " · " + c + " = <span class='cur'>" + N * c + "</span> ciklus</p>" },
+      { cap: "Egy ciklus ideje: 1 : " + hu(f) + " = " + hu(1 / f) + " ns, mert 1 GHz-en egy ciklus pont 1 nanoszekundum.", html: '<p class="big">1 ciklus = 1 : ' + hu(f) + " = <span class='cur'>" + hu(1 / f) + "</span> ns</p>" },
+      { cap: "Az idő: " + N * c + " : " + hu(f) + " = " + hu(ns) + " ns, ami " + hu(ns / 1000) + " mikroszekundum. Egy szempillantás kb. 100 000 mikroszekundum!", html: '<p class="big">' + N * c + " : " + hu(f) + " = <span class='cur'>" + hu(ns) + "</span> ns</p>" }
+    ];
+  }
+  const MET = { sum: "Egy program lépésenként", mul: "Ciklus: szorzás", boot: "Bekapcsolástól az asztalig", clock: "Órajel: mennyi idő?" };
+  const MF = { sum: () => cpuFrames(...PROGS.sum.make(5, 7)), mul: () => cpuFrames(...PROGS.mul.make(4, 3), true), boot: bootFrames, clock: () => clockFrames(2, 3000, 2) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "sum" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const tb = rows => "<div class='ptwrap'><table class='pt'>" + rows.map((r, i) => "<tr>" + r.map(c => i ? "<td style='text-align:left'>" + c + "</td>" : "<th>" + c + "</th>").join("") + "</tr>").join("") + "</table></div>";
+  const slides = [
+    { k: "Alap", t: "Neumann János elvei", h:
+      "<p>A mai számítógépek szinte mind Neumann János 1945-ös elvei szerint működnek:</p>" +
+      "<ul><li><b>Kettes számrendszer</b>: minden adat és utasítás 0 és 1.</li><li><b>Tárolt program</b>: a program és az adat <b>ugyanabban a memóriában</b> van. (A fenti játék-processzorban a 0. cellától a program, a 12. cellától az adat.)</li><li><b>Soros végrehajtás</b>: az utasítások egymás után, egyesével futnak.</li><li><b>Részei</b>: központi egység (processzor), memória, be- és kimeneti egységek.</li><li><b>Univerzális</b>: ugyanaz a gép más programmal más feladatot old meg.</li></ul>" },
+    { k: "A gépház", t: "Mi van a gépházban?", h: tb([["Alkatrész", "Feladata"],
+      ["alaplap", "erre csatlakozik minden; rajta vannak a buszok és az UEFI"], ["processzor (CPU)", "végrehajtja a program utasításait"], ["RAM", "munkamemória: a futó programok és adataik, kikapcsoláskor törlődik"],
+      ["háttértár (SSD, HDD)", "tartósan tárolja a fájlokat és az operációs rendszert"], ["videokártya (GPU)", "kiszámolja a képet, és a monitorra küldi"], ["tápegység", "egyenáramot ad az alkatrészeknek; teljesítménye wattban (W), például 650 W"], ["hűtés", "ventilátor, hűtőborda: a processzor és a GPU hőt termel"]]) },
+    { k: "Processzor", t: "A processzor belseje", h:
+      "<ul><li><b>Vezérlőegység</b> (CU): lehívja és értelmezi az utasításokat, irányítja a többi részt.</li><li><b>Aritmetikai-logikai egység</b> (ALU): számol (+, −) és logikai műveleteket végez (ÉS, VAGY, NEM).</li>" +
+      "<li><b>Regiszterek</b>: a processzoron belüli, nagyon gyors, apró tárolók. Például: <b>PC</b> (utasításszámláló, hol tart a program), <b>IR</b> (utasításregiszter, a mostani utasítás), <b>ACC</b> (akkumulátor, a számolás eredménye).</li><li><b>Gyorsítótár</b> (cache): kicsi, gyors memória a processzor mellett.</li></ul>" +
+      "<div class='note'><b>Hasonlat:</b> a vezérlőegység a szakács, aki olvassa a receptet, az ALU a kés és a tűzhely, a regiszterek a vágódeszka, a RAM a hűtő, a háttértár a kamra.</div>" },
+    { k: "Gépi ciklus", t: "Lehívás, dekódolás, végrehajtás", h:
+      "<ol><li><b>Lehívás</b> (fetch): a vezérlőegység a PC által mutatott cellából behozza az utasítást az IR-be, és a PC-t eggyel növeli.</li><li><b>Dekódolás</b> (decode): megállapítja, mit jelent az utasítás, és mi kell hozzá.</li><li><b>Végrehajtás</b> (execute): az ALU elvégzi a műveletet, az eredmény a regiszterbe vagy a memóriába kerül.</li></ol>" +
+      "<p>Ez ismétlődik milliárdszor másodpercenként. Az ugró utasítás (JMP, JZ) a PC-t írja át: így lesz ciklus és elágazás.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "sum"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "sum"))); playTo(MF.sum(), MET.sum); }); } },
+    { k: "Órajel", t: "GHz, magok, szálak", h:
+      "<p>Az <b>órajel</b> ütemezi a processzort. Mértékegysége a hertz (Hz): ennyi ciklus másodpercenként. <b>3 GHz</b> = 3 milliárd ciklus másodpercenként, egy ciklus kb. 0,33 nanoszekundum.</p>" +
+      "<p class='eq'>1 ciklus ideje (ns) = 1 : f (GHz)</p>" +
+      "<ul><li><b>Mag</b> (core): egy processzorban több teljes végrehajtó egység. 8 mag egyszerre 8 dolgot csinálhat.</li><li>A sebesség nem csak a GHz-en múlik: számít, hány ciklus kell egy utasításhoz, mekkora a gyorsítótár, és hány mag dolgozik.</li></ul>" },
+    { k: "Memóriák", t: "A memóriahierarchia", h: tb([["Szint", "Méret", "Elérési idő"],
+      ["regiszter", "néhány bájt", "kevesebb mint 1 ns"], ["L1 gyorsítótár", "kb. 64 KB / mag", "kb. 1 ns"], ["L2, L3 gyorsítótár", "1–64 MB", "3–15 ns"], ["RAM", "8–64 GB", "kb. 80 ns"], ["SSD", "0,5–4 TB", "kb. 0,1 ms"], ["HDD", "1–20 TB", "kb. 10 ms"]]) +
+      "<p>Fentről lefelé: egyre nagyobb, egyre lassabb, és GB-onként egyre olcsóbb. A gyakran használt adat ezért feljebb kerül.</p>" },
+    { k: "Tárolók", t: "RAM, ROM, háttértárak", h:
+      "<ul><li><b>RAM</b> (írható-olvasható): gyors, de kikapcsoláskor törlődik. Ezért kell menteni!</li><li><b>ROM</b> (csak olvasható, ma flash): megmarad áram nélkül is; az alaplapon ebben van az UEFI.</li></ul>" +
+      tb([["Háttértár", "Hogyan?", "Sebesség (kb.)"], ["HDD", "forgó mágneslemez, olvasófej", "150 MB/s"], ["SATA SSD", "flash memória, nincs mozgó része", "500 MB/s"], ["NVMe SSD", "flash, PCIe-buszon (M.2 foglalat)", "3000–7000 MB/s"]]) },
+    { k: "Csatlakozók", t: "Buszok és csatlakozók", h: tb([["Csatlakozó", "Mire jó?"],
+      ["PCIe", "videokártya, NVMe SSD (M.2): a leggyorsabb bővítés"], ["SATA", "2,5 colos SSD és HDD kábellel"], ["USB", "egér, billentyűzet, pendrive, telefon"], ["HDMI, DisplayPort", "kép (és hang) a monitorra, tévére"], ["RJ45", "hálózati kábel"], ["3,5 mm jack", "fülhallgató, mikrofon"]]) +
+      "<p>A <b>busz</b> az alkatrészek közötti adatút az alaplapon. A <b>perifériák</b> a gépházon kívüli eszközök: bemeneti (billentyűzet, egér, mikrofon), kimeneti (monitor, nyomtató, hangszóró), vagy mindkettő (érintőképernyő, headset).</p>" },
+    { k: "Indulás", t: "BIOS, UEFI, POST, bootolás", h:
+      "<p>Bekapcsoláskor a processzor először az alaplap <b>UEFI</b>-jét (régebben <b>BIOS</b>) futtatja. Ez végzi a <b>POST</b>-ot (Power-On Self-Test, önteszt), aztán megkeresi a rendszerlemezt, és átadja a vezérlést a <b>rendszerbetöltőnek</b>, amely betölti az operációs rendszert.</p>" +
+      "<p>A POST hibát csipogással jelezheti: például ha nincs RAM a gépben, a gép nem indul, csak sípol.</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "boot"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "boot"))); playTo(bootFrames(), MET.boot); }); } },
+    { k: "RAID", t: "Több lemez együtt: RAID", h:
+      "<ul><li><b>RAID 0</b> (csíkozás): az adatot felváltva írja a lemezekre. Gyorsabb, és a kapacitás összeadódik, de ha <b>egy</b> lemez elromlik, <b>minden</b> elvész.</li><li><b>RAID 1</b> (tükrözés): ugyanaz az adat mindkét lemezen. Ha az egyik elromlik, a másikon megvan. A kapacitás csak egy lemezé.</li></ul>" +
+      "<p>Különböző méretű lemezeknél a <b>legkisebb</b> számít: RAID 0-ban a legkisebb mérete × a lemezek száma, RAID 1-ben a legkisebb mérete.</p>" +
+      "<div class='mistake'><b>A RAID nem biztonsági mentés!</b> Ha véletlenül törölsz egy fájlt, a RAID 1 azonnal a tükörből is törli.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>RAM és háttértár összekeverése.</b> „16 GB memória” a RAM, „1 TB tárhely” a háttértár.</div>" +
+      "<div class='mistake'><b>Csak a GHz számít.</b> Egy új, 3 GHz-es processzor gyorsabb lehet egy régi 4 GHz-esnél: több mag, nagyobb gyorsítótár, kevesebb ciklus utasításonként.</div>" +
+      "<div class='mistake'><b>A PC növelése.</b> A lehíváskor a PC már eggyel nő, még a végrehajtás előtt. Ugrásnál a végrehajtás írja át.</div>" +
+      "<div class='mistake'><b>Mbit és MB.</b> A háttértár sebességét általában MB/s-ban adják meg, a hálózatét Mbit/s-ban.</div>" +
+      "<div class='mistake'><b>RAID 0 a biztonságért.</b> Pont fordítva: a RAID 0 kockázatosabb, mint egy lemez.</div>" },
+    { k: "Trükkök", t: "Jó, ha tudod", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Gépi ciklus</span><span>lehívás → dekódolás → végrehajtás, újra és újra.</span></div>" +
+      "<div class='trick'><span class='t'>Ciklusidő fejben</span><span>1 GHz → 1 ns · 2 GHz → 0,5 ns · 4 GHz → 0,25 ns · 5 GHz → 0,2 ns</span></div>" +
+      "<div class='trick'><span class='t'>Gyors gép</span><span>SSD a HDD helyett: a legnagyobb érezhető gyorsulás egy régi gépnél.</span></div>" +
+      "<div class='trick'><span class='t'>Az ACC követése</span><span>Programkövetésnél írd fel egy táblázatba a PC és az ACC értékét minden utasítás után.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const ALK = [
+    [["A számítógép „agya”: végrehajtja a program utasításait.", "processzor (CPU)"], ["Ideiglenes munkamemória a futó programoknak, kikapcsoláskor törlődik.", "RAM"], ["Forgó mágneslemezes háttértár: olcsó és nagy, de lassú.", "HDD"], ["Mozgó alkatrész nélküli, gyors háttértár flash memóriával.", "SSD"], ["Nagy nyomtatott áramköri lap, erre csatlakozik minden alkatrész.", "alaplap"], ["A konnektor váltakozó áramából egyenáramot készít az alkatrészeknek.", "tápegység"], ["Kiszámolja a képet, és a monitorra küldi; saját memóriája van.", "videokártya"]],
+    [["A processzor része, amely a számolást és a logikai műveleteket végzi.", "ALU"], ["A processzor része, amely lehívja és értelmezi az utasításokat, és irányítja a többi részt.", "vezérlőegység"], ["A processzoron belüli, nagyon kicsi és nagyon gyors tároló egy-egy értéknek.", "regiszter"], ["Megmutatja, melyik memóriacellában van a következő utasítás.", "utasításszámláló"], ["Kicsi, gyors memória a processzor mellett a gyakran használt adatoknak.", "gyorsítótár"], ["Áram nélkül is megmaradó, csak olvasható memória; az indítóprogram van benne.", "ROM"], ["Ütemezi a processzor működését; a frekvenciáját GHz-ben mérjük.", "órajel"]],
+    [["Az alaplap firmware-je, amely bekapcsoláskor elsőként fut, és elindítja a rendszert (a BIOS utódja).", "UEFI"], ["Bekapcsolás utáni önteszt: megvan-e és működik-e a RAM, a videokártya, a billentyűzet.", "POST"], ["Gyors bővítőcsatlakozó a videokártyának és az NVMe SSD-nek.", "PCIe"], ["Kábeles csatlakozó a 2,5 colos SSD-hez és a HDD-hez.", "SATA"], ["Univerzális soros csatlakozó perifériáknak: egér, pendrive, telefon.", "USB"], ["Digitális kép- és hangkimenet a monitorhoz vagy a tévéhez.", "HDMI"], ["Két lemez, mindkettőn ugyanaz az adat: ha az egyik elromlik, az adat megmarad.", "RAID 1"], ["Több lemez, az adatot felváltva írja rájuk: gyors, de ha egy elromlik, minden elvész.", "RAID 0"], ["Kis program a lemezen, amely az operációs rendszert a RAM-ba tölti.", "rendszerbetöltő"]]
+  ];
+  const PER = [
+    [["billentyűzet", 0], ["egér", 0], ["monitor", 1], ["nyomtató", 1], ["hangszóró", 1], ["mikrofon", 0], ["webkamera", 0]],
+    [["szkenner", 0], ["projektor", 1], ["érintőképernyő", 2], ["játékvezérlő (kontroller)", 0], ["fejhallgató", 1], ["vonalkódolvasó", 0], ["headset (fülhallgató mikrofonnal)", 2]],
+    [["multifunkciós nyomtató (szkenner is)", 2], ["3D-nyomtató", 1], ["rajztábla (digitalizáló tábla)", 0], ["érintőképernyős okostábla", 2], ["VR-szemüveg mozgásérzékelővel", 2], ["webkamera", 0], ["projektor", 1]]
+  ];
+  const PCAT = ["bemeneti", "kimeneti", "be- és kimeneti"];
+  const SPEEDS = [["HDD", 150], ["SATA SSD", 500], ["NVMe SSD", 3000]];
+  const HIER_C = ["regiszter", "gyorsítótár", "RAM", "SSD", "HDD"], HIER_F = ["regiszter", "L1 gyorsítótár", "L2 gyorsítótár", "L3 gyorsítótár", "RAM", "NVMe SSD", "HDD"];
+  const subset = (arr, k) => shuffle(arr.map((x, i) => i)).slice(0, k).sort((a, b) => a - b).map(i => arr[i]);
+  function orderTask(q, good, sol){
+    const bads = []; let guard = 0;
+    while (bads.length < 3 && guard++ < 80){ const c = shuffle(good), key = c.join("|"); if (key !== good.join("|") && !bads.some(b => b.join("|") === key)) bads.push(c); }
+    const opts = shuffle([{ l: good.join(" → "), ok: true }].concat(bads.map(b => ({ l: b.join(" → "), ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good.join(" → "), sol: "<p>" + sol + "</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Gondold végig, mi mire épül." }) };
+  }
+  const progList = prog => "<ol class='prog' start='0'>" + prog.map((ins, i) => "<li><small>" + i + ":</small>" + ins.join(" ") + "</li>").join("") + "</ol>";
+  const dataList = data => Object.keys(data).map(a => "M[" + a + "] = " + data[a]).join(" · ");
+  const types = [
+    { id: "alk", name: "Melyik alkatrész?", gen(l){
+      const pool = ALK[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3);
+      const opts = shuffle([{ l: q[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
+      return { q: "Mire illik ez a leírás? " + q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg a diákat.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + q[1] + "." }) };
+    } },
+    { id: "cpu", name: "Programkövetés", gen(l){
+      let prog, data, ask, title;
+      const ops = () => pick(["ADD", "SUB"]);
+      if (l === 1){
+        const a = rnd(2, 15), b = rnd(1, 9), c = rnd(1, 9), o1 = ops(), o2 = ops();
+        prog = [["LOAD", 12], [o1, 13], [o2, 14], ["HALT"]]; data = { 12: a, 13: b, 14: c }; ask = "acc";
+      } else if (l === 2){
+        const a = rnd(2, 12), b = rnd(1, 9), c = rnd(5, 20), o1 = ops(), o2 = ops();
+        prog = [["LOAD", 12], [o1, 13], ["STORE", 15], ["LOAD", 14], [o2, 15], ["STORE", 14], ["HALT"]]; data = { 12: a, 13: b, 14: c, 15: 0 }; ask = pick(["acc", 15, 14]);
+      } else if (Math.random() < 0.5){
+        const a = rnd(2, 7), b = rnd(2, 5); [prog, data] = PROGS.mul.make(a, b); ask = 14;
+      } else {
+        const s = rnd(1, 3), k = rnd(2, 6); [prog, data] = PROGS.down.make(s * k, s); ask = pick(["SUB", "JMP"]);
+      }
+      const r = cpuRun(prog, data), st = r.st;
+      const ans = ask === "acc" ? st.acc : typeof ask === "number" ? st.mem[ask] : (st.count[ask] || 0);
+      const qq = ask === "acc" ? "Mi lesz az ACC értéke, amikor a program leáll?" : typeof ask === "number" ? "Mi lesz az M[" + ask + "] cella értéke, amikor a program leáll?" : "Hányszor hajtódik végre a " + ask + " utasítás, amíg a program leáll?";
+      return { q: qq + "<div class='row' style='align-items:flex-start;gap:24px'>" + progList(prog) + "<div><b>Adatok:</b><br>" + dataList(data) + "</div></div>", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Kövesd a programot utasításonként: írd fel a PC és az ACC értékét. A végén " + (ask === "acc" ? "ACC = " + st.acc : typeof ask === "number" ? "M[" + ask + "] = " + st.mem[ask] : "a " + ask + " utasítás " + ans + " alkalommal futott le") + ". Összesen " + st.n + " utasítás futott le.</p>",
+        frames: cpuFrames(prog, data, true), title: "Programkövetés",
+        check: numCheck(ans, "Nem jó. Kövesd lépésenként: a STORE csak kiírja az ACC-t, a LOAD felülírja az ACC-t, a JZ csak akkor ugrik, ha ACC = 0.") };
+    } },
+    { id: "clock", name: "Órajel és idő", gen(l){
+      if (l === 1){
+        if (Math.random() < 0.5){ const f = pick([1, 2, 4, 5]), ans = 1 / f;
+          return { q: "Mennyi ideig tart egy órajelciklus egy <span class='num'>" + f + " GHz</span> órajelű processzorban? (nanoszekundumban)", kind: "input", mode: "decimal", answer: hu(ans), sol: "<p>1 GHz-en egy ciklus 1 ns. Egy ciklus ideje: 1 : " + f + " = " + hu(ans) + " ns.</p>", check: numCheck(ans, "Nem jó. Egy ciklus ideje (ns) = 1 : f (GHz).", x => Math.abs(x - f) < 1e-9 ? "Ez a frekvencia. Az idő ennek a fordítottja: 1 : f." : null) }; }
+        const f = pick([1.5, 2, 2.5, 3, 3.2, 3.6, 4, 4.5]), ans = Math.round(f * 1000);
+        return { q: "Hány órajelciklust tesz meg egy <span class='num'>" + hu(f) + " GHz</span> órajelű processzor 1 mikroszekundum alatt? (1 mikroszekundum = 1000 ns)", kind: "input", mode: "numeric", answer: ans, sol: "<p>" + hu(f) + " GHz = " + hu(f) + " ciklus nanoszekundumonként. 1000 ns alatt: " + hu(f) + " · 1000 = " + ans + " ciklus.</p>", check: numCheck(ans, "Nem jó. f GHz = f ciklus nanoszekundumonként; szorozd 1000-rel.") };
+      }
+      if (l === 2){
+        const f = pick([2, 2.5, 3, 3.5, 4]), t = rnd(1, 10), ans = Math.round(f * t * 10) / 10;
+        return { q: "Hány <b>millió</b> órajelciklus telik el egy <span class='num'>" + hu(f) + " GHz</span> órajelű processzorban <span class='num'>" + t + " ms</span> alatt?", kind: "input", mode: "decimal", answer: hu(ans),
+          sol: "<p>" + hu(f) + " GHz = " + hu(f) + " milliárd ciklus másodpercenként = " + hu(f) + " millió ciklus milliszekundumonként. " + t + " ms alatt: " + hu(f) + " · " + t + " = " + hu(ans) + " millió ciklus.</p>",
+          check: numCheck(ans, "Nem jó. 1 ms alatt f millió ciklus telik el (f GHz-ben), ezt szorozd az idővel.") };
+      }
+      const f = pick([1, 2, 4]), c = pick([1, 2, 4]), N = pick([400, 800, 1600, 2000, 4000, 8000]), cores = pick([1, 1, 2, 4]), ans = N * c / f / cores;
+      return { q: "Egy program <span class='num'>" + N + "</span> utasításból áll, utasításonként átlagosan <span class='num'>" + c + "</span> órajelciklus kell. A processzor órajele <span class='num'>" + f + " GHz</span>" + (cores > 1 ? ", és a munka egyenlően oszlik el <span class='num'>" + cores + "</span> mag között" : "") + ". Hány nanoszekundum alatt fut le?",
+        kind: "input", mode: "numeric", answer: ans, frames: cores === 1 ? clockFrames(f, N, c) : null, title: "Órajel: mennyi idő?",
+        sol: "<p>Ciklusok: " + N + " · " + c + " = " + N * c + ". Egy ciklus: 1 : " + f + " = " + hu(1 / f) + " ns. Idő: " + N * c + " : " + f + " = " + hu(N * c / f) + " ns" + (cores > 1 ? ", " + cores + " magon : " + cores + " = " + hu(ans) + " ns" : "") + ".</p>",
+        check: numCheck(ans, "Nem jó. Idő (ns) = utasítások · ciklus/utasítás : f (GHz)" + (cores > 1 ? " : magok száma." : "."), x => cores > 1 && Math.abs(x - N * c / f) < 1e-9 ? "Majdnem: a magok száma még kimaradt." : null) };
+    } },
+    { id: "hier", name: "Memóriahierarchia", gen(l){
+      if (l < 3){
+        const items = subset(HIER_C, l === 1 ? 3 : 4), rev = l === 2 && Math.random() < 0.5;
+        return orderTask("Rendezd " + (rev ? "a <b>leglassabbtól a leggyorsabbig</b>" : "a <b>leggyorsabbtól a leglassabbig</b>") + ":", rev ? items.slice().reverse() : items, "A sorrend a leggyorsabbtól: regiszter → gyorsítótár → RAM → SSD → HDD.");
+      }
+      const items = subset(HIER_F, 4), v = rnd(0, 3);
+      const Q = ["a <b>leggyorsabbtól a leglassabbig</b>", "a <b>leglassabbtól a leggyorsabbig</b>", "a <b>legkisebb kapacitásútól a legnagyobbig</b>", "<b>GB-onként a legolcsóbbtól a legdrágábbig</b>"];
+      const rev = v === 1 || v === 3;
+      return orderTask("Rendezd " + Q[v] + ":", rev ? items.slice().reverse() : items, "A hierarchia: regiszter → L1 → L2 → L3 → RAM → SSD → HDD. Lefelé egyre nagyobb, egyre lassabb, és GB-onként egyre olcsóbb.");
+    } },
+    { id: "copy", name: "Másolási idő", gen(l){
+      if (l === 1){
+        const d = pick(SPEEDS.slice(0, 2)), t = rnd(2, 20), mb = d[1] * t;
+        return { q: "Hány másodperc alatt olvasható be egy <span class='num'>" + mb + " MB</span> méretű fájl egy " + d[0] + " háttértárról, amely <span class='num'>" + d[1] + " MB/s</span> sebességű?", kind: "input", mode: "numeric", answer: t, sol: "<p>Idő = méret : sebesség = " + mb + " : " + d[1] + " = " + t + " másodperc.</p>", check: numCheck(t, "Nem jó. Idő = méret (MB) : sebesség (MB/s).") };
+      }
+      if (l === 2){
+        const d = pick(SPEEDS.slice(1)), g = rnd(2, 40), t = Math.round(g * 1024 / d[1]);
+        return { q: "Hány másodperc alatt másolható egy <span class='num'>" + g + " GB</span> méretű játék egy " + d[0] + " háttértárra, amely <span class='num'>" + d[1] + " MB/s</span> sebességű? Kerekíts egészre. (1 GB = 1024 MB)", kind: "input", mode: "numeric", answer: t,
+          sol: "<p>" + g + " GB = " + g + " · 1024 = " + g * 1024 + " MB. Idő: " + g * 1024 + " : " + d[1] + " ≈ " + t + " másodperc.</p>",
+          check: v => { const s = num(v); if (!/^\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." }; if (Math.round(+s) === t) return { ok: true, msg: "Helyes!" }; if (Math.round(+s) === Math.round(g * 1000 / d[1])) return { ok: false, msg: "Majdnem: 1 GB = 1024 MB, nem 1000." }; return { ok: false, msg: "Nem jó. GB → MB (· 1024), aztán osztás a sebességgel." }; } };
+      }
+      const g = pick([3, 6, 9, 12, 15, 30]), th = g * 1024 / 150, tn = g * 1024 / 3000, ans = Math.round(th - tn);
+      return { q: "Egy <span class='num'>" + g + " GB</span> méretű mappát másolsz. Hány másodperccel gyorsabb ez egy NVMe SSD-n (3000 MB/s), mint egy HDD-n (150 MB/s)? Számold ki mindkét időt, és a különbséget kerekítsd egészre.", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>" + g + " GB = " + g * 1024 + " MB. HDD: " + g * 1024 + " : 150 ≈ " + hu(Math.round(th * 100) / 100) + " s. NVMe: " + g * 1024 + " : 3000 ≈ " + hu(Math.round(tn * 100) / 100) + " s. Különbség: kb. " + ans + " s.</p>",
+        check: v => { const s = num(v); if (!/^\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." }; return Math.abs(+s - ans) <= 1 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Számold ki külön a HDD és az NVMe idejét (MB : MB/s), aztán vond ki őket egymásból." }; } };
+    } },
+    { id: "raid", name: "RAID-kapacitás", gen(l){
+      let disks, unit, lvl;
+      if (l === 1){ const x = pick([1, 2, 4, 8]); disks = [x, x]; unit = "TB"; lvl = pick([0, 1]); }
+      else if (l === 2){ const x = pick([1, 2, 4, 6, 8]); lvl = pick([0, 0, 1]); disks = new Array(lvl ? 2 : rnd(2, 4)).fill(x); unit = "TB"; }
+      else { lvl = pick([0, 1]); disks = lvl ? shuffle([pick([250, 500]), pick([1000, 2000])]) : shuffle([pick([250, 500]), pick([1000, 2000]), pick([500, 1000])]); unit = "GB"; }
+      const mn = Math.min(...disks), ans = lvl ? mn : mn * disks.length;
+      return { q: "Mekkora a hasznos kapacitás <b>RAID " + lvl + "</b> esetén, ha a lemezek: " + disks.map(d => "<span class='num'>" + d + " " + unit + "</span>").join(" + ") + "? (" + unit + "-ban)", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>" + (lvl ? "RAID 1 (tükrözés): a kapacitás a legkisebb lemezé: " + ans + " " + unit + "." : "RAID 0 (csíkozás): a legkisebb lemez mérete × a lemezek száma: " + mn + " · " + disks.length + " = " + ans + " " + unit + ".") + "</p>",
+        check: numCheck(ans, lvl ? "Nem jó. Tükrözésnél mindkét lemezen ugyanaz van, ezért csak a legkisebb lemez mérete használható." : "Nem jó. Csíkozásnál minden lemezből annyi használható, amennyi a legkisebb.", x => Math.abs(x - disks.reduce((a, b) => a + b, 0)) < 1e-9 && (lvl || disks.some(d => d !== mn)) ? "Nem egyszerűen összeadódik: " + (lvl ? "a RAID 1 tükröz." : "a legkisebb lemez számít.") : null) };
+    } },
+    { id: "per", name: "Perifériák", gen(l){
+      const d = pick(PER[l - 1]), opts = PCAT.map((c, i) => ({ l: c, ok: i === d[1] }));
+      return { q: "Milyen periféria ez? <b>" + d[0] + "</b>", kind: "choice", options: opts, answer: PCAT[d[1]], sol: "<p>Bemeneti: adatot visz a gépbe. Kimeneti: a gép ad ki rajta adatot. Ha mindkettő, be- és kimeneti.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Kérdezd meg: a gépbe visz adatot, a gépből hoz ki, vagy mindkettő?" }) };
+    } },
+    { id: "order", name: "Sorrend", gen(l){
+      const BS = BOOT.map(b => b[0]);
+      if (l === 1){
+        if (Math.random() < 0.5) return orderTask("Melyik a gépi ciklus helyes sorrendje?", ["lehívás", "dekódolás", "végrehajtás"], "Először behozza az utasítást (lehívás), aztán értelmezi (dekódolás), végül elvégzi (végrehajtás).");
+        return orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 3), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+      }
+      if (l === 2) return orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 4), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+      const KEY = ["megnyomod a billentyűt", "a billentyűzet USB-n jelet küld", "a processzor feldolgozza", "a videokártya kirajzolja a betűt", "megjelenik a monitoron"];
+      return Math.random() < 0.5 ? orderTask("Leütsz egy betűt. Melyik a helyes sorrend?", KEY, "Bemenet (billentyűzet) → feldolgozás (processzor) → kimenet (videokártya, monitor).")
+        : orderTask("Mi történik bekapcsoláskor? Melyik a helyes sorrend?", subset(BS, 5), "Bekapcsolás → POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "szamitogep", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["CPU", "utasítások végrehajtása (CU + ALU + regiszterek)"], ["RAM", "munkamemória, kikapcsoláskor törlődik"], ["ROM / UEFI", "indítóprogram, megmarad"], ["SSD / HDD", "tartós tárolás"], ["GPU", "kép számolása"], ["tápegység", "egyenáram, W"], ["PCIe · SATA · USB · HDMI", "bővítés · lemez · periféria · kép"], ["POST", "önteszt bekapcsoláskor"]];
+  $("#cheat").innerHTML = "<tr><th>Mi?</th><th>Mire jó?</th></tr>" + rows.map(r => "<tr><td style='text-align:left;font-weight:700'>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
