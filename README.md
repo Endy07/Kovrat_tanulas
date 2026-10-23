@@ -28,6 +28,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Hármas, ötös, hatos, hetes számrendszer](szamrendszerek.html) | Kovrat füzetének példái (876 → ötös, hármas, hetes) kockás lapon lépésenként, befejezve, választható alapszám (3/5/6/7), számláló átvitellel, 11 dia, az iskolai módszer (helyiérték-táblázat + kivonás + próba) és az osztogatás, felolvasott levezetések, 6 típusú gyakorlás 3 szinten (vegyes számrendszerekkel is), próbadolgozat érdemjeggyel, puska |
 | [Tizenhatos számrendszer](tizenhatos-szamrendszer.html) | Négy lámpa egy jegy, átváltás tízes, kettes és tizenhatos között, színkódok |
 | [Logikai műveletek](logikai-muveletek.html) | NEM, ÉS, VAGY, KIZÁRÓ VAGY, igazságtábla, bitenkénti műveletek, Python-feltételek |
+| [Digitális áramkörök: kapuktól az összeadóig](digitalis-aramkorok.html) | Kapuk rajzjele, NAND, NOR, kapcsolás kiértékelése, fél- és teljes összeadó, 4 bites összeadó túlcsordulással, multiplexer, SR-tároló; kattintható áramkör-szimulátor |
 | [Szöveg és kép kódolása](szoveg-es-kep.html) | ASCII, Unicode, UTF-8, pixelek, színmélység, képméret, tömörítés (RLE), Caesar- és Vigenère-kód |
 | [Hang és videó digitalizálása](hang-es-video.html) | Mintavételezés, kvantálás, bitmélység, mono és sztereó, hangfájl és videó mérete, bitráta, tömörítés, kodek, streaming, Nyquist-elv; mintavételező csúszkákkal |
 | [A számítógép felépítése](szamitogep-felepitese.html) | Neumann-elvek, CPU (vezérlőegység, ALU, regiszterek), gépi ciklus, órajel, memóriahierarchia, háttértárak, csatlakozók, UEFI, bootolás, RAID, perifériák; lépésenként futó játék-processzor |
@@ -47,13 +48,13 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
-## Hol tartunk (2026. 10. 22.)
+## Hol tartunk (2026. 10. 23.)
 
-- Kész: az **éves tanrend** (`docs/tanrend-9.md`, `tanrend.html`) az országos programtanterv alapján. Biztos: tantárgyak, óraszámok, témák. Becslés: a hónapokra bontás (az iskola tanmenete nem nyilvános).
-- Kész: 10 lecke (a két számrendszeres és a nyolc új), mind felolvasós levezetéssel, 3 szintű feladatokkal és próbadolgozattal.
-- Kész: automatikus frissítés (`version.json` + pre-commit hook; új klónnál `git config core.hooksPath .githooks`).
-- A **programtanterv szerint a 9.-ben nincs Python**: játékos kódolás, HTML, CSS, Git, reszponzív oldal, JavaScript-bevezető. A Python a 10. évfolyamon jön.
-- Következő: JavaScript-bevezető, hálózatok. Kovrat válaszai alapján igazítjuk a tanrendet (mit használnak programozásórán, mi a tanár sorrendje).
+- Kész: az **éves tanrend** (`docs/tanrend-9.md`, `tanrend.html`) az országos programtanterv alapján, és a **10. évfolyam vázlata** (`docs/tanrend-10.md`). Biztos: tantárgyak, óraszámok, témák. Becslés: a hónapokra bontás (az iskola tanmenete nem nyilvános).
+- Kész: a fenti leckék, mind felolvasós levezetéssel, 3 szintű, véletlen generált feladatokkal és próbadolgozattal. A 9.-es tanrend összes programozási és informatikai témája le van fedve (a tantermi gyakorlatok kivételével), mellette 8–9.-es matek, fejtörők, projektmunka, táblázatkezelés, informatikai angol és 10.-es előzetesek. A sorrend és az indok: `docs/leckek-terv.md`.
+- Kész: automatikus frissítés (`version.json` + pre-commit hook; új klónnál `git config core.hooksPath .githooks`), gépi leckeellenőrző (`node tools/lessons/lesson-test.js <név>`).
+- A **programtanterv szerint a 9.-ben nincs Python**: játékos kódolás, HTML, CSS, Git, reszponzív oldal, JavaScript-bevezető. A Python a 10. évfolyamon jön (addig: Python-előzetes, kódolvasás).
+- Következő: Kovrat válaszai alapján igazítjuk a tanrendet (mit használnak programozásórán, mi a tanár sorrendje, van-e táblázatkezelés). A 10.-re Python-leckék futtatóval.
 
 ## Dokumentáció
 
@@ -62,6 +63,8 @@ Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: bön
 | [`CLAUDE.md`](CLAUDE.md) | Munkadokumentum: mit, hogyan és miért csináltunk |
 | [`docs/LECKE-RECEPT.md`](docs/LECKE-RECEPT.md) | Lépésenkénti recept új leckéhez, minden eddigi buktatóval |
 | [`docs/tanrend-9.md`](docs/tanrend-9.md) | Az éves tanrend forrásokkal (biztos / feltételezés) |
+| [`docs/tanrend-10.md`](docs/tanrend-10.md) | A 10. évfolyam vázlata (lecke nélkül) |
+| [`docs/leckek-terv.md`](docs/leckek-terv.md) | A leckék sorrendje és indoka |
 | [`PROJEKT-KONTEXTUS.md`](PROJEKT-KONTEXTUS.md), [`PROJEKT-RESZLETES.md`](PROJEKT-RESZLETES.md) | A Könyvjelzők-elemzőnek (projekt-besorolás) |
 
 ## Új lecke hozzáadása

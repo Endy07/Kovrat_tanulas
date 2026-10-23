@@ -1,0 +1,398 @@
+<!--@HEAD-->
+<title>Digitális áramkörök</title>
+<style>
+.circ{width:100%;max-width:520px;height:auto;display:block}
+.circ .w0{stroke:#4A5666;stroke-width:3;fill:none}
+.circ .w1{stroke:#FFB01F;stroke-width:3.5;fill:none}
+.circ .jn0{fill:#4A5666}.circ .jn1{fill:#FFB01F}
+.circ .gate{fill:#27313E;stroke:#72A6F2;stroke-width:2}
+.circ .gt{fill:#DCE3EC;font-family:var(--mono);font-size:15px;font-weight:700;text-anchor:middle}
+.circ .gs{fill:#8C99AA;font-family:var(--body);font-size:9px;text-anchor:middle}
+.circ .lbl{fill:#DCE3EC;font-family:var(--mono);font-size:12px;font-weight:700}
+.circ .sml{fill:#8C99AA;font-family:var(--mono);font-size:10px}
+.circ .swb{cursor:pointer}
+.circ .swb rect{fill:#27313E;stroke:#3A4656;stroke-width:2}
+.circ .swb.on rect{fill:#FFB01F;stroke:#FFB01F}
+.circ .swb text{fill:#DCE3EC;font-family:var(--mono);font-size:12px;font-weight:700;text-anchor:middle;pointer-events:none}
+.circ .swb.on text{fill:#2A1A00}
+.circ .swb:focus-visible rect{stroke:#72A6F2;stroke-width:3}
+.circ .led0{fill:#27313E;stroke:#3A4656;stroke-width:2}
+.circ .led1{fill:#FFB01F;stroke:#FFB01F;stroke-width:2;filter:drop-shadow(0 0 6px rgba(255,176,31,.8))}
+.prompt .circ .gate,.slide .circ .gate{fill:var(--surface-2);stroke:var(--accent)}
+.prompt .circ .gt,.slide .circ .gt,.prompt .circ .lbl,.slide .circ .lbl{fill:var(--ink)}
+.prompt .circ .w0,.slide .circ .w0{stroke:var(--muted)}
+.prompt .circ .led0,.slide .circ .led0{fill:var(--surface);stroke:var(--muted)}
+.dec{font-family:var(--mono);font-size:1.05rem}
+.dec b{color:#FFB01F}
+.bitcol{font-family:var(--mono)}
+.slide .eq{white-space:normal}
+.pb-stage .pt td{min-width:1.8em}
+.code,.prompt,.opt{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · digitális technika</span>
+  <h1>Digitális áramkörök: kapuktól az összeadóig</h1>
+  <p class="lead">A logikai kapuk nem csak papíron léteznek: tranzisztorokból épülnek, és összekötve számolni tudnak. Kattints a kapcsolókra (sárga = 1), és nézd, merre folyik az 1-es jel.</p>
+  <div class="panel">
+    <span class="eyebrow">Áramkör-szimulátor: kattints a kapcsolókra</span>
+    <div class="tabs" id="hm">
+      <button class="tab" data-m="half" aria-selected="true">Félösszeadó</button>
+      <button class="tab" data-m="full" aria-selected="false">Teljes összeadó</button>
+      <button class="tab" data-m="four" aria-selected="false">4 bites összeadó</button>
+    </div>
+    <div id="hsvg"></div>
+    <div class="dec" id="hdec" aria-live="polite"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="half" aria-selected="true">Félösszeadó</button>
+    <button class="tab" data-m="full" aria-selected="false">Teljes összeadó</button>
+    <button class="tab" data-m="four" aria-selected="false">4 bites összeadás</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A kimenet 0 vagy 1. Az összeadó két kimenetét így írd: összeg, átvitel (például 1, 0). A biteket szóköz nélkül (például 0110). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Félösszeadó</span><span class="mono">összeg = A KIZÁRÓ VAGY B · átvitel = A ÉS B</span></div>
+    <div class="trick"><span class="t">Teljes összeadó</span><span>Összeg: 1, ha páratlan sok bemenet 1. Átvitel: 1, ha legalább két bemenet 1.</span></div>
+    <div class="trick"><span class="t">NAND-ból minden</span><span class="mono">NEM A = A NAND A · A ÉS B = NEM(A NAND B) · A VAGY B = (NEM A) NAND (NEM B)</span></div>
+    <div class="trick"><span class="t">Igazságtábla</span><span>n bemenet: 2<sup>n</sup> sor. 2 bemenet: 4 sor, 3 bemenet: 8 sor.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/\b([01]{3,})\b/g, m => m.split("").join(" ")], [/≥1/g, "nagyobb vagy egyenlő egy"], [/=1/g, "egyenlő egy"]);
+
+  /* ---------- Logika ---------- */
+  const OP = { "ÉS": (a, b) => a & b, "VAGY": (a, b) => a | b, "KIZÁRÓ VAGY": (a, b) => a ^ b, "NAND": (a, b) => 1 - (a & b), "NOR": (a, b) => 1 - (a | b) };
+  const SYM = { "ÉS": "&", "VAGY": "≥1", "KIZÁRÓ VAGY": "=1", "NAND": "&", "NOR": "≥1", "NEM": "1" };
+  const NEG = { "NAND": 1, "NOR": 1, "NEM": 1 };
+  const SHORT = { "ÉS": "ÉS", "VAGY": "VAGY", "KIZÁRÓ VAGY": "XOR", "NAND": "NAND", "NOR": "NOR", "NEM": "NEM" };
+  const evalT = (t, e) => t.v ? e[t.v] : t.op === "NEM" ? 1 - evalT(t.a, e) : OP[t.op](evalT(t.a, e), evalT(t.b, e));
+  const strT = (t, top) => { if (t.v) return t.v; if (t.op === "NEM") return t.a.v ? "NEM " + t.a.v : "NEM(" + strT(t.a, true) + ")"; const s = strT(t.a) + " " + t.op + " " + strT(t.b); return top ? s : "(" + s + ")"; };
+  const varsOf = t => t.v ? [t.v] : t.op === "NEM" ? varsOf(t.a) : varsOf(t.a).concat(varsOf(t.b));
+  const ttKey = (t, vs) => { let k = ""; for (let m = 0; m < 1 << vs.length; m++){ const e = {}; vs.forEach((v, i) => e[v] = (m >> i) & 1); k += evalT(t, e); } return k; };
+  function genTree(d, vars, ops, pNot){
+    if (d <= 0) return { v: pick(vars) };
+    if (Math.random() < pNot) return { op: "NEM", a: genTree(d - 1, vars, ops, 0) };
+    return { op: pick(ops), a: genTree(d - 1 - (Math.random() < 0.4 ? 1 : 0), vars, ops, pNot), b: genTree(d - 1 - (Math.random() < 0.4 ? 1 : 0), vars, ops, pNot) };
+  }
+  const hasBin = t => !t.v && (t.op !== "NEM" || hasBin(t.a)) && (t.op === "NEM" ? hasBin(t.a) : true);
+  const subs = t => t.v ? [] : t.op === "NEM" ? subs(t.a).concat([t]) : subs(t.a).concat(subs(t.b), [t]);
+
+  /* ---------- Rajzolás (SVG) ---------- */
+  const W = v => v ? "w1" : "w0";
+  const line = (pts, v) => '<polyline class="' + W(v) + '" points="' + pts.map(p => p.join(",")).join(" ") + '"/>';
+  const dot = (x, y, v) => '<circle class="jn' + (v ? 1 : 0) + '" cx="' + x + '" cy="' + y + '" r="3.5"/>';
+  const led = (x, y, v, lab) => '<circle class="led' + (v ? 1 : 0) + '" cx="' + x + '" cy="' + y + '" r="11"/>' + (lab ? '<text class="sml" x="' + x + '" y="' + (y + 25) + '" text-anchor="middle">' + lab + "</text>" : "");
+  const gate = (x, y, w, h, op) => '<rect class="gate" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="4"/><text class="gt" x="' + (x + w / 2) + '" y="' + (y + h / 2 + 2) + '">' + SYM[op] + "</text>" +
+    '<text class="gs" x="' + (x + w / 2) + '" y="' + (y + h - 5) + '">' + SHORT[op] + "</text>" + (NEG[op] ? '<circle cx="' + (x + w + 4) + '" cy="' + (y + h / 2) + '" r="4" fill="none" stroke="#72A6F2" stroke-width="2"/>' : "");
+  const swb = (x, y, w, h, key, v, lab) => '<g class="swb' + (v ? " on" : "") + '" data-k="' + key + '" tabindex="0" role="button" aria-label="' + key + " kapcsoló: " + v + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="6"/><text x="' + (x + w / 2) + '" y="' + (y + h / 2 + 4) + '">' + lab + "=" + v + "</text></g>";
+  const svg = (w, h, body) => '<svg class="circ" viewBox="0 0 ' + w + " " + h + '" role="img" aria-label="Áramkör">' + body + "</svg>";
+
+  // félösszeadó
+  function halfSvg(a, b, interactive){
+    const s = a ^ b, c = a & b, sw = (y, k, v) => interactive ? swb(4, y, 52, 30, k, v, k) : '<text class="lbl" x="10" y="' + (y + 20) + '">' + k + "=" + v + "</text>";
+    return svg(340, 200,
+      line([[56, 55], [100, 55], [100, 40], [150, 40]], a) + line([[100, 55], [100, 135], [150, 135]], a) + dot(100, 55, a) +
+      line([[56, 150], [120, 150], [120, 155], [150, 155]], b) + line([[120, 150], [120, 60], [150, 60]], b) + dot(120, 150, b) +
+      gate(150, 25, 60, 50, "KIZÁRÓ VAGY") + gate(150, 120, 60, 50, "ÉS") +
+      line([[210, 50], [290, 50]], s) + line([[210, 145], [290, 145]], c) + led(305, 50, s, "összeg") + led(305, 145, c, "átvitel") +
+      sw(40, "A", a) + sw(135, "B", b));
+  }
+  // teljes összeadó: két félösszeadó + VAGY
+  function fullSvg(a, b, ci, interactive){
+    const p = a ^ b, s = p ^ ci, g1 = a & b, g2 = p & ci, co = g1 | g2;
+    const sw = (y, k, v, lab) => interactive ? swb(4, y, 50, 30, k, v, lab) : '<text class="lbl" x="6" y="' + (y + 20) + '">' + lab + "=" + v + "</text>";
+    return svg(400, 265,
+      line([[54, 35], [70, 35], [70, 113], [90, 113]], a) + line([[70, 38], [90, 38]], a) + dot(70, 37, a) +
+      line([[54, 90], [78, 90], [78, 62], [90, 62]], b) + line([[78, 90], [78, 137], [90, 137]], b) + dot(78, 90, b) +
+      line([[54, 230], [185, 230], [185, 72], [200, 72]], ci) + line([[185, 187], [200, 187]], ci) + dot(185, 187, ci) +
+      line([[140, 50], [170, 50], [170, 48], [200, 48]], p) + line([[170, 50], [170, 163], [200, 163]], p) + dot(170, 50, p) +
+      line([[140, 125], [270, 125], [270, 135], [290, 135]], g1) + line([[250, 175], [270, 175], [270, 165], [290, 165]], g2) +
+      line([[250, 60], [358, 60]], s) + line([[344, 150], [358, 150]], co) +
+      gate(90, 25, 50, 50, "KIZÁRÓ VAGY") + gate(90, 100, 50, 50, "ÉS") + gate(200, 35, 50, 50, "KIZÁRÓ VAGY") + gate(200, 150, 50, 50, "ÉS") + gate(290, 120, 50, 60, "VAGY") +
+      led(375, 60, s, "összeg") + led(375, 150, co, "átvitel") +
+      sw(20, "A", a, "A") + sw(75, "B", b, "B") + sw(215, "C", ci, "Cbe"));
+  }
+  // 4 bites összeadó: négy teljes összeadó láncban
+  function fourCalc(A, B){ const S = [], C = [0]; for (let k = 0; k < 4; k++){ const a = (A >> k) & 1, b = (B >> k) & 1, c = C[k]; S[k] = a ^ b ^ c; C[k + 1] = (a & b) | (a & c) | (b & c); } return { S, C }; }
+  function fourSvg(A, B, interactive){
+    const r = fourCalc(A, B); let body = "";
+    for (let k = 3; k >= 0; k--){
+      const x0 = 30 + (3 - k) * 92, a = (A >> k) & 1, b = (B >> k) & 1;
+      body += line([[x0 + 17, 40], [x0 + 17, 110]], a) + line([[x0 + 45, 40], [x0 + 45, 110]], b);
+      body += line([[x0 + 31, 160], [x0 + 31, 195]], r.S[k]);
+      if (k < 3) body += line([[x0, 135], [x0 - 32, 135]], r.C[k + 1]);
+      body += '<rect class="gate" x="' + x0 + '" y="110" width="62" height="50" rx="4"/><text class="gt" x="' + (x0 + 31) + '" y="138">Σ</text><text class="gs" x="' + (x0 + 31) + '" y="154">' + "TÖ" + "</text>";
+      body += interactive ? swb(x0 + 3, 8, 28, 30, "A" + k, a, "") + swb(x0 + 33, 8, 28, 30, "B" + k, b, "") : '<text class="lbl" x="' + (x0 + 10) + '" y="30">' + a + '</text><text class="lbl" x="' + (x0 + 40) + '" y="30">' + b + "</text>";
+      body += '<text class="sml" x="' + (x0 + 1) + '" y="54">A' + k + '</text><text class="sml" x="' + (x0 + 29) + '" y="54">B' + k + "</text>";
+      body += led(x0 + 31, 207, r.S[k], "S" + k);
+    }
+    body += line([[30 + 3 * 92 + 62, 135], [30 + 3 * 92 + 78, 135]], 0) + '<text class="sml" x="' + (30 + 3 * 92 + 64) + '" y="128">0</text>';
+    body += line([[30, 135], [16, 135], [16, 195]], r.C[4]) + led(16, 207, r.C[4], "") + '<text class="sml" x="2" y="232">túlcs.</text>';
+    return { html: svg(400, 245, interactive ? body.replace(/>=?([01])<\/text><\/g>/g, ">$1</text></g>") : body), r };
+  }
+
+  /* ---------- Hero ---------- */
+  const H = { m: "half", A: 0, B: 0, C: 0, a: [0, 0, 0, 0], b: [0, 0, 0, 0] };
+  const num4 = arr => arr.reduce((s, v, k) => s + (v << k), 0);
+  const bits = (n, w) => n.toString(2).padStart(w, "0");
+  function hero(){
+    let h, d;
+    if (H.m === "half"){ h = halfSvg(H.A, H.B, true); d = "A + B = " + H.A + " + " + H.B + " = <b>" + (H.A + H.B) + "</b> → kettesben " + bits(H.A + H.B, 2) + " (átvitel " + (H.A & H.B) + ", összeg " + (H.A ^ H.B) + ")"; }
+    else if (H.m === "full"){ h = fullSvg(H.A, H.B, H.C, true); const t = H.A + H.B + H.C; d = "A + B + Cbe = " + H.A + " + " + H.B + " + " + H.C + " = <b>" + t + "</b> → kettesben " + bits(t, 2) + " (átvitel " + (t >> 1) + ", összeg " + (t & 1) + ")"; }
+    else { const A = num4(H.a), B = num4(H.b), f = fourSvg(A, B, true); h = f.html; const S = num4(f.r.S); d = bits(A, 4) + " + " + bits(B, 4) + " = " + (f.r.C[4] ? "1" : "") + f.r.S.slice().reverse().join("") + " · tízesben: " + A + " + " + B + " = <b>" + (A + B) + "</b>" + (f.r.C[4] ? " · <b>túlcsordulás!</b> A 4 LED csak " + S + " értéket mutat, mert 15-nél nagyobb az eredmény." : ""); }
+    $("#hsvg").innerHTML = h; $("#hdec").innerHTML = d;
+  }
+  function toggle(k){
+    if (H.m === "four"){ const arr = k[0] === "A" ? H.a : H.b, i = +k[1]; arr[i] = 1 - arr[i]; } else H[k] = 1 - H[k];
+    hero(); const el = $('#hsvg [data-k="' + k + '"]'); if (el) el.focus();
+  }
+  $("#hsvg").addEventListener("click", e => { const g = e.target.closest("[data-k]"); if (g) toggle(g.dataset.k); });
+  $("#hsvg").addEventListener("keydown", e => { const g = e.target.closest("[data-k]"); if (g && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); toggle(g.dataset.k); } });
+  $("#hm").addEventListener("click", e => { const b = e.target.closest(".tab"); if (!b) return; H.m = b.dataset.m; $$("#hm .tab").forEach(t => t.setAttribute("aria-selected", String(t === b))); hero(); });
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  function halfFrames(){
+    const rows = [], F = [], tbl = cur => '<div class="ptwrap"><table class="pt"><tr><th>A</th><th>B</th><th>átvitel</th><th>összeg</th></tr>' + rows.map((r, i) => '<tr' + (i === cur ? ' class="cur"' : "") + "><td>" + r.join("</td><td>") + "</td></tr>").join("") + "</table></div>";
+    F.push({ cap: "A félösszeadó két egybites számot ad össze. Kettesben 1 + 1 = 10: ilyenkor az összeg 0, és 1 megy tovább, ez az átvitel.", html: halfSvg(0, 0) });
+    [[0, 0], [0, 1], [1, 0], [1, 1]].forEach(([a, b]) => {
+      rows.push([a, b, a & b, a ^ b]);
+      F.push({ cap: a + " + " + b + " = " + (a + b) + ", kettesben " + bits(a + b, 2) + ". Összeg: " + (a ^ b) + ", ezt a KIZÁRÓ VAGY adja. Átvitel: " + (a & b) + ", ezt az ÉS adja.", html: halfSvg(a, b) + tbl(rows.length - 1) });
+    });
+    F.push({ cap: "Az összeg oszlopa pontosan a KIZÁRÓ VAGY, az átvitel oszlopa pontosan az ÉS igazságtáblája. Két kapu, és kész egy egybites összeadó.", html: tbl(-1) });
+    return F;
+  }
+  function fullFrames(a, b, ci){
+    const p = a ^ b, s = p ^ ci, g1 = a & b, g2 = p & ci, co = g1 | g2;
+    return [
+      { cap: "A teljes összeadónak három bemenete van: A, B és a jobbról érkező átvitel (Cbe). Most A = " + a + ", B = " + b + ", Cbe = " + ci + ".", html: fullSvg(a, b, ci) },
+      { cap: "Az első KIZÁRÓ VAGY és ÉS kapu egy félösszeadó: A és B összege " + p + ", átvitele " + g1 + ".", html: fullSvg(a, b, ci) },
+      { cap: "A második félösszeadó ehhez hozzáadja a Cbe-t: az összeg " + p + " KIZÁRÓ VAGY " + ci + " = " + s + ", a másik átvitel " + p + " ÉS " + ci + " = " + g2 + ".", html: fullSvg(a, b, ci) },
+      { cap: "A két átvitelből a VAGY kapu csinál egyet: " + g1 + " VAGY " + g2 + " = " + co + ". Eredmény: " + a + " + " + b + " + " + ci + " = " + (a + b + ci) + ", kettesben " + co + "" + s + ".", html: fullSvg(a, b, ci) + '<p class="big led" style="margin-top:8px">összeg: ' + s + " · átvitel: " + co + "</p>" },
+      { cap: "Szabály fejben: az összeg 1, ha páratlan sok bemenet 1. Az átvitel 1, ha legalább kettő 1.", html: fullSvg(a, b, ci) }
+    ];
+  }
+  function fourFrames(A, B){
+    const r = fourCalc(A, B), F = [];
+    const tbl = k => '<div class="ptwrap"><table class="pt bitcol"><tr><th></th>' + [4, 3, 2, 1, 0].map(i => "<th" + (i === k ? ' class="hl"' : "") + ">" + (i === 4 ? "túlcs." : i) + "</th>").join("") + "</tr>" +
+      "<tr><th>átvitel</th>" + [4, 3, 2, 1, 0].map(i => "<td" + (i === k ? ' class="hl"' : "") + ">" + (i <= k + 1 && i > 0 ? r.C[i] : "") + "</td>").join("") + "</tr>" +
+      "<tr><th>A</th><td></td>" + [3, 2, 1, 0].map(i => "<td" + (i === k ? ' class="hl"' : "") + ">" + ((A >> i) & 1) + "</td>").join("") + "</tr>" +
+      "<tr><th>B</th><td></td>" + [3, 2, 1, 0].map(i => "<td" + (i === k ? ' class="hl"' : "") + ">" + ((B >> i) & 1) + "</td>").join("") + "</tr>" +
+      "<tr><th>összeg</th>" + [4, 3, 2, 1, 0].map(i => "<td" + (i === k ? ' class="hl"' : "") + ">" + (i === 4 ? (k >= 3 ? r.C[4] : "") : i <= k ? r.S[i] : "") + "</td>").join("") + "</tr></table></div>";
+    F.push({ cap: "Adjuk össze: " + bits(A, 4) + " + " + bits(B, 4) + ", tízesben " + A + " + " + B + ". Jobbról balra haladunk, ahogy írásban is: minden oszlop egy teljes összeadó.", html: tbl(-1) });
+    for (let k = 0; k < 4; k++){
+      const a = (A >> k) & 1, b = (B >> k) & 1, c = r.C[k], t = a + b + c;
+      F.push({ cap: "Jobbról számolva " + (k + 1) + ". oszlop: " + a + " + " + b + (k ? " + " + c + " (átvitel)" : "") + " = " + t + ", kettesben " + bits(t, 2) + ". Leírjuk: " + r.S[k] + ", tovább visszük: " + r.C[k + 1] + ".", html: tbl(k) });
+    }
+    F.push({ cap: r.C[4] ? "A bal szélső átvitel 1: az eredmény nem fér el 4 biten, ez a túlcsordulás. " + A + " + " + B + " = " + (A + B) + ", ami nagyobb, mint 15. A 4 LED csak " + num4(r.S) + " értéket mutat." : "Az eredmény: " + r.S.slice().reverse().join("") + ", tízesben " + (A + B) + ". Elfér 4 biten, nincs túlcsordulás.", html: tbl(4) + '<p class="big led" style="margin-top:8px">' + (r.C[4] ? "1" : "") + r.S.slice().reverse().join("") + "</p>" });
+    return F;
+  }
+  function exprFrames(t, e){
+    const F = [{ cap: "Kiértékeljük: " + strT(t, true) + ". A bemenetek: " + Object.keys(e).map(k => k + " = " + e[k]).join(", ") + ". Belülről kifelé haladunk, mint a zárójeles számolásnál.", html: '<p class="big">' + esc(strT(t, true)) + "</p>" }];
+    const done = [];
+    subs(t).forEach(n => { done.push(esc(strT(n, true)) + " = <span class='cur'>" + evalT(n, e) + "</span>"); F.push({ cap: strT(n, true) + " = " + evalT(n, e) + ".", html: "<p>" + done.join("<br>") + "</p>" }); });
+    F.push({ cap: "A kimenet: " + evalT(t, e) + ".", html: "<p>" + done.join("<br>") + '</p><p class="big led">kimenet: ' + evalT(t, e) + "</p>" });
+    return F;
+  }
+  const MET = { half: "Félösszeadó", full: "Teljes összeadó", four: "4 bites összeadás" };
+  const MF = { half: halfFrames, full: () => fullFrames(1, 0, 1), four: () => fourFrames(7, 5) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "half" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Kapcsolás rajza fából (a feladatokhoz) ---------- */
+  function treeSvg(t, env){
+    let leafY = 0; const nodes = [];
+    const lay = n => { if (n.v){ n._c = 0; n._y = 24 + leafY * 46; leafY++; return; } if (n.op === "NEM"){ lay(n.a); n._c = n.a._c + 1; n._y = n.a._y; } else { lay(n.a); lay(n.b); n._c = Math.max(n.a._c, n.b._c) + 1; n._y = (n.a._y + n.b._y) / 2; } nodes.push(n); };
+    lay(t);
+    const X = c => 8 + c * 92, GW = 52, GH = 40, maxc = t._c, Wd = X(maxc) + GW + 60, Hh = leafY * 46 + 10;
+    let body = "";
+    const out = n => n.v ? [X(0) + 34, n._y] : [X(n._c) + GW + (NEG[n.op] ? 8 : 0), n._y];
+    const val = n => env ? evalT(n, env) : 0;
+    const wire = (from, to, v) => { const mx = to[0] - 12; body += line([from, [mx, from[1]], [mx, to[1]], to], v); };
+    nodes.forEach(n => { const ins = n.op === "NEM" ? [[n.a, n._y]] : [[n.a, n._y - 10], [n.b, n._y + 10]]; ins.forEach(([ch, y]) => wire(out(ch), [X(n._c), y], val(ch))); });
+    const walk = n => { if (n.v){ body += '<text class="lbl" x="' + X(0) + '" y="' + (n._y + 4) + '">' + n.v + (env ? "=" + env[n.v] : "") + "</text>"; return; } walk(n.a); if (n.b) walk(n.b); body += gate(X(n._c), n._y - GH / 2, GW, GH, n.op); };
+    walk(t);
+    const o = out(t); body += line([o, [o[0] + 26, o[1]]], val(t)) + '<text class="lbl" x="' + (o[0] + 30) + '" y="' + (o[1] + 4) + '">Ki</text>';
+    return svg(Wd, Hh, body);
+  }
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Az 1 és a 0 a valóságban", h:
+      "<p>A számítógépben az 1 és a 0 <b>feszültség</b>: például 5 V (vagy 3,3 V) jelenti az 1-et, 0 V a 0-t. A kapuk <b>tranzisztorokból</b> épülnek: ezek apró, árammal vezérelt kapcsolók.</p>" +
+      "<ul><li>Két kapcsoló <b>sorba</b> kötve, mellettük egy LED: csak akkor világít, ha mindkettő be van kapcsolva. Ez az <b>ÉS</b>.</li><li>Két kapcsoló <b>párhuzamosan</b>: elég az egyik. Ez a <b>VAGY</b>.</li></ul>" +
+      "<div class='note'><b>Ismétlés:</b> a NEM, ÉS, VAGY és KIZÁRÓ VAGY igazságtábláját a logikai műveletek leckében tanultad. Itt összekötjük őket. A soros és párhuzamos kapcsolás az elektronika leckéből ismerős.</div>" },
+    { k: "Rajzjelek", t: "A kapuk rajzjele", h:
+      "<p>Szabványos (téglalapos) rajzjelek: a dobozba írt jel mondja meg, melyik kapu. A kis karika a kimeneten tagadást jelent.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Kapu</th><th>Jel a dobozban</th><th>Kimenet 1, ha…</th></tr><tr><td>NEM</td><td>1 és karika</td><td style='text-align:left'>a bemenet 0</td></tr><tr><td>ÉS</td><td>&amp;</td><td style='text-align:left'>minden bemenet 1</td></tr><tr><td>VAGY</td><td>≥1</td><td style='text-align:left'>legalább egy bemenet 1</td></tr><tr><td>KIZÁRÓ VAGY</td><td>=1</td><td style='text-align:left'>pontosan egy (páratlan sok) bemenet 1</td></tr><tr><td>NAND</td><td>&amp; és karika</td><td style='text-align:left'>nem mind 1</td></tr><tr><td>NOR</td><td>≥1 és karika</td><td style='text-align:left'>egyik sem 1</td></tr></table></div>" +
+      "<p>Angol nyelvű könyvekben gömbölyített (amerikai) rajzjeleket is látsz: ugyanazt jelentik.</p>" },
+    { k: "NAND, NOR", t: "NAND és NOR: tagadott ÉS és VAGY", h:
+      "<p>A <b>NAND</b> (NEM-ÉS) az ÉS kimenetét fordítja meg, a <b>NOR</b> (NEM-VAGY) a VAGY-ét.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>A</th><th>B</th><th>ÉS</th><th>NAND</th><th>VAGY</th><th>NOR</th></tr><tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr></table></div>" +
+      "<p>Miért fontosak? Tranzisztorokból a NAND és a NOR a legolcsóbb, és a gyárak ezekből építenek mindent.</p>" },
+    { k: "Univerzális", t: "NAND-ból minden kapu", h:
+      "<ul><li><b>NEM:</b> A NAND A. Ha mindkét bemenetre ugyanaz megy, a NAND megfordítja.</li><li><b>ÉS:</b> (A NAND B) NAND (A NAND B), vagyis egy NAND, utána egy NEM.</li><li><b>VAGY:</b> (A NAND A) NAND (B NAND B), vagyis mindkét bemenetet megfordítjuk, aztán NAND.</li></ul>" +
+      "<p>Ezért mondjuk, hogy a NAND <b>univerzális</b> kapu: csak NAND-okból bármilyen áramkör, akár egy egész processzor is megépíthető. (A NOR-ra ugyanez igaz.)</p>" +
+      treeSvg({ op: "NAND", a: { op: "NAND", a: { v: "A" }, b: { v: "A" } }, b: { op: "NAND", a: { v: "B" }, b: { v: "B" } } }) + "<p>A rajz: VAGY, három NAND kapuból.</p>" },
+    { k: "Kapcsolás", t: "Kapcsolás kiértékelése", h:
+      "<p>Ha több kapu van összekötve, <b>belülről kifelé</b> számolunk, ahogy a zárójeles kifejezéseknél: előbb a bemenetekhez közeli kapuk, aztán a kimenet felé.</p>" +
+      treeSvg({ op: "VAGY", a: { op: "ÉS", a: { v: "A" }, b: { v: "B" } }, b: { op: "NEM", a: { v: "C" } } }, { A: 1, B: 0, C: 0 }) +
+      "<p class='eq'>(A ÉS B) VAGY NEM C, ha A = 1, B = 0, C = 0: (1 ÉS 0) = 0, NEM 0 = 1, 0 VAGY 1 = 1.</p><p>A sárga vezetéken 1 folyik.</p>" },
+    { k: "Összeadás", t: "Félösszeadó: 1 + 1 = 10", h:
+      "<p>Kettesben két bit összege: 0 + 0 = 0, 0 + 1 = 1, 1 + 0 = 1, 1 + 1 = 10. A jobb oldali jegy az <b>összeg</b>, a bal oldali az <b>átvitel</b>.</p>" +
+      "<ul><li>Az összeg oszlopa: 0, 1, 1, 0: ez a <b>KIZÁRÓ VAGY</b>.</li><li>Az átvitel oszlopa: 0, 0, 0, 1: ez az <b>ÉS</b>.</li></ul>" + halfSvg(1, 1) + playBtn("half"), init: playInit },
+    { k: "Három bemenet", t: "Teljes összeadó", h:
+      "<p>Írásbeli összeadásnál minden oszlopban három számot adunk össze: a két jegyet és a jobbról jövő átvitelt. Ezt csinálja a <b>teljes összeadó</b>: két félösszeadó és egy VAGY kapu.</p>" +
+      "<ul><li><b>összeg</b> = 1, ha páratlan sok bemenet 1,</li><li><b>átvitel</b> = 1, ha legalább két bemenet 1.</li></ul>" + playBtn("full"), init: playInit },
+    { k: "4 bit", t: "Összeadó láncba kötve", h:
+      "<p>Négy teljes összeadót egymás mellé teszünk: mindegyik átvitele a tőle balra lévő bemenetére megy. Ez a <b>4 bites összeadó</b>: két 0 és 15 közötti számot ad össze.</p>" +
+      "<p class='eq'>0111 + 0101 = 1100 (7 + 5 = 12)</p>" +
+      "<p>Ha az eredmény 15-nél nagyobb, a bal szélső átvitel 1 lesz: ez a <b>túlcsordulás</b>. A processzor ezt egy jelzőbitben jegyzi meg.</p>" +
+      "<div class='note'><b>Így számol a gép:</b> a processzor ALU-ja (lásd a számítógép felépítése leckét) ilyen összeadókból áll, csak 64 bit szélesen.</div>" + playBtn("four"), init: playInit },
+    { k: "Választó", t: "Multiplexer: a váltó", h:
+      "<p>A <b>multiplexer</b> egy választó: két adatbemenete (A és B) és egy választó bemenete (S) van. Ha S = 0, az A jut a kimenetre, ha S = 1, a B. Olyan, mint a vasúti váltó.</p>" +
+      "<p class='eq'>Ki = (A ÉS NEM S) VAGY (B ÉS S)</p>" +
+      "<p>A processzor így választja ki, melyik regiszterből vegye az adatot, vagy hogy az összeadó vagy a kivonó eredménye menjen tovább. A programozásban ez a <code>ha S akkor B különben A</code>.</p>" },
+    { k: "Tárolás", t: "Hogyan jegyez meg a gép egy bitet?", h:
+      "<p>Két NOR kaput keresztbe kötünk: mindegyik kimenete a másik bemenetére megy. Ez az <b>SR-tároló</b>.</p>" +
+      "<ul><li><b>S</b> (set) = 1: a kimenet 1 lesz.</li><li><b>R</b> (reset) = 1: a kimenet 0 lesz.</li><li>Ha mindkettő 0: a kimenet <b>marad</b>, ami volt. A gép megjegyzett egy bitet!</li></ul>" +
+      "<p>Az órajellel vezérelt változata a <b>flip-flop</b>. Ilyenekből állnak a processzor regiszterei, és hasonló elven (kondenzátorral) a RAM is: milliárdnyi megjegyzett bit.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>KIZÁRÓ VAGY és VAGY összekeverése.</b> Ha mindkét bemenet 1: VAGY = 1, KIZÁRÓ VAGY = 0.</div>" +
+      "<div class='mistake'><b>A NAND nem „NEM A, aztán ÉS”.</b> Előbb ÉS, utána tagadás: 0 NAND 0 = 1.</div>" +
+      "<div class='mistake'><b>Rossz sorrend a kapcsolásnál.</b> Belülről kifelé, a bemenetektől a kimenet felé számolj.</div>" +
+      "<div class='mistake'><b>Elfelejtett átvitel.</b> A második oszloptól kezdve három dolgot adunk össze: a két bitet és az átvitelt.</div>" +
+      "<div class='mistake'><b>Igazságtábla sorainak száma.</b> 3 bemenet: 2<sup>3</sup> = 8 sor, nem 6.</div>" },
+    { k: "Trükkök", t: "Fejben gyorsan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>ÉS / NAND</span><span>Van 0 a bemeneten? Akkor az ÉS 0, a NAND 1.</span></div>" +
+      "<div class='trick'><span class='t'>VAGY / NOR</span><span>Van 1 a bemeneten? Akkor a VAGY 1, a NOR 0.</span></div>" +
+      "<div class='trick'><span class='t'>KIZÁRÓ VAGY</span><span>Számold meg az 1-eseket: páratlan → 1, páros → 0.</span></div>" +
+      "<div class='trick'><span class='t'>Teljes összeadó</span><span>Számold meg az 1-eseket (0–3), és írd fel kettesben: a bal jegy az átvitel, a jobb az összeg.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const bitCheck = (ans, hint) => v => { const s = String(v).trim(); if (s !== "0" && s !== "1") return { ok: false, msg: "0-t vagy 1-et írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: hint }; };
+  const envStr = e => Object.keys(e).sort().map(k => k + " = " + e[k]).join(", ");
+  const rndEnv = vs => { const e = {}; vs.forEach(v => e[v] = rnd(0, 1)); return e; };
+  const GATE2 = ["ÉS", "VAGY", "KIZÁRÓ VAGY", "NAND", "NOR"];
+  const types = [
+    { id: "kif", name: "Kapcsolás kimenete", gen(l){
+      let t; const vars = l === 1 ? ["A", "B"] : ["A", "B", "C"], ops = l === 1 ? ["ÉS", "VAGY"] : l === 2 ? ["ÉS", "VAGY", "KIZÁRÓ VAGY"] : GATE2;
+      do { t = genTree(l === 1 ? 1 : l === 2 ? 2 : 3, vars, ops, l === 1 ? 0.3 : 0.25); } while (!hasBin(t) || subs(t).length < l || strT(t, true).length > 60);
+      const vs = Array.from(new Set(varsOf(t))).sort(), e = rndEnv(vs), r = evalT(t, e);
+      return { q: "Mi a kimenet, ha " + envStr(e) + "?<pre class='code'>" + esc(strT(t, true)) + "</pre>", kind: "input", mode: "numeric", ph: "0 vagy 1", answer: r, frames: exprFrames(t, e), title: "Kapcsolás kiértékelése",
+        sol: "<p>Belülről kifelé: " + subs(t).map(n => esc(strT(n, true)) + " = " + evalT(n, e)).join("; ") + ".</p>", check: bitCheck(r, "Nem jó. Belülről kifelé haladj: előbb a zárójelek belsejét számold ki.") };
+    } },
+    { id: "nand", name: "NAND és NOR", gen(l){
+      if (l < 3){
+        const op = pick(["NAND", "NOR"]), n = l === 1 ? 2 : 3, ins = Array.from({ length: n }, () => rnd(0, 1));
+        const r = op === "NAND" ? 1 - ins.reduce((p, q) => p & q, 1) : 1 - ins.reduce((p, q) => p | q, 0);
+        return { q: "Egy " + n + " bemenetű " + op + " kapu bemenetei: <span class='num'>" + ins.join(", ") + "</span>. Mi a kimenet?", kind: "input", mode: "numeric", ph: "0 vagy 1", answer: r,
+          sol: "<p>" + (op === "NAND" ? "NAND: 0, ha minden bemenet 1, különben 1." : "NOR: 1, ha egyik bemenet sem 1, különben 0.") + "</p>", check: bitCheck(r, op === "NAND" ? "Nem jó. A NAND csak akkor 0, ha minden bemenet 1." : "Nem jó. A NOR csak akkor 1, ha minden bemenet 0.") };
+      }
+      const C = [["A NAND A", "NEM", { op: "NAND", a: { v: "A" }, b: { v: "A" } }], ["(A NAND B) NAND (A NAND B)", "ÉS", null], ["(A NAND A) NAND (B NAND B)", "VAGY", null], ["A NOR A", "NEM", null], ["(A NOR B) NOR (A NOR B)", "VAGY", null], ["(A NOR A) NOR (B NOR B)", "ÉS", null]];
+      const c = pick(C);
+      return choice("Melyik kaput valósítja meg ez a kapcsolás? <pre class='code'>" + c[0] + "</pre>", c[1], ["NEM", "ÉS", "VAGY", "KIZÁRÓ VAGY"].filter(x => x !== c[1]),
+        "<p>Írd fel az igazságtáblát mind a négy (A, B) párra, és hasonlítsd össze a kapukéval. " + esc(c[0]) + " = " + c[1] + ".</p>", "Nem jó. Próbáld ki mind a négy bemenetpárt (00, 01, 10, 11).");
+    } },
+    { id: "add", name: "Félösszeadó, teljes összeadó", gen(l){
+      if (l === 3){
+        const n = rnd(0, 3), s = n & 1, c = n >> 1;
+        return { q: "Egy teljes összeadó kimenete: összeg = <span class='num'>" + s + "</span>, átvitel = <span class='num'>" + c + "</span>. Hány bemenete (A, B, Cbe közül) volt 1?", kind: "input", mode: "numeric", answer: n,
+          sol: "<p>A teljes összeadó megszámolja az 1-eseket, és kettesben írja fel: átvitel és összeg együtt " + c + s + " = " + n + ".</p>", check: v => { const x = String(v).trim(); return x === String(n) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az átvitel és az összeg együtt kettesben adja ki, hány bemenet 1." }; } };
+      }
+      const a = rnd(0, 1), b = rnd(0, 1), ci = l === 2 ? rnd(0, 1) : 0, t = a + b + ci, ans = (t & 1) + ", " + (t >> 1);
+      return { q: (l === 1 ? "Félösszeadó: A = " + a + ", B = " + b + "." : "Teljes összeadó: A = " + a + ", B = " + b + ", Cbe = " + ci + ".") + " Mi az összeg és az átvitel? (így írd: összeg, átvitel)", kind: "input", ph: "pl. 1, 0", answer: ans,
+        frames: l === 1 ? halfFrames() : fullFrames(a, b, ci), title: l === 1 ? "Félösszeadó" : "Teljes összeadó",
+        sol: "<p>" + (l === 1 ? a + " + " + b : a + " + " + b + " + " + ci) + " = " + t + ", kettesben " + bits(t, 2) + ": az összeg a jobb jegy (" + (t & 1) + "), az átvitel a bal (" + (t >> 1) + ").</p>",
+        check: v => { const d = String(v).match(/[01]/g) || []; if (d.length !== 2) return { ok: false, msg: "Két számjegyet írj: összeg, átvitel (például 1, 0)." }; if (+d[0] === (t & 1) && +d[1] === (t >> 1)) return { ok: true, msg: "Helyes!" }; if (+d[1] === (t & 1) && +d[0] === (t >> 1)) return { ok: false, msg: "Fordítva írtad: előbb az összeg, aztán az átvitel." }; return { ok: false, msg: "Nem jó. Add össze a bemeneteket, és írd fel kettesben: jobb jegy az összeg, bal jegy az átvitel." }; } };
+    } },
+    { id: "four", name: "4 bites összeadó", gen(l){
+      let A, B;
+      if (l === 1){ do { A = rnd(1, 15); B = rnd(1, 15); } while ((A & B) || A + B > 15); }
+      else if (l === 2){ do { A = rnd(1, 15); B = rnd(1, 15); } while (!(A & B) || A + B > 15); }
+      else { do { A = rnd(3, 15); B = rnd(3, 15); } while (A + B < 12); }
+      const r = fourCalc(A, B), over = r.C[4], s4 = r.S.slice().reverse().join(""), ans = l === 3 ? (over ? "1" : "0") + s4 : s4;
+      return { q: "Mit mutat a 4 bites összeadó? <span class='num'>" + bits(A, 4) + " + " + bits(B, 4) + "</span>" + (l === 3 ? "<br>Írd az 5 bites eredményt: elöl a túlcsordulás-bit, utána a 4 LED." : "<br>Írd a 4 bites eredményt."), kind: "input", mode: "numeric", ph: l === 3 ? "5 bit" : "4 bit", answer: ans, frames: fourFrames(A, B), title: "4 bites összeadás",
+        sol: "<p>Tízesben: " + A + " + " + B + " = " + (A + B) + ". Kettesben, oszloponként jobbról, az átvitellel: " + (over ? "1" : "") + s4 + "." + (over ? " A túlcsordulás-bit 1, mert az eredmény 15-nél nagyobb." : "") + "</p>",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^[01]+$/.test(s)) return { ok: false, msg: "Csak 0 és 1 jegyeket írj." }; if (s === ans) return { ok: true, msg: "Helyes!" }; if (parseInt(s, 2) === A + B && l < 3) return { ok: false, msg: "Az érték jó, de pontosan 4 bitet írj." }; if (l === 3 && s === s4) return { ok: false, msg: "A túlcsordulás-bitet is írd elé (5 bit)." }; return { ok: false, msg: "Nem jó. Jobbról balra add össze, és ne felejtsd el az átvitelt." }; } };
+    } },
+    { id: "melyik", name: "Melyik kapu ez?", gen(l){
+      if (l < 3){
+        const pool = l === 1 ? ["ÉS", "VAGY", "KIZÁRÓ VAGY"] : GATE2, g = pick(pool);
+        const rows = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([a, b]) => "<tr><td>" + a + "</td><td>" + b + "</td><td>" + OP[g](a, b) + "</td></tr>").join("");
+        const others = (l === 1 ? pool : GATE2).filter(x => x !== g);
+        return choice("Melyik kapu igazságtáblája ez?<div class='ptwrap'><table class='pt'><tr><th>A</th><th>B</th><th>Ki</th></tr>" + rows + "</table></div>", g, shuffle(others).slice(0, 3),
+          "<p>A kimenet oszlopa: " + [[0, 0], [0, 1], [1, 0], [1, 1]].map(([a, b]) => OP[g](a, b)).join(", ") + ". A kapu: <b>" + g + "</b>.</p>", "Nem jó. Nézd meg, mikor 1 a kimenet: minden 1-nél? legalább egynél? pontosan egynél? Vagy fordítva?");
+      }
+      const F3 = { "3 bemenetű ÉS": (a, b, c) => a & b & c, "3 bemenetű VAGY": (a, b, c) => a | b | c, "többség (az átvitel)": (a, b, c) => (a + b + c) >= 2 ? 1 : 0, "paritás (az összeg)": (a, b, c) => a ^ b ^ c, "3 bemenetű NAND": (a, b, c) => 1 - (a & b & c), "3 bemenetű NOR": (a, b, c) => 1 - (a | b | c) };
+      const g = pick(Object.keys(F3)), rows = []; for (let m = 0; m < 8; m++){ const a = (m >> 2) & 1, b = (m >> 1) & 1, c = m & 1; rows.push("<tr><td>" + a + "</td><td>" + b + "</td><td>" + c + "</td><td>" + F3[g](a, b, c) + "</td></tr>"); }
+      return choice("Melyik áramkör igazságtáblája ez?<div class='ptwrap'><table class='pt'><tr><th>A</th><th>B</th><th>C</th><th>Ki</th></tr>" + rows.join("") + "</table></div>", g, shuffle(Object.keys(F3).filter(x => x !== g)).slice(0, 3),
+        "<p>Számold meg soronként az 1-eseket, és nézd, mikor 1 a kimenet. Az áramkör: <b>" + g + "</b>.</p>", "Nem jó. Mindig, ha minden 1? Ha legalább egy? Ha legalább kettő? Ha páratlan sok?");
+    } },
+    { id: "sorok", name: "Igazságtábla sorai", gen(l){
+      if (l < 3){ const n = l === 1 ? rnd(1, 3) : rnd(4, 8), r = Math.pow(2, n);
+        return { q: "Hány sora van egy <span class='num'>" + n + "</span> bemenetű áramkör igazságtáblájának?", kind: "input", mode: "numeric", answer: r, sol: "<p>Minden bemenet 0 vagy 1 lehet: 2 · 2 · … = 2<sup>" + n + "</sup> = " + r + " sor.</p>",
+          check: v => { const x = String(v).trim(); return x === String(r) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: x === String(2 * n) ? "Nem 2 · n, hanem 2 a hatványon n: minden új bemenet megduplázza a sorokat." : "Nem jó. 2 a bemenetek számának hatványán." }; } };
+      }
+      const n = rnd(2, 5), g = pick(["ÉS", "VAGY", "NAND", "NOR", "KIZÁRÓ VAGY"]), N = Math.pow(2, n);
+      const r = { "ÉS": 1, "VAGY": N - 1, "NAND": N - 1, "NOR": 1, "KIZÁRÓ VAGY": N / 2 }[g];
+      const why = { "ÉS": "csak akkor 1, ha minden bemenet 1: ez egyetlen sor.", "VAGY": "csak a csupa-0 sorban 0, minden más sorban 1: " + N + " − 1.", "NAND": "csak a csupa-1 sorban 0: " + N + " − 1.", "NOR": "csak a csupa-0 sorban 1: egyetlen sor.", "KIZÁRÓ VAGY": "páratlan sok 1-es a sorok felében van: " + N + " : 2." }[g];
+      return { q: "Egy <span class='num'>" + n + "</span> bemenetű " + g + " kapu igazságtáblájában hány sorban 1 a kimenet?" + (g === "KIZÁRÓ VAGY" ? " (Több bemenetnél: 1, ha páratlan sok bemenet 1.)" : ""), kind: "input", mode: "numeric", answer: r,
+        sol: "<p>Összesen 2<sup>" + n + "</sup> = " + N + " sor. A " + g + " " + why + "</p>", check: v => { const x = String(v).trim(); return x === String(r) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Előbb számold ki a sorok számát (2 a hatványon n), aztán gondold végig, hányban 1 a kimenet." }; } };
+    } },
+    { id: "rajz", name: "Rajz és kifejezés", gen(l){
+      let t; const vars = l === 1 ? ["A", "B"] : ["A", "B", "C"], ops = l === 3 ? GATE2 : ["ÉS", "VAGY", "KIZÁRÓ VAGY"];
+      do { t = genTree(l === 1 ? 1 : 2, vars, ops, 0.3); } while (!hasBin(t) || subs(t).length < (l === 1 ? 1 : 2) || t._bad);
+      const vs = ["A", "B", "C"].slice(0, vars.length), key = ttKey(t, vs), good = strT(t, true), others = []; let guard = 0;
+      while (others.length < 3 && guard++ < 400){ const u = genTree(l === 1 ? 1 : 2, vars, ops, 0.3); if (!hasBin(u)) continue; const s = strT(u, true); if (s !== good && !others.includes(s) && ttKey(u, vs) !== key) others.push(s); }
+      return choice("Melyik kifejezés írja le ezt a kapcsolást?" + treeSvg(t), good, others, "<p>A kapukat a kimenettől visszafelé olvasd: a bal oldali kapuk a belső zárójelek. A kapcsolás: " + esc(good) + ".</p>", "Nem jó. Nézd meg, melyik kapu van közvetlenül a kimenet előtt: az a külső művelet.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "aramkorok", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["NEM", "1 ○", "megfordít"], ["ÉS", "&", "1, ha minden bemenet 1"], ["VAGY", "≥1", "1, ha legalább egy 1"], ["KIZÁRÓ VAGY", "=1", "1, ha páratlan sok 1"], ["NAND", "& ○", "0, ha minden bemenet 1"], ["NOR", "≥1 ○", "1, ha egyik sem 1"]];
+  $("#cheat").innerHTML = "<tr><th>Kapu</th><th>Jel</th><th>Szabály</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td style='text-align:left'>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
