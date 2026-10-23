@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023051503">
+<meta name="kovrat-version" content="20261023051552">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -971,7 +971,8 @@ const K = (function(){
     } },
     { id: "mac", name: "MAC-cím", gen(l){
       const rb = () => hx(rnd(0, 255)).padStart(2, "0").toUpperCase();
-      if (l === 3){ const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 127) * 2).padStart(2, "0").toUpperCase(); const mac = m.join(":"), oui = m.slice(0, 3).join(":");
+      // gyári (egyedi, nem helyileg kiosztott) cím: az első bájt két legalsó bitje 0, így az első 3 bájt valódi gyártói azonosító
+      if (l === 3){ const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 63) * 4).padStart(2, "0").toUpperCase(); const mac = m.join(":"), oui = m.slice(0, 3).join(":");
         return { q: "Melyik része azonosítja a gyártót ebben a MAC-címben? Írd be! <span class='num'>" + mac + "</span>", kind: "input", ph: "pl. 3C:52:82", answer: oui, sol: "<p>Az első 3 bájt (6 tizenhatos jegy) a gyártó azonosítója (OUI): " + oui + ".</p>",
           check: v => { const s = String(v).trim().toUpperCase().replace(/-/g, ":"); return s === oui || s.replace(/:/g, "") === oui.replace(/:/g, "") ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első három bájt kell (az első 6 jegy)." }; } };
       }
@@ -979,7 +980,7 @@ const K = (function(){
       let mac;
       if (k === "b") mac = BC;
       else if (k === "m") mac = pick(["01:00:5E", "33:33:00", "01:80:C2"]) + ":" + rb() + ":" + rb() + ":" + rb();
-      else { const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 127) * 2).padStart(2, "0").toUpperCase(); mac = m.join(":"); }
+      else { const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 63) * 4).padStart(2, "0").toUpperCase(); mac = m.join(":"); }
       const good = { b: "szórás (mindenki)", u: "egyedi (egy gép)", m: "csoportos (multicast)" }[k];
       const others = (l === 1 ? ["szórás (mindenki)", "egyedi (egy gép)"] : ["szórás (mindenki)", "egyedi (egy gép)", "csoportos (multicast)"]).filter(x => x !== good);
       return choice("Milyen címzettet jelöl ez a MAC-cím? <span class='num'>" + mac + "</span>", good, others, "<p>FF:FF:FF:FF:FF:FF a szórás. Ha az első bájt páratlan, csoportos (multicast). Ha páros, egyetlen gép (egyedi).</p>", "Nem jó. Nézd meg: csupa F? Az első bájt páros vagy páratlan?");

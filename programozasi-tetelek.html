@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023051503">
+<meta name="kovrat-version" content="20261023051552">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -921,7 +921,7 @@ const K = (function(){
       pair("i = 1\namíg i ≤ N és nem (L[i] < 0)\n  i = i + 1\nciklus vége\nha i ≤ N akkor\n  ki: \"van\"\nkülönben\n  ki: \"nincs\"\nelágazás vége", "i = 0\nwhile i < len(L) and not (L[i] < 0):\n    i = i + 1\nif i < len(L):\n    print(\"van\")\nelse:\n    print(\"nincs\")") +
       "<ul><li><b>Eldöntés</b>: van-e negatív? (a fenti program)</li><li><b>Kiválasztás</b>: tudjuk, hogy van, hányadik az első? Ekkor az i ≤ N feltétel elhagyható, a végén ki: i.</li><li><b>Lineáris keresés</b>: a kettő együtt: van-e, és ha igen, hányadik.</li></ul>" },
     { k: "Kiválogatás", t: "Kiválogatás", h:
-      pair("db = 0\nciklus i = 1-től N-ig\n  ha L[i] > 10 akkor\n    db = db + 1\n    E[db] = L[i]\n  elágazás vége\nciklus vége", "E = []\nfor i in range(len(L)):\n    if L[i] > 10:\n        E.append(L[i])\nprint(E)") +
+      pair("db = 0\nciklus i = 1-től N-ig\n  ha L[i] > 10 akkor\n    db = db + 1\n    E[db] = L[i]\n  elágazás vége\nciklus vége\nki: E", "E = []\nfor i in range(len(L)):\n    if L[i] > 10:\n        E.append(L[i])\nprint(E)") +
       "<p>Az eredmény egy új lista (E), benne a feltételnek megfelelő elemek, az eredeti sorrendben. Ha egy sem felel meg, üres lista.</p>" },
     { k: "Csere", t: "Csere és buborékrendezés", h:
       "<p>Két változó cseréjéhez <b>segédváltozó</b> kell, különben az egyik érték elvész: seged = a, a = b, b = seged.</p>" +
