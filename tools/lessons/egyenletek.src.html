@@ -1,0 +1,477 @@
+<!--@HEAD-->
+<title>Egyenletek</title>
+<style>
+.scale{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.beam{height:8px;background:#8C99AA;border-radius:4px;margin:0 8%}
+.pans{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start}
+.pan{min-height:96px;border:2px solid #3A4656;border-top:0;border-radius:0 0 40px 40px;padding:10px 10px 16px;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;justify-content:center;background:#151B23}
+.fulcrum{width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:30px solid #8C99AA;margin-top:6px}
+.xb{width:30px;height:30px;border-radius:6px;background:#F29E0C;color:#2A1A00;font-family:var(--mono);font-weight:700;display:grid;place-items:center}
+.w1{width:24px;height:24px;border-radius:50%;background:#72A6F2;color:#0A0E13;font-family:var(--mono);font-weight:700;font-size:.8rem;display:grid;place-items:center;margin-top:3px}
+.ops{display:flex;flex-wrap:wrap;gap:8px}
+.ops .btn{font-family:var(--mono)}
+.eqbig{font-family:var(--mono);font-size:clamp(1.3rem,5vw,1.9rem);font-weight:700;color:#fff;text-align:center;overflow-wrap:anywhere}
+.eqbig.done{color:#52C584}
+.log{margin:0;padding-left:1.3em;font-size:.9rem;color:var(--panel-muted);max-height:150px;overflow-y:auto}
+.steps{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-family:var(--mono)}
+.steps li{border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;overflow-wrap:anywhere}
+.steps b{color:var(--accent);margin-right:6px}
+.nl{width:100%;max-width:340px;height:auto;display:block;color:inherit}
+.nl text{fill:currentColor;font-family:var(--mono);font-size:10px}
+.nl .open{fill:var(--surface)}
+.pb-stage .nl .open{fill:var(--panel)}
+.gr{width:100%;max-width:280px;height:auto;display:block;color:inherit}
+.gr text{fill:currentColor;font-family:var(--mono);font-size:9px}
+.pb-stage .line{display:block;font-size:1.15rem;padding:2px 0}
+.pb-stage .line.dim{color:var(--panel-muted)}
+.slide .eq{white-space:normal}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek · 9. évfolyam</span>
+  <h1>Egyenletek, egyenlőtlenségek, egyenletrendszerek</h1>
+  <p class="lead">Az egyenlet egy mérleg: amit az egyik serpenyőben teszel, tedd meg a másikban is. Próbáld ki: hagyd egyedül az x-et!</p>
+  <div class="panel">
+    <span class="eyebrow">A mérleg mindig egyensúlyban marad · narancs doboz = x, kék korong = 1</span>
+    <div class="eqbig" id="sEq" aria-live="polite"></div>
+    <div class="scale" aria-hidden="true">
+      <div class="beam"></div>
+      <div class="pans"><div class="pan" id="panL"></div><div class="fulcrum"></div><div class="pan" id="panR"></div></div>
+    </div>
+    <div class="ops" id="sOps">
+      <button class="btn" data-o="n">Mindkét oldalról: −1</button>
+      <button class="btn" data-o="x">Mindkét oldalról: −x</button>
+      <button class="btn" data-o="2">Mindkét oldal felére</button>
+      <button class="btn" data-o="3">Mindkét oldal harmadára</button>
+      <button class="btn" data-o="undo">↶ Vissza</button>
+      <button class="btn" data-o="new">Új feladat</button>
+    </div>
+    <ol class="log" id="sLog"></ol>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Minden kattintásra új példa. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="zar" aria-selected="true">Zárójeles egyenlet</button>
+    <button class="tab" data-m="tort" aria-selected="false">Törtes egyenlet</button>
+    <button class="tab" data-m="ineq" aria-selected="false">Egyenlőtlenség</button>
+    <button class="tab" data-m="sys" aria-selected="false">Egyenletrendszer</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A törtet így írd: 3/4 (vagy tizedes törtként: 0,75). Egyenlőtlenségnél: x &lt; 3 vagy x ≥ −2 (a ≥ helyett &gt;= is jó). Egyenletrendszernél: (2; 3) vagy x = 2, y = 3. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="two-col">
+    <div class="trick"><span class="t">Mérlegelv</span><span>Mindkét oldalon ugyanazt: ugyanannyit hozzáadsz, elveszel, ugyanazzal szorzol vagy osztasz (0-val nem!).</span></div>
+    <div class="trick"><span class="t">A megoldás menete</span><span>1. törtek el (szorzás a közös nevezővel) · 2. zárójelek fel · 3. x-ek egy oldalra · 4. számok a másikra · 5. osztás · 6. ellenőrzés</span></div>
+    <div class="trick"><span class="t">Zárójel</span><span class="mono">3(x − 2) = 3x − 6 · −(x − 4) = −x + 4</span></div>
+    <div class="trick"><span class="t">Egyenlőtlenség</span><span>Ugyanúgy, mint az egyenlet, de <b>negatív számmal szorozva vagy osztva a reláció megfordul</b>: −2x &lt; 6 → x &gt; −3.</span></div>
+    <div class="trick"><span class="t">Számegyenes</span><span>&lt; és &gt;: üres karika (a határ nincs benne) · ≤ és ≥: teli karika (benne van). Intervallum: x &lt; 3 → ]−∞; 3[ · x ≥ −2 → [−2; ∞[</span></div>
+    <div class="trick"><span class="t">Egyenletrendszer</span><span><b>Behelyettesítés:</b> az egyikből kifejezed az y-t, beírod a másikba. <b>Egyenlő együtthatók:</b> szorzással egyformává teszed az y együtthatóit, és összeadod vagy kivonod a két egyenletet.</span></div>
+    <div class="trick"><span class="t">Szöveges feladat</span><span>Mi az ismeretlen (x)? → egyenlet felírása → megoldás → ellenőrzés <b>a szöveg alapján</b> → válasz mondatban.</span></div>
+    <div class="trick"><span class="t">Különleges esetek</span><span>0 · x = 5: nincs megoldás (ellentmondás). 0 · x = 0: minden szám megoldás (azonosság).</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/&lt;/g, " kisebb, mint "], [/&gt;/g, " nagyobb, mint "], [/≤/g, " kisebb vagy egyenlő, mint "], [/≥/g, " nagyobb vagy egyenlő, mint "],
+    [/(\d+)\/(\d+)/g, "$1 per $2"], [/−(\d|x|\()/g, "mínusz $1"], [/(\d)x/g, "$1 x"], [/(\d)y/g, "$1 y"], [/\s:\s/g, " osztva "], [/∞/g, "végtelen"]);
+
+  /* ---------- Törtek ---------- */
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
+  const lcm = (a, b) => a / gcd(a, b) * b;
+  const Q = (n, d) => { d = d == null ? 1 : d; if (d < 0){ n = -n; d = -d; } const g = gcd(n, d); return { n: n / g, d: d / g }; };
+  const qa = (p, q) => Q(p.n * q.d + q.n * p.d, p.d * q.d), qs = (p, q) => Q(p.n * q.d - q.n * p.d, p.d * q.d);
+  const qm = (p, q) => Q(p.n * q.n, p.d * q.d), qdv = (p, q) => Q(p.n * q.d, p.d * q.n);
+  const qstr = p => (p.n < 0 ? "−" : "") + (p.d === 1 ? Math.abs(p.n) : Math.abs(p.n) + "/" + p.d);
+  const qv = p => p.n / p.d;
+  const nz = (a, b) => { let v; do { v = rnd(a, b); } while (!v); return v; };
+  const sg = n => n < 0 ? "−" + (-n) : String(n);
+  const par = n => n < 0 ? "(" + sg(n) + ")" : String(n);
+  // válasz-értelmezés: egész, tizedes (vesszővel is), tört (3/4), valódi mínuszjellel is
+  const val = s => { const t = String(s).replace(/\s+/g, "").replace(/−/g, "-").replace(",", ".");
+    let m = /^(-?\d+)\/(\d+)$/.exec(t); if (m && +m[2]) return +m[1] / +m[2];
+    return /^-?\d+(\.\d+)?$/.test(t) ? Number(t) : NaN; };
+
+  /* ---------- Kifejezések: oldal = részek; rész = {c, a, b, d}: c · (a·x + b) / d ---------- */
+  const P1 = (a, b) => ({ c: 1, a, b, d: 1 });
+  function terms(ts){
+    let s = "";
+    ts.forEach(([k, v]) => {
+      const q = typeof k === "number" ? Q(k) : k; if (!q.n) return;
+      const ab = Q(Math.abs(q.n), q.d), body = v ? (ab.n === 1 && ab.d === 1 ? v : qstr(ab) + v) : qstr(ab);
+      s += s ? (q.n < 0 ? " − " : " + ") + body : (q.n < 0 ? "−" : "") + body;
+    });
+    return s || "0";
+  }
+  const lin = (a, b) => terms([[a, "x"], [b, ""]]);
+  function side(parts){
+    let s = "";
+    parts.forEach(p => {
+      const inner = lin(p.a, p.b), two = p.a !== 0 && p.b !== 0;
+      if (p.d === 1 && (p.c === 1 || !p.a || !p.b)){ const t = lin(p.c * p.a, p.c * p.b); if (t === "0") return; s += !s ? t : t[0] === "−" ? " − " + t.slice(1) : " + " + t; return; }
+      let body = p.d !== 1 ? (two ? "(" + inner + ")" : inner) + "/" + p.d : (Math.abs(p.c) === 1 ? "" : Math.abs(p.c)) + "(" + inner + ")";
+      if (p.d !== 1 && Math.abs(p.c) !== 1) body = Math.abs(p.c) + " · " + body;
+      s += s ? (p.c < 0 ? " − " : " + ") + body : (p.c < 0 ? "−" : "") + body;
+    });
+    return s || "0";
+  }
+  const form = parts => parts.reduce((f, p) => ({ A: qa(f.A, Q(p.c * p.a, p.d)), B: qa(f.B, Q(p.c * p.b, p.d)) }), { A: Q(0), B: Q(0) });
+  const evalS = (parts, x) => parts.reduce((s, p) => qa(s, qdv(qm(Q(p.c), qa(qm(Q(p.a), x), Q(p.b))), Q(p.d))), Q(0));
+  const REL = { "=": "=", "<": "&lt;", ">": "&gt;", "≤": "≤", "≥": "≥" };
+  const FLIP = { "<": ">", ">": "<", "≤": "≥", "≥": "≤", "=": "=" };
+  const line = (l, rel, r) => l + " " + REL[rel] + " " + r;
+
+  // lépések: törtek el, zárójelek fel, x-ek balra, számok jobbra, osztás
+  function solve(L, R, rel){
+    const out = [{ t: line(side(L), rel, side(R)), cap: (rel === "=" ? "Az egyenlet: " : "Az egyenlőtlenség: ") + line(side(L), rel, side(R)) + "." }];
+    let l = L, r = R;
+    const M = L.concat(R).reduce((m, p) => lcm(m, p.d), 1);
+    if (M > 1){
+      l = L.map(p => ({ c: p.c * M / p.d, a: p.a, b: p.b, d: 1 })); r = R.map(p => ({ c: p.c * M / p.d, a: p.a, b: p.b, d: 1 }));
+      out.push({ t: line(side(l), rel, side(r)), cap: "Eltüntetjük a törteket: mindkét oldal minden tagját megszorozzuk a nevezők legkisebb közös többszörösével, ez: " + M + "." + (rel !== "=" ? " Pozitív számmal szorzunk, a reláció marad." : "") });
+    }
+    const fl = form(l), fr = form(r), A1 = fl.A.n, B1 = fl.B.n, A2 = fr.A.n, B2 = fr.B.n;
+    if (l.length + r.length > 2 || l.concat(r).some(p => p.c !== 1)) out.push({ t: line(lin(A1, B1), rel, lin(A2, B2)), cap: "Felbontjuk a zárójeleket: a zárójel előtti számmal a zárójelen belül minden tagot megszorzunk, aztán összevonjuk az egynemű tagokat." });
+    const A = A1 - A2;
+    if (A2) out.push({ t: line(lin(A, B1), rel, lin(0, B2)), cap: "Az x-es tagokat a bal oldalra gyűjtjük: " + (A2 > 0 ? "mindkét oldalból kivonjuk ezt: " + lin(A2, 0) : "mindkét oldalhoz hozzáadjuk ezt: " + lin(-A2, 0)) + "." });
+    const C = B2 - B1;
+    if (B1) out.push({ t: line(lin(A, 0), rel, sg(C)), cap: "A számokat a jobb oldalra visszük: " + (B1 > 0 ? "mindkét oldalból kivonjuk ezt: " + B1 : "mindkét oldalhoz hozzáadjuk ezt: " + (-B1)) + "." });
+    const x = Q(C, A), rel2 = A < 0 ? FLIP[rel] : rel;
+    if (A !== 1) out.push({ t: line("x", rel2, qstr(x)), cap: "Mindkét oldalt elosztjuk ezzel: " + sg(A) + "." + (rel !== "=" && A < 0 ? " Negatív számmal osztunk, ezért a reláció megfordul!" : "") + (x.d !== 1 ? " Az eredmény tört, egyszerűsítve." : "") });
+    return { steps: out, x, rel: rel2, A };
+  }
+  const lineHtml = (st, k) => st.slice(0, k + 1).map((s, i) => '<span class="line' + (i === k ? " cur" : " dim") + '">' + s.t + "</span>").join("");
+  const checkCap = (L, R, x) => "Ellenőrzés: x = " + qstr(x) + " esetén a bal oldal értéke " + qstr(evalS(L, x)) + ", a jobb oldalé " + qstr(evalS(R, x)) + ". Egyenlő, tehát jó a megoldás.";
+  function eqFrames(L, R){
+    const S = solve(L, R, "="), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k) }));
+    F.push({ cap: checkCap(L, R, S.x), html: lineHtml(S.steps, S.steps.length - 1) + '<p class="big led" style="margin-top:10px">x = ' + qstr(S.x) + " ✓</p>" });
+    return F;
+  }
+  // számegyenes: határ, reláció
+  function numLine(v, rel){
+    const lo = Math.floor(v) - 5, W = 320, X = t => 10 + (t - lo) * 30, cx = X(v), left = rel === "<" || rel === "≤", closed = rel === "≤" || rel === "≥";
+    let s = '<svg class="nl" viewBox="0 0 ' + (W + 20) + ' 52" role="img" aria-label="Számegyenes"><line x1="4" y1="22" x2="' + (W + 16) + '" y2="22" stroke="currentColor" stroke-opacity=".5" stroke-width="1.5"/>';
+    for (let t = lo; t <= lo + 10; t++) s += '<line x1="' + X(t) + '" y1="17" x2="' + X(t) + '" y2="27" stroke="currentColor" stroke-opacity=".5"/><text x="' + X(t) + '" y="43" text-anchor="middle">' + sg(t) + "</text>";
+    s += '<line x1="' + cx + '" y1="22" x2="' + (left ? 4 : W + 16) + '" y2="22" stroke="#F29E0C" stroke-width="5" stroke-linecap="round"/>';
+    s += '<circle cx="' + cx + '" cy="22" r="6" stroke="#F29E0C" stroke-width="2.5" class="' + (closed ? "" : "open") + '" fill="' + (closed ? "#F29E0C" : "") + '"/></svg>';
+    return s;
+  }
+  const interval = (x, rel) => rel === "<" ? "]−∞; " + qstr(x) + "[" : rel === "≤" ? "]−∞; " + qstr(x) + "]" : rel === ">" ? "]" + qstr(x) + "; ∞[" : "[" + qstr(x) + "; ∞[";
+  function ineqFrames(L, R, rel){
+    const S = solve(L, R, rel), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k) }));
+    F.push({ cap: "A megoldás: x " + REL[S.rel] + " " + qstr(S.x) + ". A számegyenesen " + (S.rel === "≤" || S.rel === "≥" ? "teli karika: a határ is megoldás." : "üres karika: a határ nem megoldás.") + " Intervallummal: " + interval(S.x, S.rel) + ".",
+      html: lineHtml(S.steps, S.steps.length - 1) + numLine(qv(S.x), S.rel) + '<p class="big led">' + interval(S.x, S.rel) + "</p>" });
+    return F;
+  }
+  // egyenletrendszer: egyenlő együtthatók módszere (az y kiejtése)
+  const eq2 = (a, b, c) => terms([[a, "x"], [b, "y"]]) + " = " + sg(c);
+  function sysFrames(e1, e2){
+    const [a1, b1, c1] = e1, [a2, b2, c2] = e2, F = [];
+    const g = gcd(b1, b2), m1 = Math.abs(b2) / g, m2 = Math.abs(b1) / g;
+    const f1 = [a1 * m1, b1 * m1, c1 * m1], f2 = [a2 * m2, b2 * m2, c2 * m2], same = Math.sign(f1[1]) === Math.sign(f2[1]);
+    const A = same ? f1[0] - f2[0] : f1[0] + f2[0], C = same ? f1[2] - f2[2] : f1[2] + f2[2], x = C / A, y = (c1 - a1 * x) / b1;
+    const sys = (p, q, cur) => '<span class="line' + (cur ? " cur" : "") + '">I. ' + eq2(...p) + '</span><span class="line' + (cur ? " cur" : "") + '">II. ' + eq2(...q) + "</span>";
+    F.push({ cap: "Az egyenletrendszer: I. " + eq2(a1, b1, c1) + ", II. " + eq2(a2, b2, c2) + ". Az egyenlő együtthatók módszerével oldjuk meg: az y együtthatóját a két egyenletben egyformává tesszük.", html: sys(e1, e2) });
+    if (m1 !== 1 || m2 !== 1) F.push({ cap: "Az I. egyenlet minden tagját megszorozzuk ezzel: " + m1 + ", a II. egyenletét ezzel: " + m2 + ". Így az y együtthatója mindkettőben " + Math.abs(f1[1]) + " lesz, előjeltől eltekintve.", html: sys(f1, f2, true) });
+    F.push({ cap: same ? "Az y együtthatói egyenlők, ezért kivonjuk a II. egyenletet az I.-ből: az y kiesik." : "Az y együtthatói ellentettek, ezért összeadjuk a két egyenletet: az y kiesik.", html: sys(f1, f2) + '<span class="line cur">' + lin(A, 0) + " = " + sg(C) + "</span>" });
+    F.push({ cap: "Mindkét oldalt elosztjuk ezzel: " + sg(A) + ". Ebből x = " + sg(x) + ".", html: '<span class="line">' + lin(A, 0) + " = " + sg(C) + '</span><span class="line cur">x = ' + sg(x) + "</span>" });
+    F.push({ cap: "Visszahelyettesítjük az I. egyenletbe: " + a1 + " · " + par(x) + " + " + (b1 === 1 ? "" : par(b1) + " · ") + "y = " + sg(c1) + ". Ebből " + lin(0, a1 * x) + (b1 < 0 ? " − " : " + ") + (Math.abs(b1) === 1 ? "" : Math.abs(b1)) + "y = " + sg(c1) + ", tehát y = " + sg(y) + ".",
+      html: '<span class="line">x = ' + sg(x) + '</span><span class="line cur">y = ' + sg(y) + "</span>" });
+    F.push({ cap: "Ellenőrzés a II. egyenletben: " + a2 + " · " + par(x) + " + " + par(b2) + " · " + par(y) + " = " + sg(a2 * x + b2 * y) + ". Egyezik. A megoldás: (" + sg(x) + "; " + sg(y) + ").",
+      html: sys(e1, e2) + '<p class="big led" style="margin-top:10px">(' + sg(x) + "; " + sg(y) + ") ✓</p>" });
+    return F;
+  }
+
+  /* ---------- Generátorok ---------- */
+  function genEq(l){
+    for (let g = 0; g < 800; g++){
+      let L, R, x;
+      if (l === 1){ x = Q(rnd(-9, 9)); const a1 = rnd(2, 7), a2 = rnd(0, a1 + 2); if (a1 === a2) continue; L = [P1(a1, nz(-10, 10))]; R = [P1(a2, 0)]; }
+      else if (l === 2){ x = Q(nz(-8, 8), pick([1, 1, 1, 2])); L = [{ c: pick([2, 3, 4, 5, -2, -3]), a: 1, b: nz(-6, 6), d: 1 }]; if (Math.random() < 0.4) L.push(P1(0, nz(-9, 9)));
+        R = [Math.random() < 0.5 ? { c: pick([2, 3, -1]), a: 1, b: nz(-5, 5), d: 1 } : P1(rnd(-3, 4), 0)]; }
+      else { x = Q(nz(-6, 9), pick([1, 1, 2, 5])); const p = pick([2, 3, 4, 5]), q = pick([2, 3, 4, 6].filter(v => v !== p));
+        L = [{ c: 1, a: 1, b: rnd(-5, 5), d: p }, { c: pick([1, -1]), a: pick([1, 2]), b: rnd(-5, 5), d: q }]; R = [P1(Math.random() < 0.4 ? pick([1, -1]) : 0, 0)]; }
+      const need = qs(evalS(L, x), evalS(R, x));
+      if (need.d !== 1 || Math.abs(need.n) > 60) continue;
+      const last = R[R.length - 1];
+      if (last.c === 1 && last.d === 1) last.b += need.n; else R.push(P1(0, need.n));
+      if (!qs(form(L).A, form(R).A).n) continue;
+      if (qs(evalS(L, x), evalS(R, x)).n !== 0) continue;
+      return { L, R, x };
+    }
+    return { L: [P1(3, 2)], R: [P1(1, 8)], x: Q(3) };
+  }
+  function genIneq(l){
+    for (let g = 0; g < 800; g++){
+      let L, R, x;
+      if (l === 1){ x = Q(rnd(-9, 9)); L = [P1(rnd(2, 6), nz(-10, 10))]; R = [P1(0, 0)]; }
+      else if (l === 2){ x = Q(rnd(-9, 9)); const a1 = Math.random() < 0.7 ? -rnd(1, 5) : rnd(1, 5); L = [P1(a1, rnd(-10, 10))]; R = [P1(Math.random() < 0.5 ? rnd(-3, 3) : 0, 0)]; }
+      else { x = Q(nz(-8, 8), pick([1, 1, 2])); L = [{ c: pick([2, 3, -2, -3]), a: 1, b: nz(-6, 6), d: 1 }]; R = [P1(rnd(-4, 4), 0)]; }
+      const need = qs(evalS(L, x), evalS(R, x));
+      if (need.d !== 1 || Math.abs(need.n) > 60) continue;
+      R[R.length - 1].b += need.n;
+      if (!qs(form(L).A, form(R).A).n) continue;
+      return { L, R, x, rel: pick(["<", ">", "≤", "≥"]) };
+    }
+  }
+  function genSys(l){
+    for (let g = 0; g < 2000; g++){
+      let a1, b1, a2, b2, x, y;
+      if (l === 1){ x = rnd(2, 15); y = rnd(1, x - 1 || 1); a1 = 1; b1 = 1; a2 = 1; b2 = -1; }
+      else if (l === 2){ x = rnd(-6, 9); y = rnd(-6, 9); a1 = rnd(1, 5); b1 = rnd(1, 5); a2 = rnd(1, 5); b2 = pick([b1, -b1]); }
+      else { x = rnd(-8, 8); y = rnd(-8, 8); a1 = nz(-5, 6); b1 = nz(-5, 6); a2 = nz(-5, 6); b2 = nz(-5, 6); if (Math.abs(b1) === Math.abs(b2) || Math.abs(a1) === Math.abs(a2)) continue; }
+      if (a1 * b2 - a2 * b1 === 0) continue;
+      return { e1: [a1, b1, a1 * x + b1 * y], e2: [a2, b2, a2 * x + b2 * y], x, y };
+    }
+  }
+
+  /* ---------- Hero: mérleg ---------- */
+  const H = { s: null, hist: [], log: [] };
+  function heroNew(first){
+    let x, a, b, c, d;
+    if (first){ a = 3; b = 2; c = 1; d = 8; x = 3; }
+    else do { x = rnd(1, 6); a = rnd(2, 4); c = rnd(0, a - 1); b = rnd(0, 6); d = a * x + b - c * x; } while (d < 0 || a + b > 14 || c + d > 14 || (b === 0 && c === 0 && d % a === 0 && a === 1));
+    H.s = { L: { x: a, n: b }, R: { x: c, n: d } }; H.hist = []; H.log = []; heroDraw();
+  }
+  const pan = o => '<span class="xb">x</span>'.repeat(o.x) + '<span class="w1">1</span>'.repeat(o.n);
+  function heroDraw(){
+    const { L, R } = H.s, done = (L.x === 1 && L.n === 0 && R.x === 0) || (R.x === 1 && R.n === 0 && L.x === 0);
+    $("#panL").innerHTML = pan(L); $("#panR").innerHTML = pan(R);
+    $("#sEq").textContent = lin(L.x, L.n) + " = " + lin(R.x, R.n) + (done ? "  ✓" : "");
+    $("#sEq").classList.toggle("done", done);
+    const all = [L.x, L.n, R.x, R.n];
+    $$("#sOps [data-o]").forEach(b => {
+      const o = b.dataset.o;
+      b.disabled = o === "n" ? !(L.n && R.n) : o === "x" ? !(L.x && R.x) : o === "2" || o === "3" ? !all.every(v => v % +o === 0) || all.every(v => !v) || done : o === "undo" ? !H.hist.length : false;
+    });
+    $("#sLog").innerHTML = H.log.map(t => "<li>" + t + "</li>").join("") + (done ? '<li style="color:#52C584;font-weight:700">Kész: az x egyedül maradt, x = ' + (L.x ? R.n : L.n) + ". Ezt az egyenlet megoldásának hívjuk.</li>" : "");
+  }
+  $("#sOps").addEventListener("click", e => {
+    const b = e.target.closest("[data-o]"); if (!b || b.disabled) return;
+    const o = b.dataset.o, s = H.s;
+    if (o === "new") return heroNew(false);
+    if (o === "undo"){ H.s = H.hist.pop(); H.log.pop(); return heroDraw(); }
+    H.hist.push(JSON.parse(JSON.stringify(s)));
+    if (o === "n"){ s.L.n--; s.R.n--; H.log.push("Mindkét oldalról levettünk egy kék korongot (−1)."); }
+    else if (o === "x"){ s.L.x--; s.R.x--; H.log.push("Mindkét oldalról levettünk egy x-dobozt (−x)."); }
+    else { const k = +o; ["L", "R"].forEach(q => { s[q].x /= k; s[q].n /= k; }); H.log.push("Mindkét oldalt " + (k === 2 ? "a felére" : "a harmadára") + " csökkentettük (" + (k === 2 ? ": 2" : ": 3") + ")."); }
+    heroDraw();
+  });
+  heroNew(true);
+
+  /* ---------- Lejátszó ---------- */
+  const MET = { zar: "Zárójeles egyenlet", tort: "Törtes egyenlet", ineq: "Egyenlőtlenség", sys: "Egyenletrendszer" };
+  const MF = {
+    zar: () => { const e = genEq(2); return eqFrames(e.L, e.R); },
+    tort: () => { const e = genEq(3); return eqFrames(e.L, e.R); },
+    ineq: () => { const e = genIneq(pick([2, 3])); return ineqFrames(e.L, e.R, e.rel); },
+    sys: () => { const s = genSys(pick([2, 3])); return sysFrames(s.e1, s.e2); }
+  };
+  const pb = K.player($("#pb"));
+  const PB = { m: "zar" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva (új példa)</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  function sysGraph(){
+    const S = 18, R = 6, X = v => (v + R) * S, Y = v => (R - v) * S, W = 2 * R * S;
+    let s = '<svg class="gr" viewBox="-10 -10 ' + (W + 20) + " " + (W + 20) + '" role="img" aria-label="Két egyenes metszéspontja">';
+    for (let i = -R; i <= R; i++) s += '<line x1="' + X(i) + '" y1="0" x2="' + X(i) + '" y2="' + W + '" stroke="currentColor" stroke-opacity=".12"/><line x1="0" y1="' + Y(i) + '" x2="' + W + '" y2="' + Y(i) + '" stroke="currentColor" stroke-opacity=".12"/>';
+    s += '<line x1="0" y1="' + Y(0) + '" x2="' + W + '" y2="' + Y(0) + '" stroke="currentColor" stroke-opacity=".7"/><line x1="' + X(0) + '" y1="0" x2="' + X(0) + '" y2="' + W + '" stroke="currentColor" stroke-opacity=".7"/>';
+    s += '<line x1="' + X(-1) + '" y1="' + Y(6) + '" x2="' + X(6) + '" y2="' + Y(-1) + '" stroke="#F29E0C" stroke-width="2.5"/>';
+    s += '<line x1="' + X(-5) + '" y1="' + Y(-6) + '" x2="' + X(6) + '" y2="' + Y(5) + '" stroke="#3FA9F5" stroke-width="2.5"/>';
+    s += '<circle cx="' + X(3) + '" cy="' + Y(2) + '" r="5" fill="#52C584"/><text x="' + (X(3) + 7) + '" y="' + (Y(2) - 6) + '">(3; 2)</text></svg>';
+    return s;
+  }
+  const slides = [
+    { k: "Ismétlés", t: "A mérlegelv, x mindkét oldalon", h:
+      "<p>A 8.-ban ilyet oldottál meg: 3x + 5 = 20. Most az x mindkét oldalon lehet:</p>" +
+      "<ol class='steps'><li><b>0.</b>3x + 2 = x + 8</li><li><b>1.</b>2x + 2 = 8 <span class='mono'>(mindkét oldalból −x)</span></li><li><b>2.</b>2x = 6 <span class='mono'>(mindkét oldalból −2)</span></li><li><b>3.</b>x = 3 <span class='mono'>(mindkét oldal : 2)</span></li></ol>" +
+      "<p>Ezt rakod ki fent a mérlegen is. A szabály: <b>mindkét oldalon ugyanazt</b> a lépést végzed, így az egyenlőség megmarad.</p>" },
+    { k: "Zárójel", t: "Zárójelek felbontása", h:
+      "<p>A zárójel előtti számmal a zárójelen belül <b>minden</b> tagot megszorzunk:</p><p class='eq'>3(x − 2) = 3x − 6 &nbsp;·&nbsp; −2(x + 4) = −2x − 8 &nbsp;·&nbsp; −(x − 5) = −x + 5</p>" +
+      "<p>Példa: 2(x + 3) = x + 10 → 2x + 6 = x + 10 → x + 6 = 10 → x = 4.</p>" +
+      "<div class='mistake'><b>Gyakori hiba:</b> csak az első tagot szorzod: 3(x − 2) ≠ 3x − 2.</div>" + playBtn("zar"), init: playInit },
+    { k: "Törtek", t: "Törtes egyenlet: szorozz a közös nevezővel", h:
+      "<p>Ha az egyenletben törtek vannak, mindkét oldal <b>minden tagját</b> megszorozzuk a nevezők legkisebb közös többszörösével. Így eltűnnek a törtek.</p>" +
+      "<p class='eq'>(x + 1)/2 + x/3 = 4 &nbsp;| · 6</p><p class='eq'>3(x + 1) + 2x = 24 → 5x + 3 = 24 → 5x = 21 → x = 21/5</p>" +
+      "<p>A megoldás nem mindig egész szám: 21/5 = 4,2. Ezt is írhatod.</p>" + playBtn("tort"), init: playInit },
+    { k: "Ellenőrzés", t: "Ellenőrzés és különleges esetek", h:
+      "<p><b>Ellenőrzés:</b> a kapott számot beírod az <b>eredeti</b> egyenlet mindkét oldalába. Ha a két oldal egyenlő, jó a megoldás.</p>" +
+      "<p>x = 4 esetén 2(x + 3) = 2 · 7 = 14, és x + 10 = 14. ✓</p>" +
+      "<ul><li>Ha a végén <b>0 · x = 5</b> jön ki: nincs megoldás (ellentmondás). Például x + 1 = x + 2.</li><li>Ha <b>0 · x = 0</b>: minden szám megoldás (azonosság). Például 2(x + 1) = 2x + 2.</li></ul>" },
+    { k: "Egyenlőtlenség", t: "Egyenlőtlenségek", h:
+      "<p>Az egyenlőtlenségben = helyett &lt;, &gt;, ≤ vagy ≥ áll. Ugyanúgy oldod meg, mint az egyenletet, egy kivétellel:</p>" +
+      "<div class='note'><b>Ha negatív számmal szorzol vagy osztasz, a reláció megfordul.</b> Miért? 2 &lt; 5, de −2 &gt; −5.</div>" +
+      "<p class='eq'>−2x + 3 &gt; 9 → −2x &gt; 6 → x &lt; −3 &nbsp;(−2-vel osztva fordult!)</p>" +
+      "<p>Az egyenlőtlenségnek általában végtelen sok megoldása van: például minden −3-nál kisebb szám.</p>" + playBtn("ineq"), init: playInit },
+    { k: "Számegyenes", t: "A megoldáshalmaz ábrázolása", h:
+      "<p>x &lt; −3 a számegyenesen (üres karika: a −3 nincs benne):</p>" + numLine(-3, "<") +
+      "<p>x ≥ 2 (teli karika: a 2 is benne van):</p>" + numLine(2, "≥") +
+      "<p><b>Intervallummal:</b> x &lt; −3 → ]−∞; −3[ &nbsp;·&nbsp; x ≥ 2 → [2; ∞[. A befelé álló szögletes zárójel: a végpont benne van, a kifelé álló: nincs benne. A végtelen sosincs benne.</p>" },
+    { k: "Két ismeretlen", t: "Egyenletrendszer: két egyenlet, két ismeretlen", h:
+      "<p>I. x + y = 5, II. x − y = 1. Olyan (x; y) számpárt keresünk, amely <b>mindkettőt</b> igazzá teszi.</p>" +
+      "<ul><li><b>Egyenlő együtthatók:</b> a két egyenletet összeadva az y kiesik: 2x = 6, x = 3. Visszahelyettesítve: 3 + y = 5, y = 2.</li>" +
+      "<li><b>Behelyettesítés:</b> I.-ből y = 5 − x. Ezt a II.-ba írva: x − (5 − x) = 1 → 2x − 5 = 1 → x = 3, y = 2.</li></ul>" +
+      "<p>Ha az együtthatók nem egyformák, előbb szorozd meg az egyenleteket úgy, hogy azok legyenek.</p>" + playBtn("sys"), init: playInit },
+    { k: "Grafikusan", t: "Két egyenes metszéspontja", h:
+      "<p>Mindkét egyenlet egy egyenes: x + y = 5 azonos ezzel: y = −x + 5 (narancs), x − y = 1 azonos ezzel: y = x − 1 (kék). A megoldás az a pont, amely mindkét egyenesen rajta van: a <b>metszéspont</b>.</p>" + sysGraph() +
+      "<p>Ha a két egyenes párhuzamos, nincs metszéspont: nincs megoldás. Ha egybeesnek, végtelen sok megoldás van.</p>" },
+    { k: "Szöveges feladat", t: "Szövegből egyenlet", h:
+      "<ol><li>Mit keresünk? Ez lesz az x.</li><li>Fejezd ki a többi mennyiséget x-szel.</li><li>Írd fel, mi egyenlő mivel.</li><li>Oldd meg, és <b>ellenőrizd a szöveg alapján</b>.</li><li>Válaszolj mondatban.</li></ol>" +
+      "<p><b>Példa:</b> Kovrat édesapja most háromszor annyi idős, mint Kovrat. 15 év múlva csak kétszer annyi idős lesz. Kovrat most x éves, az apja 3x. 15 év múlva: 3x + 15 = 2(x + 15) → 3x + 15 = 2x + 30 → x = 15. Kovrat 15, az apja 45 éves. Ellenőrzés: 15 év múlva 30 és 60. ✓</p>" },
+    { k: "Programozás", t: "Egyenlet megoldása programmal", h:
+      "<p>A gép nem „rendez át”, hanem <b>próbálgat</b>: végigmegy a számokon, és megnézi, melyik jó.</p>" +
+      "<pre class='code'>" + esc("for x in range(-100, 101):\n    if 3 * x + 2 == x + 8:\n        print(x)        # 3") + "</pre>" +
+      "<p>Nem egész megoldásnál ügyesebb ötlet az <b>intervallumfelezés</b>: ha a bal oldal mínusz a jobb oldal az egyik végen negatív, a másikon pozitív, a megoldás köztük van. Megnézed a felezőpontot, és a megfelelő felével folytatod. Húsz felezés után már nagyon pontos.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Csak az egyik oldalon.</b> Ha az egyik oldalból kivonsz, a másikból is kell.</div>" +
+      "<div class='mistake'><b>Előjelhiba átvitelkor.</b> Ha +5 áll a bal oldalon, mindkét oldalból kivonsz 5-öt: a jobb oldalon −5 lesz, nem +5.</div>" +
+      "<div class='mistake'><b>Zárójel: csak az első tag szorzása.</b> 3(x − 2) = 3x − 6, nem 3x − 2.</div>" +
+      "<div class='mistake'><b>Törtnél nem minden tag szorzása.</b> A tört nélküli tagot is szorozni kell a közös nevezővel.</div>" +
+      "<div class='mistake'><b>Egyenlőtlenség: a reláció nem fordul.</b> Negatív számmal osztva a &lt;-ből &gt; lesz.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Az x arra az oldalra</span><span>ahol több van belőle: így az együttható pozitív marad, egyenlőtlenségnél nem kell fordítani.</span></div>" +
+      "<div class='trick'><span class='t'>Ellenőrizz mindig</span><span>Az eredeti egyenletbe helyettesíts, ne egy átalakított sorba: ott a hiba már benne lehet.</span></div>" +
+      "<div class='trick'><span class='t'>Egyenlőtlenség próbája</span><span>Válassz egy számot a megoldásból (például x &lt; −3 esetén −4), és helyettesítsd be: igaz lesz?</span></div>" +
+      "<div class='trick'><span class='t'>Egyenletrendszer</span><span>Ha valamelyik ismeretlen együtthatója 1 vagy −1, a behelyettesítés a gyorsabb; különben az egyenlő együtthatók.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+  const numCheck = (x, hint, extra) => v => { const z = val(v); if (isNaN(z)) return { ok: false, msg: "Egy számot írj (tört: 3/4, tizedes: 0,75)." }; if (Math.abs(z - qv(x)) < 1e-9) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(+z)) || hint }; };
+  const relParse = v => {
+    const t = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(/<=|=</g, "≤").replace(/>=|=>/g, "≥").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    let m = /^x(<|>|≤|≥)(.+)$/i.exec(t); if (m) return { rel: m[1], v: val(m[2]) };
+    m = /^(.+)(<|>|≤|≥)x$/i.exec(t); if (m) return { rel: FLIP[m[2]], v: val(m[1]) };
+    return null;
+  };
+  const sysParse = v => {
+    const t = String(v).replace(/\s+/g, "").replace(/−/g, "-");
+    const mx = /x=(-?\d+(?:[.,]\d+)?)/i.exec(t), my = /y=(-?\d+(?:[.,]\d+)?)/i.exec(t);
+    if (mx && my) return [val(mx[1]), val(my[1])];
+    const s = t.replace(/^\(|\)$/g, ""), p = s.includes(";") ? s.split(";") : s.split(",");
+    return p.length === 2 ? p.map(val) : null;
+  };
+  const TIMES = { 2: "kétszer", 3: "háromszor", 4: "négyszer", 5: "ötször", 6: "hatszor" };
+  const types = [
+    { id: "lin", name: "Elsőfokú egyenlet", gen(l){
+      const e = genEq(l), fr = eqFrames(e.L, e.R), S = solve(e.L, e.R, "=");
+      return { q: "Oldd meg: <span class='num'>" + side(e.L) + " = " + side(e.R) + "</span>", kind: "input", ph: l === 3 ? "pl. 3/4" : "x értéke", answer: qstr(e.x), frames: fr, title: "Egyenlet megoldása", sol: caps(fr),
+        check: numCheck(e.x, "Nem jó. Nézd meg a megoldást lépésenként.", z => Math.abs(z + qv(e.x)) < 1e-9 && e.x.n ? "Előjelhiba: az ellentettjét kaptad. Figyelj, mit viszel át és milyen előjellel." : Math.abs(z * S.A - qv(e.x) * S.A) > 1e-9 && Math.abs(z - qv(e.x) * S.A) < 1e-9 && S.A !== 1 ? "Az utolsó lépésben nem osztottál az x együtthatójával (" + sg(S.A) + ")." : "") };
+    } },
+    { id: "chk", name: "Gyöke-e?", gen(l){
+      const e = genEq(l), ok = Math.random() < 0.45;
+      const cand = ok ? e.x : pick([qa(e.x, Q(1)), qs(e.x, Q(1)), e.x.n ? Q(-e.x.n, e.x.d) : Q(2)]);
+      const lv = evalS(e.L, cand), rv = evalS(e.R, cand), good = qv(lv) === qv(rv);
+      const opts = [{ l: "Igen, gyöke", ok: good }, { l: "Nem gyöke", ok: !good }];
+      return { q: "Megoldása-e (gyöke-e) ennek az egyenletnek: <span class='num'>" + side(e.L) + " = " + side(e.R) + "</span> ez a szám: <span class='num'>x = " + qstr(cand) + "</span>?", kind: "choice", options: opts, answer: good ? "Igen, gyöke" : "Nem gyöke",
+        sol: "<p>Behelyettesítjük: x = " + qstr(cand) + " esetén a bal oldal " + qstr(lv) + ", a jobb oldal " + qstr(rv) + ". " + (good ? "Egyenlők, tehát gyöke." : "Nem egyenlők, tehát nem gyöke. (A gyök: x = " + qstr(e.x) + ".)") + "</p>",
+        check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem jó. Helyettesítsd be a számot mindkét oldalba, és hasonlítsd össze." }) };
+    } },
+    { id: "ineq", name: "Egyenlőtlenség", gen(l){
+      const e = genIneq(l), S = solve(e.L, e.R, e.rel), fr = ineqFrames(e.L, e.R, e.rel), ans = "x " + S.rel + " " + qstr(S.x);
+      return { q: "Oldd meg: <span class='num'>" + line(side(e.L), e.rel, side(e.R)) + "</span>", kind: "input", ph: "pl. x < 3", answer: esc(ans), frames: fr, title: "Egyenlőtlenség", sol: caps(fr),
+        check: v => { const p = relParse(v); if (!p || isNaN(p.v)) return { ok: false, msg: "Így írd: x < 3 vagy x >= −2." };
+          const okv = Math.abs(p.v - qv(S.x)) < 1e-9;
+          if (okv && p.rel === S.rel) return { ok: true, msg: "Helyes!" };
+          if (okv && p.rel === FLIP[S.rel]) return { ok: false, msg: S.A < 0 ? "A határ jó, de a reláció nem fordult meg: negatív számmal osztottál!" : "A határ jó, de a reláció fordítva áll. Csak negatív számmal osztva fordul." };
+          if (okv) return { ok: false, msg: "A határ jó, de nézd meg: " + (S.rel === "<" || S.rel === ">" ? "a határ nem megoldás (szigorú reláció)." : "a határ is megoldás (≤ vagy ≥).") };
+          return { ok: false, msg: "A határ nem jó. Oldd meg úgy, mint egy egyenletet, aztán figyelj a relációra." }; } };
+    } },
+    { id: "sys", name: "Egyenletrendszer", gen(l){
+      const s = genSys(l), fr = sysFrames(s.e1, s.e2), ans = "(" + sg(s.x) + "; " + sg(s.y) + ")";
+      return { q: "Oldd meg az egyenletrendszert:<br><span class='num'>I. " + eq2(...s.e1) + "</span><br><span class='num'>II. " + eq2(...s.e2) + "</span>", kind: "input", ph: "pl. (2; 3)", answer: ans, frames: fr, title: "Egyenletrendszer", sol: caps(fr),
+        check: v => { const p = sysParse(v); if (!p || p.some(isNaN)) return { ok: false, msg: "Így írd: (2; 3) vagy x = 2, y = 3." };
+          if (p[0] === s.x && p[1] === s.y) return { ok: true, msg: "Helyes!" };
+          if (p[0] === s.y && p[1] === s.x) return { ok: false, msg: "Felcserélted: előbb az x, aztán az y." };
+          if (p[0] === s.x) return { ok: false, msg: "Az x jó, az y nem. Helyettesítsd vissza az x-et figyelmesen." };
+          return { ok: false, msg: "Nem jó. Ellenőrizd: a számpárnak mindkét egyenletet ki kell elégítenie." }; } };
+    } },
+    { id: "szov", name: "Szöveges feladat", gen(l){
+      let q, x, sol;
+      const k = rnd(0, 1);
+      if (l === 1 && k === 0){ const a = rnd(10, 60), b = rnd(1, a - 1), S = a + b, D = a - b; x = a;
+        q = "Két szám összege " + S + ", különbsége " + D + ". Mennyi a nagyobbik szám?"; sol = "A nagyobbik x, a kisebbik x − " + D + ". x + (x − " + D + ") = " + S + " → 2x = " + (S + D) + " → x = " + a + ". Ellenőrzés: " + a + " + " + b + " = " + S + ", " + a + " − " + b + " = " + D + "."; }
+      else if (l === 1){ const r = rnd(3, 20), d = rnd(2, 15), K2 = 2 * (r + r + d); x = r;
+        q = "Egy téglalap kerülete " + K2 + " cm. A hosszabbik oldala ennyivel hosszabb a rövidebbnél: " + d + " cm. Hány cm a rövidebbik oldal?"; sol = "A rövidebb oldal x, a hosszabb x + " + d + ". 2 · (x + x + " + d + ") = " + K2 + " → 4x + " + 2 * d + " = " + K2 + " → 4x = " + (K2 - 2 * d) + " → x = " + r + "."; }
+      else if (l === 2 && k === 0){ const m1 = rnd(3, 6), kid = rnd(6, 16), n = kid * (m1 - 2); x = kid;
+        q = "Kovrat édesapja most " + TIMES[m1] + " annyi idős, mint Kovrat. " + n + " év múlva már csak kétszer annyi idős lesz. Hány éves most Kovrat?"; sol = "Kovrat most x éves, az apja " + m1 + "x. " + n + " év múlva: " + m1 + "x + " + n + " = 2 · (x + " + n + ") → " + m1 + "x + " + n + " = 2x + " + 2 * n + " → " + (m1 - 2) + "x = " + n + " → x = " + kid + ". Ellenőrzés: most " + kid + " és " + m1 * kid + ", később " + (kid + n) + " és " + (m1 * kid + n) + "."; }
+      else if (l === 2){ const v1 = pick([60, 70, 80, 90, 100]), v2 = pick([40, 50, 60, 70]), t = rnd(1, 4), D = (v1 + v2) * t; x = t;
+        q = "Két város távolsága " + D + " km. Egyszerre indul egymással szemben egy autó " + v1 + " km/h és egy busz " + v2 + " km/h sebességgel. Hány óra múlva találkoznak?"; sol = "x óra alatt az autó " + v1 + "x, a busz " + v2 + "x km-t tesz meg, együtt az egész utat: " + v1 + "x + " + v2 + "x = " + D + " → " + (v1 + v2) + "x = " + D + " → x = " + t + "."; }
+      else if (k === 0){ const A = pick([2500, 3000, 3200]), B = pick([1500, 1800, 2000]), n = rnd(4, 12), dk = rnd(1, n - 1), T = dk * B + (n - dk) * A; x = dk;
+        q = "A mozijegy felnőttnek " + A + " Ft, diáknak " + B + " Ft. Egy csoport " + n + " jegyet vett, összesen " + T + " Ft-ért. Hány diákjegyet vettek?"; sol = "Diákjegy: x, felnőttjegy: " + n + " − x. " + B + "x + " + A + " · (" + n + " − x) = " + T + " → " + B + "x + " + A * n + " − " + A + "x = " + T + " → " + sg(B - A) + "x = " + sg(T - A * n) + " → x = " + dk + "."; }
+      else { let p1, p2, p, V, xx; do { p1 = pick([10, 20, 30]); p2 = pick([50, 60, 70, 80]); V = pick([10, 20, 30, 40, 60]); p = rnd(p1 + 5, p2 - 5); xx = V * (p2 - p) / (p2 - p1); } while (xx % 1 || p % 5); x = xx;
+        q = "Ennyi liter oldatot akarunk kapni: " + V + ", " + p + "%-osat. Ehhez " + p1 + "%-os és " + p2 + "%-os sóoldatot keverünk. Hány liter " + p1 + "%-os oldat kell?"; const dc = n => String(n / 100).replace(".", ",");
+        sol = "A " + p1 + "%-osból x liter, a másikból " + V + " − x liter. A só mennyisége: " + dc(p1) + "x + " + dc(p2) + " · (" + V + " − x) = " + dc(p) + " · " + V + ". Megoldva: x = " + xx + "."; }
+      return { q, kind: "input", mode: "numeric", answer: x, sol: "<p>" + sol + "</p>", check: numCheck(Q(x), "Nem jó. Jelöld x-szel, amit keresel, írd fel az egyenletet, és ellenőrizd a szöveg alapján.") };
+    } },
+    { id: "hiba", name: "Melyik lépés hibás?", gen(l){
+      for (let g = 0; g < 400; g++){
+        const lines = [], rel = l === 3 ? pick(["<", ">", "≤", "≥"]) : "=";
+        const x0 = rnd(-6, 8);
+        let k = 1, m = 0, a1, b1, a2 = nz(-4, 5), b2;
+        if (l === 2){ k = pick([2, 3, 4, 5]); m = nz(-6, 6); a1 = k; b1 = k * m; } else { a1 = l === 3 ? rnd(-6, -1) - Math.max(0, a2) : nz(-3, 8); b1 = nz(-9, 9); }
+        if (a1 === a2) continue;
+        b2 = a1 * x0 + b1 - a2 * x0;
+        const err = rnd(1, l === 2 ? 4 : 3);
+        // a hibás lépés után a többi lépés helyesen számol a hibás sorból
+        const st = [];
+        if (l === 2){ st.push(line(k + "(" + lin(1, m) + ")", rel, lin(a2, b2)));
+          const eb1 = err === 1 ? m : b1; st.push(line(lin(k, eb1), rel, lin(a2, b2))); b1 = eb1; }
+        else st.push(line(lin(a1, b1), rel, lin(a2, b2)));
+        const e1 = l === 2 ? 2 : 1;
+        let A = a1 - a2; if (err === e1) A = a1 + a2;
+        if (!A) continue;
+        st.push(line(lin(A, b1), rel, lin(0, b2)));
+        let C = b2 - b1; if (err === e1 + 1) C = b2 + b1;
+        st.push(line(lin(A, 0), rel, sg(C)));
+        const xv = Q(C, A); let rel2 = A < 0 ? FLIP[rel] : rel, xr = xv;
+        if (err === e1 + 2){ if (l === 3 && A < 0) rel2 = rel; else xr = Q(C - A); }
+        st.push(line("x", rel2, qstr(xr)));
+        if (st.slice(1).some((s, i) => s === st[i])) continue;
+        // a hiba tényleg látszik: a helyes megoldással összevetve
+        const correct = Q(b2 - (l === 2 ? k * m : b1), a1 - a2);
+        if (qv(xr) === qv(correct) && rel2 === ((a1 - a2) < 0 ? FLIP[rel] : rel)) continue;
+        const n = st.length - 1, why = [null,
+          l === 2 ? "A zárójel felbontásakor csak az x-et szorozta meg, a számot nem." : "Az x-es tag átvitelekor rossz előjellel számolt.",
+          l === 2 ? "Az x-es tag átvitelekor rossz előjellel számolt." : "A szám átvitelekor rossz előjellel számolt (kivonás helyett hozzáadta).",
+          l === 2 ? "A szám átvitelekor rossz előjellel számolt (kivonás helyett hozzáadta)." : (l === 3 && A < 0 ? "Negatív számmal osztott, de a relációt nem fordította meg." : "Osztás helyett kivonta az együtthatót."),
+          "Osztás helyett kivonta az együtthatót."][err];
+        const opts = Array.from({ length: n }, (_, i) => ({ l: (i + 1) + ". lépés", ok: i + 1 === err }));
+        return { q: "Kovrat így oldotta meg. Melyik lépésben hibázott először?<ol class='steps'>" + st.map((s, i) => "<li><b>" + i + ".</b>" + s + "</li>").join("") + "</ol>", kind: "choice", options: opts, answer: err + ". lépés",
+          sol: "<p>" + err + ". lépés: " + why + " A helyes megoldás: " + (rel === "=" ? "x = " : "x " + REL[(a1 - a2) < 0 ? FLIP[rel] : rel] + " ") + qstr(correct) + ".</p>",
+          check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Ellenőrizd minden lépésben: mindkét oldalon ugyanaz történt?" }) };
+      }
+    } }
+  ];
+  K.practice($("#practice"), { id: "egyenletek", types, play: playTo });
+})();
+</script>
+<!--@UPDATE-->
