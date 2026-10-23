@@ -1,0 +1,319 @@
+<!--@HEAD-->
+<title>Koordináták és függvények</title>
+<style>
+.gr{width:100%;max-width:320px;height:auto;display:block;color:inherit;overflow:hidden}
+.gr .g{stroke:currentColor;opacity:.14;stroke-width:1}
+.gr .ax{stroke:currentColor;opacity:.75;stroke-width:1.6}
+.gr .ln{stroke:#F29E0C;stroke-width:2.6;fill:none}
+.gr .ln2{stroke:#3FA9F5;stroke-width:2.2;fill:none;stroke-dasharray:6 4}
+.gr .pt{fill:#F29E0C;stroke:#fff;stroke-width:1.2}
+.gr .pt2{fill:#3FA9F5;stroke:#fff;stroke-width:1.2}
+.gr .sg{stroke:#52C584;stroke-width:2.2}
+.gr text{fill:currentColor;font-family:var(--mono);font-size:9px}
+.gr text.lb{font-size:11px;font-weight:700}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;align-items:start}
+.ctl{display:flex;flex-direction:column;gap:10px}
+.ctl label{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.ctl b{color:var(--led)}
+.ctl input[type=range]{width:100%;accent-color:var(--led)}
+.prompt .gr{margin-top:10px}
+.slide .eq{white-space:normal}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek a programozáshoz · 8. osztály</span>
+  <h1>Koordináták és függvények</h1>
+  <p class="lead">Minden pont két számmal megadható, minden egyenes egy képlettel. A játékokban, a CSS-ben és a Pythonban is így mondod meg a gépnek, hol legyen valami.</p>
+  <div class="panel">
+    <span class="eyebrow">Állítsd a meredekséget és a tengelymetszetet</span>
+    <div class="hero-grid">
+      <div id="hgr"></div>
+      <div class="ctl">
+        <label>Meredekség (m): <b id="mv">2</b><input id="m" type="range" min="-3" max="3" step="0.5" value="2" aria-label="Meredekség"></label>
+        <label>Tengelymetszet (b): <b id="bv">1</b><input id="b" type="range" min="-5" max="5" step="1" value="1" aria-label="Tengelymetszet"></label>
+        <label>A pont x-e: <b id="xv">1</b><input id="x" type="range" min="-5" max="5" step="1" value="1" aria-label="A pont x koordinátája"></label>
+        <div class="ptwrap"><table class="pt" id="htab"></table></div>
+      </div>
+    </div>
+    <div class="readout">
+      <div><div class="eyebrow">Képlet</div><div class="big led" id="fx"></div></div>
+      <div><div class="eyebrow">A pont</div><div class="big" id="pp"></div></div>
+      <div class="expr" id="hexpr"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="tab" aria-selected="true">Értéktáblázat és grafikon</button>
+    <button class="tab" data-m="two" aria-selected="false">Egyenes két pontból</button>
+    <button class="tab" data-m="dist" aria-selected="false">Két pont távolsága</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A pontot így írd: (3; −2), a zárójel elhagyható, a negatív előjel lehet sima kötőjel is. A tizedes törtet vesszővel vagy ponttal is írhatod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="two-col">
+    <div class="trick"><span class="t">Pont</span><span class="mono">P(x; y)</span><span>Előbb a vízszintes (x), aztán a függőleges (y). Origó: (0; 0).</span></div>
+    <div class="trick"><span class="t">Síknegyedek</span><span>I.: (+; +) · II.: (−; +) · III.: (−; −) · IV.: (+; −). Az óramutatóval ellentétesen számozzuk, jobb felülről.</span></div>
+    <div class="trick"><span class="t">Lineáris függvény</span><span class="mono">y = m · x + b</span><span>m: meredekség (egyet jobbra lépve ennyit megy fel), b: ahol az y tengelyt metszi.</span></div>
+    <div class="trick"><span class="t">Meredekség két pontból</span><span class="mono">m = (y₂ − y₁) : (x₂ − x₁)</span><span>Utána b = y₁ − m · x₁.</span></div>
+    <div class="trick"><span class="t">Távolság (Pitagorasz)</span><span class="mono">d = √((x₂ − x₁)² + (y₂ − y₁)²)</span><span>Pitagoraszi számhármasok: 3, 4, 5 · 5, 12, 13 · 6, 8, 10 · 8, 15, 17.</span></div>
+    <div class="trick"><span class="t">Képernyőn</span><span>Az origó a bal felső sarok, az y <b>lefelé</b> nő. Középre: (szélesség − dobozszélesség) : 2.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/\((−?\d+(?:,\d+)?); (−?\d+(?:,\d+)?)\)/g, " $1, $2 pont "], [/−(\d)/g, "mínusz $1"], [/√/g, "négyzetgyök "], [/²/g, " a négyzeten"], [/₁/g, " egy"], [/₂/g, " kettő"], [/\s:\s/g, " osztva "]);
+
+  /* ---------- Segédek ---------- */
+  const fn = x => String(x).replace("-", "−").replace(".", ",");          // kiírás: valódi mínuszjel, tizedesvessző
+  const P = (x, y) => "(" + fn(x) + "; " + fn(y) + ")";
+  const term = (m, b) => {                                                    // y = m · x + b szép alakban
+    let s = m === 0 ? "" : m === 1 ? "x" : m === -1 ? "−x" : fn(m) + "x";
+    if (b !== 0) s += s ? (b > 0 ? " + " + fn(b) : " − " + fn(-b)) : fn(b);
+    return "y = " + (s || "0");
+  };
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", "."); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const parsePt = v => { const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(/^[A-Za-z]?\(|\)$/g, ""); const p = s.split(/[;|]/); if (p.length !== 2) return null; const a = p.map(x => num(x)); return a.some(isNaN) ? null : a; };
+  const r2 = x => Math.round(x * 100) / 100;
+  // koordináta-rendszer SVG-ben: R egység mindkét irányban
+  function graph(o){
+    const R = o.R || 6, S = 20, W = 2 * R * S, X = x => (x + R) * S, Y = y => (R - y) * S, id = "c" + Math.random().toString(36).slice(2, 8);
+    let s = '<svg class="gr" viewBox="-14 -14 ' + (W + 28) + " " + (W + 28) + '" role="img" aria-label="Koordináta-rendszer"><defs><clipPath id="' + id + '"><rect x="0" y="0" width="' + W + '" height="' + W + '"/></clipPath></defs>';
+    for (let i = -R; i <= R; i++) s += '<line class="g" x1="' + X(i) + '" y1="0" x2="' + X(i) + '" y2="' + W + '"/><line class="g" x1="0" y1="' + Y(i) + '" x2="' + W + '" y2="' + Y(i) + '"/>';
+    s += '<line class="ax" x1="0" y1="' + Y(0) + '" x2="' + W + '" y2="' + Y(0) + '"/><line class="ax" x1="' + X(0) + '" y1="0" x2="' + X(0) + '" y2="' + W + '"/>';
+    s += '<text class="lb" x="' + (W + 2) + '" y="' + (Y(0) - 4) + '">x</text><text class="lb" x="' + (X(0) + 5) + '" y="-3">y</text>';
+    for (let i = -R; i <= R; i += 2) if (i) s += '<text x="' + (X(i) - 3) + '" y="' + (Y(0) + 11) + '">' + i + '</text><text x="' + (X(0) + 3) + '" y="' + (Y(i) + 3) + '">' + i + "</text>";
+    s += '<g clip-path="url(#' + id + ')">';
+    (o.fns || []).forEach(f => { const a = -R - 1, b = R + 1; s += '<line class="' + (f.c || "ln") + '" x1="' + X(a) + '" y1="' + Y(f.m * a + f.b) + '" x2="' + X(b) + '" y2="' + Y(f.m * b + f.b) + '"/>'; });
+    (o.curve || []).forEach(f => { let d = ""; for (let x = -R; x <= R + 0.001; x += 0.1) d += (d ? "L" : "M") + X(x).toFixed(1) + " " + Y(f(x)).toFixed(1); s += '<path class="ln" d="' + d + '"/>'; });
+    (o.segs || []).forEach(g => { s += '<line class="sg" x1="' + X(g[0]) + '" y1="' + Y(g[1]) + '" x2="' + X(g[2]) + '" y2="' + Y(g[3]) + '"/>'; });
+    s += "</g>";
+    (o.pts || []).forEach(p => { s += '<circle class="' + (p[3] || "pt") + '" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="4.5"/>' + (p[2] ? '<text class="lb" x="' + (X(p[0]) + 6) + '" y="' + (Y(p[1]) - 6) + '">' + p[2] + "</text>" : ""); });
+    return s + "</svg>";
+  }
+
+  /* ---------- Hero ---------- */
+  function hero(){
+    const m = +$("#m").value, b = +$("#b").value, x = +$("#x").value, y = m * x + b;
+    $("#mv").textContent = fn(m); $("#bv").textContent = fn(b); $("#xv").textContent = fn(x);
+    $("#hgr").innerHTML = graph({ fns: [{ m, b }], pts: [[0, b, "", "pt2"], [x, y, "P"]] });
+    $("#fx").textContent = term(m, b); $("#pp").textContent = "P" + P(x, y);
+    const xs = [-2, -1, 0, 1, 2];
+    $("#htab").innerHTML = "<tr><th>x</th>" + xs.map(v => "<td>" + fn(v) + "</td>").join("") + "</tr><tr><th>y</th>" + xs.map(v => "<td" + (v === x ? ' class="hl"' : "") + ">" + fn(m * v + b) + "</td>").join("") + "</tr>";
+    $("#hexpr").innerHTML = "Behelyettesítés: y = " + fn(m) + " · " + (x < 0 ? "(" + fn(x) + ")" : fn(x)) + (b < 0 ? " − " + fn(-b) : " + " + fn(b)) + " = " + fn(y) + ". A kék pont a tengelymetszet: " + P(0, b) + ".";
+  }
+  ["#m", "#b", "#x"].forEach(s => $(s).addEventListener("input", hero));
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  const side = (g, t) => '<div class="hero-grid"><div>' + g + "</div><div>" + t + "</div></div>";
+  function tabFrames(m, b){
+    const xs = [-2, -1, 0, 1, 2], pts = [], F = [];
+    const tb = k => '<div class="ptwrap"><table class="pt"><tr><th>x</th>' + xs.map(v => "<td>" + fn(v) + "</td>").join("") + "</tr><tr><th>y</th>" + xs.map((v, i) => "<td" + (i === k ? ' class="hl"' : "") + ">" + (i <= k ? fn(m * v + b) : "") + "</td>").join("") + "</tr></table></div>";
+    F.push({ cap: "Ábrázoljuk ezt a függvényt: " + term(m, b) + ". Először értéktáblázatot készítünk: néhány x-et választunk, és kiszámoljuk az y-t.", html: side(graph({}), tb(-1)) });
+    xs.forEach((v, i) => { const y = m * v + b; pts.push([v, y]);
+      F.push({ cap: "x = " + fn(v) + ": y = " + fn(m) + " · " + (v < 0 ? "(" + fn(v) + ")" : fn(v)) + (b < 0 ? " − " + fn(-b) : " + " + fn(b)) + " = " + fn(y) + ". A pont: " + P(v, y) + ".", html: side(graph({ pts: pts.map(p => [p[0], p[1]]) }), tb(i)) }); });
+    F.push({ cap: "A pontok egy egyenesre esnek: összekötjük őket. Ez a lineáris függvény grafikonja. Ahol az y tengelyt metszi, ott y = " + fn(b) + ": ez a b.", html: side(graph({ fns: [{ m, b }], pts: pts.map(p => [p[0], p[1]]) }), tb(4)) });
+    return F;
+  }
+  function twoFrames(x1, y1, x2, y2){
+    const m = (y2 - y1) / (x2 - x1), b = y1 - m * x1, F = [];
+    const g = (fns, extra) => graph({ fns, pts: [[x1, y1, "A"], [x2, y2, "B"]], segs: extra });
+    F.push({ cap: "Az egyenes átmegy ezen a két ponton: A" + P(x1, y1) + " és B" + P(x2, y2) + ". Keressük a képletét: y = m · x + b.", html: g([]) });
+    F.push({ cap: "A meredekség: mennyit megy fel, ha jobbra lépünk. Felfelé: " + fn(y2) + " − " + (y1 < 0 ? "(" + fn(y1) + ")" : fn(y1)) + " = " + fn(y2 - y1) + ". Jobbra: " + fn(x2) + " − " + (x1 < 0 ? "(" + fn(x1) + ")" : fn(x1)) + " = " + fn(x2 - x1) + ".", html: g([], [[x1, y1, x2, y1], [x2, y1, x2, y2]]) });
+    F.push({ cap: "m = " + fn(y2 - y1) + " : " + fn(x2 - x1) + " = " + fn(r2(m)) + ". Egyet jobbra lépve ennyit megy fel" + (m < 0 ? " (negatív: lefelé megy)." : "."), html: g([], [[x1, y1, x2, y1], [x2, y1, x2, y2]]) + '<p class="big led">m = ' + fn(r2(m)) + "</p>" });
+    F.push({ cap: "A b-t az A pontból kapjuk: " + fn(y1) + " = " + fn(r2(m)) + " · " + (x1 < 0 ? "(" + fn(x1) + ")" : fn(x1)) + " + b, tehát b = " + fn(r2(b)) + ".", html: g([]) + '<p class="big led">b = ' + fn(r2(b)) + "</p>" });
+    F.push({ cap: "A képlet: " + term(r2(m), r2(b)) + ". Próba a B pontra: " + fn(r2(m)) + " · " + fn(x2) + (b < 0 ? " − " + fn(r2(-b)) : " + " + fn(r2(b))) + " = " + fn(y2) + ".", html: g([{ m, b }]) + '<p class="big led">' + term(r2(m), r2(b)) + "</p>" });
+    return F;
+  }
+  function distFrames(x1, y1, x2, y2){
+    const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1), d = Math.sqrt(dx * dx + dy * dy), F = [];
+    const g = s => graph({ pts: [[x1, y1, "A"], [x2, y2, "B"]], segs: s });
+    F.push({ cap: "Milyen messze van egymástól A" + P(x1, y1) + " és B" + P(x2, y2) + "?", html: g([]) });
+    F.push({ cap: "Rajzolunk egy derékszögű háromszöget. A vízszintes befogó: " + dx + ", a függőleges befogó: " + dy + ".", html: g([[x1, y1, x2, y1], [x2, y1, x2, y2]]) });
+    F.push({ cap: "Pitagorasz-tétel: a befogók négyzetösszege egyenlő az átfogó négyzetével. " + dx + "² + " + dy + "² = " + dx * dx + " + " + dy * dy + " = " + (dx * dx + dy * dy) + ".", html: g([[x1, y1, x2, y1], [x2, y1, x2, y2], [x1, y1, x2, y2]]) });
+    F.push({ cap: "A távolság ennek a négyzetgyöke: √" + (dx * dx + dy * dy) + " = " + fn(r2(d)) + ".", html: g([[x1, y1, x2, y2]]) + '<p class="big led">d = ' + fn(r2(d)) + "</p>" });
+    return F;
+  }
+  const MET = { tab: "Értéktáblázat és grafikon", two: "Egyenes két pontból", dist: "Két pont távolsága" };
+  const MF = { tab: () => tabFrames(2, -1), two: () => twoFrames(1, 3, 3, 7), dist: () => distFrames(-2, -1, 1, 3) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "tab" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "A derékszögű koordináta-rendszer", h:
+      "<p>Két egymásra merőleges számegyenes: a vízszintes az <b>x tengely</b>, a függőleges az <b>y tengely</b>. Ahol metszik egymást, az az <b>origó</b>, (0; 0).</p>" +
+      "<p>Egy pontot két számmal adunk meg: <b>P(x; y)</b>. Előbb mindig az x (mennyit jobbra), aztán az y (mennyit fel).</p>" +
+      graph({ pts: [[3, 2, "P(3; 2)"], [-4, -1, "Q(−4; −1)", "pt2"]] }) },
+    { k: "Síknegyedek", t: "Négy negyed, négy előjelpár", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Negyed</th><th>x</th><th>y</th><th>Példa</th></tr><tr><td>I.</td><td>+</td><td>+</td><td>(3; 2)</td></tr><tr><td>II.</td><td>−</td><td>+</td><td>(−3; 2)</td></tr><tr><td>III.</td><td>−</td><td>−</td><td>(−3; −2)</td></tr><tr><td>IV.</td><td>+</td><td>−</td><td>(3; −2)</td></tr></table></div>" +
+      "<p>Az I. negyed jobb fent van, és az óramutató járásával <b>ellentétesen</b> számozunk. Ami a tengelyen van (például (0; 4) vagy (−2; 0)), az egyik negyedben sincs.</p>" +
+      "<p><b>Tükrözés:</b> az x tengelyre tükrözve az y előjele változik: (3; 2) → (3; −2). Az y tengelyre tükrözve az x-é: (3; 2) → (−3; 2).</p>" },
+    { k: "Képernyő", t: "A képernyő koordinátái: az y lefelé nő!", h:
+      "<p>A képernyőn, a weboldalon (CSS: <code>left</code>, <code>top</code>), a canvas-rajzban és a játékokban az origó a <b>bal felső sarok</b>, és az <b>y lefelé nő</b>. Mértékegység: pixel.</p>" +
+      "<ul><li>Egy 800 × 600-as ablak jobb alsó sarka: (800; 600).</li><li>Középre igazítás: bal = (ablakszélesség − dobozszélesség) : 2. Például (800 − 200) : 2 = 300.</li><li>Mozgás: a labda helye minden képkockában (x + dx; y + dy). Ha dy pozitív, <b>lefelé</b> esik.</li></ul>" +
+      "<pre class='code'>x = x + dx   # vízszintes lépés\ny = y + dy   # függőleges lépés (pozitív: lefelé)</pre>" },
+    { k: "Függvény", t: "Mi a függvény?", h:
+      "<p>A <b>függvény</b> egy szabály, amely minden bemenethez (x) pontosan egy kimenetet (y) rendel. Olyan, mint egy gép: beteszel egy számot, kijön egy másik.</p>" +
+      "<p class='eq'>f(x) = 2 · x + 1 &nbsp;→&nbsp; f(3) = 2 · 3 + 1 = 7</p>" +
+      "<p>A programozásban ugyanez a függvény:</p><pre class='code'>def f(x):\n    return 2 * x + 1\n\nprint(f(3))   # 7</pre>" +
+      "<p>Az <b>értéktáblázat</b> néhány x-et és a hozzájuk tartozó y-t mutatja. A pontokat berajzolva kapjuk a <b>grafikont</b>.</p>" + playBtn("tab"), init: playInit },
+    { k: "Lineáris", t: "y = m · x + b: az egyenes", h:
+      "<p>A <b>lineáris függvény</b> grafikonja egyenes.</p><ul><li><b>m</b> a <b>meredekség</b>: ha egyet lépsz jobbra, ennyit megy fel (ha negatív, le).</li><li><b>b</b> a <b>tengelymetszet</b>: ott metszi az y tengelyt, a (0; b) pontban.</li></ul>" +
+      graph({ fns: [{ m: 2, b: 1 }, { m: -0.5, b: 3, c: "ln2" }], pts: [[0, 1, ""], [0, 3, "", "pt2"]] }) +
+      "<p>Narancs: y = 2x + 1 (meredek, felfelé). Kék szaggatott: y = −0,5x + 3 (lassan lefelé). Próbáld ki fent a csúszkákkal!</p>" },
+    { k: "Arányosság", t: "Egyenes arányosság és állandó", h:
+      "<ul><li>Ha <b>b = 0</b>, a függvény y = m · x: ez az <b>egyenes arányosság</b>, a grafikon átmegy az origón. Például: 1 kg alma 400 Ft, akkor x kg ára y = 400 · x.</li>" +
+      "<li>Ha <b>m = 0</b>, a függvény y = b: <b>konstans</b> (állandó), vízszintes egyenes.</li>" +
+      "<li>Taxi: alapdíj 1000 Ft, kilométerenként 400 Ft: y = 400 · x + 1000. Itt a b az alapdíj, az m a km-díj.</li></ul>" +
+      "<div class='note'><b>Szöveges feladatban:</b> ami minden egységgel nő, az az m; ami egyszer, az elején jár, az a b.</div>" },
+    { k: "Két pontból", t: "Egyenes két pontból", h:
+      "<p>Két pont meghatároz egy egyenest. A(1; 3) és B(3; 7):</p><ol><li>Meredekség: m = (7 − 3) : (3 − 1) = 4 : 2 = 2.</li><li>A b az egyik pontból: 3 = 2 · 1 + b, tehát b = 1.</li><li>A képlet: y = 2x + 1. Próba B-re: 2 · 3 + 1 = 7. ✓</li></ol>" + playBtn("two"), init: playInit },
+    { k: "Távolság", t: "Két pont távolsága: Pitagorasz", h:
+      "<p>A két pont közé derékszögű háromszöget rajzolunk. A befogók: a vízszintes és a függőleges különbség.</p><p class='eq'>d = √((x₂ − x₁)² + (y₂ − y₁)²)</p>" +
+      "<p>A(−2; −1) és B(1; 3): vízszintes 3, függőleges 4, d = √(9 + 16) = √25 = 5.</p>" +
+      "<p>A játékokban így számolják, milyen közel van az ellenfél, és ütközik-e két kör alakú tárgy.</p>" + playBtn("dist"), init: playInit },
+    { k: "Nem csak egyenes", t: "Más függvények", h:
+      "<ul><li><b>y = x²</b>: parabola. Negatív x-re is pozitív: (−3)² = 9.</li><li><b>y = |x|</b>: abszolút érték, V alakú.</li><li><b>y = 2<sup>x</sup></b>: exponenciális, nagyon gyorsan nő (mint a kettes számrendszer helyiértékei).</li></ul>" +
+      graph({ curve: [x => x * x - 3] }) + "<p>A rajzon: y = x² − 3.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>x és y felcserélése.</b> (3; 2) azt jelenti: 3-at jobbra, 2-t fel. Nem fordítva!</div>" +
+      "<div class='mistake'><b>Negatív szám behelyettesítése zárójel nélkül.</b> Ha x = −2, akkor 3 · (−2) = −6, és (−2)² = 4, nem −4.</div>" +
+      "<div class='mistake'><b>A meredekségnél a különbségek sorrendje.</b> Mindkét különbségben ugyanabból a pontból indulj: (y₂ − y₁) : (x₂ − x₁).</div>" +
+      "<div class='mistake'><b>A képernyőn felfelé növő y.</b> A képernyőn az y lefelé nő: a nagyobb y lejjebb van.</div>" +
+      "<div class='mistake'><b>A távolságnál összeadod a különbségeket.</b> 3 + 4 nem a távolság: √(3² + 4²) = 5.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Grafikonról a b</span><span>Ahol a vonal az y tengelyt metszi, az a b.</span></div>" +
+      "<div class='trick'><span class='t'>Grafikonról az m</span><span>Keress két rácspontot a vonalon, számold meg, mennyit megy fel, és osszd el azzal, amennyit jobbra.</span></div>" +
+      "<div class='trick'><span class='t'>Hol metszi az x tengelyt?</span><span>Ahol y = 0: 0 = m · x + b, tehát x = −b : m. Például y = 2x − 6 → x = 3.</span></div>" +
+      "<div class='trick'><span class='t'>Számhármasok</span><span>3, 4, 5 és a többszörösei (6, 8, 10 · 9, 12, 15), valamint 5, 12, 13: gyököt sem kell vonni.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const ptCheck = (x, y, msgs) => v => { const p = parsePt(v); if (!p) return { ok: false, msg: "Így írd: (3; −2)." }; if (p[0] === x && p[1] === y) return { ok: true, msg: "Helyes!" }; if (p[0] === y && p[1] === x && x !== y) return { ok: false, msg: "Felcserélted: előbb az x, aztán az y." }; return { ok: false, msg: (msgs && msgs(p)) || "Nem jó. Nézd meg a megoldást." }; };
+  const numCheck = (ans, hint, extra, tol) => v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(x - ans) <= (tol || 1e-9)) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(x)) || hint }; };
+  const nz = (a, b) => { let v; do { v = rnd(a, b); } while (!v); return v; };
+  const quad = (x, y) => x === 0 || y === 0 ? (x === 0 && y === 0 ? "origó" : x === 0 ? "y tengely" : "x tengely") : x > 0 ? (y > 0 ? "I. negyed" : "IV. negyed") : (y > 0 ? "II. negyed" : "III. negyed");
+  const TRIP = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 6, 10], [4, 3, 5], [12, 5, 13], [9, 12, 15], [8, 15, 17]];
+  const types = [
+    { id: "pont", name: "Pont és negyed", gen(l){
+      if (l < 3){
+        const x = l === 1 ? nz(-6, 6) : (Math.random() < 0.3 ? 0 : nz(-9, 9)), y = l === 1 ? nz(-6, 6) : (Math.random() < 0.3 && x !== 0 ? 0 : nz(-9, 9)), a = quad(x, y);
+        const pool = ["I. negyed", "II. negyed", "III. negyed", "IV. negyed"].concat(l === 2 ? ["x tengely", "y tengely"] : []).filter(s => s !== a);
+        return choice("Hol van ez a pont? <span class='num'>P" + P(x, y) + "</span>", a, shuffle(pool).slice(0, 3), "<p>Az x előjele: " + (x > 0 ? "+" : x < 0 ? "−" : "0") + ", az y előjele: " + (y > 0 ? "+" : y < 0 ? "−" : "0") + ". " + (x === 0 || y === 0 ? "Ha valamelyik 0, a pont a tengelyen van." : "I.: (+; +), II.: (−; +), III.: (−; −), IV.: (+; −).") + "</p>", "Nem jó. Nézd meg az előjeleket: I. (+; +), II. (−; +), III. (−; −), IV. (+; −).");
+      }
+      const x = nz(-9, 9), y = nz(-9, 9), k = rnd(0, 2), nm = ["az x tengelyre", "az y tengelyre", "az origóra"][k];
+      const t = [[x, -y], [-x, y], [-x, -y]][k];
+      return { q: "Tükrözd a <span class='num'>P" + P(x, y) + "</span> pontot " + nm + ". Mi a tükörkép?", kind: "input", ph: "(3; −2)", answer: P(t[0], t[1]),
+        sol: "<p>" + ["Az x tengelyre tükrözve az y előjele változik.", "Az y tengelyre tükrözve az x előjele változik.", "Az origóra tükrözve mindkét előjel változik."][k] + " Eredmény: " + P(t[0], t[1]) + ".</p>", check: ptCheck(t[0], t[1], () => "Nem jó. " + ["Az x tengelyre: csak az y előjele vált.", "Az y tengelyre: csak az x előjele vált.", "Az origóra: mindkét előjel vált."][k]) };
+    } },
+    { id: "ertek", name: "Behelyettesítés", gen(l){
+      if (l === 3){
+        const a = pick([1, 1, 2, -1]), b = rnd(-5, 5), c = rnd(-6, 6), x = rnd(-4, 4), y = a * x * x + b * x + c;
+        const ft = (a === 1 ? "" : a === -1 ? "−" : fn(a)) + "x²" + (b ? (b > 0 ? " + " : " − ") + (Math.abs(b) === 1 ? "" : Math.abs(b)) + "x" : "") + (c ? (c > 0 ? " + " : " − ") + Math.abs(c) : "");
+        return { q: "Mennyi f(" + fn(x) + "), ha <span class='num'>f(x) = " + ft + "</span>?", kind: "input", mode: "decimal", answer: fn(y),
+          sol: "<p>x helyére " + fn(x) + " kerül, zárójelben: " + (x < 0 ? "(" + fn(x) + ")² = " + x * x : fn(x) + "² = " + x * x) + ". Eredmény: " + fn(a * x * x) + (b ? " + (" + fn(b * x) + ")" : "") + (c ? " + (" + fn(c) + ")" : "") + " = " + fn(y) + ".</p>",
+          check: numCheck(y, "Nem jó. Előbb a négyzetre emelés (negatív szám négyzete pozitív), aztán a szorzás, végül az összeadás.", z => x < 0 && z === a * (-x * x) + b * x + c ? "A negatív szám négyzete pozitív: (" + fn(x) + ")² = " + x * x + "." : "") };
+      }
+      const m = l === 1 ? rnd(1, 5) : nz(-5, 5), b = l === 1 ? rnd(0, 9) : rnd(-9, 9), x = l === 1 ? rnd(0, 9) : nz(-6, 6), y = m * x + b;
+      return { q: "Mennyi y, ha x = <span class='num'>" + fn(x) + "</span>, és a függvény <span class='num'>" + term(m, b) + "</span>?", kind: "input", mode: "decimal", answer: fn(y), frames: tabFrames(m, b), title: "Értéktáblázat és grafikon",
+        sol: "<p>y = " + fn(m) + " · " + (x < 0 ? "(" + fn(x) + ")" : fn(x)) + (b < 0 ? " − " + fn(-b) : " + " + fn(b)) + " = " + fn(m * x) + (b < 0 ? " − " + fn(-b) : " + " + fn(b)) + " = " + fn(y) + ".</p>",
+        check: numCheck(y, "Nem jó. Előbb szorozz (m · x), aztán add hozzá a b-t.", z => z === m + x + b ? "Az m és az x között szorzás van, nem összeadás." : "") };
+    } },
+    { id: "kepl", name: "Melyik képlet?", gen(l){
+      const xs = [0, 1, 2, 3];
+      let good, others, f;
+      if (l === 1){ const b = rnd(1, 9); f = x => x + b; good = term(1, b); others = [term(1, b + 1), term(2, b), term(1, b - 1 || -1)]; }
+      else if (l === 2){ const m = nz(-4, 4), b = rnd(-6, 6); f = x => m * x + b; good = term(m, b); others = [term(m, -b || b + 2), term(-m, b), term(m + (m > 0 ? 1 : -1), b)].filter(s => s !== good); }
+      else { const b = rnd(-4, 4), k = pick([1, 2]); f = x => k * x * x + b; good = "y = " + (k === 1 ? "" : k) + "x²" + (b ? (b > 0 ? " + " : " − ") + Math.abs(b) : ""); others = [term(k * 3 > 3 ? 4 : 3, b), "y = " + (k === 1 ? "" : k) + "x²" + (b + 1 ? (b + 1 > 0 ? " + " : " − ") + Math.abs(b + 1) : ""), term(2 * k, b)]; }
+      others = Array.from(new Set(others.filter(s => s !== good))); while (others.length < 3) others.push(term(rnd(5, 9), rnd(5, 9)));
+      const tbl = "<div class='ptwrap'><table class='pt'><tr><th>x</th>" + xs.map(x => "<td>" + x + "</td>").join("") + "</tr><tr><th>y</th>" + xs.map(x => "<td>" + fn(f(x)) + "</td>").join("") + "</tr></table></div>";
+      return choice("Melyik képlethez tartozik ez az értéktáblázat?" + tbl, good, others.slice(0, 3), "<p>Helyettesítsd be az x = 0-t (ebből jön a b), aztán az x = 1-et és 2-t is. Csak a <b>" + good + "</b> ad mindenhol jó értéket.</p>", "Nem jó. Helyettesíts be legalább két x-et mindegyik képletbe.");
+    } },
+    { id: "ket", name: "Egyenes két pontból", gen(l){
+      const m = l === 1 ? nz(-3, 4) : nz(-4, 4), b = rnd(-5, 5); let x1, x2; do { x1 = rnd(-4, 2); x2 = rnd(-3, 5); } while (x2 <= x1 || Math.abs(m * x2 + b) > 12 || Math.abs(m * x1 + b) > 12);
+      const y1 = m * x1 + b, y2 = m * x2 + b, fr = twoFrames(x1, y1, x2, y2);
+      if (l === 1) return { q: "Mennyi a meredekség (m), ha az egyenes átmegy ezeken a pontokon? <span class='num'>A" + P(x1, y1) + "</span> és <span class='num'>B" + P(x2, y2) + "</span>", kind: "input", mode: "decimal", answer: fn(m), frames: fr, title: "Egyenes két pontból",
+        sol: "<p>m = (" + fn(y2) + " − " + (y1 < 0 ? "(" + fn(y1) + ")" : fn(y1)) + ") : (" + fn(x2) + " − " + (x1 < 0 ? "(" + fn(x1) + ")" : fn(x1)) + ") = " + fn(y2 - y1) + " : " + fn(x2 - x1) + " = " + fn(m) + ".</p>",
+        check: numCheck(m, "Nem jó. m = (y₂ − y₁) : (x₂ − x₁).", z => z === -m ? "Az előjel rossz: mindkét különbséget ugyanabból a pontból számold." : Math.abs(z - 1 / m) < 1e-9 ? "Fordítva osztottál: a függőleges különbséget osztjuk a vízszintessel." : "") };
+      if (l === 2) return { q: "Az egyenes meredeksége <span class='num'>m = " + fn(m) + "</span>, és átmegy ezen a ponton: <span class='num'>A" + P(x1, y1) + "</span>. Hol metszi az y tengelyt (mennyi a b)?", kind: "input", mode: "decimal", answer: fn(b), frames: fr, title: "Egyenes két pontból",
+        sol: "<p>" + fn(y1) + " = " + fn(m) + " · " + (x1 < 0 ? "(" + fn(x1) + ")" : fn(x1)) + " + b → b = " + fn(y1) + " − " + (m * x1 < 0 ? "(" + fn(m * x1) + ")" : fn(m * x1)) + " = " + fn(b) + ".</p>", check: numCheck(b, "Nem jó. Helyettesítsd be a pontot: y₁ = m · x₁ + b, és fejezd ki a b-t.") };
+      let mm, bb; do { mm = nz(-4, 4); bb = mm * rnd(-4, 4); } while (!bb);
+      const xz = -bb / mm;
+      return { q: "Hol metszi az x tengelyt ez az egyenes? <span class='num'>" + term(mm, bb) + "</span> (az x értékét írd)", kind: "input", mode: "decimal", answer: fn(xz),
+        sol: "<p>Az x tengelyen y = 0: 0 = " + fn(mm) + "x" + (bb < 0 ? " − " + fn(-bb) : " + " + fn(bb)) + " → x = " + fn(-bb) + " : " + fn(mm) + " = " + fn(xz) + ".</p>", check: numCheck(xz, "Nem jó. Írd be y helyére a 0-t, és oldd meg az egyenletet.", z => z === bb ? "Ez a b, vagyis ahol az y tengelyt metszi. Az x tengelyen y = 0." : z === -xz ? "Az előjel rossz: x = −b : m." : "") };
+    } },
+    { id: "tav", name: "Távolság", gen(l){
+      const x1 = rnd(-6, 3), y1 = rnd(-6, 3);
+      if (l === 1){ const hor = Math.random() < 0.5, d = rnd(2, 9), x2 = hor ? x1 + d : x1, y2 = hor ? y1 : y1 + d;
+        return { q: "Milyen messze van egymástól <span class='num'>A" + P(x1, y1) + "</span> és <span class='num'>B" + P(x2, y2) + "</span>?", kind: "input", mode: "decimal", answer: d,
+          sol: "<p>" + (hor ? "Az y ugyanaz, csak az x változik: " + fn(x2) + " − " + (x1 < 0 ? "(" + fn(x1) + ")" : fn(x1)) : "Az x ugyanaz, csak az y változik: " + fn(y2) + " − " + (y1 < 0 ? "(" + fn(y1) + ")" : fn(y1))) + " = " + d + ".</p>", check: numCheck(d, "Nem jó. Ha az egyik koordináta ugyanaz, a másik különbsége a távolság.") }; }
+      if (l === 2){ const t = pick(TRIP), sx = pick([1, -1]), sy = pick([1, -1]), x2 = x1 + sx * t[0], y2 = y1 + sy * t[1];
+        return { q: "Milyen messze van egymástól <span class='num'>A" + P(x1, y1) + "</span> és <span class='num'>B" + P(x2, y2) + "</span>?", kind: "input", mode: "decimal", answer: t[2], frames: distFrames(x1, y1, x2, y2), title: "Két pont távolsága",
+          sol: "<p>Vízszintes különbség " + t[0] + ", függőleges " + t[1] + ". d = √(" + t[0] + "² + " + t[1] + "²) = √" + (t[0] * t[0] + t[1] * t[1]) + " = " + t[2] + ".</p>", check: numCheck(t[2], "Nem jó. Pitagorasz: d = √(vízszintes² + függőleges²).", z => z === t[0] + t[1] ? "A különbségeket nem összeadni kell: négyzetre emeld, add össze, és vonj gyököt." : "") }; }
+      let dx, dy; do { dx = rnd(1, 7); dy = rnd(1, 7); } while (Number.isInteger(Math.sqrt(dx * dx + dy * dy)));
+      const x2 = x1 + dx, y2 = y1 + dy, d = r2(Math.sqrt(dx * dx + dy * dy));
+      return { q: "Milyen messze van egymástól <span class='num'>A" + P(x1, y1) + "</span> és <span class='num'>B" + P(x2, y2) + "</span>? Kerekíts két tizedesre.", kind: "input", mode: "decimal", answer: fn(d), frames: distFrames(x1, y1, x2, y2), title: "Két pont távolsága",
+        sol: "<p>d = √(" + dx + "² + " + dy + "²) = √" + (dx * dx + dy * dy) + " ≈ " + fn(d) + ".</p>", check: numCheck(d, "Nem jó. d = √(vízszintes² + függőleges²), két tizedesre kerekítve.", z => z === dx + dy ? "A különbségeket nem összeadni kell: négyzetre emeld, add össze, és vonj gyököt." : "", 0.011) };
+    } },
+    { id: "kep", name: "Képernyő-koordináták", gen(l){
+      if (l === 1){ const W = pick([800, 1024, 1280, 1920]), H = pick([600, 720, 768, 1080]), k = rnd(0, 2);
+        const qs = [["a jobb felső sarok", W, 0], ["a bal alsó sarok", 0, H], ["a jobb alsó sarok", W, H]][k];
+        return { q: "Egy játék ablaka " + W + " × " + H + " pixeles. A bal felső sarok (0; 0), az y lefelé nő. Mi a koordinátája ennek: <b>" + qs[0] + "</b>?", kind: "input", ph: "(800; 600)", answer: P(qs[1], qs[2]),
+          sol: "<p>A képernyőn az x jobbra, az y lefelé nő. A szélesség " + W + ", a magasság " + H + ". " + qs[0][0].toUpperCase() + qs[0].slice(1) + ": " + P(qs[1], qs[2]) + ".</p>", check: ptCheck(qs[1], qs[2], () => "Nem jó. A képernyőn lent nagy az y, fent 0.") }; }
+      if (l === 2){ const W = pick([800, 1000, 1200, 1280]), w = pick([100, 200, 240, 300, 360]), H = pick([600, 700, 800]), h = pick([100, 150, 200, 250]), ax = Math.random() < 0.5;
+        const ans = ax ? (W - w) / 2 : (H - h) / 2;
+        return { q: ax ? "Az oldal " + W + " px széles, a doboz " + w + " px széles. Mekkora legyen a doboz <code>left</code> értéke (pixelben), hogy vízszintesen középen legyen?" : "Az ablak " + H + " px magas, a gomb " + h + " px magas. Mekkora legyen a <code>top</code> értéke (pixelben), hogy függőlegesen középen legyen?", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>(" + (ax ? W + " − " + w : H + " − " + h) + ") : 2 = " + ans + ". Ennyi hely marad két oldalt, egyenlően elosztva.</p>", check: numCheck(ans, "Nem jó. (teljes méret − doboz mérete) : 2.", z => z === (ax ? W / 2 : H / 2) ? "Ez a középpont. A doboz bal (felső) szélének a helye kell: vond ki előbb a doboz méretét." : "") }; }
+      const x0 = rnd(0, 20) * 10, y0 = rnd(0, 20) * 10, dx = pick([-8, -5, -3, 2, 4, 5, 6, 10]), dy = pick([-6, -4, 3, 5, 8, 10]), n = rnd(3, 12), x = x0 + n * dx, y = y0 + n * dy;
+      return { q: "A labda a <span class='num'>" + P(x0, y0) + "</span> pontból indul. Minden képkockában ez fut: <code>x = x + (" + fn(dx) + ")</code>, <code>y = y + (" + fn(dy) + ")</code>. Hol lesz <span class='num'>" + n + "</span> képkocka múlva?", kind: "input", ph: "(120; 80)", answer: P(x, y),
+        sol: "<p>x: " + x0 + " + " + n + " · (" + fn(dx) + ") = " + fn(x) + ". y: " + y0 + " + " + n + " · (" + fn(dy) + ") = " + fn(y) + ". " + (dy > 0 ? "A pozitív dy miatt lefelé mozog." : "A negatív dy miatt felfelé mozog.") + "</p>", check: ptCheck(x, y, () => "Nem jó. Mindkét koordinátához add hozzá a lépés többszörösét: kezdő + képkockák száma · lépés.") };
+    } },
+    { id: "graf", name: "Grafikon olvasása", gen(l){
+      let m, b; do { m = l === 1 ? pick([1, 2, -1]) : l === 2 ? nz(-3, 3) : pick([0.5, -0.5, 1.5, -1.5, 2, -2, 3]); b = rnd(-4, 4); } while (Math.abs(b) > 5);
+      const g = graph({ fns: [{ m, b }] });
+      if (l === 1) return { q: "Hol metszi az y tengelyt ez az egyenes? (a b értéke)" + g, kind: "input", mode: "decimal", answer: fn(b), sol: "<p>Az egyenes az y tengelyt a (0; " + fn(b) + ") pontban metszi: b = " + fn(b) + ".</p>", check: numCheck(b, "Nem jó. Keresd meg, hol keresztezi a függőleges tengelyt.") };
+      if (l === 2) return { q: "Mennyi az egyenes meredeksége (m)?" + g, kind: "input", mode: "decimal", answer: fn(m), sol: "<p>Az x = 0 helyen y = " + fn(b) + ", az x = " + (m % 1 ? "2" : "1") + " helyen y = " + fn(m * (m % 1 ? 2 : 1) + b) + ". " + (m % 1 ? "Kettőt jobbra lépve ennyit megy " + (m < 0 ? "le" : "fel") + ": " + fn(Math.abs(2 * m)) + ", tehát egy lépésre a fele." : "Egyet jobbra lépve ennyit megy " + (m < 0 ? "le" : "fel") + ": " + fn(Math.abs(m)) + ".") + " A meredekség: m = " + fn(m) + ".</p>", check: numCheck(m, "Nem jó. Keress két rácspontot, és oszd el a függőleges különbséget a vízszintessel.", z => z === -m ? "Az előjel rossz: ha jobbra haladva lefelé megy, negatív." : "") };
+      const good = term(m, b), others = Array.from(new Set([term(-m, b), term(m, -b || b + 2), term(m * 2, b)].filter(s => s !== good)));
+      while (others.length < 3) others.push(term(m, b + others.length + 3));
+      return choice("Melyik egyenes képlete ez?" + g, good, others.slice(0, 3), "<p>A tengelymetszet " + fn(b) + ", a meredekség " + fn(m) + ": " + good + ".</p>", "Nem jó. Előbb olvasd le a b-t (y tengely), aztán a meredekséget.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "fuggvenyek", types, play: playTo });
+})();
+</script>
+<!--@UPDATE-->
