@@ -1,0 +1,876 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023040411">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Oszthatóság és statisztika</title>
+<style>
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ctl label{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.ctl b{color:var(--led)}
+.ctl input[type=range]{width:100%;accent-color:var(--led)}
+.groups{display:flex;flex-wrap:wrap;gap:8px;min-height:40px}
+.grp{display:flex;flex-wrap:wrap;gap:3px;border:1.5px solid #3A4656;border-radius:8px;padding:4px;max-width:100%}
+.grp.rest{border-color:var(--led);border-style:dashed}
+.dt{width:12px;height:12px;border-radius:50%;background:#72A6F2}
+.grp.rest .dt{background:var(--led)}
+.codeline{font-family:var(--mono);font-size:.9rem;color:var(--panel-muted);overflow-wrap:anywhere}
+.codeline b{color:#fff}
+.sieve{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;font-family:var(--mono);font-size:.8rem;max-width:420px}
+.sieve span{text-align:center;padding:4px 0;border-radius:6px;background:var(--surface-2)}
+.sieve span.x{opacity:.3;text-decoration:line-through}
+.sieve span.p{background:color-mix(in srgb,var(--led) 30%,var(--surface));font-weight:700}
+.sieve span.c{outline:2px solid var(--accent)}
+table.col td{text-align:right;min-width:4em}
+table.col td+td{border-left:3px solid currentColor;text-align:left}
+.pb-stage table.col td{border-top:0;border-bottom:0;border-right:0}
+.pb-stage .tag{color:#FFB01F;font-weight:700}
+.slide .eq{white-space:normal}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek a programozáshoz · 8. osztály</span>
+  <h1>Oszthatóság, maradék, prímek, statisztika</h1>
+  <p class="lead">A programozó legjobb barátja a maradék: páros-e, hányadik nap, mennyi az idő. Itt a 8.-os számelmélet és statisztika, a programozás szemével.</p>
+  <div class="panel">
+    <span class="eyebrow">Maradékos osztás: rakd csoportokba a pöttyöket</span>
+    <div class="ctl">
+      <label>Osztandó: <b id="nv">17</b><input id="n" type="range" min="0" max="60" value="17" aria-label="Osztandó"></label>
+      <label>Osztó (csoportméret): <b id="dv">5</b><input id="d" type="range" min="1" max="12" value="5" aria-label="Osztó"></label>
+    </div>
+    <div class="groups" id="groups" aria-hidden="true"></div>
+    <div class="readout">
+      <div><div class="eyebrow">Hányados</div><div class="big" id="q"></div></div>
+      <div><div class="eyebrow">Maradék</div><div class="big led" id="r"></div></div>
+      <div class="expr" id="expr"></div>
+      <div class="codeline" id="code"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="fakt" aria-selected="true">Prímtényezős felbontás</button>
+    <button class="tab" data-m="euk" aria-selected="false">Euklideszi algoritmus</button>
+    <button class="tab" data-m="med" aria-selected="false">Átlag és medián</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A tizedes törtet vesszővel vagy ponttal is írhatod. A felbontást így írd: 2^3 · 3^2 · 5 (vagy 2·2·2·3·3·5, a szorzásjel lehet * is). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Maradékos osztás</span><span class="mono">osztandó = hányados · osztó + maradék</span><span>A maradék mindig kisebb az osztónál. Pythonban: <code>17 // 5</code> = 3, <code>17 % 5</code> = 2.</span></div>
+    <div class="trick"><span class="t">Prímszámok 100-ig</span><span class="mono">2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97</span></div>
+    <div class="trick"><span class="t">LNKO és LKKT</span><span>LNKO: a közös prímtényezők a kisebb kitevőn. LKKT: minden prímtényező a nagyobb kitevőn. LNKO · LKKT = a két szám szorzata.</span></div>
+    <div class="trick"><span class="t">Euklideszi algoritmus</span><span class="mono">lnko(a, b) = lnko(b, a % b), amíg a maradék 0 nem lesz</span></div>
+    <div class="trick"><span class="t">Statisztika</span><span><b>átlag</b> = összeg : darabszám · <b>medián</b> = a sorba rendezett adatok közepe · <b>módusz</b> = a leggyakoribb · <b>terjedelem</b> = legnagyobb − legkisebb</span></div>
+    <div class="trick"><span class="t">Páros vagy páratlan?</span><span class="mono">n % 2 == 0 → páros</span><span>Minden programozási nyelvben így vizsgáljuk.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, art, Art } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s%\s/g, " maradéka "], [/\/\//g, " egész osztva "], [/\^(\d+)/g, " a $1. hatványon "], [/\s:\s/g, " osztva "], [/==/g, " egyenlő "]);
+
+  /* ---------- Segédek ---------- */
+  // „-val/-vel” alakok szótárból (számok után nem generálunk toldalékot)
+  const VEL = { 2: "2-vel", 3: "3-mal", 4: "4-gyel", 5: "5-tel", 6: "6-tal", 7: "7-tel", 8: "8-cal", 9: "9-cel", 10: "10-zel", 11: "11-gyel", 12: "12-vel", 13: "13-mal", 15: "15-tel", 17: "17-tel", 18: "18-cal", 19: "19-cel", 23: "23-mal", 25: "25-tel" };
+  const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+  const minDiv = n => { for (let i = 2; i * i <= n; i++) if (n % i === 0) return i; return n; };
+  const fac = n => { const f = []; let m = n; for (let p = 2; p * p <= m; p++){ let e = 0; while (m % p === 0){ m /= p; e++; } if (e) f.push([p, e]); } if (m > 1) f.push([m, 1]); return f; };
+  const facStr = n => fac(n).map(([p, e]) => e > 1 ? p + "^" + e : String(p)).join(" · ");
+  const facHtml = n => fac(n).map(([p, e]) => e > 1 ? p + "<sup>" + e + "</sup>" : String(p)).join(" · ");
+  const gcd = (a, b) => b ? gcd(b, a % b) : a;
+  const lcm = (a, b) => a / gcd(a, b) * b;
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(",", "."); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const fmt = x => { const r = Math.round(x * 100) / 100; return String(r).replace(".", ","); };
+  const intCheck = (ans, hint, extra) => v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (x === ans) return { ok: true, msg: "Helyes!" }; const m = extra && extra(x); return { ok: false, msg: m || hint }; };
+
+  /* ---------- Hero: pöttyök csoportokban ---------- */
+  function hero(){
+    const n = +$("#n").value, d = +$("#d").value, q = Math.floor(n / d), r = n % d;
+    $("#nv").textContent = n; $("#dv").textContent = d;
+    let h = "";
+    for (let i = 0; i < q; i++) h += '<div class="grp">' + '<span class="dt"></span>'.repeat(d) + "</div>";
+    if (r) h += '<div class="grp rest">' + '<span class="dt"></span>'.repeat(r) + "</div>";
+    $("#groups").innerHTML = h;
+    $("#q").textContent = q; $("#r").textContent = r;
+    $("#expr").innerHTML = n + " : " + d + " = " + q + ", maradék " + r + " &nbsp;→&nbsp; " + n + " = " + q + " · " + d + " + " + r;
+    $("#code").innerHTML = "Python: <b>" + n + " // " + d + "</b> → " + q + " · <b>" + n + " % " + d + "</b> → " + r + " &nbsp;|&nbsp; JavaScript: <b>Math.floor(" + n + " / " + d + ")</b> → " + q + " · <b>" + n + " % " + d + "</b> → " + r;
+  }
+  ["#n", "#d"].forEach(s => $(s).addEventListener("input", hero));
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  const colTbl = (rows, cur) => '<div class="ptwrap"><table class="pt col">' + rows.map((r, i) => "<tr><td" + (i === cur ? ' class="hl"' : "") + ">" + r[0] + "</td><td" + (i === cur ? ' class="hl"' : "") + ">" + (r[1] || "") + "</td></tr>").join("") + "</table></div>";
+  function faktFrames(n){
+    const rows = [[n, ""]], F = [{ cap: "Bontsuk prímtényezőkre: " + n + ". A szám mellé függőleges vonalat húzunk. Jobbra a legkisebb prímet írjuk, amellyel osztható, alá a hányadost.", html: colTbl(rows, 0) }];
+    let m = n;
+    while (m > 1){
+      const p = minDiv(m), q = m / p;
+      rows[rows.length - 1][1] = p; rows.push([q, ""]);
+      F.push({ cap: Art(m) + " " + m + " osztható " + (VEL[p] || p) + ": " + m + " : " + p + " = " + q + "." + (q === 1 ? " Elértük az 1-et, kész." : ""), html: colTbl(rows, rows.length - 2) });
+      m = q;
+    }
+    F.push({ cap: "A jobb oldali oszlop a prímtényezők listája: " + facStr(n).replace(/\^(\d+)/g, " a $1. hatványon") + ". Próba: összeszorozva " + n + ".", html: colTbl(rows, -1) + '<p class="big led" style="margin-top:10px">' + n + " = " + facHtml(n) + "</p>" });
+    return F;
+  }
+  function eukFrames(a, b){
+    const rows = [], F = [{ cap: "Keressük a legnagyobb közös osztót: lnko(" + a + ", " + b + "). Az euklideszi algoritmus: osztunk, és a maradékkal folytatjuk.", html: '<p class="big">lnko(' + a + ", " + b + ")</p>" }];
+    const tbl = cur => '<div class="ptwrap"><table class="pt"><tr><th>a</th><th>b</th><th>a = hányados · b + maradék</th><th>maradék</th></tr>' + rows.map((r, i) => "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[0] + " = " + r[2] + " · " + r[1] + " + " + r[3] + "</td><td" + (i === cur ? ' class="hl"' : "") + ">" + r[3] + "</td></tr>").join("") + "</table></div>";
+    let x = a, y = b;
+    while (y){
+      const q = Math.floor(x / y), r = x % y; rows.push([x, y, q, r]);
+      F.push({ cap: x + " = " + q + " · " + y + " + " + r + ". A maradék: " + r + "." + (r ? " A következő lépésben az osztó lesz az osztandó, a maradék az osztó." : ""), html: tbl(rows.length - 1) });
+      x = y; y = r;
+    }
+    F.push({ cap: "A maradék 0 lett. Az utolsó osztó a legnagyobb közös osztó: lnko(" + a + ", " + b + ") = " + x + ".", html: tbl(-1) + '<p class="big led" style="margin-top:10px">lnko(' + a + ", " + b + ") = " + x + "</p>" });
+    return F;
+  }
+  function medFrames(arr){
+    const s = arr.slice().sort((p, q) => p - q), n = s.length, sum = s.reduce((p, q) => p + q, 0);
+    const row = (a, hl) => '<div class="digits">' + a.map((x, i) => '<span class="dg' + (hl && hl.includes(i) ? " lit" : "") + '">' + x + "</span>").join("") + "</div>";
+    const F = [{ cap: "Az adatok: " + arr.join(", ") + ". Kiszámoljuk az átlagot és a mediánt.", html: row(arr) }];
+    F.push({ cap: "Átlag: összeadjuk az adatokat, és elosztjuk a darabszámmal. Összeg: " + sum + ", darabszám: " + n + ". Átlag: " + sum + " : " + n + " = " + fmt(sum / n) + ".", html: row(arr) + '<p class="big" style="margin-top:10px">' + sum + " : " + n + " = " + fmt(sum / n) + "</p>" });
+    F.push({ cap: "Medián: először sorba rendezzük az adatokat, a legkisebbtől a legnagyobbig.", html: row(s) });
+    const mid = n % 2 ? [(n - 1) / 2] : [n / 2 - 1, n / 2], med = n % 2 ? s[mid[0]] : (s[mid[0]] + s[mid[1]]) / 2;
+    F.push({ cap: n % 2 ? "Páratlan sok adat van (" + n + "), ezért pontosan egy középső van: ez a medián, " + fmt(med) + "." : "Páros sok adat van (" + n + "), ezért két középső van: " + s[mid[0]] + " és " + s[mid[1]] + ". A medián a kettő átlaga: " + fmt(med) + ".", html: row(s, mid) + '<p class="big led" style="margin-top:10px">medián = ' + fmt(med) + "</p>" });
+    return F;
+  }
+  const MET = { fakt: "Prímtényezős felbontás", euk: "Euklideszi algoritmus", med: "Átlag és medián" };
+  const MF = { fakt: () => faktFrames(360), euk: () => eukFrames(252, 105), med: () => medFrames([4, 2, 5, 3, 5, 1, 4, 5]) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "fakt" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Maradékos osztás", h:
+      "<p>17 almát 5 fős csoportokba osztunk: 3 teljes csoport lesz, és 2 alma marad.</p><p class='eq'>17 : 5 = 3, maradék 2 &nbsp;→&nbsp; 17 = 3 · 5 + 2</p>" +
+      "<ul><li><b>osztandó</b> = hányados · <b>osztó</b> + <b>maradék</b></li><li>A maradék mindig <b>kisebb az osztónál</b> (0 is lehet).</li><li>Ha a maradék 0, a szám <b>osztható</b> az osztóval: 15 osztható 5-tel.</li></ul>" +
+      "<p>A fenti pöttyös játékban kipróbálhatod.</p>" },
+    { k: "Programozás", t: "A maradék a programokban: %", h:
+      "<p>Szinte minden programozási nyelvben a <code>%</code> jel a maradék. Pythonban az egész osztás <code>//</code>, JavaScriptben <code>Math.floor(a / b)</code>.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Kérdés</th><th>Kód</th></tr><tr><td style='text-align:left'>páros-e a szám?</td><td><code>n % 2 == 0</code></td></tr><tr><td style='text-align:left'>osztható-e 3-mal?</td><td><code>n % 3 == 0</code></td></tr><tr><td style='text-align:left'>mennyi az utolsó számjegy?</td><td><code>n % 10</code></td></tr><tr><td style='text-align:left'>hány óra lesz 50 óra múlva (most 15 óra)?</td><td><code>(15 + 50) % 24</code> = 17</td></tr><tr><td style='text-align:left'>hány teljes perc 200 másodperc?</td><td><code>200 // 60</code> = 3</td></tr></table></div>" +
+      "<div class='note'><b>Körbeforgás:</b> az óra, a hét napjai, a játékban körbeérő pálya mind maradékkal számolható.</div>" },
+    { k: "Szabályok", t: "Oszthatósági szabályok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Osztó</th><th>Szabály</th><th>Példa</th></tr>" +
+      "<tr><td>2</td><td style='text-align:left'>az utolsó jegy páros</td><td>358</td></tr><tr><td>5</td><td style='text-align:left'>az utolsó jegy 0 vagy 5</td><td>745</td></tr><tr><td>10</td><td style='text-align:left'>az utolsó jegy 0</td><td>930</td></tr>" +
+      "<tr><td>4</td><td style='text-align:left'>az utolsó két jegyből álló szám osztható 4-gyel</td><td>1 316 (16)</td></tr><tr><td>8</td><td style='text-align:left'>az utolsó három jegy osztható 8-cal</td><td>5 120 (120)</td></tr><tr><td>25</td><td style='text-align:left'>az utolsó két jegy 00, 25, 50 vagy 75</td><td>1 475</td></tr>" +
+      "<tr><td>3</td><td style='text-align:left'>a jegyek összege osztható 3-mal</td><td>471 (4 + 7 + 1 = 12)</td></tr><tr><td>9</td><td style='text-align:left'>a jegyek összege osztható 9-cel</td><td>738 (7 + 3 + 8 = 18)</td></tr><tr><td>6</td><td style='text-align:left'>osztható 2-vel <b>és</b> 3-mal</td><td>354</td></tr></table></div>" +
+      "<p>Összetett osztónál: 12 = 3 · 4, tehát a 12-vel osztható szám 3-mal és 4-gyel is osztható. (A 2 és a 6 nem jó pár, mert van közös osztójuk.)</p>" },
+    { k: "Prímek", t: "Prímszámok és Eratoszthenész szitája", h:
+      "<p>A <b>prímszámnak</b> pontosan két osztója van: az 1 és önmaga. A 7 prím (1, 7), a 9 nem (1, 3, 9): az <b>összetett</b>. Az 1 se nem prím, se nem összetett. A 2 az egyetlen páros prím.</p>" +
+      "<p>A szita: leírjuk a számokat 100-ig, és sorban kihúzzuk a 2, a 3, az 5 és a 7 többszöröseit (önmagukat nem). Ami marad, az prím.</p>" +
+      "<div class='row'><button class='btn' data-s='1'>Következő lépés</button><span class='mono' data-sl></span></div><div class='sieve'></div>",
+      init(el){
+        const box = el.querySelector(".sieve"), lab = el.querySelector("[data-sl]"), P = [2, 3, 5, 7]; let k = -1;
+        const draw = () => {
+          const ps = P.slice(0, k + 1), fin = k >= P.length - 1;
+          box.innerHTML = Array.from({ length: 100 }, (_, i) => i + 1).map(n => {
+            const x = n === 1 || ps.some(p => n !== p && n % p === 0), c = k >= 0 && n % P[k] === 0 && n !== P[k];
+            return '<span class="' + (x ? "x" : (fin || ps.includes(n)) && n > 1 ? "p" : "") + (c ? " c" : "") + '">' + n + "</span>";
+          }).join("");
+          lab.textContent = k < 0 ? "Kezdés: az 1 nem prím." : fin ? "Kész: 25 prím maradt 100-ig." : "Kihúzva: a " + P[k] + " többszörösei.";
+        };
+        el.querySelector("[data-s]").addEventListener("click", () => { k = k >= P.length - 1 ? -1 : k + 1; draw(); });
+        draw();
+      } },
+    { k: "Felbontás", t: "Prímtényezős felbontás", h:
+      "<p>Minden 1-nél nagyobb egész szám egyértelműen felírható prímszámok szorzataként. Ez a <b>prímtényezős felbontás</b>.</p>" +
+      "<p>Az iskolai módszer: a szám mellé függőleges vonal, jobbra a legkisebb prím, amellyel osztható, alá a hányados, egészen az 1-ig.</p>" +
+      "<p class='eq'>360 = 2 · 2 · 2 · 3 · 3 · 5 = 2<sup>3</sup> · 3<sup>2</sup> · 5</p>" + playBtn("fakt"), init: playInit },
+    { k: "LNKO, LKKT", t: "Legnagyobb közös osztó, legkisebb közös többszörös", h:
+      "<p>Bontsd fel mindkét számot: 60 = 2<sup>2</sup> · 3 · 5 és 84 = 2<sup>2</sup> · 3 · 7.</p>" +
+      "<ul><li><b>LNKO</b> (a legnagyobb szám, amellyel mindkettő osztható): a <b>közös</b> prímtényezők, a <b>kisebb</b> kitevőn: 2<sup>2</sup> · 3 = 12.</li>" +
+      "<li><b>LKKT</b> (a legkisebb szám, amely mindkettővel osztható): <b>minden</b> prímtényező, a <b>nagyobb</b> kitevőn: 2<sup>2</sup> · 3 · 5 · 7 = 420.</li></ul>" +
+      "<div class='note'><b>Ellenőrzés:</b> LNKO · LKKT = a két szám szorzata. 12 · 420 = 5040 = 60 · 84.</div>" +
+      "<p>Mire jó? Törtek egyszerűsítése (LNKO), közös nevező (LKKT), és „mikor találkozik újra a két busz” típusú feladatok (LKKT).</p>" },
+    { k: "Algoritmus", t: "Euklideszi algoritmus", h:
+      "<p>Nagy számoknál a felbontás lassú. Euklidész 2300 éve kitalált egy gyorsabb módszert:</p>" +
+      "<ol><li>Oszd el a nagyobbat a kisebbel, nézd a maradékot.</li><li>Az osztó lesz az új osztandó, a maradék az új osztó.</li><li>Ismételd, amíg a maradék 0. Az utolsó osztó az LNKO.</li></ol>" +
+      "<pre class='code'>def lnko(a, b):\n    while b != 0:\n        a, b = b, a % b\n    return a</pre>" +
+      "<p>Ez az egyik legrégebbi ismert algoritmus, és a 10.-ben Pythonban is megírod.</p>" + playBtn("euk"), init: playInit },
+    { k: "Statisztika", t: "Átlag, medián, módusz, terjedelem", h:
+      "<p>Kovrat jegyei: 4, 2, 5, 3, 5, 1, 4, 5.</p>" +
+      "<ul><li><b>Átlag</b> (számtani közép): összeg : darabszám = 29 : 8 = 3,625.</li><li><b>Medián</b>: sorba rendezve 1, 2, 3, <b>4, 4</b>, 5, 5, 5; páros sok adatnál a két középső átlaga: 4.</li><li><b>Módusz</b>: a leggyakoribb érték: 5 (háromszor).</li><li><b>Terjedelem</b>: legnagyobb − legkisebb = 5 − 1 = 4.</li></ul>" + playBtn("med"), init: playInit },
+    { k: "Mikor melyik?", t: "Átlag vagy medián?", h:
+      "<p>Öt barát zsebpénze: 2000, 2500, 3000, 3000 és 40 000 Ft. Az átlag 10 100 Ft, pedig négyen jóval kevesebbet kapnak! A medián (3000 Ft) jobban mutatja a „tipikus” értéket.</p>" +
+      "<div class='note'><b>Szabály:</b> ha van egy nagyon kilógó (kiugró) érték, a medián megbízhatóbb. Az átlagot a kiugró érték elhúzza.</div>" +
+      "<p>A programozásban: a betöltési idők, a válaszidők, a fizetések elemzésénél gyakran a mediánt nézik.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>„Az 1 prím.”</b> Nem: a prímnek pontosan két osztója van, az 1-nek csak egy.</div>" +
+      "<div class='mistake'><b>A maradék nagyobb az osztónál.</b> 23 : 5 nem 3, maradék 8, hanem 4, maradék 3.</div>" +
+      "<div class='mistake'><b>Medián rendezés nélkül.</b> Előbb mindig sorba kell rendezni az adatokat.</div>" +
+      "<div class='mistake'><b>LNKO és LKKT felcserélése.</b> Az LNKO legfeljebb akkora, mint a kisebb szám; az LKKT legalább akkora, mint a nagyobb.</div>" +
+      "<div class='mistake'><b>Pythonban a / és a // összekeverése.</b> <code>7 / 2</code> = 3.5, de <code>7 // 2</code> = 3.</div>" },
+    { k: "Trükkök", t: "Fejben számolás", h:
+      "<div class='two-col'><div class='trick'><span class='t'>3 és 9</span><span>Add össze a jegyeket. 4 527: 4 + 5 + 2 + 7 = 18, tehát 9-cel (és 3-mal) is osztható.</span></div>" +
+      "<div class='trick'><span class='t'>Prím-e?</span><span>Elég a négyzetgyökéig próbálni. 97-nél: 2, 3, 5, 7 nem osztója, és 11 · 11 = 121 > 97, tehát prím.</span></div>" +
+      "<div class='trick'><span class='t'>Hány többszörös?</span><span>1 és 100 között a 7 többszörösei: 100 // 7 = 14 darab.</span></div>" +
+      "<div class='trick'><span class='t'>Hiányzó jegy</span><span>Ha 5 jegy átlaga 4 legyen, az összegük 5 · 4 = 20. Vond ki a meglévőket.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const yn = (q, ok, sol, bad) => { const opts = [{ l: "Igen", ok: ok }, { l: "Nem", ok: !ok }]; return { q, kind: "choice", options: opts, answer: ok ? "Igen" : "Nem", sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) }; };
+  const prodFrom = (ps, lo, hi) => { let n, g = 0; do { n = 1; const k = rnd(2, 6); for (let i = 0; i < k; i++) n *= pick(ps); } while ((n < lo || n > hi) && g++ < 500); return n; };
+  const DAYS = ["hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat", "vasárnap"];
+  const grades = k => Array.from({ length: k }, () => rnd(1, 5));
+  const types = [
+    { id: "mod", name: "Maradék", gen(l){
+      if (l < 3){
+        const d = l === 1 ? rnd(2, 9) : rnd(6, 19), n = l === 1 ? rnd(10, 99) : rnd(100, 999), q = Math.floor(n / d), r = n % d;
+        return { q: "Osztandó: <span class='num'>" + n + "</span>, osztó: <span class='num'>" + d + "</span>. Mennyi a maradék?", kind: "input", mode: "numeric", answer: r,
+          sol: "<p>A legnagyobb többszörös, ami még nem nagyobb: " + q + " · " + d + " = " + q * d + ". Maradék: " + n + " − " + q * d + " = " + r + ".</p><p>Ellenőrzés: " + n + " = " + q + " · " + d + " + " + r + ".</p>",
+          check: intCheck(r, "Nem jó. Keresd meg az osztó legnagyobb többszörösét, ami még nem nagyobb az osztandónál, és vond ki.", x => x === q ? "Ez a hányados. A maradék kell." : x >= d ? "A maradék mindig kisebb az osztónál." : "") };
+      }
+      const k = rnd(0, 2);
+      if (k === 0){ const h = rnd(0, 23), add = rnd(25, 200), r = (h + add) % 24;
+        return { q: "Most " + h + " óra van. Hány óra lesz <span class='num'>" + add + "</span> óra múlva? (24 órás óra, csak az órát írd)", kind: "input", mode: "numeric", answer: r,
+          sol: "<p>(" + h + " + " + add + ") % 24 = " + (h + add) + " % 24 = " + r + ", mert " + (h + add) + " = " + Math.floor((h + add) / 24) + " · 24 + " + r + ".</p>", check: intCheck(r, "Nem jó. Add össze, és vedd a 24-es maradékot.") }; }
+      if (k === 1){ const d0 = rnd(0, 6), add = rnd(10, 400), r = (d0 + add) % 7, opts = shuffle(DAYS.map(x => ({ l: x, ok: x === DAYS[r] })));
+        return { q: "Ma " + DAYS[d0] + " van. Milyen nap lesz <span class='num'>" + add + "</span> nap múlva?", kind: "choice", options: opts, answer: DAYS[r],
+          sol: "<p>A hét 7 napos, ezért csak a 7-es maradék számít: " + add + " % 7 = " + add % 7 + ". " + Art(add % 7) + " " + add % 7 + " napot lépünk előre: " + DAYS[r] + ".</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem jó. Vedd a napok számának 7-es maradékát, és annyit lépj előre." }) }; }
+      const a = rnd(100, 9999), b = rnd(3, 60), op = pick(["%", "//"]), r = op === "%" ? a % b : Math.floor(a / b);
+      return { q: "Mit ír ki ez a Python-sor? <pre class='code'>print(" + a + " " + op + " " + b + ")</pre>", kind: "input", mode: "numeric", answer: r,
+        sol: "<p>" + a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + ". A <code>//</code> a hányados (" + Math.floor(a / b) + "), a <code>%</code> a maradék (" + a % b + ").</p>", check: intCheck(r, op === "%" ? "Nem jó. A % a maradékot adja." : "Nem jó. A // az egész hányadost adja (lefelé kerekítve).") };
+    } },
+    { id: "oszt", name: "Osztható?", gen(l){
+      const d = pick(l === 1 ? [2, 5, 10] : l === 2 ? [3, 9, 4, 6] : [8, 12, 15, 18, 25]);
+      const yes = Math.random() < 0.5, lo = l === 1 ? 10 : l === 2 ? 100 : 1000, hi = lo * 10 - 1;
+      let n; do { n = rnd(lo, hi); } while ((n % d === 0) !== yes);
+      const ds = String(n).split("").map(Number), sum = ds.reduce((p, q) => p + q, 0);
+      const why = { 2: "Az utolsó jegy (" + n % 10 + ") " + (n % 2 ? "páratlan." : "páros."), 5: "Az utolsó jegy: " + n % 10 + ".", 10: "Az utolsó jegy: " + n % 10 + ".",
+        3: "A jegyek összege: " + ds.join(" + ") + " = " + sum + ".", 9: "A jegyek összege: " + ds.join(" + ") + " = " + sum + ".", 4: "Az utolsó két jegy: " + n % 100 + ".", 6: "Kell a 2 és a 3 is: utolsó jegy " + n % 10 + ", jegyösszeg " + sum + ".",
+        8: "Az utolsó három jegy: " + n % 1000 + ".", 12: "Kell a 3 és a 4 is: jegyösszeg " + sum + ", utolsó két jegy " + n % 100 + ".", 15: "Kell a 3 és az 5 is: jegyösszeg " + sum + ", utolsó jegy " + n % 10 + ".", 18: "Kell a 2 és a 9 is: utolsó jegy " + n % 10 + ", jegyösszeg " + sum + ".", 25: "Az utolsó két jegy: " + n % 100 + "." }[d];
+      return yn("Osztható-e " + VEL[d] + " ez a szám? <span class='num'>" + n + "</span>", yes, "<p>" + why + " " + n + " : " + d + " = " + Math.floor(n / d) + ", maradék " + n % d + ".</p>", "Nem jó. Nézd meg a puskában az oszthatósági szabályt.");
+    } },
+    { id: "prim", name: "Prím vagy összetett?", gen(l){
+      const lo = [2, 50, 200][l - 1], hi = [50, 200, 1000][l - 1], want = Math.random() < 0.5;
+      let n; do { n = rnd(lo, hi); if (l === 3 && !want && Math.random() < 0.7){ const p = pick([7, 11, 13, 17, 19, 23, 29, 31]), q = pick([7, 11, 13, 17, 19, 23, 29, 31]); if (p * q >= lo && p * q <= hi) n = p * q; } } while (isPrime(n) !== want || (!want && n % 2 === 0 && Math.random() < 0.6));
+      const opts = [{ l: "Prím", ok: want }, { l: "Összetett", ok: !want }], md = minDiv(n);
+      return { q: "Prím vagy összetett? <span class='num'>" + n + "</span>", kind: "choice", options: opts, answer: want ? "Prím" : "Összetett",
+        sol: want ? "<p>Egyik prím sem osztja a négyzetgyökéig (" + Math.floor(Math.sqrt(n)) + "): prím.</p>" : "<p>" + n + " = " + md + " · " + n / md + ", tehát összetett.</p>",
+        check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : want ? "Nem jó: ennek nincs 1-en és önmagán kívül osztója." : "Nem jó: " + n + " = " + md + " · " + n / md + "." }) };
+    } },
+    { id: "fakt", name: "Prímtényezős felbontás", gen(l){
+      const n = l === 1 ? prodFrom([2, 3, 5, 7], 12, 100) : l === 2 ? prodFrom([2, 3, 5, 7, 11], 100, 1000) : prodFrom([2, 3, 5, 7, 11, 13, 17, 19, 23], 1000, 10000);
+      return { q: "Bontsd prímtényezőkre: <span class='num'>" + n + "</span>", kind: "input", ph: "pl. 2^3 · 3^2 · 5", answer: facStr(n), frames: faktFrames(n), title: "Prímtényezős felbontás",
+        sol: "<p>" + n + " = " + facHtml(n) + "</p>",
+        check: v => {
+          const toks = String(v).replace(/\s+/g, "").replace(/[·x×X]/g, "*").split("*").filter(Boolean);
+          if (!toks.length || !toks.every(t => /^\d+(\^\d+)?$/.test(t))) return { ok: false, msg: "Így írd: 2^3 · 3^2 · 5 vagy 2·2·2·3·3·5." };
+          let prod = 1, allP = true;
+          toks.forEach(t => { const [b, e] = t.split("^").map(Number); prod *= Math.pow(b, e || 1); if (!isPrime(b)) allP = false; });
+          if (prod !== n) return { ok: false, msg: "A szorzat nem " + n + ", hanem " + prod + ". Számold újra." };
+          if (!allP) return { ok: false, msg: "A szorzat jó, de van benne nem prím tényező. Bontsd tovább!" };
+          return { ok: true, msg: "Helyes!" };
+        } };
+    } },
+    { id: "lnko", name: "LNKO, LKKT", gen(l){
+      let a, b, kind = l === 1 ? "lnko" : pick(["lnko", "lkkt"]);
+      if (l === 1){ const g = rnd(2, 12); do { a = g * rnd(1, 6); b = g * rnd(1, 6); } while (a === b); }
+      else if (l === 2){ if (kind === "lnko"){ const g = rnd(2, 25); do { a = g * rnd(2, 8); b = g * rnd(2, 8); } while (a === b); } else { do { a = rnd(4, 30); b = rnd(4, 30); } while (a === b || lcm(a, b) > 600); } }
+      else { if (kind === "lnko"){ const g = rnd(3, 40); do { a = g * rnd(5, 30); b = g * rnd(5, 30); } while (a === b || a > 999 || b > 999); } else { do { a = rnd(12, 90); b = rnd(12, 90); } while (a === b || lcm(a, b) > 3000); } }
+      const ans = kind === "lnko" ? gcd(a, b) : lcm(a, b);
+      return { q: (kind === "lnko" ? "Mennyi a legnagyobb közös osztó? " : "Mennyi a legkisebb közös többszörös? ") + "<span class='num'>" + kind + "(" + a + ", " + b + ")</span>", kind: "input", mode: "numeric", answer: ans,
+        frames: kind === "lnko" ? eukFrames(Math.max(a, b), Math.min(a, b)) : null, title: "Euklideszi algoritmus",
+        sol: "<p>" + a + " = " + facHtml(a) + ", " + b + " = " + facHtml(b) + ".</p><p>" + (kind === "lnko" ? "A közös prímtényezők a kisebb kitevőn: " + ans + "." : "Minden prímtényező a nagyobb kitevőn: " + ans + ". (Vagy: " + a + " · " + b + " : lnko = " + a * b + " : " + gcd(a, b) + " = " + ans + ".)") + "</p>",
+        check: intCheck(ans, kind === "lnko" ? "Nem jó. Bontsd fel mindkettőt, és a közös tényezőket szorozd össze (a kisebb kitevőn)." : "Nem jó. Minden prímtényező kell, a nagyobb kitevőn.", x => kind === "lnko" && x === lcm(a, b) ? "Ez az LKKT. Az LNKO kell." : kind === "lkkt" && x === gcd(a, b) ? "Ez az LNKO. Az LKKT kell." : kind === "lkkt" && x === a * b && gcd(a, b) > 1 ? "Ez közös többszörös, de nem a legkisebb." : "") };
+    } },
+    { id: "stat", name: "Átlag, medián, módusz", gen(l){
+      if (l === 1){ let g, s; do { g = grades(rnd(4, 6)); s = g.reduce((p, q) => p + q, 0); } while ((s * 100 / g.length) % 1);
+        const m = s / g.length;
+        return { q: "Mennyi ezeknek a jegyeknek az átlaga? <span class='num'>" + g.join(", ") + "</span>", kind: "input", mode: "decimal", answer: fmt(m), frames: medFrames(g), title: "Átlag és medián",
+          sol: "<p>Összeg: " + g.join(" + ") + " = " + s + ". Darabszám: " + g.length + ". Átlag: " + s + " : " + g.length + " = " + fmt(m) + ".</p>",
+          check: v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj (tizedesvesszővel is lehet)." }; return Math.abs(x - m) < 0.006 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: x === s ? "Ez az összeg. Még el kell osztani a darabszámmal." : "Nem jó. Összeg osztva a darabszámmal." }; } };
+      }
+      if (l === 2){
+        const which = pick(["medián", "módusz", "terjedelem"]); let g, ans;
+        if (which === "módusz"){ do { g = grades(rnd(6, 9)); const c = [0, 0, 0, 0, 0, 0]; g.forEach(x => c[x]++); const mx = Math.max(...c); ans = c.filter(x => x === mx).length === 1 ? c.indexOf(mx) : null; } while (ans === null); }
+        else { g = Array.from({ length: rnd(5, 8) }, () => rnd(1, 40)); const s = g.slice().sort((p, q) => p - q), n = s.length; ans = which === "medián" ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : s[n - 1] - s[0]; }
+        const s = g.slice().sort((p, q) => p - q);
+        return { q: "Mennyi a <b>" + which + "</b>? <span class='num'>" + g.join(", ") + "</span>", kind: "input", mode: "decimal", answer: fmt(ans), frames: which === "medián" ? medFrames(g) : null, title: "Átlag és medián",
+          sol: "<p>Sorba rendezve: " + s.join(", ") + ". " + (which === "medián" ? (s.length % 2 ? "A középső elem: " : "A két középső átlaga: ") + fmt(ans) + "." : which === "módusz" ? "A leggyakoribb érték: " + ans + "." : "Legnagyobb − legkisebb: " + s[s.length - 1] + " − " + s[0] + " = " + ans + ".") + "</p>",
+          check: v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(x - ans) < 0.006) return { ok: true, msg: "Helyes!" }; if (which === "medián" && g.length % 2 && x === g[(g.length - 1) / 2]) return { ok: false, msg: "Ez a középső elem rendezés nélkül. Előbb rendezd sorba!" }; return { ok: false, msg: which === "medián" ? "Nem jó. Rendezd sorba, és keresd a közepét (páros darabszámnál a két középső átlagát)." : which === "módusz" ? "Nem jó. Melyik érték fordul elő a legtöbbször?" : "Nem jó. Legnagyobb mínusz legkisebb." }; } };
+      }
+      const k = rnd(4, 6), target = rnd(3, 4) + pick([0, 0.5]); let g, miss, guard = 0;
+      do { g = grades(k); miss = target * (k + 1) - g.reduce((p, q) => p + q, 0); } while ((miss < 1 || miss > 5 || miss % 1) && guard++ < 500);
+      return { q: "Kovrat jegyei: <span class='num'>" + g.join(", ") + "</span>. Hányast kell kapnia a következő dolgozatra, hogy az átlaga pontosan <span class='num'>" + fmt(target) + "</span> legyen?", kind: "input", mode: "numeric", answer: miss,
+        sol: "<p>" + (k + 1) + " jegy átlaga " + fmt(target) + " → az összegük " + (k + 1) + " · " + fmt(target) + " = " + fmt(target * (k + 1)) + ". A mostani összeg " + g.reduce((p, q) => p + q, 0) + ". Hiányzik: " + miss + ".</p>",
+        check: intCheck(miss, "Nem jó. Az új összeg = (darabszám + 1) · cél-átlag. Ebből vond ki a mostani összeget.") };
+    } },
+    { id: "prog", name: "Mit ír ki a program?", gen(l){
+      if (l === 1){ const a = rnd(10, 99), b = rnd(2, 9), r = a % b;
+        const code = "n = " + a + "\nif n % " + b + " == 0:\n    print(\"osztható\")\nelse:\n    print(n % " + b + ")", ans = r === 0 ? "osztható" : String(r);
+        return { q: "Mit ír ki ez a Python-program?<pre class='code'>" + esc(code) + "</pre>", kind: "input", answer: ans,
+          sol: "<p>" + a + " % " + b + " = " + r + ". " + (r === 0 ? "A maradék 0, ezért az <code>if</code> ága fut." : "A maradék nem 0, ezért az <code>else</code> ága írja ki a maradékot.") + "</p>",
+          check: v => String(v).trim().replace(/^["']|["']$/g, "").toLowerCase() === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Számold ki a maradékot, és nézd meg, melyik ág fut." } };
+      }
+      if (l === 2){ const N = rnd(30, 200), k = rnd(3, 12), ans = Math.floor(N / k);
+        const code = "db = 0\nfor i in range(1, " + (N + 1) + "):\n    if i % " + k + " == 0:\n        db = db + 1\nprint(db)";
+        return { q: "Mit ír ki ez a Python-program? (A <code>range(1, " + (N + 1) + ")</code> az 1, 2, …, " + N + " számokon megy végig.)<pre class='code'>" + esc(code) + "</pre>", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>Megszámolja, hány szám osztható " + VEL[k] + " 1 és " + N + " között: " + N + " // " + k + " = " + ans + ".</p>", check: intCheck(ans, "Nem jó. Hány többszöröse van 1 és " + N + " között ennek a számnak: " + k + "? " + N + " // " + k + ".") };
+      }
+      if (Math.random() < 0.5){ const n = rnd(1000, 99999), ans = String(n).split("").reduce((p, q) => p + +q, 0);
+        const code = "n = " + n + "\ns = 0\nwhile n > 0:\n    s = s + n % 10\n    n = n // 10\nprint(s)";
+        return { q: "Mit ír ki ez a Python-program?<pre class='code'>" + esc(code) + "</pre>", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>A <code>n % 10</code> az utolsó jegy, a <code>n // 10</code> levágja az utolsó jegyet. A ciklus tehát összeadja a jegyeket: " + String(n).split("").join(" + ") + " = " + ans + ".</p>", check: intCheck(ans, "Nem jó. Kövesd a ciklust: mindig az utolsó jegyet adja hozzá, aztán levágja.") };
+      }
+      const g = rnd(2, 30); let a, b; do { a = g * rnd(2, 30); b = g * rnd(2, 30); } while (a <= b); const ans = gcd(a, b);
+      const code = "a = " + a + "\nb = " + b + "\nwhile b != 0:\n    a, b = b, a % b\nprint(a)";
+      return { q: "Mit ír ki ez a Python-program?<pre class='code'>" + esc(code) + "</pre>", kind: "input", mode: "numeric", answer: ans, frames: eukFrames(a, b), title: "Euklideszi algoritmus",
+        sol: "<p>Ez az euklideszi algoritmus: lnko(" + a + ", " + b + ") = " + ans + ".</p>", check: intCheck(ans, "Nem jó. Kövesd lépésenként: az új a a régi b, az új b a régi a % b.") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "oszthatosag", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [[2, "utolsó jegy páros"], [3, "jegyösszeg osztható 3-mal"], [4, "utolsó két jegy osztható 4-gyel"], [5, "utolsó jegy 0 vagy 5"], [6, "2-vel és 3-mal"], [8, "utolsó három jegy osztható 8-cal"], [9, "jegyösszeg osztható 9-cel"], [10, "utolsó jegy 0"], [25, "utolsó két jegy 00, 25, 50, 75"]];
+  $("#cheat").innerHTML = "<tr><th>Osztó</th><th>Szabály</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
