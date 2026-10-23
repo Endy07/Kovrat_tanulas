@@ -1,0 +1,352 @@
+<!--@HEAD-->
+<title>Valószínűség és véletlen</title>
+<style>
+.sim-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sim-top .btn.on{background:var(--led);border-color:var(--led);color:#2A1A00}
+.bars{display:grid;gap:4px;align-items:end;height:200px;border-bottom:1.5px solid #3A4656;position:relative}
+.bar{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.bar .fill{background:#72A6F2;border-radius:4px 4px 0 0;min-height:1px;transition:height .2s}
+.bar .th{position:absolute;left:-2px;right:-2px;height:0;border-top:2.5px dashed #FFB01F}
+.blabels{display:grid;gap:4px;font-family:var(--mono);font-size:.72rem;color:var(--panel-muted);text-align:center}
+.blabels b{display:block;color:var(--panel-ink);font-size:.85rem}
+.dice{font-size:2.4rem;line-height:1;min-height:2.6rem;letter-spacing:.1em}
+.legend2{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.legend2 .k1{color:#72A6F2}.legend2 .k2{color:#FFB01F}
+table.dg6 td,table.dg6 th{padding:3px 7px}
+.slide .eq{white-space:normal}
+.pb-stage .hlrow{color:#FFB01F;font-weight:700}
+.omega{display:flex;flex-wrap:wrap;gap:6px}
+.omega span{min-width:2.2em;text-align:center;border:1.5px solid #3A4656;border-radius:8px;padding:4px 6px}
+.omega span.k{border-color:#FFB01F;background:#4a3a12;color:#FFB01F;font-weight:700}
+@media (prefers-reduced-motion: reduce){.bar .fill{transition:none}}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek a programozáshoz · 8–9. osztály</span>
+  <h1>Valószínűség és véletlen</h1>
+  <p class="lead">Mennyi az esélye? Egy dobásnál bármi lehet, de ezer dobásnál már a matek dönt. Dobj sokat, és nézd, hogyan közelít a gyakoriság az elméleti valószínűséghez.</p>
+  <div class="panel">
+    <span class="eyebrow">Kockadobás-szimulátor</span>
+    <div class="sim-top">
+      <button class="btn on" data-k="1">1 kocka</button><button class="btn" data-k="2">2 kocka (összeg)</button>
+      <span style="flex-basis:100%"></span>
+      <button class="btn" data-n="1">+1 dobás</button><button class="btn" data-n="10">+10</button><button class="btn" data-n="100">+100</button><button class="btn" data-n="1000">+1000</button><button class="btn" data-n="0">↺ Nullázás</button>
+    </div>
+    <div class="dice" id="dice" aria-live="polite"></div>
+    <div class="bars" id="bars"></div>
+    <div class="blabels" id="blabels"></div>
+    <div class="legend2"><span class="k1">■ kék oszlop: relatív gyakoriság</span> · <span class="k2">- - sárga vonal: elméleti valószínűség</span></div>
+    <div class="readout">
+      <div><div class="eyebrow">Dobások száma</div><div class="big" id="nrolls">0</div></div>
+      <div><div class="eyebrow">Legnagyobb eltérés</div><div class="big led" id="dev">–</div></div>
+      <div class="expr" id="simexpr"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="egy" aria-selected="true">Egy kocka</button>
+    <button class="tab" data-m="ket" aria-selected="false">Két kocka összege</button>
+    <button class="tab" data-m="leg" aria-selected="false">Legalább egy hatos</button>
+    <button class="tab" data-m="varh" aria-selected="false">Megéri játszani?</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A valószínűséget írhatod törtként (3/8, nem kell egyszerűsíteni), tizedes törtként legalább három tizedesre (0,375) vagy százalékban (37,5%). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt dg6" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Klasszikus valószínűség</span><span class="mono">P = kedvező esetek : összes eset</span><span>Mindig 0 és 1 között van. 0: lehetetlen, 1: biztos.</span></div>
+    <div class="trick"><span class="t">Komplementer</span><span class="mono">P(nem A) = 1 − P(A)</span><span>„Legalább egy” → 1 − P(egy sem).</span></div>
+    <div class="trick"><span class="t">Független események</span><span class="mono">P(A és B) = P(A) · P(B)</span><span>Két érme, két kocka, visszatevéses húzás: szorzunk.</span></div>
+    <div class="trick"><span class="t">Várható érték</span><span>Minden nyereményt megszorzunk a valószínűségével, és összeadjuk. Ha kevesebb, mint a belépő, hosszú távon veszítesz.</span></div>
+    <div class="trick"><span class="t">Python</span><span class="mono">random.randint(1, 6)</span><span>1, 2, 3, 4, 5 vagy 6: mindkét határ benne van.</span></div>
+    <div class="trick"><span class="t">JavaScript</span><span class="mono">Math.floor(Math.random() * 6) + 1</span><span>Math.random(): 0 és 1 között (az 1 nem). · 6 → floor → 0…5 → + 1 → 1…6.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, art, Art } = K;
+  K.tts.rules.push([/(\d+)\/(\d+)/g, "$1 per $2"], [/(\d+(?:,\d+)?)%/g, "$1 százalék"], [/\s:\s/g, " osztva "], [/<code>(.*?)<\/code>/g, "$1"]);
+
+  /* ---------- Törtek ---------- */
+  const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+  const red = (a, b) => { const g = gcd(a, b) || 1; return [a / g, b / g]; };
+  const fr = (a, b) => { const r = red(a, b); return r[1] === 1 ? String(r[0]) : r[0] + "/" + r[1]; };
+  const dec = (a, b, k) => String(Math.round(a / b * Math.pow(10, k || 3)) / Math.pow(10, k || 3)).replace(".", ",");
+  const pct = (a, b) => String(Math.round(a / b * 1000) / 10).replace(".", ",") + "%";
+  // a beírt valószínűség összevetése a/b-vel: tört (pontosan), tizedes tört (±0,0006), százalék (±0,06)
+  function probCheck(a, b, wrong){
+    return v => {
+      const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", ".");
+      let ok = null, val = null;
+      let m = /^(-?\d+)\/(\d+)$/.exec(s);
+      if (m){ const p = +m[1], q = +m[2]; if (!q) return { ok: false, msg: "A nevező nem lehet 0." }; ok = p * b === a * q; val = p / q; }
+      else if ((m = /^(-?\d+(?:\.\d+)?)%$/.exec(s))){ val = +m[1] / 100; ok = Math.abs(val - a / b) < 0.0006; }
+      else if (/^-?\d+(\.\d+)?$/.test(s)){ val = +s; ok = Math.abs(val - a / b) < 0.0006; if (!ok && Math.abs(val - a / b) < 0.006) return { ok: false, msg: "Majdnem! Írd legalább három tizedesre, vagy törtként." }; }
+      else return { ok: false, msg: "Törtet (3/8), tizedes törtet (0,375) vagy százalékot (37,5%) írj." };
+      if (ok) return { ok: true, msg: "Helyes!" };
+      if (val > 1) return { ok: false, msg: "A valószínűség nem lehet 1-nél nagyobb. Kedvező esetek osztva az összes esettel!" };
+      return { ok: false, msg: (wrong && wrong(val)) || "Nem jó. Számold össze a kedvező és az összes esetet." };
+    };
+  }
+  const near = (x, a, b) => Math.abs(x - a / b) < 0.0006;
+
+  /* ---------- Hero: szimulátor ---------- */
+  const FACE = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+  const S = { k: 1, cnt: {}, n: 0, last: [] };
+  const theo = (k, v) => k === 1 ? 1 / 6 : (6 - Math.abs(v - 7)) / 36;
+  const vals = k => k === 1 ? [1, 2, 3, 4, 5, 6] : [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  function roll(n){
+    for (let i = 0; i < n; i++){ const d = Array.from({ length: S.k }, () => 1 + Math.floor(Math.random() * 6)); const v = d.reduce((p, q) => p + q, 0); S.cnt[v] = (S.cnt[v] || 0) + 1; S.n++; S.last = d; }
+  }
+  function draw(){
+    const vs = vals(S.k), top = Math.max(S.k === 1 ? 0.3 : 0.25, ...vs.map(v => S.n ? (S.cnt[v] || 0) / S.n : 0)) * 1.05;
+    $("#bars").style.gridTemplateColumns = $("#blabels").style.gridTemplateColumns = "repeat(" + vs.length + ",minmax(0,1fr))";
+    $("#bars").innerHTML = vs.map(v => { const f = S.n ? (S.cnt[v] || 0) / S.n : 0; return '<div class="bar"><div class="th" style="bottom:' + (theo(S.k, v) / top * 100) + '%"></div><div class="fill" style="height:' + (f / top * 100) + '%"></div></div>'; }).join("");
+    $("#blabels").innerHTML = vs.map(v => "<span><b>" + v + "</b>" + (S.n ? Math.round((S.cnt[v] || 0) / S.n * 100) + "%" : "–") + "</span>").join("");
+    $("#dice").textContent = S.last.map(d => FACE[d]).join(" ");
+    $("#nrolls").textContent = S.n;
+    const dev = S.n ? Math.max(...vs.map(v => Math.abs((S.cnt[v] || 0) / S.n - theo(S.k, v)))) * 100 : null;
+    $("#dev").textContent = dev == null ? "–" : (Math.round(dev * 10) / 10).toString().replace(".", ",") + " százalékpont";
+    $("#simexpr").textContent = S.k === 1 ? "Egy kockánál minden szám esélye 1/6, kb. 16,7%. Kevés dobásnál nagy az eltérés, ezer dobás után már kicsi: ez a nagy számok törvénye." : "Két kocka összegénél a 7 a legvalószínűbb (6/36), a 2 és a 12 a legritkább (1/36): a 7 hatféleképpen jöhet ki, a 2 csak egyféleképpen.";
+  }
+  $(".sim-top").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.k){ S.k = +b.dataset.k; S.cnt = {}; S.n = 0; S.last = []; $$(".sim-top [data-k]").forEach(x => x.classList.toggle("on", x === b)); }
+    else { const n = +b.dataset.n; if (!n){ S.cnt = {}; S.n = 0; S.last = []; } else roll(n); }
+    draw();
+  });
+  draw();
+
+  /* ---------- Levezetések ---------- */
+  const omega = (all, good) => '<div class="omega">' + all.map(x => '<span class="' + (good.includes(x) ? "k" : "") + '">' + x + "</span>").join("") + "</div>";
+  const grid = (hl, cell) => '<div class="ptwrap"><table class="pt dg6"><tr><th>1. \\ 2.</th>' + [1, 2, 3, 4, 5, 6].map(j => "<th>" + j + "</th>").join("") + "</tr>" +
+    [1, 2, 3, 4, 5, 6].map(i => "<tr><th>" + i + "</th>" + [1, 2, 3, 4, 5, 6].map(j => "<td" + (hl(i, j) ? ' class="hl"' : "") + ">" + (cell ? cell(i, j) : i + j) + "</td>").join("") + "</tr>").join("") + "</table></div>";
+  const probLine = (a, b) => fr(a, b) + " ≈ " + dec(a, b) + " ≈ " + pct(a, b);
+  function egyFrames(){
+    const all = [1, 2, 3, 4, 5, 6], good = [5, 6], F = [];
+    F.push({ cap: "Kérdés: mekkora az esélye, hogy egy kockával 4-nél nagyobbat dobunk? Először felírjuk az összes lehetséges kimenetelt: ez az eseménytér.", html: omega(all, []) });
+    F.push({ cap: "Hat kimenetel van: 1, 2, 3, 4, 5, 6. Mindegyik ugyanolyan esélyes, ha a kocka szabályos.", html: omega(all, []) + '<p class="big" style="margin-top:10px">összes eset: 6</p>' });
+    F.push({ cap: "A kedvező kimenetelek azok, amelyek nagyobbak, mint 4: az 5 és a 6. Ez kettő.", html: omega(all, good) + '<p class="big" style="margin-top:10px">kedvező eset: 2</p>' });
+    F.push({ cap: "Valószínűség = kedvező esetek : összes eset = 2/6. Egyszerűsítve 1/3, tizedes törtként kb. 0,333, százalékban kb. 33,3%.", html: omega(all, good) + '<p class="big led" style="margin-top:10px">P = 2/6 = ' + probLine(2, 6) + "</p>" });
+    return F;
+  }
+  function ketFrames(s){
+    const n = 6 - Math.abs(s - 7), F = [];
+    F.push({ cap: "Két kockával dobunk, és összeadjuk a számokat. Mennyi az esélye, hogy az összeg " + s + " lesz? Az első kocka 6-féle, a második is 6-féle, ezért 6 · 6 = 36 kimenetel van.", html: grid(() => false) });
+    F.push({ cap: "A táblázatban minden cella egy kimenetel: sor az első, oszlop a második kocka. Megkeressük azokat a cellákat, ahol az összeg " + s + ".", html: grid((i, j) => i + j === s) });
+    F.push({ cap: "Ilyen cella " + n + " darab van. A 3 + 5 és az 5 + 3 két külön kimenetel, mert a két kocka különböző.", html: grid((i, j) => i + j === s) + '<p class="big" style="margin-top:10px">kedvező: ' + n + ", összes: 36</p>" });
+    F.push({ cap: "A valószínűség " + n + "/36, egyszerűsítve " + fr(n, 36) + ", kb. " + pct(n, 36) + ". A 7 a legvalószínűbb összeg (6/36), a 2 és a 12 a legritkább (1/36).", html: grid((i, j) => i + j === s) + '<p class="big led" style="margin-top:10px">P = ' + n + "/36 = " + probLine(n, 36) + "</p>" });
+    return F;
+  }
+  function legFrames(){
+    const F = [];
+    F.push({ cap: "Két kockával dobunk. Mekkora az esélye, hogy legalább az egyik hatos? A legalább egy esetén a legegyszerűbb a fordított esemény: egyik sem hatos.", html: grid(() => false, (i, j) => i + ";" + j) });
+    F.push({ cap: "Annak az esélye, hogy az első nem hatos: 5/6. A második ettől független, annak is 5/6. Független eseményeknél szorzunk: 5/6 · 5/6 = 25/36.", html: grid((i, j) => i !== 6 && j !== 6, (i, j) => i + ";" + j) + '<p class="big" style="margin-top:10px">P(egyik sem hatos) = 25/36</p>' });
+    F.push({ cap: "A komplementer: 1 − 25/36 = 11/36. Ennyi az esélye, hogy legalább az egyik hatos.", html: grid((i, j) => i === 6 || j === 6, (i, j) => i + ";" + j) + '<p class="big led" style="margin-top:10px">P = 1 − 25/36 = 11/36 ≈ ' + pct(11, 36) + "</p>" });
+    F.push({ cap: "Ellenőrzés a táblázatban: a hatost tartalmazó cellák száma 11 (az utolsó sor 6, az utolsó oszlop 6, de a 6;6 kétszer számolódna). Nem 2/6, mert az összeadás itt kétszer számolná a dupla hatost!", html: grid((i, j) => i === 6 || j === 6, (i, j) => i + ";" + j) });
+    return F;
+  }
+  function varhFrames(){
+    const F = [];
+    F.push({ cap: "Egy vásári játék: 200 forintért dobhatsz egy kockával. Ha hatos, 1000 forintot kapsz, különben semmit. Megéri?", html: '<p class="big">belépő: 200 Ft · hatos: 1000 Ft</p>' });
+    F.push({ cap: "Képzeld el, hogy 6000-szer játszol. Kb. minden hatodik dobás hatos, vagyis kb. 1000-szer nyersz: 1000 · 1000 = 1 000 000 forint.", html: '<p class="big">6000 játék → kb. 1000 hatos → 1 000 000 Ft nyeremény</p>' });
+    F.push({ cap: "Közben befizetsz 6000 · 200 = 1 200 000 forintot. A különbség: 1 000 000 − 1 200 000 = −200 000, azaz veszítesz.", html: '<p class="big">befizetés: 1 200 000 Ft · nyeremény: 1 000 000 Ft</p>' });
+    F.push({ cap: "Egy játékra számolva: a várható nyeremény 1000 · 1/6 ≈ 166,67 forint, a belépő 200. Átlagosan kb. 33 forintot veszítesz játékonként. A szerencsejátékok mindig így vannak beállítva: hosszú távon a szervező nyer.", html: '<p class="big led">1000 · 1/6 − 200 ≈ −33,33 Ft / játék</p>' });
+    return F;
+  }
+  const MET = { egy: "Egy kocka", ket: "Két kocka összege", leg: "Legalább egy hatos", varh: "Megéri játszani?" };
+  const MF = { egy: egyFrames, ket: () => ketFrames(8), leg: legFrames, varh: varhFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "egy" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (frs, title) => { pb.load(frs, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Kísérlet, kimenetel, esemény", h:
+      "<ul><li><b>Véletlen kísérlet</b>: aminek az eredményét előre nem tudjuk (kockadobás, érmefeldobás, húzás egy zsákból).</li><li><b>Kimenetel</b>: egy lehetséges eredmény (például: 4-est dobtunk).</li><li><b>Eseménytér</b>: az összes kimenetel. Kockánál: {1, 2, 3, 4, 5, 6}.</li><li><b>Esemény</b>: kimenetelek egy csoportja, például „párosat dobunk” = {2, 4, 6}.</li></ul>" +
+      "<div class='note'><b>Kapcsolat:</b> az eseménytér egy halmaz, az esemény a részhalmaza (lásd a halmazok leckét). Hogy hány kimenetel van, azt a fejtörők lecke „hányféle?” része tanítja: szorzási szabály.</div>" },
+    { k: "Képlet", t: "Klasszikus valószínűség", h:
+      "<p>Ha minden kimenetel egyformán esélyes:</p><p class='eq'>P(esemény) = kedvező esetek száma : összes eset száma</p>" +
+      "<p>Párosat dobunk: 3 kedvező (2, 4, 6), 6 összes → P = 3/6 = 1/2 = 0,5 = 50%.</p>" +
+      "<ul><li>A valószínűség mindig <b>0 és 1 között</b> van.</li><li><b>Lehetetlen</b> esemény: P = 0 (7-est dobunk egy kockával).</li><li><b>Biztos</b> esemény: P = 1 (6-nál nem nagyobbat dobunk).</li></ul>" + playBtn("egy"), init: playInit },
+    { k: "Komplementer", t: "Az ellentett esemény", h:
+      "<p>Az A esemény <b>komplementere</b> (ellentettje): A nem következik be. A kettő együtt biztos, ezért:</p><p class='eq'>P(nem A) = 1 − P(A)</p>" +
+      "<p>Hatost dobunk: 1/6. Nem hatost dobunk: 1 − 1/6 = 5/6.</p><p>Ha 30% az esélye, hogy esik az eső, akkor 70% az esélye, hogy nem esik.</p>" },
+    { k: "Két kocka", t: "Két kocka: 36 kimenetel", h:
+      "<p>Az első kocka 6-féle, a második is: 6 · 6 = 36 kimenetel. A táblázat az összegeket mutatja:</p>" + grid((i, j) => i + j === 7) +
+      "<p>A 7 hatféleképpen jöhet ki (kiemelve), a 2 és a 12 csak egyféleképpen. Ezért a 7 esélye 6/36 = 1/6, a 12-é csak 1/36.</p>" + playBtn("ket"), init: playInit },
+    { k: "Szorzás", t: "Független események", h:
+      "<p>Két esemény <b>független</b>, ha az egyik nem befolyásolja a másikat (két külön érme, két kocka, visszatevéses húzás). Ilyenkor:</p><p class='eq'>P(A és B) = P(A) · P(B)</p>" +
+      "<ul><li>Két érme, mindkettő fej: 1/2 · 1/2 = 1/4.</li><li>Kockával hatos és érmével fej: 1/6 · 1/2 = 1/12.</li><li>Három érme, mind fej: 1/2 · 1/2 · 1/2 = 1/8.</li></ul>" +
+      "<div class='mistake'><b>„És” → szorzás, nem összeadás.</b> Két hatos esélye 1/36, nem 2/6.</div>" },
+    { k: "Legalább egy", t: "„Legalább egy”: a komplementer trükkje", h:
+      "<p>„Legalább egy hatos két dobásból” sokféleképpen jöhet ki. Egyszerűbb a fordítottja: <b>egyik sem</b> hatos.</p>" +
+      "<p class='eq'>P(legalább egy) = 1 − P(egy sem) = 1 − 5/6 · 5/6 = 1 − 25/36 = 11/36</p>" +
+      "<p>Három dobásnál: 1 − 5/6 · 5/6 · 5/6 = 1 − 125/216 = 91/216 ≈ 42%. Még három dobásnál sem 50% az esély!</p>" + playBtn("leg"), init: playInit },
+    { k: "Gyakoriság", t: "Relatív gyakoriság, nagy számok törvénye", h:
+      "<ul><li><b>Gyakoriság</b>: hányszor történt meg (60 dobásból 12 hatos).</li><li><b>Relatív gyakoriság</b>: gyakoriság : dobások száma = 12/60 = 0,2.</li></ul>" +
+      "<p>A <b>nagy számok törvénye</b>: minél többször ismételjük a kísérletet, a relatív gyakoriság annál közelebb kerül a valószínűséghez. 10 dobásnál még bármi lehet, 1000-nél már közel lesz 1/6-hoz.</p>" +
+      "<p>Próbáld ki fent a szimulátorral: nyomd meg többször a +1000 gombot!</p>" },
+    { k: "Várható érték", t: "Megéri játszani?", h:
+      "<p>A <b>várható érték</b> megmondja, mennyit nyersz átlagosan egy játékon, ha nagyon sokszor játszol:</p><p class='eq'>várható nyeremény = nyeremény · valószínűsége (több nyereménynél ezek összege)</p>" +
+      "<p>200 Ft a belépő, hatosra 1000 Ft jár: 1000 · 1/6 ≈ 166,67 Ft. Ez kevesebb, mint 200, tehát átlagosan kb. 33 Ft-ot veszítesz játékonként.</p>" +
+      "<div class='note'><b>Ezért nyer mindig a kaszinó és a lottó szervezője:</b> a várható érték a játékosnak mindig negatív. Egy-egy nagy nyeremény ezt nem változtatja meg.</div>" + playBtn("varh"), init: playInit },
+    { k: "Programozás", t: "Véletlenszám a programban", h:
+      "<pre class='code'>import random\ndobas = random.randint(1, 6)    # 1, 2, 3, 4, 5 vagy 6</pre>" +
+      "<pre class='code'>let dobas = Math.floor(Math.random() * 6) + 1;   // JavaScript</pre>" +
+      "<ul><li><code>Math.random()</code>: tört szám 0 és 1 között, a 0 lehet, az 1 nem.</li><li><code>· 6</code>: 0 és 6 között, a 6 nem.</li><li><code>Math.floor</code>: lefelé kerekít, így 0, 1, 2, 3, 4 vagy 5.</li><li><code>+ 1</code>: így lesz 1…6.</li></ul>" +
+      "<p>A gép valójában <b>álvéletlent</b> számol: egy kezdőértékből (seed) képlettel. Ugyanabból a kezdőértékből ugyanaz a sorozat jön, ez teszteléshez hasznos.</p>" },
+    { k: "Hibák", t: "Tipikus tévedések", h:
+      "<div class='mistake'><b>„Már ötször fej volt, most írás jön.”</b> Az érmének nincs emlékezete: a következő dobásnál is 1/2 a fej esélye.</div>" +
+      "<div class='mistake'><b>Összeadás szorzás helyett.</b> Két hatos esélye 1/6 · 1/6 = 1/36, nem 1/6 + 1/6.</div>" +
+      "<div class='mistake'><b>„Két kockával minden összeg egyforma esélyű.”</b> Nem: a 7 hatszor olyan valószínű, mint a 2 vagy a 12.</div>" +
+      "<div class='mistake'><b>A 3 + 5 és az 5 + 3 összevonása.</b> A két kocka különbözik: ez két külön kimenetel.</div>" +
+      "<div class='mistake'><b>1-nél nagyobb valószínűség.</b> Ha ilyet kapsz, elszámoltad: a kedvező nem lehet több, mint az összes.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Legalább egy</span><span>Mindig a komplementerrel: 1 − P(egy sem).</span></div>" +
+      "<div class='trick'><span class='t'>Két kocka összege</span><span>Az összeg 7 körül a legvalószínűbb: s ≤ 7 esetén s − 1 kedvező eset van, s ≥ 7 esetén 13 − s.</span></div>" +
+      "<div class='trick'><span class='t'>Ellenőrzés</span><span>Az összes kimenetel valószínűségének összege 1.</span></div>" +
+      "<div class='trick'><span class='t'>Százalék</span><span>Tört → oszd el → szorozd 100-zal: 3/8 = 0,375 = 37,5%.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const ACC = { piros: "pirosat", "kék": "kéket", "zöld": "zöldet", "sárga": "sárgát", fehér: "fehéret" };
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const pt = (a, b, extra) => ({ answer: fr(a, b), check: probCheck(a, b, extra) });
+  const DIE_EV = [["párosat dobsz", x => x % 2 === 0], ["páratlant dobsz", x => x % 2 === 1], ["prímszámot dobsz", x => [2, 3, 5].includes(x)], ["3-mal osztható számot dobsz", x => x % 3 === 0], ["hatost dobsz", x => x === 6], ["egyest vagy hatost dobsz", x => x === 1 || x === 6]];
+  const types = [
+    { id: "egy", name: "Egy esemény", gen(l){
+      if (l === 1){
+        const big = Math.random() < 0.4, t = rnd(1, 5), ev = big ? ["nagyobbat dobsz, mint " + t, x => x > t] : pick(DIE_EV);
+        const good = [1, 2, 3, 4, 5, 6].filter(ev[1]);
+        return Object.assign({ q: "Egy szabályos kockával dobsz. Mekkora a valószínűsége, hogy " + ev[0] + "?", kind: "input", ph: "pl. 1/2", frames: big && t === 4 ? egyFrames() : null, title: "Egy kocka",
+          sol: "<p>Kedvező: " + good.join(", ") + " (" + good.length + " eset). Összes: 6. P = " + good.length + "/6 = " + probLine(good.length, 6) + ".</p>" }, pt(good.length, 6, x => near(x, 6, good.length) ? "Fordítva osztottál: a kedvezőt osztjuk az összessel." : ""));
+      }
+      if (l === 2){
+        const cols = shuffle(Object.keys(ACC)).slice(0, 3), ns = cols.map(() => rnd(1, 9)), tot = ns.reduce((p, q) => p + q, 0), i = rnd(0, 2);
+        return Object.assign({ q: "Egy zsákban " + cols.map((c, j) => ns[j] + " " + c).join(", ").replace(/, ([^,]*)$/, " és $1") + " golyó van. Becsukott szemmel húzol egyet. Mekkora a valószínűsége, hogy " + ACC[cols[i]] + " húzol?", kind: "input", ph: "pl. 3/8",
+          sol: "<p>Kedvező: " + ns[i] + ", összes: " + ns.join(" + ") + " = " + tot + ". P = " + ns[i] + "/" + tot + (fr(ns[i], tot) !== ns[i] + "/" + tot ? " = " + fr(ns[i], tot) : "") + " ≈ " + pct(ns[i], tot) + ".</p>" }, pt(ns[i], tot, x => near(x, ns[i], tot - ns[i]) ? "A nevező az összes golyó, nem csak a többi." : ""));
+      }
+      const N = pick([20, 24, 30, 36, 40, 50, 60]), a = pick([2, 3, 4, 5]); let b; do { b = pick([3, 5, 6, 7]); } while (b === a || b % a === 0);
+      const kind = rnd(0, 2), f = kind === 0 ? x => x % a === 0 || x % b === 0 : kind === 1 ? x => x % a !== 0 : x => x % a === 0 && x % b === 0;
+      const txt = kind === 0 ? "osztható " + VEL[a] + " vagy " + VEL[b] : kind === 1 ? "nem osztható " + VEL[a] : "osztható " + VEL[a] + " és " + VEL[b] + " is";
+      const good = Array.from({ length: N }, (_, i) => i + 1).filter(f).length, L = a * b / gcd(a, b);
+      return Object.assign({ q: "Egy dobozban 1-től " + N + "-ig számozott cédulák vannak (mindegyik szám egyszer). Húzol egyet. Mekkora a valószínűsége, hogy a szám " + txt + "?", kind: "input", ph: "pl. 3/10",
+        sol: "<p>" + (kind === 0 ? "Osztható " + VEL[a] + ": " + Math.floor(N / a) + ", osztható " + VEL[b] + ": " + Math.floor(N / b) + ", mindkettővel, vagyis " + L + " többszöröse (ezeket kétszer számoltuk): " + Math.floor(N / L) + ". Kedvező: " + Math.floor(N / a) + " + " + Math.floor(N / b) + " − " + Math.floor(N / L) + " = " + good + "." : kind === 1 ? "Komplementer: osztható " + VEL[a] + " " + Math.floor(N / a) + " darab, tehát nem osztható " + N + " − " + Math.floor(N / a) + " = " + good + "." : "Mindkettővel osztható, vagyis a legkisebb közös többszörösükkel (" + L + ") is: " + Math.floor(N / L) + " darab.") + " P = " + good + "/" + N + " = " + fr(good, N) + ".</p>" }, pt(good, N));
+    } },
+    { id: "ket", name: "Két kocka", gen(l){
+      let ev, txt, frames = null;
+      if (l === 1){ const s = rnd(2, 12); ev = (i, j) => i + j === s; txt = "a két szám összege pontosan " + s; frames = ketFrames(s); }
+      else if (l === 2){ const s = rnd(4, 10), ge = Math.random() < 0.5; ev = ge ? (i, j) => i + j >= s : (i, j) => i + j <= s; txt = "a két szám összege " + (ge ? "legalább " : "legfeljebb ") + s; }
+      else { const k = rnd(0, 3), d = rnd(1, 4); ev = [(i, j) => i === j, (i, j) => (i * j) % 2 === 0, (i, j) => Math.abs(i - j) === d, (i, j) => i > j][k]; txt = ["a két szám egyforma (dupla)", "a két szám szorzata páros", "a két szám különbsége pontosan " + d, "az első kockán nagyobb szám van, mint a másodikon"][k]; }
+      let n = 0; for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) if (ev(i, j)) n++;
+      return Object.assign({ q: "Két szabályos kockával dobsz. Mekkora a valószínűsége, hogy " + txt + "?", kind: "input", ph: "pl. 5/36", frames, title: "Két kocka összege",
+        sol: "<p>36 kimenetel van (6 · 6). A kedvezők a táblázatban kiemelve: " + n + " darab. P = " + n + "/36" + (fr(n, 36) !== n + "/36" ? " = " + fr(n, 36) : "") + " ≈ " + pct(n, 36) + ".</p>" + grid(ev) }, pt(n, 36, x => near(x, n, 11) ? "Összegből 11-féle van, de nem egyforma eséllyel! 36 kimenetellel számolj." : ""));
+    } },
+    { id: "fugg", name: "Független események", gen(l){
+      const P = [["az érme fej", 1, 2], ["az érme írás", 1, 2], ["a kocka hatos", 1, 6], ["a kocka páros", 1, 2], ["a kocka 3-mal osztható", 1, 3], ["a kocka nagyobb, mint 4", 1, 3], ["a kocka nem hatos", 5, 6]];
+      let evs;
+      if (l === 1) evs = [pick(P.slice(0, 2)), pick(P.slice(2, 4))];
+      else if (l === 2) evs = [pick(P.slice(2)), pick(P.slice(2))];
+      else evs = [pick(P), pick(P), pick(P)];
+      const num = evs.reduce((p, e) => p * e[1], 1), den = evs.reduce((p, e) => p * e[2], 1);
+      const sum = evs.reduce((p, e) => p + e[1] / e[2], 0);
+      return Object.assign({ q: "Egymástól függetlenül: " + evs.map((e, i) => (i + 1) + ". " + e[0].replace("az érme", "egy érme").replace("a kocka", "egy kocka")).join("; ") + ". Mekkora a valószínűsége, hogy mind teljesül?", kind: "input", ph: "pl. 1/12",
+        sol: "<p>Független események: szorzunk. " + evs.map(e => e[1] + "/" + e[2]).join(" · ") + " = " + num + "/" + den + (fr(num, den) !== num + "/" + den ? " = " + fr(num, den) : "") + ".</p>" }, pt(num, den, x => Math.abs(x - sum) < 0.0006 ? "Összeadtad a valószínűségeket. „És” esetén szorozni kell!" : ""));
+    } },
+    { id: "leg", name: "Legalább egy", gen(l){
+      let n, p, q, what;
+      if (l === 1){ n = 2; p = 1; q = 2; what = pick(["érmét dobsz fel. Mekkora a valószínűsége, hogy legalább az egyik fej", "érmét dobsz fel. Mekkora a valószínűsége, hogy legalább az egyik írás"]); }
+      else if (l === 2){ const k = rnd(0, 1); n = k ? 2 : rnd(3, 4); p = k ? 1 : 1; q = k ? 6 : 2; what = k ? "kockával dobsz. Mekkora a valószínűsége, hogy legalább az egyik hatos" : "érmét dobsz fel. Mekkora a valószínűsége, hogy legalább az egyik fej"; }
+      else { n = rnd(2, 3); const k = rnd(0, 1); p = k ? 1 : 2; q = k ? 6 : 6; what = k ? "kockával dobsz. Mekkora a valószínűsége, hogy legalább az egyik hatos" : "kockával dobsz. Mekkora a valószínűsége, hogy legalább az egyik 4-nél nagyobb"; }
+      const none = Math.pow(q - p, n), all = Math.pow(q, n), good = all - none;
+      return Object.assign({ q: [, , "Két", "Három", "Négy"][n] + " " + what + "?", kind: "input", ph: "pl. 3/4", frames: n === 2 && q === 6 && p === 1 ? legFrames() : null, title: "Legalább egy hatos",
+        sol: "<p>Komplementer: egyik sem. Egy dobásnál ennek esélye " + (q - p) + "/" + q + ", " + n + " dobásnál " + Array(n).fill((q - p) + "/" + q).join(" · ") + " = " + none + "/" + all + ". Tehát P = 1 − " + none + "/" + all + " = " + good + "/" + all + (fr(good, all) !== good + "/" + all ? " = " + fr(good, all) : "") + " ≈ " + pct(good, all) + ".</p>" },
+        pt(good, all, x => near(x, n * p, q) ? "Összeadtad az egyes dobások esélyét, így a többszörös találatokat többször számoltad. Használd a komplementert: 1 − P(egy sem)." : near(x, none, all) ? "Ez az, hogy egyik sem. A kérdés ennek a fordítottja: 1 − ez." : ""));
+    } },
+    { id: "gyak", name: "Relatív gyakoriság", gen(l){
+      const N = pick([30, 50, 60, 80, 100, 120]), c = [0, 0, 0, 0, 0, 0, 0];
+      for (let i = 0; i < N; i++) c[1 + Math.floor(Math.random() * 6)]++;
+      const tbl = "<div class='ptwrap'><table class='pt'><tr><th>dobott szám</th>" + [1, 2, 3, 4, 5, 6].map(x => "<td>" + x + "</td>").join("") + "</tr><tr><th>gyakoriság</th>" + [1, 2, 3, 4, 5, 6].map(x => "<td>" + c[x] + "</td>").join("") + "</tr></table></div>";
+      if (l === 1){ const k = rnd(1, 6);
+        return Object.assign({ q: "Valaki egy kockával dobott, összesen ennyit: " + N + "." + tbl + "Mennyi a relatív gyakorisága ennek: " + k + "?", kind: "input", ph: "pl. 0,2",
+          sol: "<p>Relatív gyakoriság = gyakoriság : összes dobás = " + c[k] + "/" + N + (fr(c[k], N) !== c[k] + "/" + N ? " = " + fr(c[k], N) : "") + " ≈ " + dec(c[k], N) + ".</p>" }, pt(c[k], N));
+      }
+      if (l === 2){ const par = Math.random() < 0.5, g = par ? c[2] + c[4] + c[6] : c[1] + c[3] + c[5];
+        return Object.assign({ q: "Valaki egy kockával dobott, összesen ennyit: " + N + "." + tbl + "Mennyi a " + (par ? "páros" : "páratlan") + " dobások relatív gyakorisága?", kind: "input", ph: "pl. 0,5",
+          sol: "<p>" + (par ? "Páros: " + c[2] + " + " + c[4] + " + " + c[6] : "Páratlan: " + c[1] + " + " + c[3] + " + " + c[5]) + " = " + g + ". Relatív gyakoriság: " + g + "/" + N + " ≈ " + dec(g, N) + ". (Az elméleti valószínűség 1/2.)</p>" }, pt(g, N));
+      }
+      let M, r; do { M = pick([200, 300, 500, 600, 1000]); r = pick([0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]); } while ((M * r) % 1);
+      const ans = Math.round(M * r);
+      return { q: "Egy cinkelt kockával " + M + " dobásból a hatos relatív gyakorisága " + String(r).replace(".", ",") + " lett. Hány hatost dobtak?", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Gyakoriság = relatív gyakoriság · dobások száma = " + String(r).replace(".", ",") + " · " + M + " = " + ans + ". (Szabályos kockánál kb. " + Math.round(M / 6) + " lenne, ezért gyanús.)</p>",
+        check: v => { const x = Number(String(v).replace(/\s+/g, "").replace(",", ".")); return x === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Szorozd meg a relatív gyakoriságot a dobások számával." }; } };
+    } },
+    { id: "kod", name: "Mit ad a kód?", gen(l){
+      const list = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i).join(", ");
+      let code, a, b, wrong;
+      if (l === 1){ a = rnd(0, 3); b = a + rnd(2, 5); code = "random.randint(" + a + ", " + b + ")"; wrong = [[a, b - 1], [a + 1, b], [a + 1, b - 1]]; }
+      else if (l === 2){ const n = rnd(3, 6), k = rnd(1, 3); a = k; b = n + k - 1; code = "Math.floor(Math.random() * " + n + ") + " + k; wrong = [[k, n + k], [k + 1, n + k], [0, n - 1]]; }
+      else { const v = rnd(0, 2);
+        if (v === 0){ const n = rnd(3, 6); a = 0; b = n - 1; code = "Math.floor(Math.random() * " + n + ")"; wrong = [[0, n], [1, n], [1, n - 1]]; }
+        else if (v === 1){ a = rnd(1, 3); const e = a + rnd(3, 5); b = e - 1; code = "random.randrange(" + a + ", " + e + ")"; wrong = [[a, e], [a + 1, e], [a + 1, e - 1]]; }
+        else { const n = rnd(3, 5), k = rnd(2, 4); a = k; b = k + n - 1; code = "random.randint(" + k + ", " + (k + n - 1) + ")"; wrong = [[k, k + n], [k - 1, k + n - 1], [k + 1, k + n - 1]]; } }
+      const good = list(a, b), others = Array.from(new Set(wrong.filter(w => w[0] <= w[1]).map(w => list(w[0], w[1])).filter(s => s !== good)));
+      while (others.length < 3) others.push(list(a, b + others.length + 1));
+      const lang = /random\./.test(code) && !/Math/.test(code) ? "Python" : "JavaScript";
+      return choice("Milyen számokat adhat ez a " + lang + "-kifejezés? <pre class='code'>" + esc(code) + "</pre>", good, others.slice(0, 3),
+        "<p>" + (/randint/.test(code) ? "A randint mindkét határt beleérti." : /randrange/.test(code) ? "A randrange felső határa már nincs benne (mint a range-nél)." : "A Math.random() 0 és 1 között ad számot, az 1 nem lehet. A szorzás után lefelé kerekítünk (floor), majd hozzáadjuk a végén álló számot.") + " Lehetséges értékek: " + good + ".</p>",
+        "Nem jó. Nézd meg, benne van-e a felső határ, és hova tolja el a + jel.");
+    } },
+    { id: "varh", name: "Várható érték", gen(l){
+      let price, prizes, desc;
+      if (l === 1){ const w = 6 * rnd(10, 60); price = pick([50, 100, 150, 200]); prizes = [[w, 1, 6]]; desc = "Egy kockával dobsz, " + price + " Ft a belépő. Hatosra " + w + " Ft-ot kapsz, különben semmit."; }
+      else if (l === 2){ const w1 = 6 * rnd(20, 60), w2 = 6 * rnd(5, 19); price = pick([100, 150, 200, 250]); prizes = [[w1, 1, 6], [w2, 1, 6]]; desc = "Egy kockával dobsz, " + price + " Ft a belépő. Hatosra " + w1 + " Ft, ötösre " + w2 + " Ft jár, különben semmi."; }
+      else { const w = 36 * rnd(10, 40), w7 = 6 * rnd(5, 20); price = pick([100, 200, 300]); prizes = [[w, 1, 36], [w7, 1, 6]]; desc = "Két kockával dobsz, " + price + " Ft a belépő. Dupla hatosra " + w + " Ft, ha az összeg 7, akkor " + w7 + " Ft jár, különben semmi."; }
+      const ev = prizes.reduce((p, z) => p + z[0] * z[1] / z[2], 0), ans = Math.round((ev - price) * 100) / 100;
+      const fmtN = x => (x < 0 ? "−" : "") + String(Math.abs(x)).replace(".", ",");
+      return { q: desc + " Átlagosan mennyit nyersz egy játékon (a belépőt levonva)? Ha veszítesz, negatív számot írj. (Ft)", kind: "input", ph: "pl. −20", answer: fmtN(ans),
+        sol: "<p>Várható nyeremény: " + prizes.map(z => z[0] + " · " + z[1] + "/" + z[2]).join(" + ") + " = " + fmtN(ev) + " Ft. Ebből a belépő: " + fmtN(ev) + " − " + price + " = " + fmtN(ans) + " Ft. " + (ans < 0 ? "Hosszú távon veszítesz." : "Ez ritka: itt a játékos jár jól.") + "</p>",
+        frames: l === 1 ? varhFrames() : null, title: "Megéri játszani?",
+        check: v => { const x = Number(String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", ".").replace(/ft$/i, "")); if (isNaN(x)) return { ok: false, msg: "Egy számot írj (negatívat, ha veszítesz)." }; if (Math.abs(x - ans) < 0.011) return { ok: true, msg: "Helyes!" }; if (Math.abs(x - ev) < 0.011) return { ok: false, msg: "Ez a várható nyeremény. Még le kell vonni a belépőt!" }; if (Math.abs(x + ans) < 0.011) return { ok: false, msg: "Az előjel rossz: ha a várható nyeremény kisebb a belépőnél, negatív." }; return { ok: false, msg: "Nem jó. Minden nyereményt szorozz a valószínűségével, add össze, és vond le a belépőt." }; } };
+    } }
+  ];
+  const VEL = { 2: "2-vel", 3: "3-mal", 4: "4-gyel", 5: "5-tel", 6: "6-tal", 7: "7-tel" };
+  K.practice($("#practice"), { id: "valoszinuseg", types, play: playTo });
+
+  /* ---------- Puska: két kocka összegei ---------- */
+  $("#cheat").innerHTML = "<tr><th>összeg</th>" + [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(s => "<td>" + s + "</td>").join("") + "</tr><tr><th>esetek</th>" + [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(s => "<td" + (s === 7 ? ' class="hl"' : "") + ">" + (6 - Math.abs(s - 7)) + "</td>").join("") + "</tr><tr><th>P</th>" + [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(s => "<td>" + (6 - Math.abs(s - 7)) + "/36</td>").join("") + "</tr>";
+})();
+</script>
+<!--@UPDATE-->
