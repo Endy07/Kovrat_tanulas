@@ -1,0 +1,287 @@
+<!--@HEAD-->
+<title>Fájlok és Windows</title>
+<style>
+.fn{width:100%!important;font-size:1rem!important}
+.fbox{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.fcard{background:#151B23;border:1.5px solid #3A4656;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.fcard .ic{font-size:1.6rem}
+.fcard b{font-family:var(--mono);overflow-wrap:anywhere;color:#DCE3EC}
+.fcard span{color:#8C99AA;font-size:.85rem}
+.fcard.bad{border-color:#F2796C;background:#3A1C19}
+.fcard.bad b{color:#F2796C}
+.flags{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.flags li{padding:6px 10px;border-radius:8px;background:#27313E;font-size:.92rem}
+.flags li.w{background:#3A1C19;color:#F2796C}
+.flags li.g{background:#132C1E;color:#52C584}
+.key{display:inline-block;font-family:var(--mono);font-size:.85em;border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 .4em;background:var(--surface)}
+.path{font-family:var(--mono);overflow-wrap:anywhere}
+.slide .eq{white-space:normal}
+.opt,.prompt code{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · operációs rendszer</span>
+  <h1>Fájlok, mappák és a Windows</h1>
+  <p class="lead">Mi az a kiterjesztés, és miért veszélyes, ha el van rejtve? Hogyan írsz le egy elérési utat, és mi a leggyorsabb billentyű? Írj be egy fájlnevet, és nézd meg, mit árul el.</p>
+  <div class="panel">
+    <span class="eyebrow">Fájlnév-vizsgáló: mi ez a fájl valójában?</span>
+    <input type="text" class="fn" id="fn" value="szamla_oktober.pdf.exe" aria-label="Fájlnév" autocomplete="off" spellcheck="false" autocapitalize="off">
+    <div class="row" id="ex">
+      <button class="btn" data-f="dolgozat.docx">dolgozat.docx</button>
+      <button class="btn" data-f="nyaralas.jpg">nyaralas.jpg</button>
+      <button class="btn" data-f="szamla_oktober.pdf.exe">szamla_oktober.pdf.exe</button>
+      <button class="btn" data-f="jatek_hack.bat">jatek_hack.bat</button>
+      <button class="btn" data-f="index.html">index.html</button>
+    </div>
+    <label class="row" style="color:var(--panel-muted);font-size:.9rem"><input type="checkbox" id="hide" checked> „Ismert fájltípusok kiterjesztésének elrejtése” (a Windows alapbeállítása)</label>
+    <div class="fbox">
+      <div class="fcard" id="seen"></div>
+      <div class="fcard" id="real"></div>
+    </div>
+    <ul class="flags" id="flags"></ul>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="dupla" aria-selected="true">A kettős kiterjesztés trükkje</button>
+    <button class="tab" data-m="ut" aria-selected="false">Relatív útból teljes út</button>
+    <button class="tab" data-m="telep" aria-selected="false">Program biztonságos telepítése</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Az elérési utat a meghajtóval kezdve írd (például C:\Users\Kovrat\Documents). A kis- és nagybetű a Windowsban mindegy. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Kapcsold be a kiterjesztéseket</span><span>Fájlkezelő → Nézet → Megjelenítés → Fájlnévkiterjesztések. Így látod, ha egy „PDF” valójában program.</span></div>
+    <div class="trick"><span class="t">Tiltott karakterek a fájlnévben</span><span class="mono">\ / : * ? " &lt; &gt; |</span><span>Foglalt nevek: CON, PRN, AUX, NUL, COM1–COM9, LPT1–LPT9.</span></div>
+    <div class="trick"><span class="t">Elérési út</span><span class="path">C:\Users\Kovrat\Documents\iskola\info.docx</span><span>Windowsban fordított perjel (\), Linuxon és a weben perjel (/).</span></div>
+    <div class="trick"><span class="t">Ha lefagyott</span><span><span class="key">Ctrl</span> + <span class="key">Shift</span> + <span class="key">Esc</span>: Feladatkezelő, ott a program bezárható.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/\\/g, " "], [/<span class="key">([^<]*)<\/span>/g, "$1"]);
+
+  /* ---------- Kiterjesztések ---------- */
+  const EXT = {
+    txt: ["📄", "szöveg", "Jegyzettömb"], docx: ["📝", "szöveges dokumentum", "Word"], odt: ["📝", "szöveges dokumentum", "LibreOffice Writer"], pdf: ["📕", "nyomtatható dokumentum", "PDF-olvasó vagy böngésző"],
+    xlsx: ["📊", "táblázat", "Excel"], pptx: ["📽️", "bemutató", "PowerPoint"], csv: ["📊", "vesszővel tagolt adat", "Excel vagy Jegyzettömb"],
+    jpg: ["🖼️", "fénykép (veszteséges tömörítés)", "Fényképek"], png: ["🖼️", "kép (veszteségmentes, átlátszóság)", "Fényképek"], gif: ["🖼️", "kép vagy kis animáció", "böngésző"], svg: ["🖼️", "vektorgrafika", "böngésző"],
+    mp3: ["🎵", "zene", "Médialejátszó"], wav: ["🎵", "hang (tömörítés nélkül)", "Médialejátszó"], mp4: ["🎬", "videó", "Médialejátszó"],
+    zip: ["🗜️", "tömörített mappa", "Fájlkezelő"], "7z": ["🗜️", "tömörített mappa", "7-Zip"],
+    html: ["🌐", "weboldal", "böngésző"], css: ["🎨", "stíluslap", "VS Code"], js: ["⚙️", "JavaScript-program", "böngésző vagy Windows Script Host"], py: ["🐍", "Python-program", "Python"],
+    exe: ["⚙️", "futtatható program", "maga a Windows futtatja"], msi: ["⚙️", "telepítőcsomag", "Windows Installer"], bat: ["⚙️", "parancsfájl (kötegfájl)", "parancssor"], cmd: ["⚙️", "parancsfájl", "parancssor"],
+    scr: ["⚙️", "képernyővédő (valójában program)", "maga a Windows futtatja"], vbs: ["⚙️", "VBScript-program", "Windows Script Host"], ps1: ["⚙️", "PowerShell-szkript", "PowerShell"], lnk: ["🔗", "parancsikon", "Fájlkezelő"]
+  };
+  const RUN = ["exe", "msi", "bat", "cmd", "scr", "vbs", "ps1", "js", "lnk"];
+  const KNOWN_HIDDEN = Object.keys(EXT);   // a Windows ezeknél elrejti a kiterjesztést
+  function info(name){
+    const n = String(name).trim(), parts = n.split("."), ext = parts.length > 1 ? parts.pop().toLowerCase() : "", prev = parts.length > 1 ? parts[parts.length - 1].toLowerCase() : "";
+    return { n, ext, prev, base: parts.join("."), e: EXT[ext] || ["❔", ext ? "ismeretlen típus" : "nincs kiterjesztés", "?"], run: RUN.includes(ext), dbl: !!(prev && EXT[prev] && !RUN.includes(prev) && RUN.includes(ext)) };
+  }
+  function hero(){
+    const I = info($("#fn").value), hide = $("#hide").checked, shown = hide && KNOWN_HIDDEN.includes(I.ext) ? I.base : I.n;
+    const fake = I.dbl ? EXT[I.prev] : I.e;
+    $("#seen").className = "fcard"; $("#seen").innerHTML = '<span>Amit a fájlkezelőben látsz</span><div class="ic">' + (hide ? fake[0] : I.e[0]) + "</div><b>" + esc(shown) + "</b><span>" + (hide && I.dbl ? "úgy néz ki, mint egy " + EXT[I.prev][1] : I.e[1]) + "</span>";
+    $("#real").className = "fcard" + (I.run ? " bad" : ""); $("#real").innerHTML = '<span>Ami valójában</span><div class="ic">' + I.e[0] + "</div><b>" + esc(I.n) + "</b><span>kiterjesztés: " + (I.ext ? "." + esc(I.ext) : "nincs") + " · " + I.e[1] + " · megnyitja: " + I.e[2] + "</span>";
+    const F = [];
+    if (I.dbl) F.push(["w", "Kettős kiterjesztés! A név " + I.prev.toUpperCase() + "-nek látszik, de a valódi kiterjesztés az utolsó: ." + I.ext + ". Ez program, és elindul, ha rákattintasz."]);
+    else if (I.run) F.push(["w", "Ez futtatható fájl (." + I.ext + "): ha megnyitod, programot indít. Ismeretlen helyről (e-mail, letöltés, pendrive) soha ne nyisd meg."]);
+    if (hide && KNOWN_HIDDEN.includes(I.ext)) F.push(["w", "A kiterjesztés most el van rejtve. Kapcsold be a megjelenítését (Nézet → Fájlnévkiterjesztések), így nem tudnak becsapni."]);
+    if (/[\\/:*?"<>|]/.test(I.n)) F.push(["w", "Tiltott karakter van a névben: \\ / : * ? \" < > | egyike sem lehet Windows-fájlnévben."]);
+    if (!F.some(f => f[0] === "w")) F.push(["g", "Ez " + I.e[1] + ", nem program. Megnyitni biztonságos, ha megbízható helyről jött."]);
+    $("#flags").innerHTML = F.map(f => '<li class="' + f[0] + '">' + esc(f[1]) + "</li>").join("");
+  }
+  $("#fn").addEventListener("input", hero); $("#hide").addEventListener("change", hero);
+  $("#ex").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b){ $("#fn").value = b.dataset.f; hero(); } });
+  hero();
+
+  /* ---------- Windows-útvonalak ---------- */
+  function winResolve(cwd, rel){
+    let parts;
+    if (/^[A-Za-z]:\\/.test(rel)) { parts = rel.split("\\"); }
+    else { parts = cwd.split("\\").concat(rel.split("\\")); }
+    const out = [];
+    parts.forEach(s => { if (!s || s === ".") return; if (s === "..") { if (out.length > 1) out.pop(); } else out.push(s); });
+    return out.length === 1 ? out[0] + "\\" : out.join("\\");
+  }
+  const normWin = v => { let s = String(v).trim().replace(/\//g, "\\").replace(/^"|"$/g, ""); if (s.length > 3) s = s.replace(/\\+$/, ""); return s.toLowerCase(); };
+
+  /* ---------- Levezetések ---------- */
+  function duplaFrames(){
+    const c = (t, cls) => '<div class="fcard ' + (cls || "") + '" style="max-width:340px">' + t + "</div>";
+    return [
+      { cap: "E-mailben jön egy melléklet. A fájlkezelőben így látszik: szamla_oktober.pdf. Egy PDF-számla, gondolnád.", html: c('<div class="ic">📕</div><b>szamla_oktober.pdf</b><span>úgy néz ki, mint egy PDF</span>') },
+      { cap: "A Windows alapból elrejti az ismert kiterjesztéseket. A fájl teljes neve valójában: szamla_oktober.pdf.exe.", html: c('<div class="ic">⚙️</div><b>szamla_oktober.pdf<span style="color:#F2796C">.exe</span></b><span>a valódi név</span>', "bad") },
+      { cap: "A kiterjesztés mindig az utolsó pont utáni rész. Itt ez exe: futtatható program. A pdf csak a név része, hogy becsapjon.", html: c('<b>szamla_oktober.pdf . <span style="color:#F2796C">exe</span></b><span>név · kiterjesztés</span>', "bad") },
+      { cap: "Ha rákattintasz, nem PDF-olvasó nyílik, hanem a program fut le, és megfertőzheti a gépet. A csaló ikonja is lehet PDF-es.", html: c('<div class="ic">⚠️</div><b>program indulna</b><span>kártevő, zsarolóvírus</span>', "bad") },
+      { cap: "Védekezés: kapcsold be a kiterjesztések megjelenítését, ismeretlen mellékletet ne nyiss meg, és ha a Windows figyelmeztet (SmartScreen), hallgass rá.", html: c('<div class="ic">🛡️</div><b>Nézet → Fájlnévkiterjesztések ✓</b><span>így mindig látod a valódi típust</span>') }
+    ];
+  }
+  function utFrames(cwd, rel){
+    const F = [], show = p => '<p class="path big">' + esc(p) + "</p>";
+    F.push({ cap: "Itt állsz: " + cwd + ". A relatív út: " + rel + ". A relatív út onnan indul, ahol állsz.", html: show(cwd) + '<p class="path">' + esc(rel) + "</p>" });
+    let cur = cwd;
+    rel.split("\\").forEach(s => {
+      if (!s || s === ".") { F.push({ cap: "A pont azt jelenti: ez a mappa. Helyben maradunk.", html: show(cur) }); return; }
+      const next = winResolve(cur, s);
+      F.push({ cap: s === ".." ? "A két pont: egy szinttel feljebb, a szülőmappába." : "Belépünk ebbe: " + s + ".", html: show(next) });
+      cur = next;
+    });
+    F.push({ cap: "A teljes (abszolút) út: " + cur + ". Ez a meghajtó betűjelével kezdődik, és bárhonnan ugyanide visz.", html: '<p class="path big led">' + esc(cur) + "</p>" });
+    return F;
+  }
+  function telepFrames(){
+    const L = [["Honnan?", "Csak a gyártó hivatalos oldaláról vagy a Microsoft Store-ból töltsd le. A „letöltés” feliratú hirdetések gyakran mást adnak."], ["Ki adta ki?", "A Felhasználói fiókok felügyelete (UAC) ablak mutatja a kiadót. Ha „Ismeretlen közzétevő”, gondold meg."], ["Rendszergazda?", "A telepítéshez rendszergazdai jog kell. Ezért jó, ha a mindennapokban standard fiókot használsz: egy kártevő sem kap magától teljes jogot."], ["Mit pipálsz be?", "Olvasd el a telepítő ablakait: gyakran kéretlen eszköztárat vagy más programot is felraknának. Az „Egyéni telepítés” mutatja meg."], ["Utána", "Frissítsd a programot, és ami nem kell, azt távolítsd el: Gépház → Alkalmazások."]];
+    return L.map((x, i) => ({ cap: x[0] + " " + x[1], html: '<div class="flags">' + L.map((y, j) => '<li class="' + (j === i ? "g" : "") + '"><b>' + (j + 1) + ". " + y[0] + "</b></li>").join("") + "</div>" }));
+  }
+  const MET = { dupla: "A kettős kiterjesztés trükkje", ut: "Relatív útból teljes út", telep: "Program biztonságos telepítése" };
+  const MF = { dupla: duplaFrames, ut: () => utFrames("C:\\Users\\Kovrat\\Documents\\iskola", "..\\..\\Pictures\\nyar\\tenger.jpg"), telep: telepFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "dupla" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+  const k = s => s.split("+").map(x => '<span class="key">' + x.trim() + "</span>").join(" + ");
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Fájl, mappa, kiterjesztés", h:
+      "<p>A <b>fájl</b> egy elnevezett adatcsomag a háttértáron: dokumentum, kép, program. A <b>mappa</b> (könyvtár) fájlokat és további mappákat tartalmaz: így épül fel a fájlok fája.</p>" +
+      "<p class='eq'>dolgozat<b class='hl'>.docx</b> → a pont utáni rész a <b>kiterjesztés</b></p>" +
+      "<p>A kiterjesztés mondja meg a Windowsnak, melyik programmal nyissa meg. Ha átírod (például .docx helyett .jpg), a tartalom nem változik meg, csak a Windows rossz programot próbál elindítani.</p>" },
+    { k: "Típusok", t: "A leggyakoribb kiterjesztések", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Típus</th><th>Kiterjesztések</th></tr><tr><td>szöveg, dokumentum</td><td>.txt .docx .odt .pdf</td></tr><tr><td>táblázat, bemutató</td><td>.xlsx .csv .pptx</td></tr><tr><td>kép</td><td>.jpg .png .gif .svg</td></tr><tr><td>hang, videó</td><td>.mp3 .wav .mp4</td></tr><tr><td>tömörített</td><td>.zip .7z</td></tr><tr><td>web, kód</td><td>.html .css .js .py</td></tr><tr><td><b>futtatható</b></td><td><b>.exe .msi .bat .cmd .scr .vbs .ps1</b></td></tr></table></div>" +
+      "<div class='mistake'><b>A futtatható fájl programot indít.</b> E-mail-mellékletként vagy ismeretlen letöltésként ezek a legveszélyesebbek.</div>" },
+    { k: "Csapda", t: "Rejtett kiterjesztés, kettős kiterjesztés", h:
+      "<p>A Windows alapból <b>elrejti</b> az ismert kiterjesztéseket. Ezt a csalók kihasználják: a <b>szamla.pdf.exe</b> így <b>szamla.pdf</b>-nek látszik, de program.</p>" +
+      "<p><b>Kapcsold be:</b> Fájlkezelő → Nézet → Megjelenítés → Fájlnévkiterjesztések. A kiterjesztés mindig az <b>utolsó</b> pont utáni rész.</p>" + playBtn("dupla"), init: playInit },
+    { k: "Útvonal", t: "Elérési út a Windowsban", h:
+      "<p class='eq path'>C:\\Users\\Kovrat\\Documents\\iskola\\info.docx</p>" +
+      "<ul><li>Az elején a <b>meghajtó</b>: C: (a rendszer), D:, E: (pendrive, második lemez).</li><li>A mappák között <b>fordított perjel</b>: \\ (Linuxon és a weben: /).</li><li>A kis- és nagybetű a Windowsban mindegy (Linuxon nem!).</li><li>Relatív út: <b>.</b> ez a mappa, <b>..</b> a szülőmappa, ugyanúgy, mint Linuxon.</li></ul>" +
+      "<p>A saját mappád: C:\\Users\\<i>felhasználónév</i>, benne Documents (Dokumentumok), Pictures (Képek), Downloads (Letöltések), Desktop (Asztal).</p>" + playBtn("ut"), init: playInit },
+    { k: "Fájlnév", t: "Milyen lehet a fájlnév?", h:
+      "<ul><li><b>Tiltott karakterek:</b> \\ / : * ? \" &lt; &gt; |</li><li><b>Foglalt nevek</b> (régi eszköznevek): CON, PRN, AUX, NUL, COM1–COM9, LPT1–LPT9 (kiterjesztéssel sem: con.txt sem jó).</li><li>A név nem végződhet ponttal vagy szóközzel.</li><li>A teljes út legfeljebb kb. 260 karakter (régi programoknál).</li></ul>" +
+      "<div class='note'><b>Programozónak tipp:</b> fájlnévben ne legyen ékezet és szóköz (kotojel-vagy_alahuzas.html). Weben és Linuxon így biztosan működik.</div>" },
+    { k: "Billentyűk", t: "Gyorsbillentyűk, amik időt spórolnak", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Billentyű</th><th>Mit csinál?</th></tr>" +
+      [["Ctrl + C", "másolás"], ["Ctrl + X", "kivágás"], ["Ctrl + V", "beillesztés"], ["Ctrl + Z", "visszavonás"], ["Ctrl + Y", "mégis (újra)"], ["Ctrl + A", "mindent kijelöl"], ["Ctrl + S", "mentés"], ["Ctrl + F", "keresés"], ["Alt + Tab", "váltás az ablakok között"], ["Win + E", "Fájlkezelő"], ["Win + L", "zárolás (ha felállsz a géptől!)"], ["Win + D", "asztal"], ["Win + Shift + S", "képernyőkivágás"], ["Win + V", "vágólap-előzmények"], ["F2", "átnevezés"], ["Ctrl + Shift + Esc", "Feladatkezelő"]].map(r => "<tr><td>" + k(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("") + "</table></div>" },
+    { k: "Fiókok", t: "Felhasználói fiókok és jogok", h:
+      "<ul><li><b>Rendszergazda</b> (admin): programot telepíthet, beállításokat módosíthat.</li><li><b>Standard felhasználó</b>: dolgozni tud, de rendszerszintű változtatáshoz rendszergazdai jelszó kell.</li><li>A <b>Felhasználói fiókok felügyelete</b> (UAC) ablak kérdez rá, ha valami rendszergazdai jogot kér.</li></ul>" +
+      "<div class='note'><b>Biztonság:</b> mindennap standard fiókot használj. Ha egy kártevő elindul, nem kap magától teljes hatalmat a gép fölött.</div>" + playBtn("telep"), init: playInit },
+    { k: "Karbantartás", t: "Frissítés, Feladatkezelő, tárhely", h:
+      "<ul><li><b>Windows Update</b>: a biztonsági frissítéseket telepítsd, ezek réseket zárnak be.</li><li><b>Feladatkezelő</b> (<span class='key'>Ctrl</span> + <span class='key'>Shift</span> + <span class='key'>Esc</span>): mi fut, mennyi processzort és memóriát használ; a lefagyott program itt bezárható.</li><li><b>Tárhely</b>: Gépház → Rendszer → Tárolás; a Lomtár ürítése, a Letöltések mappa rendrakása.</li><li><b>Illesztőprogram</b> (driver): az eszköz (nyomtató, videokártya) és a Windows közötti fordító program.</li></ul>" },
+    { k: "Parancssor", t: "Windows-parancssor és Linux", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Windows (cmd)</th><th>Linux</th><th>Mit csinál?</th></tr><tr><td>dir</td><td>ls</td><td style='text-align:left'>lista</td></tr><tr><td>cd</td><td>cd</td><td style='text-align:left'>mappaváltás</td></tr><tr><td>mkdir</td><td>mkdir</td><td style='text-align:left'>új mappa</td></tr><tr><td>copy</td><td>cp</td><td style='text-align:left'>másolás</td></tr><tr><td>move</td><td>mv</td><td style='text-align:left'>áthelyezés</td></tr><tr><td>del</td><td>rm</td><td style='text-align:left'>törlés</td></tr><tr><td>type</td><td>cat</td><td style='text-align:left'>tartalom kiírása</td></tr><tr><td>cls</td><td>clear</td><td style='text-align:left'>képernyőtörlés</td></tr><tr><td>ipconfig</td><td>ip a</td><td style='text-align:left'>hálózati beállítások</td></tr></table></div>" +
+      "<p>A PowerShell a modernebb Windows-parancssor; az ls és a cat ott is működik (álnévként).</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>„PDF-ikonja van, tehát PDF.”</b> Az ikon is hamisítható; a kiterjesztés dönt.</div>" +
+      "<div class='mistake'><b>Kiterjesztés átírása „konvertálásnak”.</b> A .docx-ből nem lesz PDF, ha átnevezed: menteni kell PDF-ként.</div>" +
+      "<div class='mistake'><b>Minden a Letöltések mappában.</b> Rendszerezd mappákba, különben semmit nem találsz.</div>" +
+      "<div class='mistake'><b>Rendszergazdaként szörfözni.</b> Egy kártevő így mindent megkap.</div>" +
+      "<div class='mistake'><b>Fordított perjel weboldalon.</b> A HTML-ben a kép útja images/kep.png, nem images\\kep.png.</div>" },
+    { k: "Trükkök", t: "Rendszerezett gép", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mappaszerkezet</span><span>Iskola → tantárgy → téma. A fájl neve mondja meg, mi van benne és mikori: info_halozatok_2026-10.docx.</span></div>" +
+      "<div class='trick'><span class='t'>Mentés</span><span><span class='key'>Ctrl</span> + <span class='key'>S</span> gyakran; fontos munkáról legyen másolat (felhő vagy pendrive).</span></div>" +
+      "<div class='trick'><span class='t'>Keresés</span><span>Win, aztán gépeld a nevét: programot és fájlt is megtalál.</span></div>" +
+      "<div class='trick'><span class='t'>Zárolás</span><span><span class='key'>Win</span> + <span class='key'>L</span>, ha felállsz a géptől az iskolában.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const CAT = { txt: "szöveg, dokumentum", docx: "szöveg, dokumentum", odt: "szöveg, dokumentum", pdf: "szöveg, dokumentum", xlsx: "táblázat, bemutató", csv: "táblázat, bemutató", pptx: "táblázat, bemutató", jpg: "kép", png: "kép", gif: "kép", svg: "kép", mp3: "hang, videó", wav: "hang, videó", mp4: "hang, videó", zip: "tömörített", "7z": "tömörített", html: "web, kód", css: "web, kód", py: "web, kód", exe: "futtatható program", msi: "futtatható program", bat: "futtatható program", scr: "futtatható program", vbs: "futtatható program", ps1: "futtatható program" };
+  const CATS = ["szöveg, dokumentum", "táblázat, bemutató", "kép", "hang, videó", "tömörített", "web, kód", "futtatható program"];
+  const NAMES = ["dolgozat", "nyaralas", "jegyzet", "projekt", "szamla", "kirandulas", "zene", "jatek", "fizetes", "orarend"];
+  const KEYS = [
+    [["másolás", "Ctrl + C"], ["beillesztés", "Ctrl + V"], ["kivágás", "Ctrl + X"], ["visszavonás", "Ctrl + Z"], ["mentés", "Ctrl + S"], ["mindent kijelöl", "Ctrl + A"], ["keresés a dokumentumban", "Ctrl + F"]],
+    [["váltás a nyitott ablakok között", "Alt + Tab"], ["Fájlkezelő megnyitása", "Win + E"], ["a gép zárolása", "Win + L"], ["minden ablak lekicsinyítése (asztal)", "Win + D"], ["kijelölt fájl átnevezése", "F2"], ["mégis (az utolsó visszavonás visszacsinálása)", "Ctrl + Y"]],
+    [["Feladatkezelő megnyitása", "Ctrl + Shift + Esc"], ["képernyő egy részének kivágása", "Win + Shift + S"], ["vágólap-előzmények", "Win + V"], ["a böngészőben az előzőleg bezárt lap újranyitása", "Ctrl + Shift + T"], ["Gépház (beállítások) megnyitása", "Win + I"], ["fájl végleges törlése, Lomtár nélkül", "Shift + Del"]]
+  ];
+  const CMDS = [["dir", "ls"], ["copy", "cp"], ["move", "mv"], ["del", "rm"], ["type", "cat"], ["cls", "clear"], ["ipconfig", "ip a"], ["mkdir", "mkdir"]];
+  const FOG = [["Az eszköz (nyomtató, videokártya) és a Windows közötti fordító program.", "illesztőprogram (driver)"], ["Ide kerül a törölt fájl, innen még visszaállítható.", "Lomtár"], ["Megmutatja a futó programokat, és bezárja a lefagyottat.", "Feladatkezelő"], ["Programot telepíthet és a rendszert módosíthatja.", "rendszergazdai fiók"], ["Dolgozni tud, de telepítéshez jelszót kell kérnie.", "standard fiók"], ["A Windows biztonsági és egyéb javításainak letöltése.", "Windows Update"], ["Ideiglenes tár: ide kerül, amit kimásolsz.", "vágólap"], ["Egy fájlra vagy programra mutató kis hivatkozás.", "parancsikon"]];
+  const FDIRS = ["C:\\Users\\Kovrat\\Documents", "C:\\Users\\Kovrat\\Documents\\iskola", "C:\\Users\\Kovrat\\Desktop", "C:\\Users\\Kovrat\\Downloads", "D:\\mentes\\2026"];
+  const SUB = ["iskola", "info", "matek", "kepek", "projekt", "zene", "Pictures", "Music"];
+  const types = [
+    { id: "kiterj", name: "Milyen fájl?", gen(l){
+      const pool = Object.keys(CAT).filter(e => l === 1 ? ["txt", "docx", "pdf", "jpg", "png", "mp3", "mp4", "zip", "exe", "xlsx", "pptx"].includes(e) : l === 2 ? true : ["csv", "svg", "wav", "7z", "py", "msi", "bat", "scr", "vbs", "ps1", "odt", "gif"].includes(e));
+      const e = pick(pool), f = pick(NAMES) + "." + e, good = CAT[e];
+      return choice("Milyen fájl ez? <code>" + esc(f) + "</code>", good, shuffle(CATS.filter(c => c !== good)).slice(0, 3), "<p>A kiterjesztés: ." + e + " → " + EXT[e][1] + " (" + good + ").</p>", "Nem jó. Nézd meg a kiterjesztést (az utolsó pont utáni részt) a puskában.");
+    } },
+    { id: "veszely", name: "Megnyithatod?", gen(l){
+      const safeE = ["pdf", "docx", "jpg", "png", "mp3", "txt", "xlsx", "mp4"], runE = ["exe", "scr", "bat", "vbs", "cmd", "js", "msi"];
+      let f, bad;
+      const r = Math.random();
+      if (l === 1){ bad = r < 0.5; f = pick(NAMES) + "." + (bad ? pick(["exe", "bat", "scr"]) : pick(safeE)); }
+      else if (l === 2){ bad = r < 0.6; f = bad ? pick(NAMES) + "." + pick(safeE) + "." + pick(runE) : pick(NAMES) + "." + pick(safeE); }
+      else { bad = r < 0.6; f = bad ? pick([() => pick(NAMES) + "." + pick(safeE) + "    ." + pick(runE), () => pick(NAMES) + "_" + pick(safeE) + "." + pick(runE), () => pick(NAMES) + "." + pick(safeE) + "." + pick(runE)])() : pick([() => pick(NAMES) + ".exe.pdf", () => pick(NAMES) + "." + pick(safeE), () => pick(NAMES) + ".zip.pdf"])(); }
+      const I = info(f), good = I.run ? "Veszélyes: program" : "Nem program";
+      return choice("Ismeretlen feladótól jött e-mail-mellékletként. Mi ez? <code>" + esc(f) + "</code>", good, [I.run ? "Nem program" : "Veszélyes: program"], "<p>A valódi kiterjesztés az utolsó pont utáni rész: ." + I.ext + ". " + (I.run ? "Ez futtatható: ne nyisd meg!" : "Ez nem program. (Ismeretlen feladótól azért ezt se nyisd meg gondolkodás nélkül.)") + "</p>", "Nem jó. Csak az utolsó pont utáni rész számít!");
+    } },
+    { id: "gyors", name: "Gyorsbillentyűk", gen(l){
+      const pool = KEYS[l - 1], q = pick(pool), o = shuffle(KEYS.flat().filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Melyik billentyűkombináció ez: <b>" + q[0] + "</b>?", q[1], o, "<p>" + q[0] + ": " + k(q[1]) + "</p>", "Nem ez. Nézd meg a gyorsbillentyűk diáját.");
+    } },
+    { id: "ut", name: "Elérési út", gen(l){
+      const cwd = pick(FDIRS.slice(0, l === 3 ? 5 : 4)); let rel;
+      if (l === 1) rel = pick(SUB) + "\\" + pick(NAMES) + ".docx";
+      else if (l === 2) rel = "..\\" + pick(SUB) + "\\" + pick(NAMES) + "." + pick(["jpg", "pdf", "mp3"]);
+      else rel = pick(["..\\..\\", ".\\..\\", "..\\" + pick(SUB) + "\\..\\"]) + pick(SUB) + "\\" + pick(NAMES) + "." + pick(["png", "xlsx", "txt"]);
+      const ans = winResolve(cwd, rel);
+      return { q: "Itt állsz: <span class='path'>" + esc(cwd) + "</span>. Mi ennek a relatív útnak a teljes (abszolút) alakja? <span class='path'>" + esc(rel) + "</span>", kind: "input", ph: "C:\\...", answer: ans, frames: utFrames(cwd, rel), title: "Relatív útból teljes út",
+        sol: "<p>Indulj a mostani mappából, és lépj végig: a .. egy szinttel feljebb visz, a . helyben marad, a többi név belép.</p>",
+        check: v => { const s = normWin(v); if (s === ans.toLowerCase()) return { ok: true, msg: "Helyes!" }; if (!/^[a-z]:\\/.test(s)) return { ok: false, msg: "A teljes út a meghajtóval kezdődik, például C:\\." }; return { ok: false, msg: "Nem jó. Lépésenként: a .. egy szintet felfelé, a . helyben, a név belép a mappába." }; } };
+    } },
+    { id: "cmd", name: "Parancssor", gen(l){
+      const q = pick(CMDS), rev = l > 1 && Math.random() < 0.5;
+      const good = rev ? q[0] : q[1], o = shuffle(CMDS.filter(x => x !== q).map(x => rev ? x[0] : x[1])).filter(x => x !== good).slice(0, 3);
+      return choice(rev ? "Melyik Windows-parancs felel meg ennek a Linux-parancsnak: <code>" + q[1] + "</code>?" : "Mi a Linuxos megfelelője ennek a Windows-parancsnak: <code>" + q[0] + "</code>?", good, o, "<p>Windows: <code>" + q[0] + "</code> · Linux: <code>" + q[1] + "</code>.</p>", "Nem ez. Nézd meg a parancssoros diát.");
+    } },
+    { id: "nev", name: "Jó fájlnév?", gen(l){
+      const okN = () => pick(NAMES) + pick(["", "_2026", "-v2", " masolat"]) + "." + pick(["docx", "txt", "jpg", "html"]);
+      const badN = l === 1 ? () => pick(NAMES) + pick(["?", "*", ":", "|"]) + ".txt" : l === 2 ? () => pick([pick(NAMES) + "/" + pick(NAMES) + ".docx", "mi\"ez\".txt", pick(NAMES) + "<1>.txt", pick(NAMES) + "?.jpg"]) : () => pick(["con.txt", "PRN.docx", "aux.html", "nul.jpg", "COM1.txt", pick(NAMES) + ".", pick(NAMES) + ".txt "]);
+      const isOk = Math.random() < 0.45, f = isOk ? okN() : badN();
+      const why = isOk ? "Nincs benne tiltott karakter, nem foglalt név, és nem ponttal vagy szóközzel végződik." : /[\\/:*?"<>|]/.test(f) ? "Tiltott karakter van benne (\\ / : * ? \" < > |)." : /[. ]$/.test(f) ? "Nem végződhet ponttal vagy szóközzel." : "Foglalt eszköznév (CON, PRN, AUX, NUL, COM1…), kiterjesztéssel sem használható.";
+      return choice("Lehet ez Windows-fájlnév? <code>" + esc(f) + "</code>", isOk ? "Igen, jó név" : "Nem lehet", [isOk ? "Nem lehet" : "Igen, jó név"], "<p>" + esc(why) + "</p>", "Nem jó. " + why);
+    } },
+    { id: "fog", name: "Fogalmak", gen(l){
+      const q = pick(FOG), o = shuffle(FOG.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Mire illik ez a leírás? " + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "windows", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["Ctrl + C · X · V", "másolás · kivágás · beillesztés"], ["Ctrl + Z · Y", "visszavonás · mégis"], ["Ctrl + S · F · A", "mentés · keresés · mind"], ["Alt + Tab", "ablakváltás"], ["Win + E · L · D", "Fájlkezelő · zárolás · asztal"], ["Win + Shift + S", "képernyőkivágás"], ["F2", "átnevezés"], ["Ctrl + Shift + Esc", "Feladatkezelő"]];
+  $("#cheat").innerHTML = "<tr><th>Billentyű</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='text-align:left'>" + esc(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

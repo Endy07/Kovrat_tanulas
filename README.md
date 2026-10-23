@@ -36,6 +36,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [CSS alapok](css-alapok.html) | Szelektorok, színek, dobozmodell, display és position, melyik szabály nyer |
 | [Git és GitHub alapok](git-alapok.html) | Munkamappa, staging, commit, ág, GitHub; parancsok beírása |
 | [Reszponzív weboldalak](reszponziv-weboldalak.html) | Viewport, media query, relatív mértékegységek, flex és grid, Bootstrap-rács; szélességállítható előnézet, kódolós feladatok több ablakszélességen ellenőrizve |
+| [Fájlok, mappák és a Windows](windows-fajlkezeles.html) | Kiterjesztések, kettős kiterjesztés, elérési utak, fájlnév-szabályok, gyorsbillentyűk, fiókok, frissítés, Feladatkezelő, cmd és Linux; fájlnév-vizsgáló |
 | [IT-biztonság alapjai](it-biztonsag.html) | Linkvizsgáló (valódi domain, aldomain-, hasonló betű-, @- és IP-trükk), kártevők, támadások, helyzetgyakorlatok, XOR-titkosítás, nyilvános kulcs, paritásbit, Luhn-ellenőrzés, jelszó, digitális lábnyom |
 | [Linux parancssor](linux-parancssor.html) | Fájlrendszer-fa, abszolút és relatív útvonal, navigáció, fájlműveletek, jogosultságok (rwx, chmod), sudo, apt; játék-terminál élő mappafával |
 | [JavaScript-bevezető](javascript-bevezeto.html) | `<script>` és külső fájl, `console.log`, `alert`, változók, szöveg és szám, `prompt`, `if`, `for`, DOM, gombnyomás; elszigetelt JS-játszótér (`sandbox="allow-scripts"`, postMessage), a kódolós feladatok tényleg lefutnak |
