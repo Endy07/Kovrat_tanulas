@@ -20,6 +20,11 @@ Készült: 2026-10-22. **Jelölés:** ✅ forrásból biztos · ⚠️ feltétel
 |---|---|---|---|
 | **Informatikai és távközlési alapok** (I. a 9.-ben, II. a 10.-ben) | 108 óra | 144 óra | 252 |
 | **Programozási alapok** | 72 óra | 72 óra | 144 |
+| **IKT projektmunka** (Hatékony tanulás, önfejlesztés és csoportmunka) | 54 óra | 108 óra | 162 |
+
+✅ Az IKT projektmunka I. témakörei a 9.-ben (2026-10-23-án olvastam ki): önismereti és kommunikációs készségek 6,
+csapatmunka és együttműködés 6, prezentációs készségek 6, projektszervezés és -menedzsment 6, csapatban végzett projektmunka
+30 óra. Ehhez készült a *Projektmunka* lecke.
 
 Egy tanév ~36 hét → ⚠️ a 9.-ben **kb. 3 óra/hét informatikai alapok + 2 óra/hét programozás**. Mindkettő
 80%-ban gyakorlati. A 10. év végén ágazati alapvizsga.

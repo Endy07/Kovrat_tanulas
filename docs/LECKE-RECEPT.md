@@ -337,3 +337,18 @@ megnyitott megoldásnál méri a vízszintes túllógást (a bűnös elemekkel);
   nélküli ciklustörzsre nem kerül számláló: ott csak az időkorlát véd, és ha az iframe ugyanabban a folyamatban fut, az oldal
   addig megfagyhat. A `K.practice` aszinkron check-et is elfogad (Promise).
 - **Törlés a munkafában:** a `rm -rf` parancsot egy védőhook megállítja; ideiglenes mappához inkább új, üres nevet használj.
+- **Kifejezés a válasz** (algebra, képlet): ne szöveget hasonlíts, hanem értékeld ki több pontban saját elemzővel (`eval` nem),
+  és külön ellenőrizd az alakot (kifejtett, kiemelt), különben a visszamásolt feladat átmegy.
+- **Választós tippek:** ne legyen két jó gomb. Átfedő jelentésű szavak (bug/error, folder/directory) ne legyenek egymás rossz
+  válaszai; generált tippeknél nézd meg a véletlen egyezést (pl. k = 2-nél két képlet ugyanaz); egyszerűsített arányt
+  (16:10 → 8:5) is tegyél a gombok közé, vagy írd ki a megnevezett alakot.
+- **Ligatúrák kikapcsolása** (`font-variant-ligatures:none`): a `table`, `input`, `code`, `.opt` elemekre külön is, mert
+  quirks módban a táblázat nem örököl.
+- **Névelő változó elé:** cellanév előtt `artC(név)` („az A1”, „a B2”), sorszám/index előtt fogalmazd át („a helye: 3”).
+  Szám után a „-szor/-szer” is tilos („összesen ennyit: N”). Szövegben két szám közös többszörösénél az LKKT-t írd, ne a szorzatot.
+- **A `grep -c "a(z)"` hamis találatot ad** a kódra (`extra(z)`): ilyenkor nevezd át a változót.
+- **„Jó válasz” `<` jellel:** `esc()`-kel add meg (`x &lt; 5`).
+- **SVG-felirat a szélen:** a `text-anchor="middle"` kilóg a viewBoxból; a széleken `start`/`end`. A tesztelő ezt nem látja.
+- **Független ellenőrzés:** a Python `round()` párosra kerekít (4312,5 → 4312), a JS `Math.round` felfelé; adj tűrést a .5-ös
+  határra. Számkiolvasásnál a `[\d,]+` a felsorolás vesszőjét is elnyeli: `\d+(?:,\d+)?`; a számot tartalmazó neveket (MP3, 4K)
+  előbb töröld. Ha a rajz és a válasz ugyanabból a fából készül, a rajzot ez nem igazolja: azt nézd, egyedi-e a jó gomb.

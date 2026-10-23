@@ -23,7 +23,10 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tanrend.html`, `docs/tanrend-9.md` | A 9. évfolyam éves tanrendje (hónapkártyák, melyikhez van már lecke). A `.md` a kutatás forrásokkal: ✅ biztos / ⚠️ feltételezés. |
 | `8-visszatekintes.html` | Visszatekintés a 8. osztályra: hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség (kész) |
 | `tizenhatos-szamrendszer.html`, `logikai-muveletek.html`, `szoveg-es-kep.html`, `html-alapok.html`, `css-alapok.html`, `git-alapok.html` | A 2026. 10. 22-i leckék (kész). **A forrásuk a `tools/lessons/*.src.html`**, ne a kimenetet szerkeszd. |
-| `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, szerkesztő, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
+| A 2026. 10. 23-i (éjszakai) leckék | 25 új lecke, a listájuk és a sorrend indoka: [`docs/leckek-terv.md`](docs/leckek-terv.md), a kezdőlapon csoportokban. Forrásuk szintén `tools/lessons/*.src.html`. |
+| `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
+| `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
+| `docs/leckek-terv.md`, `docs/tanrend-10.md` | A leckék sorrendje és indoka; a 10. évfolyam tanrend-vázlata (lecke nélkül). |
 | `version.json` | Az aktuális verzió-időbélyeg. Az oldalak ebből tudják, hogy van-e újabb változat. **Kézzel ne írd**, a pre-commit hook állítja. |
 | `tools/bump-version.sh` | Új időbélyeg a `version.json`-ba és minden oldal `kovrat-version` metájába |
 | `.githooks/pre-commit` | HTML-t tartalmazó commitnál lefuttatja a bump-ot, és mindent hozzáad a commithoz |
@@ -102,6 +105,32 @@ Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osz
 - **Hook-hiba**: az új klónban a `core.hooksPath` nem volt beállítva, ezért az első commitoknál nem futott a verzió-bump.
   Beállítva (`git config core.hooksPath .githooks`), külön commit javította. Új klónnál ne felejtsd el.
 
+### Éjszakai leckék (2026. 10. 23., 03:45–07:00, a pult briefje alapján)
+
+Endi a pultban: „Kovrat tanulás mehet tovább, reggel 7-ig, Opussal.” Később: „menjen minden, amit egy 8-os 9-es
+gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek meg, a döntések feltételezések
+(`docs/tanrend-9.md`, „Döntések 2026-10-23 éjjel”).
+
+- **25 új lecke**, mind a közös készlettel, gépi teszttel (minden típus × szint, 390 px, sötét téma), leckénként egy commit:
+  - *9.-es informatika:* hálózatok alapjai, elektronika alapjai, a számítógép felépítése, digitális áramkörök (kapuktól az
+    összeadóig), hang és videó digitalizálása, virtualizáció és felhő, IT-biztonság alapjai, (10.-es előzetesként) Ethernet/kapcsoló/IPv6, Linux parancssor, mesterséges intelligencia.
+  - *9.-es programozás:* algoritmusok és játékos programozás, programozási tételek (keresés, rendezés), JavaScript-bevezető,
+    Python-előzetes (kódolvasás, futtató nélkül).
+  - *Matek:* oszthatóság és statisztika, koordináták és függvények (8.-os), halmazok, algebrai kifejezések, egyenletek,
+    geometria, valószínűség (9.-es).
+  - *Egyéb:* logikai fejtörők, projektmunka (a 9.-es IKT projektmunka, 54 óra), táblázatkezelés (⚠️ nem biztos, hogy tanulja),
+    informatikai angol.
+- **Hogyan készült:** a leckék nagy részét párhuzamos alügynökök írták (forkok), egy-egy saját fájlba, commit nélkül; az
+  összeillesztést (kezdőlap, tanrend, README, újraépítés a HEAD-beli készlettel, újratesztelés, commit) a fő session végezte.
+  Ahol lehetett, a generált feladatokat **független számolás** is igazolta (pl. valódi Python a Python-leckénél, a Python
+  `ipaddress` modulja az IPv6-nál, Node `path.posix` a Linux-útvonalaknál, nyers erő a fejtörőknél, leghosszabb út az ütemezésnél).
+- **A közös készlet bővült:** elszigetelt JS-futtató (`iframe sandbox="allow-scripts"`, `postMessage`, ciklusszámláló,
+  4 mp időkorlát) és aszinkron ellenőrzés a gyakorlóban; visszafelé kompatibilis, a régi leckéket újraépítve tesztelve.
+- **A tesztelő néma:** a headless Chromium Windowson kimondta a felolvasást, és Endit éjjel zavarta. Azóta `--mute-audio`
+  és kikapcsolt felolvasás.
+- **Kezdőlap:** csoportok: Előkészítés · Első félév · Második félév · Matek, 9. évfolyam · Gondolkodás · Digitális kultúra.
+- **Push nincs:** minden helyben commitolva, a push (= GitHub Pages élesítés) Endi döntése.
+
 ## Döntések és indokaik
 
 | Döntés | Miért |
@@ -139,9 +168,11 @@ Endi kérésére (a pulton át): éves tanrend, az első félév leckéi, 8. osz
 - **Az éves tanrend megvan** (`docs/tanrend-9.md`, `tanrend.html`), az országos programtanterv alapján. Ami bizonytalan,
   azt Kovrat tudja megmondani: mit használnak programozásórán (Scratch vagy már HTML?), tanultak-e logikát / tizenhatos
   számrendszert / ASCII-t, mi a tanár sorrendje, van-e tankönyv vagy Teams-jegyzet. A válaszok alapján igazítjuk a tanrendet.
-- **Következő leckék** (a tanrend sorrendjében): JavaScript-bevezető (ehhez szkriptet futtató, elszigetelt előnézet kell),
-  elektronika-alapok, hálózatok alapjai. A 10. évfolyamra: Python.
-- **Push**: az új leckék helyben commitolva vannak, a push (= GitHub Pages élesítés) Endi jóváhagyására vár.
+- **A 9.-es tanrend minden programozás- és informatikai témája le van fedve** (a tantermi gyakorlatok kivételével).
+  Következő lehetőségek: Python-leckék futtatóval a 10.-re (döntés kell: Pyodide CDN-ről kb. 10 MB, vagy saját részhalmaz-
+  értelmező), IT-biztonság bővítése, SQL-alapok. Lásd `docs/tanrend-10.md` és `docs/leckek-terv.md`.
+- **Push**: az október 22-i és 23-i leckék helyben commitolva vannak, a push (= GitHub Pages élesítés) Endi jóváhagyására vár.
+  Push után: `gh api repos/Endy07/Kovrat_tanulas/pages/builds/latest --jq .status`, és nézz meg élesben néhány új leckét.
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 
 ## Munkastílus Endivel

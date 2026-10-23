@@ -17,7 +17,8 @@
    - puska.
 3. **Elkészítés egyetlen önálló HTML-fájlként:** inline CSS és JS, betűk a Google Fontsról.
 4. **Ellenőrzés:** JS szintaxis `node --check`-kel, aztán automatizált böngészős teszt
-   (Playwright): hibák, minden feladattípus, telefonszélesség, sötét téma.
+   (`tools/lessons/lesson-test.js`, headless, néma): hibák, minden feladattípus × szint, telefonszélesség, sötét téma;
+   ahol lehet, a generált feladatok független újraszámolása is.
 5. **Publikálás** nyilvános GitHub repóba, GitHub Pages-en. Egy pre-commit hook verziót ír minden
    oldalba, az oldalak pedig maguktól újratöltenek, ha van újabb változat. Kovrat egy linket kap.
 
@@ -49,8 +50,12 @@
   a megszakadt építéseket kézzel kell újraindítani.
 - **A tanmenet becslés:** az országos programtanterv alapján van éves tanrend (`docs/tanrend-9.md`), de az iskola saját
   sorrendje nem nyilvános; Kovrat válaszai igazítanak rajta. A 9.-ben nincs Python (HTML/CSS/JS, Git), az a 10.-ben jön.
-- **Programozós leckékhez böngészőben futó kód kellene:** a HTML/CSS leckékben élő szerkesztő van (szkript nélküli iframe);
-  JavaScript-futtatáshoz (és később Pythonhoz, pl. Pyodide) engedélyezett szkriptes, elszigetelt futtatókörnyezet kell.
+- **Python a böngészőben:** a JavaScript-futtató 2026-10-23 óta kész (`sandbox="allow-scripts"` iframe, `postMessage`,
+  ciklusszámláló, időkorlát). Pythonhoz még nincs futtató: a Pyodide kb. 10 MB és külső függőség, egy saját
+  részhalmaz-értelmező pedig sok munka. Addig a Python-lecke kódolvasós (a választ a lecke maga számolja).
+- **Sok lecke gyorsan:** 2026-10-23 éjjel párhuzamos alügynökök írták a leckéket, a fő session illesztette össze. A minőséget
+  a gépi, néma leckeellenőrző (`tools/lessons/lesson-test.js`) és leckénként egy független ellenőrzés (valódi Python,
+  `ipaddress`, nyers erő) tartja; a szöveg nyelvhelyességét emberi szem még nem nézte át mindenhol.
 - **Közös leckekészlet:** a leckék forrása `tools/lessons`, egy kis node-szkript állítja elő belőle az önálló HTML-t
   (új lecke = egy forrásfájl + a közös diák/lejátszó/gyakorló modulok).
 - **Nincs visszajelzés arról, hol tart a diák:** a haladás csak az ő böngészőjében van.
