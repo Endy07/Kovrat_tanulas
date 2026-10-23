@@ -1,0 +1,1033 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023042531">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+.jsed{display:flex;flex-direction:column;gap:10px}
+.jsed label,.jsed .jl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.jsed .jhtml{max-height:180px;overflow:auto;font-size:.85rem}
+.jsed .jbar{margin-top:8px}
+.jsed .jin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;text-transform:none;letter-spacing:0;font-size:.85rem;margin:0}
+.jsed .jin input{width:12em;font-size:.95rem;padding:.35em .6em}
+.jright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.jright iframe{width:100%;min-height:140px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.jsout{background:var(--panel);color:var(--panel-ink);border-radius:10px;font-family:var(--mono);font-size:.88rem;min-height:110px;display:flex;flex-direction:column}
+.jsout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--panel-muted);padding:6px 12px;border-bottom:1px solid #334051}
+.jsout-b{padding:8px 12px;max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere;white-space:pre-wrap}
+.jsout-b .dim{color:var(--panel-muted)}
+.jsout-b .a{color:#FFB01F}
+.jsout-b .p{color:#7fb8ff}
+.jsout-b .e{color:#ff8a7d}
+.jsout-b .e span{color:var(--panel-ink);opacity:.85}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>IT-biztonság alapjai</title>
+<style>
+.urlin{width:100%!important;font-size:1rem!important}
+.urlparts{font-family:var(--mono);font-size:clamp(.78rem,3.3vw,1rem);overflow-wrap:anywhere;line-height:1.9}
+.urlparts span{border-radius:5px;padding:2px 3px}
+.u-proto{background:#27313E;color:#8C99AA}
+.u-sub{background:#27313E;color:#DCE3EC}
+.u-dom{background:#4a3a12;color:#FFB01F;font-weight:700;outline:2px solid #FFB01F}
+.u-path{color:#8C99AA}
+.u-user{background:#5a1f1a;color:#F2796C;text-decoration:line-through}
+.flags{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.flags li{padding:6px 10px;border-radius:8px;background:#27313E;font-size:.92rem}
+.flags li.w{background:#3A1C19;color:#F2796C}
+.flags li.g{background:#132C1E;color:#52C584}
+.verdict{font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,5vw,1.8rem)}
+.verdict.y{color:#52C584}.verdict.n{color:#F2796C}.verdict.q{color:#FFB01F}
+.bits8{font-family:var(--mono);letter-spacing:.12em}
+.slide .eq{white-space:normal}
+.pb-stage table.pt td{min-width:1.6em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · biztonság</span>
+  <h1>IT-biztonság alapjai</h1>
+  <p class="lead">A legtöbb támadás nem a gépet, hanem téged céloz: egy link, egy üzenet, egy jelszó. Tanuld meg kiolvasni egy link valódi címét, és megismered a kártevőket, a titkosítást és az ellenőrzőjegyeket.</p>
+  <div class="panel">
+    <span class="eyebrow">Linkvizsgáló: hová visz valójában?</span>
+    <input type="text" class="urlin" id="url" value="https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes" aria-label="Link" autocomplete="off" spellcheck="false" autocapitalize="off">
+    <div class="row" id="ex">
+      <button class="btn" data-u="https://www.otpbank.hu/portal/hu/Belepes">Valódi bank</button>
+      <button class="btn" data-u="https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes">Aldomain-trükk</button>
+      <button class="btn" data-u="https://www.paypa1.com/signin">Hasonló betű</button>
+      <button class="btn" data-u="https://posta.hu@csomag-kezbesites.net/vam">@ trükk</button>
+      <button class="btn" data-u="http://185.23.44.12/netflix/fizetes">IP-cím</button>
+    </div>
+    <div class="urlparts" id="parts"></div>
+    <div class="readout">
+      <div><div class="eyebrow">A valódi domain (jobbról olvasva)</div><div class="verdict q" id="dom"></div></div>
+      <div><div class="eyebrow">Értékelés</div><div class="verdict" id="verd"></div></div>
+      <div class="expr"><ul class="flags" id="flags"></ul></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="url" aria-selected="true">Link szétszedése</button>
+    <button class="tab" data-m="xor" aria-selected="false">XOR-titkosítás</button>
+    <button class="tab" data-m="luhn" aria-selected="false">Kártyaszám ellenőrzése</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A domaint „www.” nélkül írd (például otpbank.hu). A biteket 0 és 1 jegyekkel, szóköz nélkül. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Link olvasása</span><span>A domain a <b>://</b> után kezdődik és az <b>első /</b> jelig tart. Ebből a <b>jobb szélső két tag</b> a valódi cím. Ami a @ előtt van, azt a böngésző eldobja.</span></div>
+    <div class="trick"><span class="t">Lakat ≠ megbízható</span><span>A https csak azt jelenti, hogy titkosított a kapcsolat. A csaló oldalnak is lehet lakatja!</span></div>
+    <div class="trick"><span class="t">XOR</span><span class="mono">0⊕0=0 · 0⊕1=1 · 1⊕0=1 · 1⊕1=0</span><span>Ugyanazzal a kulccsal még egyszer XOR-olva visszakapod az eredetit.</span></div>
+    <div class="trick"><span class="t">Erős jelszó</span><span>Hosszú (12+), egyedi minden oldalon, jelszókezelőben tárolva, mellé kétlépcsős azonosítás.</span></div>
+    <div class="trick"><span class="t">Paritásbit (páros)</span><span>Annyi 1-es kerül a végére, hogy az 1-esek száma páros legyen. Egy elrontott bitet észrevesz.</span></div>
+    <div class="trick"><span class="t">Gyanús üzenet</span><span>Sürget, fenyeget, nyereményt ígér, jelszót vagy kártyaszámot kér? Ne kattints: nyisd meg magad a hivatalos oldalt.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  // Tab = két szóköz a kódmezőben (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+  function tabKeys(ta, o){
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    tabKeys(ta, o);
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- JavaScript-futtató: elszigetelt iframe (sandbox="allow-scripts", allow-same-origin nélkül) ----------
+     A diák kódja egy srcdoc-os iframe-ben fut, saját (átlátszatlan) eredettel: a szülő oldalhoz és a localStorage-hoz
+     nem fér hozzá. Az előtét-szkript elkapja a console.log, alert, prompt (előre megadott válaszokkal), confirm hívást
+     és a hibákat (sorszámmal), és postMessage-dzsel küldi vissza; a szülő az e.source-t és a futás-tokent is nézi.
+     Végtelen ciklus ellen: minden for / while / do ciklustörzs elejére számláló kerül (200 000 ismétlés felett hiba),
+     és 4 mp után a futás eldobódik. Kattintásos feladatnál a kért elemekre a betöltés után kattint. */
+  const JSR = { seq: 0, wait: {} };
+  window.addEventListener("message", e => {
+    const d = e.data; if (!d || typeof d !== "object" || !d.kovratRun) return;
+    const w = JSR.wait[d.kovratRun]; if (!w || e.source !== w.frame.contentWindow) return;
+    w.on(d);
+  });
+  // a ciklustörzsek elejére számláló (sortörést nem szúr be, így a hibák sorszáma nem csúszik el)
+  function guardLoops(src){
+    let out = "", i = 0;
+    const n = src.length, idch = c => /[\w$]/.test(c || "");
+    while (i < n){
+      const c = src[i], d = src[i + 1];
+      if (c === "/" && d === "/"){ const j = src.indexOf("\n", i); const e = j < 0 ? n : j; out += src.slice(i, e); i = e; continue; }
+      if (c === "/" && d === "*"){ const j = src.indexOf("*/", i + 2); const e = j < 0 ? n : j + 2; out += src.slice(i, e); i = e; continue; }
+      if (c === '"' || c === "'" || c === "`"){ let j = i + 1; while (j < n && src[j] !== c && src[j] !== (c === "`" ? "\u0000" : "\n")){ if (src[j] === "\\") j++; j++; } out += src.slice(i, j + 1); i = j + 1; continue; }
+      const kw = /^(for|while|do)\b/.exec(src.slice(i, i + 6));
+      if (kw && !idch(src[i - 1])){
+        let j = i + kw[1].length;
+        if (kw[1] !== "do"){
+          while (j < n && /\s/.test(src[j])) j++;
+          if (src[j] === "("){
+            let depth = 0;
+            for (; j < n; j++){ const ch = src[j]; if (ch === '"' || ch === "'" || ch === "`"){ const q = ch; j++; while (j < n && src[j] !== q){ if (src[j] === "\\") j++; j++; } continue; } if (ch === "(") depth++; else if (ch === ")"){ depth--; if (!depth){ j++; break; } } }
+          }
+        }
+        let k = j; while (k < n && /\s/.test(src[k])) k++;
+        if (src[k] === "{"){ out += src.slice(i, k + 1) + "__kg();"; i = k + 1; continue; }
+        out += src.slice(i, j); i = j; continue;
+      }
+      out += c; i++;
+    }
+    return out;
+  }
+  // az iframe-ben fut, a diák kódja előtt
+  const PRE = String(function(cfg){
+    var inputs = cfg.inputs.slice();
+    var send = function(m){ m.kovratRun = cfg.t; try { parent.postMessage(m, "*"); } catch (e){} };
+    var fmt = function(v){
+      if (typeof v === "string") return v;
+      if (v === undefined) return "undefined";
+      if (typeof v === "function") return "function";
+      if (v && typeof v === "object"){ if (v.nodeType) return "<" + v.nodeName.toLowerCase() + ">"; try { return JSON.stringify(v); } catch (e){ return String(v); } }
+      return String(v);
+    };
+    // legfeljebb 300 kiírás megy át (egy végtelen ciklus ne árassza el a szülőt üzenetekkel)
+    var nlog = 0;
+    var ev = function(kind, text, line){
+      if (kind === "log" && ++nlog > 300){ if (nlog === 301) send({ type: "ev", kind: "log", text: "… (túl sok kiírás, a többit nem mutatom)", line: 0 }); return; }
+      send({ type: "ev", kind: kind, text: text, line: line || 0 });
+    };
+    var args = function(a){ return Array.prototype.map.call(a, fmt).join(" "); };
+    window.__kc = 0;
+    window.__kg = function(){ if (++window.__kc > 200000) throw new Error("Túl sok ismétlés: végtelen ciklus?"); };
+    console.log = console.info = console.warn = console.error = function(){ ev("log", args(arguments)); };
+    window.alert = function(m){ ev("alert", m === undefined ? "" : fmt(m)); };
+    window.prompt = function(m){ var v = inputs.length ? String(inputs.shift()) : null; ev("prompt", (m === undefined ? "" : fmt(m)) + " → " + (v === null ? "(nincs válasz, null)" : v)); return v; };
+    window.confirm = function(m){ ev("alert", (m === undefined ? "" : fmt(m)) + " (OK)"); return true; };
+    window.addEventListener("error", function(e){ var l = e.lineno ? e.lineno - cfg.off : 0; ev("error", String(e.message || "Hiba").replace(/^Uncaught\s+/, ""), l > 0 ? l : 0); e.preventDefault(); });
+    document.addEventListener("click", function(){ window.__kc = 0; }, true);
+    var texts = function(){ var o = {}; cfg.sels.forEach(function(s){ var el = document.querySelector(s); o[s] = el ? el.textContent : null; }); return o; };
+    window.addEventListener("load", function(){
+      var before = texts();
+      cfg.clicks.forEach(function(s){ window.__kc = 0; var el = document.querySelector(s); if (el) el.click(); else ev("error", "Nincs ilyen elem az oldalon: " + s, 0); });
+      send({ type: "done", before: before, after: texts(), html: document.body ? document.body.innerHTML : "" });
+    });
+  });
+  function jsrun(frame, code, o){
+    o = o || {};
+    if (frame.__kr) delete JSR.wait[frame.__kr];
+    const t = "r" + (++JSR.seq) + "x" + Math.random().toString(36).slice(2);
+    frame.__kr = t;
+    const cfg = { t, inputs: (o.inputs || []).map(String), clicks: o.clicks || [], sels: o.sels || [], off: 0 };
+    const user = guardLoops(String(code)).replace(/<\/(script)/gi, "<\\/$1");
+    const build = () => '<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;line-height:1.45;color:#17202B;background:#fff}button{font:inherit;padding:.3em .9em}</style><script>(' + PRE + ')(' + JSON.stringify(cfg) + ');<\/script></head><body>' + (o.html || "") + "\n<script>\n";
+    cfg.off = build().split("\n").length - 1;
+    const doc = build() + user + "\n<\/script></body></html>";
+    return new Promise(res => {
+      const R = { logs: [], alerts: [], prompts: [], errors: [], events: [], before: {}, after: {}, html: "", done: false, timeout: false };
+      let over = false;
+      const fin = () => { if (over) return; over = true; clearTimeout(timer); if (!o.keep) delete JSR.wait[t]; res(R); };
+      JSR.wait[t] = { frame, on(d){
+        if (d.type === "ev"){
+          R.events.push(d);
+          if (d.kind === "log") R.logs.push(d.text); else if (d.kind === "alert") R.alerts.push(d.text);
+          else if (d.kind === "prompt") R.prompts.push(d.text); else R.errors.push({ msg: d.text, line: d.line });
+          o.onEvent && o.onEvent(d);
+        } else if (d.type === "done" && !over){ R.before = d.before; R.after = d.after; R.html = d.html; R.done = true; fin(); }
+      } };
+      const timer = setTimeout(() => {
+        R.timeout = true; const d = { kind: "error", text: "Időtúllépés: a program 4 másodperc alatt sem fejeződött be (végtelen ciklus?)", line: 0 };
+        R.errors.push({ msg: d.text, line: 0 }); R.events.push(d); o.onEvent && o.onEvent(d);
+        delete JSR.wait[t]; frame.srcdoc = ""; fin();
+      }, o.timeout || 4000);
+      frame.srcdoc = doc;
+    });
+  }
+  // a böngésző angol hibaüzenetéhez magyar tipp
+  function jsHint(m){
+    m = String(m);
+    if (/végtelen|Időtúllépés/.test(m)) return "";
+    if (/is not defined/.test(m)) return "Ilyen nevű változó vagy függvény nincs. Elírtad? Figyelj a kis- és nagybetűkre is (console, nem Console).";
+    if (/Assignment to constant/.test(m)) return "A const változó értéke nem változhat. Ha változnia kell, let-tel hozd létre.";
+    if (/already been declared/.test(m)) return "Ezt a változót már létrehoztad. Másodszor ne írd elé a let szót.";
+    if (/of null/.test(m)) return "Nem találta az elemet. Nézd meg az id-t: a kis- és nagybetű is számít.";
+    if (/is not a function/.test(m)) return "Ez nem függvény. Elírtad a nevét, vagy hiányzik egy pont?";
+    if (/Unexpected|Unterminated|Invalid or unexpected|missing/i.test(m)) return "Szintaktikai hiba: hiányzik (vagy fölösleges) egy zárójel, kapcsos zárójel vagy idézőjel.";
+    return "";
+  }
+  /* JavaScript-szerkesztő: kódmező + Futtatás + konzol + (ha van HTML) élő előnézet */
+  function jseditor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="jsed">' + (o.html ? '<div><label class="jl">Az oldal HTML-je (ezt nem kell átírnod)</label><pre class="code jhtml">' + esc(o.html) + "</pre></div>" : "") +
+      '<div class="ed"><div><label>JavaScript' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="JavaScript-kód"></textarea>' +
+      '<div class="row jbar"><button class="btn" type="button" data-j="run">▶ Futtatás</button>' +
+      (o.prompt ? '<label class="jin">prompt válaszai: <input type="text" data-j="in" aria-label="A prompt válaszai, pontosvesszővel elválasztva" autocapitalize="off" spellcheck="false"></label>' : "") + "</div></div>" +
+      '<div class="jright"><label>Eredmény</label><iframe sandbox="allow-scripts" title="Előnézet"' + (o.html ? "" : " hidden") + '></iframe>' +
+      '<div class="jsout" aria-live="polite"><div class="jsout-h">Konzol</div><div class="jsout-b"><span class="dim">Nyomd meg: ▶ Futtatás</span></div></div></div></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root), con = $(".jsout-b", root), inp = $('[data-j="in"]', root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    if (inp) inp.value = (o.inputs || []).join("; ");
+    tabKeys(ta, o);
+    const line = d => {
+      const ph = $(".dim", con); if (ph) ph.remove();
+      const div = document.createElement("div");
+      if (d.kind === "log"){ div.className = "l"; div.textContent = d.text === "" ? " " : d.text; }
+      else if (d.kind === "alert"){ div.className = "a"; div.textContent = "🔔 alert: " + d.text; }
+      else if (d.kind === "prompt"){ div.className = "p"; div.textContent = "⌨ prompt: " + d.text; }
+      else { div.className = "e"; const h = jsHint(d.text); div.innerHTML = "✖ " + (d.line ? d.line + ". sor: " : "") + esc(d.text) + (h ? "<br><span>" + esc(h) + "</span>" : ""); }
+      con.appendChild(div); con.scrollTop = con.scrollHeight;
+    };
+    function run(ro){
+      ro = Object.assign({ html: o.html || "" }, ro || {});
+      con.innerHTML = ""; let any = false;
+      const on = ro.onEvent;
+      ro.onEvent = d => { any = true; line(d); on && on(d); };
+      return jsrun(fr, ta.value, ro).then(r => { if (!any && r.done) con.innerHTML = '<span class="dim">(a program még nem írt ki semmit)</span>'; return r; });
+    }
+    $('[data-j="run"]', root).addEventListener("click", () => {
+      const ins = inp ? inp.value.split(";").map(s => s.trim()).filter(s => s !== "") : (o.inputs || []);
+      run({ inputs: ins, keep: true });
+    });
+    if (o.autorun) run({ inputs: o.inputs || [], keep: true });
+    return { get: () => ta.value, set(v){ ta.value = v; }, run, frame: fr };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code" || t.kind === "js")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code" || t.kind === "js") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      else if (t.kind === "js") S.ed = jseditor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows, html: t.html, prompt: !!(t.inputs && t.inputs.length), inputs: t.inputs });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      if (t.kind === "js") return { code: S.ed.get(), run: o => S.ed.run(o) };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      // aszinkron ellenőrzés (pl. JavaScript-futtatás): a gomb addig tiltva, az eredmény csak a még aktuális feladathoz kerül
+      if (res && typeof res.then === "function"){
+        const btn = $('[data-a="check"]', box); if (btn){ btn.disabled = true; btn.dataset.busy = "1"; }
+        const done = r => { if (btn){ btn.disabled = false; delete btn.dataset.busy; } if (S.task === t) settle(t, val, r); };
+        return res.then(done, () => done({ ok: false, msg: "Nem sikerült lefuttatni a programot." }));
+      }
+      settle(t, val, res);
+    }
+    function settle(t, val, res){
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice, jsrun, jseditor, jsHint, guardLoops };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, art } = K;
+  K.tts.rules.push([/https?:\/\//g, ""], [/\b([01]{4,})\b/g, m => m.split("").join(" ")], [/⊕/g, " kizáró vagy "], [/\s:\s/g, " osztva "]);
+
+  /* ---------- Link elemzése ---------- */
+  const SUF2 = ["co.uk", "com.au", "gov.hu", "org.hu", "co.hu", "com.br"];
+  const LOOK = /[0-9](?=[a-z])|[a-z](?=[0-9])|rn/;
+  const BRANDS = [["otpbank.hu", "OTP Bank"], ["posta.hu", "Magyar Posta"], ["netflix.com", "Netflix"], ["paypal.com", "PayPal"], ["google.com", "Google"], ["microsoft.com", "Microsoft"], ["instagram.com", "Instagram"], ["roblox.com", "Roblox"], ["steampowered.com", "Steam"], ["kreta.hu", "KRÉTA"]];
+  const EVIL = ["ugyfel-ellenorzes.com", "account-verify.net", "biztonsagi-frissites.info", "csomag-kezbesites.net", "secure-login.xyz", "nyeremeny-sorsolas.com", "fiok-zarolas.online"];
+  function parse(s){
+    s = String(s).trim();
+    const m = /^([a-z][a-z0-9+.-]*):\/\/([^/?#]*)(.*)$/i.exec(s);
+    if (!m) return null;
+    let auth = m[2], user = "";
+    const at = auth.lastIndexOf("@"); if (at >= 0){ user = auth.slice(0, at); auth = auth.slice(at + 1); }
+    const host = auth.replace(/:\d+$/, "").toLowerCase();
+    if (!host) return null;
+    const ip = /^\d{1,3}(\.\d{1,3}){3}$/.test(host);
+    const labels = host.split("."), two = labels.slice(-2).join("."), take = SUF2.includes(two) ? 3 : 2;
+    const dom = ip ? host : labels.slice(-take).join("."), sub = ip ? "" : labels.slice(0, -take).join(".");
+    return { proto: m[1].toLowerCase(), user, host, sub, dom, path: m[3], ip };
+  }
+  function analyse(p){
+    const F = [];
+    if (!p) return { F: [["w", "Ez nem teljes link (http:// vagy https:// kell az elejére)."]], bad: true };
+    const brand = BRANDS.find(b => b[0] === p.dom);
+    if (p.user) F.push(["w", "@ jel a címben: ami előtte van (" + p.user + "), azt a böngésző eldobja. A valódi cél: " + p.host + "."]);
+    if (p.ip) F.push(["w", "Név helyett IP-cím: rendes cég nem így küld linket."]);
+    if (p.proto !== "https") F.push(["w", "Nincs titkosítás (http, nem https)."]);
+    const inSub = BRANDS.find(b => (p.sub + "." + p.path).includes(b[0].split(".")[0]) && b[0] !== p.dom);
+    if (inSub && !brand) F.push(["w", "Egy ismert név (" + inSub[1] + ") szerepel a címben, de nem a valódi domainben: ez álcázás."]);
+    if (!brand && !p.ip && LOOK.test(p.dom.split(".")[0])) F.push(["w", "Gyanús betű-szám keverék a domainben (például 1 az l helyett, 0 az o helyett)."]);
+    if (!brand && /-/.test(p.dom)) F.push(["w", "Kötőjeles, hosszú domain („ellenorzes”, „login”, „verify”): tipikus csalás."]);
+    if (brand) F.push(["g", "A valódi domain " + brand[1] + " hivatalos címe."]);
+    if (p.proto === "https" && !F.some(f => f[0] === "w")) F.push(["g", "Titkosított kapcsolat (https). Ez magában még nem bizonyít semmit, de jó jel."]);
+    return { F, bad: F.some(f => f[0] === "w"), brand };
+  }
+  function hero(){
+    const s = $("#url").value, p = parse(s), a = analyse(p);
+    if (p){
+      const pre = s.trim().slice(0, s.trim().indexOf("://") + 3);
+      $("#parts").innerHTML = '<span class="u-proto">' + esc(pre) + "</span>" + (p.user ? '<span class="u-user">' + esc(p.user) + "@</span>" : "") + (p.sub ? '<span class="u-sub">' + esc(p.sub) + ".</span>" : "") + '<span class="u-dom">' + esc(p.dom) + "</span>" + '<span class="u-path">' + esc(p.path) + "</span>";
+      $("#dom").textContent = p.dom;
+    } else { $("#parts").textContent = ""; $("#dom").textContent = "?"; }
+    $("#verd").className = "verdict " + (a.bad ? "n" : a.brand ? "y" : "q");
+    $("#verd").textContent = a.bad ? "Gyanús, ne kattints!" : a.brand ? "Valódi cím" : "Ismeretlen oldal: óvatosan";
+    $("#flags").innerHTML = a.F.map(f => '<li class="' + f[0] + '">' + esc(f[1]) + "</li>").join("");
+  }
+  $("#url").addEventListener("input", hero);
+  $("#ex").addEventListener("click", e => { const b = e.target.closest("[data-u]"); if (b){ $("#url").value = b.dataset.u; hero(); } });
+  hero();
+
+  /* ---------- Generált linkek ---------- */
+  const look = d => { const [n, ...r] = d.split("."); const opts = []; if (/o/.test(n)) opts.push(n.replace("o", "0")); if (/l/.test(n)) opts.push(n.replace("l", "1")); if (/i/.test(n)) opts.push(n.replace("i", "1")); if (/m/.test(n)) opts.push(n.replace("m", "rn")); return opts.length ? pick(opts) + "." + r.join(".") : n + "-hu." + r.join("."); };
+  function genUrl(l){
+    const b = pick(BRANDS), path = pick(["/belepes", "/login", "/fiok/adatok", "/fizetes", "/csomag", "/jelszo-csere"]);
+    const legit = () => ({ u: "https://" + pick(["www.", "", "login.", "help."]) + b[0] + path, real: b[0], ok: true, why: "A valódi domain " + b[0] + ": ez " + b[1] + " hivatalos címe." });
+    const fakes = [
+      () => { const e = pick(EVIL); return { u: "https://www." + b[0] + "." + e + path, real: e, why: "A márkanév csak aldomain: a valódi domain " + e + "." }; },
+      () => { const d = b[0].split(".")[0] + pick(["-belepes", "-login", "-ugyfel", "-secure"]) + "." + pick(["com", "net", "info", "hu"]); return { u: "https://" + d + path, real: d, why: "Ez nem " + b[1] + " domainje: a kötőjeles kiegészítés egy teljesen más cím." }; },
+      () => ({ u: "http://" + rnd(11, 223) + "." + rnd(0, 255) + "." + rnd(0, 255) + "." + rnd(1, 254) + "/" + b[0].split(".")[0] + path, real: null, why: "Név helyett IP-cím, ráadásul titkosítás nélkül." })
+    ];
+    const fakes2 = [
+      () => { const d = look(b[0]); return { u: "https://www." + d + path, real: d, why: "Hasonló betű: " + d + ", nem " + b[0] + "." }; },
+      () => { const d = b[0].split(".")[0] + "." + pick(["co", "net", "info", "online"]); return { u: "https://" + d + path, real: d, why: "Más végződés: " + d + ", nem " + b[0] + "." }; }
+    ];
+    const fakes3 = [
+      () => { const e = pick(EVIL); return { u: "https://" + b[0] + "@" + e + path, real: e, why: "A @ előtti részt a böngésző eldobja: valójában " + e + " nyílik meg." }; },
+      () => { const e = pick(EVIL); return { u: "https://" + e + "/" + b[0] + path, real: e, why: "A márkanév csak az útvonalban (a / után) van: a domain " + e + "." }; },
+      () => { const e = pick(EVIL), s = b[0].replace(".", "-"); return { u: "https://" + s + ".secure." + e + path, real: e, why: "Hosszú aldomain, a valódi domain " + e + "." }; }
+    ];
+    const pool = l === 1 ? fakes : l === 2 ? fakes.concat(fakes2) : fakes2.concat(fakes3);
+    return Math.random() < 0.35 ? legit() : Object.assign({ ok: false }, pick(pool)());
+  }
+
+  /* ---------- Bitek, XOR, Luhn ---------- */
+  const bin = (n, k) => n.toString(2).padStart(k, "0");
+  const xorStr = (a, b) => a.split("").map((c, i) => c === b[i] ? "0" : "1").join("");
+  const luhnSum = ds => { let s = 0; ds.slice().reverse().forEach((d, i) => { let v = d; if (i % 2 === 1){ v = d * 2; if (v > 9) v -= 9; } s += v; }); return s; };
+  const luhnCheck = ds => (10 - luhnSum(ds.concat([0])) % 10) % 10;
+
+  /* ---------- Levezetések ---------- */
+  function urlFrames(u){
+    const p = parse(u), a = analyse(p), F = [];
+    const show = (k) => '<div class="urlparts">' +
+      '<span class="' + (k >= 1 ? "u-proto" : "") + '">' + esc(p.proto) + "://</span>" + (p.user ? '<span class="' + (k >= 2 ? "u-user" : "") + '">' + esc(p.user) + "@</span>" : "") +
+      (p.sub ? '<span class="' + (k >= 4 ? "u-sub" : "") + '">' + esc(p.sub) + ".</span>" : "") + '<span class="' + (k >= 4 ? "u-dom" : "") + '">' + esc(p.dom) + "</span>" +
+      '<span class="' + (k >= 3 ? "u-path" : "") + '">' + esc(p.path) + "</span></div>";
+    F.push({ cap: "Vizsgáljuk meg ezt a linket. Ne kattints rá, előbb olvasd végig!", html: show(0) });
+    F.push({ cap: "Az eleje a protokoll: " + p.proto + ". A https titkosított kapcsolatot jelent, de a csaló oldalnak is lehet.", html: show(1) });
+    if (p.user) F.push({ cap: "A címben @ jel van. Ami előtte áll, azt a böngésző felhasználónévnek veszi, és eldobja. Ez a rész csak téged akar becsapni.", html: show(2) });
+    F.push({ cap: "Az első perjeltől kezdve az útvonal jön: ez az oldal belsejét jelöli, a cím szempontjából nem számít, bármi állhat benne.", html: show(3) });
+    F.push({ cap: "Ami marad, az a gép neve. Jobbról olvasd: a jobb szélső két tag a valódi domain, ez most " + p.dom + ". Ami előtte van, az csak aldomain, azt bárki bármire beállíthatja a saját domainje alatt.", html: show(4) });
+    F.push({ cap: a.bad ? "Ítélet: gyanús. " + a.F.filter(f => f[0] === "w").map(f => f[1]).join(" ") : "Ítélet: a valódi domain hivatalos cím. Biztonságosabb mégis, ha a címet magad írod be, vagy könyvjelzőből nyitod meg.", html: show(4) + '<p class="big ' + (a.bad ? "" : "led") + '" style="margin-top:10px">' + (a.bad ? "Gyanús" : "Valódi") + "</p>" });
+    return F;
+  }
+  function xorFrames(d, k, dec){
+    const r = xorStr(d, k), F = [];
+    const tbl = (j) => '<div class="ptwrap"><table class="pt"><tr><th>' + (dec ? "titkos" : "adat") + "</th>" + d.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + c + "</td>").join("") + "</tr><tr><th>kulcs</th>" + k.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + c + "</td>").join("") + "</tr><tr><th>⊕</th>" + r.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + (i <= j ? c : "") + "</td>").join("") + "</tr></table></div>";
+    F.push({ cap: (dec ? "Visszafejtés: a titkos üzenetet ugyanazzal a kulccsal XOR-oljuk." : "Titkosítás XOR-ral: az adat minden bitjét összevetjük a kulcs ugyanott álló bitjével.") + " Szabály: ha a két bit egyforma, 0; ha különböző, 1.", html: tbl(-1) });
+    for (let j = 0; j < d.length; j++) F.push({ cap: (j + 1) + ". bit: " + d[j] + " és " + k[j] + ": " + (d[j] === k[j] ? "egyforma, tehát 0." : "különböző, tehát 1."), html: tbl(j) });
+    F.push({ cap: "Eredmény: " + r + ". " + (dec ? "Visszakaptuk az eredeti adatot." : "Ha valaki nem ismeri a kulcsot, ebből nem tudja meg az adatot. Aki ismeri, ugyanazzal a kulccsal visszafejti."), html: tbl(d.length) + '<p class="big led bits8" style="margin-top:10px">' + r + "</p>" });
+    return F;
+  }
+  function luhnFrames(ds, full){
+    const F = [], rev = ds.slice().reverse(), steps = rev.map((d, i) => { if (i % 2 === 1){ let v = d * 2; return [d, v > 9 ? v - 9 : v, v > 9 ? d + " · 2 = " + v + ", mínusz 9 = " + (v - 9) : d + " · 2 = " + v]; } return [d, d, ""]; });
+    const tbl = (k) => '<div class="ptwrap"><table class="pt"><tr><th>jegy</th>' + ds.map((d, i) => "<td" + (ds.length - 1 - i < k ? ' class="hl"' : "") + ">" + d + "</td>").join("") + "</tr><tr><th>érték</th>" + ds.map((d, i) => { const j = ds.length - 1 - i; return "<td>" + (j < k ? steps[j][1] : "") + "</td>"; }).join("") + "</tr></table></div>";
+    const sum = luhnSum(ds);
+    F.push({ cap: "A Luhn-ellenőrzés a bankkártyaszámok elírását veszi észre. Jobbról balra haladunk, és minden második jegyet megduplázunk.", html: tbl(0) });
+    F.push({ cap: "A jobb szélső jegy marad, a tőle balra lévőt duplázzuk, és így tovább, felváltva. Ha a duplázás 9-nél többet ad, kivonunk belőle 9-et." + (steps.find(s => s[2] && /mínusz/.test(s[2])) ? " Például: " + steps.find(s => /mínusz/.test(s[2]))[2] + "." : ""), html: tbl(ds.length) });
+    F.push({ cap: "Összeadjuk az értékeket: " + sum + ". " + (sum % 10 === 0 ? "Ez osztható 10-zel, tehát a szám érvényes." : "Ez nem osztható 10-zel, tehát a szám hibás: valamelyik jegy el van írva."), html: tbl(ds.length) + '<p class="big ' + (sum % 10 === 0 ? "led" : "") + '" style="margin-top:10px">összeg: ' + sum + (sum % 10 === 0 ? " ✓" : " ✗") + "</p>" });
+    return F;
+  }
+  const MET = { url: "Link szétszedése", xor: "XOR-titkosítás", luhn: "Kártyaszám ellenőrzése" };
+  const MF = { url: () => urlFrames("https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes"), xor: () => xorFrames("01000001", "00101101"), luhn: () => luhnFrames([4, 5, 3, 9, 1, 4, 8, 8, 0, 3, 4, 3, 6, 4, 6, 7]) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "url" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mit védünk, és mitől?", h:
+      "<p>Az informatikai biztonság három dolgot véd (a CIA-hármas):</p><ul><li><b>Bizalmasság</b>: csak az lássa az adatot, akinek szabad (jelszó, titkosítás).</li><li><b>Sértetlenség</b>: az adat ne változzon meg észrevétlenül (ellenőrzőösszeg, hash).</li><li><b>Rendelkezésre állás</b>: az adat és a szolgáltatás elérhető legyen, amikor kell (mentés, védelem a túlterhelés ellen).</li></ul>" +
+      "<div class='note'><b>A leggyengébb láncszem az ember.</b> A támadások többsége egy becsapós üzenettel kezdődik, nem bonyolult feltöréssel.</div>" },
+    { k: "Adathalászat", t: "Adathalászat (phishing)", h:
+      "<p>A csaló egy ismert cégnek (bank, posta, Netflix, iskola) adja ki magát, és rávesz, hogy egy hamis oldalon add meg a jelszavad vagy a kártyaszámod.</p>" +
+      "<ul><li><b>Sürget vagy fenyeget</b>: „24 órán belül zároljuk a fiókod!”</li><li><b>Túl szép</b>: „Nyertél egy iPhone-t!”</li><li><b>Adatot kér</b>: jelszót, kódot, kártyaszámot. Valódi cég ezt soha nem kér üzenetben.</li><li><b>A link máshová visz</b>, mint ahová mutatja magát.</li></ul>" +
+      "<div class='mistake'><b>Mit tegyél?</b> Ne kattints. Nyisd meg te magad a hivatalos oldalt (könyvjelzőből, appból), és ott nézd meg. Szólj egy felnőttnek, és jelentsd az üzenetet.</div>" },
+    { k: "Link", t: "Hogyan olvass el egy linket?", h:
+      "<p class='eq'>https:// <b>www.otpbank.hu.</b><b class='hl'>ugyfel-ellenorzes.com</b> /belepes</p>" +
+      "<ol><li>A <b>://</b> után kezdődik a gép neve, és az <b>első /</b> jelig tart.</li><li>A névben <b>jobbról</b> olvass: a jobb szélső két tag a <b>valódi domain</b> (itt: ugyfel-ellenorzes.com).</li><li>Ami balra van, az csak aldomain: a domain tulajdonosa bármit odaírhat, akár „otpbank.hu”-t is.</li><li>Ha a címben <b>@</b> van, ami előtte áll, azt a böngésző eldobja.</li></ol>" +
+      "<p>Próbáld ki fent a linkvizsgálóval!</p>" + playBtn("url"), init: playInit },
+    { k: "Kártevők", t: "Kártevő programok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Név</th><th>Mit csinál?</th></tr>" +
+      "<tr><td>vírus</td><td style='text-align:left'>más fájlokba épül be, azokkal terjed, ha elindítod őket</td></tr><tr><td>féreg</td><td style='text-align:left'>magától terjed a hálózaton, nem kell elindítani</td></tr>" +
+      "<tr><td>trójai</td><td style='text-align:left'>hasznos programnak álcázza magát (például „ingyenes” játék), közben kaput nyit</td></tr><tr><td>zsarolóvírus</td><td style='text-align:left'>titkosítja a fájljaidat, és pénzt kér a visszafejtésért</td></tr>" +
+      "<tr><td>kémprogram</td><td style='text-align:left'>titokban figyel: billentyűleütés, jelszó, képernyő</td></tr><tr><td>reklámprogram</td><td style='text-align:left'>kéretlen reklámokat dob fel</td></tr><tr><td>botnet</td><td style='text-align:left'>sok fertőzött gép, amelyet a támadó távolról irányít</td></tr></table></div>" +
+      "<p>Védekezés: csak hivatalos helyről telepíts, frissíts, legyen víruskereső, és legyen <b>mentésed</b> (a zsarolóvírus ellen ez a legjobb).</p>" },
+    { k: "Támadások", t: "Gyakori támadások", h:
+      "<ul><li><b>Pszichológiai manipuláció</b> (social engineering): telefonon vagy üzenetben „rendszergazdának”, „tanárnak” adja ki magát.</li><li><b>Nyers erő</b>: a gép sorban próbálgatja a jelszavakat. A hosszú jelszó ellen esélytelen.</li><li><b>Túlterheléses támadás</b> (DDoS): sok gép egyszerre bombáz egy szervert, amíg az le nem áll.</li><li><b>Közbeékelődés</b> (man-in-the-middle): a nyilvános Wi-Fin valaki a forgalom közé áll. Ezért fontos a https.</li><li><b>Kiszivárgott jelszavak</b>: ha egy oldalról ellopják, a csalók minden más oldalon is kipróbálják. Ezért kell <b>minden oldalra más jelszó</b>.</li></ul>" },
+    { k: "Titkosítás", t: "Titkosítás: szimmetrikus és aszimmetrikus", h:
+      "<ul><li><b>Szimmetrikus</b>: ugyanaz a kulcs titkosít és fejt vissza (Caesar-kód, XOR, a valóságban AES). Gyors, de a kulcsot valahogy át kell adni.</li><li><b>Aszimmetrikus</b>: két kulcs van. A <b>nyilvános kulcs</b> olyan, mint egy nyitott lakat: bárki ráteheti az üzenetre. Kinyitni csak a <b>titkos kulcs</b> tulajdonosa tudja.</li></ul>" +
+      "<p>A https mindkettőt használja: az aszimmetrikus titkosítással biztonságosan megegyeznek egy közös kulcsban, aztán a gyors szimmetrikus titkosítással beszélnek.</p>" +
+      "<p class='eq'>01000001 ⊕ 00101101 = 01101100</p>" + playBtn("xor"), init: playInit },
+    { k: "Ellenőrzés", t: "Paritásbit, ellenőrzőjegy, hash", h:
+      "<ul><li><b>Paritásbit</b>: az adat végére egy bit kerül, hogy az 1-esek száma páros legyen. Ha átvitel közben egy bit megfordul, észrevesszük.</li><li><b>Ellenőrzőjegy</b>: a bankkártyaszám utolsó jegye a többiből jön (Luhn-algoritmus). Egy elírt jegyet azonnal kiszűr.</li><li><b>Hash</b> (ujjlenyomat): egy fájlból vagy jelszóból rövid, fix hosszú kód. A legkisebb változás is teljesen más hash-t ad, és visszafelé nem számolható. Az oldalak a jelszavadat nem tárolják, csak a hash-ét.</li></ul>" + playBtn("luhn"), init: playInit },
+    { k: "Jelszó", t: "Jelszó és kétlépcsős azonosítás", h:
+      "<ul><li><b>Hossz</b> a legfontosabb: egy 4 szavas mondatjelszó („LilaCiceraNyolcVonat”) erősebb, mint a „P@ssw0rd1”.</li><li><b>Mindenhol más</b>: a jelszókezelő megjegyzi helyetted.</li><li><b>Kétlépcsős azonosítás</b>: a jelszó mellé egy második bizonyíték is kell (kód a telefonon, hitelesítő app). Ha a jelszavad kiszivárog, a fiókod még így is védett.</li><li>A kódot, ami SMS-ben jön, <b>soha</b> ne mondd meg senkinek, aki felhív vagy üzen.</li></ul>" },
+    { k: "Adatvédelem", t: "Digitális lábnyom és adatvédelem", h:
+      "<p>Amit feltöltesz, az ott marad: képernyőképet készíthetnek róla, archiválják. Ez a <b>digitális lábnyomod</b>.</p>" +
+      "<ul><li>Ne ossz meg lakcímet, iskolát és napi menetrendet együtt.</li><li>A profilod legyen privát, ismeretlent ne fogadj el.</li><li>Más ember képét csak az engedélyével tedd közzé.</li><li>Az EU-ban a GDPR védi az adataidat: jogod van megtudni, mit tárolnak rólad, és kérni a törlést.</li></ul>" },
+    { k: "Hibák", t: "Tipikus tévhitek", h:
+      "<div class='mistake'><b>„Lakat van, tehát biztonságos.”</b> A lakat csak a titkosítást jelzi. Csaló oldalnak is lehet.</div>" +
+      "<div class='mistake'><b>„A linkben benne van az otpbank.hu.”</b> Nem az számít, hogy benne van-e, hanem hogy a jobb szélső két tag az-e.</div>" +
+      "<div class='mistake'><b>„Engem úgysem támadnak meg.”</b> A támadások gépiek, mindenkit végigpróbálnak.</div>" +
+      "<div class='mistake'><b>„Erős jelszavam van, mindenhol azt használom.”</b> Ha egy oldalról ellopják, minden fiókod veszélyben van.</div>" +
+      "<div class='mistake'><b>„A víruskereső mindent megfog.”</b> A trükkös üzenet ellen csak a figyelmed véd.</div>" },
+    { k: "Trükkök", t: "Biztonsági szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Megállni, gondolkodni</span><span>Sürget az üzenet? Pont ezért várj vele, és kérdezz meg valakit.</span></div>" +
+      "<div class='trick'><span class='t'>Magad írd be</span><span>Bankot, postát, iskolai rendszert könyvjelzőből vagy appból nyiss meg, ne linkből.</span></div>" +
+      "<div class='trick'><span class='t'>Frissíts</span><span>A frissítések biztonsági réseket zárnak be. Telefon, böngésző, játék: mind.</span></div>" +
+      "<div class='trick'><span class='t'>Mentés</span><span>3-2-1: három példány, két eszközön, egy máshol (lásd a felhő leckét).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const MAL = [
+    [["Más fájlokba épül be, és azokkal terjed, ha elindítod őket.", "vírus"], ["Magától terjed a hálózaton, nem kell elindítani.", "féreg"], ["Hasznos programnak, például ingyenes játéknak álcázza magát.", "trójai"], ["Titkosítja a fájljaidat, és pénzt kér a visszafejtésért.", "zsarolóvírus"], ["Titokban figyeli, mit gépelsz, és elküldi a jelszavaidat.", "kémprogram"], ["Kéretlen reklámokat dob fel a böngészőben.", "reklámprogram"]],
+    [["Üzenetben egy bank nevében hamis oldalra csalnak, hogy megadd a jelszavad.", "adathalászat"], ["Telefonon „rendszergazdának” adja ki magát, és elkéri a kódodat.", "pszichológiai manipuláció"], ["Sok ezer gép egyszerre bombáz egy szervert, amíg le nem áll.", "túlterheléses támadás (DDoS)"], ["Egy program sorban kipróbálja az összes lehetséges jelszót.", "nyers erős támadás"], ["A nyilvános Wi-Fin valaki a forgalmad közé áll, és olvassa.", "közbeékelődés"], ["Sok fertőzött gép, amelyet a támadó távolról irányít.", "botnet"]],
+    [["Szabályok szerint engedi vagy tiltja a hálózati forgalmat a gép és az internet között.", "tűzfal"], ["A jelszó mellé egy második bizonyítékot (kódot a telefonon) is kér.", "kétlépcsős azonosítás"], ["Minden oldalhoz külön, erős jelszót generál és megjegyez.", "jelszókezelő"], ["Az ismert biztonsági réseket befoltozza a programokban.", "frissítés"], ["Ha zsarolóvírus titkosítja a fájljaidat, ebből visszaállíthatod őket.", "biztonsági mentés"], ["Úgy alakítja át az adatot, hogy kulcs nélkül olvashatatlan legyen.", "titkosítás"], ["Felismeri és eltávolítja az ismert kártevőket.", "víruskereső"]]
+  ];
+  const SIT = [
+    ["SMS jön: „A csomagod vámkezelésre vár, fizess 590 Ft-ot ezen a linken.” Nem vársz csomagot.", "Nem kattintok, törlöm és jelentem.", ["Kifizetem, mert csak 590 Ft.", "Rákattintok, hogy megnézzem, mi az.", "Visszaírok, hogy kitől jött."]],
+    ["Egy „Roblox-moderátor” azt írja, hogy ingyen Robuxot kapsz, ha megadod a jelszavad.", "Nem adom meg: jelszót senki nem kérhet. Jelentem a fiókot.", ["Megadom, mert moderátor.", "Csak a jelszó felét adom meg.", "Megadom, aztán gyorsan megváltoztatom."]],
+    ["Valaki felhív, hogy a bankodtól van, és felolvastatja veled az SMS-ben kapott kódot.", "Leteszem, és a bank hivatalos számát én hívom fel.", ["Felolvasom, mert a banktól van.", "Csak az első három jegyét mondom meg.", "Megkérdezem a nevét, aztán felolvasom."]],
+    ["A kávézó nyílt Wi-Fi-jén be akarsz lépni a bankodba.", "Megvárom, amíg otthon vagy mobilneten leszek.", ["Belépek, mert https van.", "Belépek, de utána törlöm az előzményeket.", "Belépek, mert a jelszavam erős."]],
+    ["Egy weboldal szerint „vírusos a géped, töltsd le azonnal ezt a programot”.", "Bezárom az oldalt, nem töltök le semmit.", ["Letöltöm, mert sürgős.", "Felhívom a kiírt telefonszámot.", "Letöltöm, de nem indítom el."]],
+    ["Kiderül, hogy egy oldalról, ahol regisztráltál, ellopták a jelszavakat.", "Ott és mindenhol, ahol ugyanez volt, új jelszót állítok be, és bekapcsolom a kétlépcsős azonosítást.", ["Nem csinálok semmit, úgysem engem néznek.", "Csak ott cserélem le, ahonnan ellopták.", "Törlöm a böngésző előzményeit."]],
+    ["Egy osztálytársad kéri, hogy add kölcsön a KRÉTA-jelszavadat, mert az övé nem működik.", "Nem adom oda: a jelszó csak az enyém. Segítek neki jelszót visszaállítani.", ["Odaadom, mert barátom.", "Odaadom, aztán holnap lecserélem.", "Odaírom egy papírra, hogy ne hallja más."]],
+    ["Egy „nyereményjáték” a lakcímedet, a születési dátumodat és az iskolád nevét kéri.", "Nem adom meg: ezekkel visszaélhetnek, és nyeremény nincs.", ["Megadom, mert nyerhetek.", "Csak a lakcímet adom meg.", "Megadom, de álnéven."]]
+  ];
+  const types = [
+    { id: "valodi", name: "Valódi vagy csaló?", gen(l){
+      const g = genUrl(l), good = g.ok ? "Valódi" : "Csaló";
+      return choice("Valódi vagy csaló ez a link? <div class='urlparts' style='margin-top:6px'><code>" + esc(g.u) + "</code></div>", good, [g.ok ? "Csaló" : "Valódi"], "<p>" + esc(g.why) + "</p>", "Nem jó. Keresd meg a valódi domaint: a ://-től az első /-ig, és onnan a jobb szélső két tag.", urlFrames(g.u), "Link szétszedése");
+    } },
+    { id: "domain", name: "Mi a valódi domain?", gen(l){
+      let g; do { g = genUrl(l); } while (!parse(g.u) || parse(g.u).ip);
+      const d = parse(g.u).dom;
+      return { q: "Melyik oldal nyílik meg valójában? Írd be a valódi domaint! <div class='urlparts' style='margin-top:6px'><code>" + esc(g.u) + "</code></div>", kind: "input", ph: "pl. otpbank.hu", answer: d, frames: urlFrames(g.u), title: "Link szétszedése",
+        sol: "<p>A gép neve: " + esc(parse(g.u).host) + ". Jobbról a két tag: <b>" + esc(d) + "</b>." + (parse(g.u).user ? " A @ előtti részt a böngésző eldobja." : "") + "</p>",
+        check: v => { const s = String(v).trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/.*$/, ""); if (s === d) return { ok: true, msg: "Helyes!" }; if (BRANDS.some(b => b[0] === s) && s !== d) return { ok: false, msg: "Ezt akarja elhitetni veled a link! Olvasd jobbról: mi áll közvetlenül az első / előtt?" }; return { ok: false, msg: "Nem jó. A ://-től az első /-ig tart a név; ebből a jobb szélső két tag a domain." }; } };
+    } },
+    { id: "kartevo", name: "Kártevő, támadás, védelem", gen(l){
+      const pool = MAL[l - 1], q = pick(pool), o = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice((l === 3 ? "Melyik védekezés ez? " : l === 2 ? "Melyik támadás ez? " : "Melyik kártevő ez? ") + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat.");
+    } },
+    { id: "helyzet", name: "Mit tegyél?", gen(l){
+      const s = l === 1 ? pick(SIT.slice(0, 4)) : l === 2 ? pick(SIT.slice(2, 7)) : pick(SIT.slice(4));
+      return choice(s[0] + " Mit teszel?", s[1], s[2], "<p>A biztonságos lépés: <b>" + s[1] + "</b> Aki sürget, jelszót vagy kódot kér, az szinte biztosan csaló.</p>", "Nem ez a biztonságos lépés. Ki kérhet tőled jelszót vagy kódot? Senki.");
+    } },
+    { id: "xor", name: "XOR-titkosítás", gen(l){
+      const n = l === 1 ? 4 : 8, d = bin(rnd(0, Math.pow(2, n) - 1), n), k = bin(rnd(1, Math.pow(2, n) - 1), n), c = xorStr(d, k);
+      if (l === 3 && Math.random() < 0.5)
+        return { q: "Ezt a titkos üzenetet kaptad: <span class='num bits8'>" + c + "</span>. A kulcs: <span class='num bits8'>" + k + "</span>. Mi volt az eredeti adat?", kind: "input", mode: "numeric", ph: "8 bit", answer: d, frames: xorFrames(c, k, true), title: "XOR-visszafejtés",
+          sol: "<p>Visszafejtés: ugyanazzal a kulccsal még egyszer XOR. " + c + " ⊕ " + k + " = " + d + ".</p>", check: v => { const s = String(v).replace(/\s+/g, ""); return s === d ? { ok: true, msg: "Helyes!" } : { ok: false, msg: /^[01]+$/.test(s) && s.length === n ? "Nem jó. Bitenként: egyforma → 0, különböző → 1." : "8 bitet írj, csak 0 és 1 jegyekkel." }; } };
+      return { q: "Titkosítsd XOR-ral! Adat: <span class='num bits8'>" + d + "</span>, kulcs: <span class='num bits8'>" + k + "</span>.", kind: "input", mode: "numeric", ph: n + " bit", answer: c, frames: xorFrames(d, k), title: "XOR-titkosítás",
+        sol: "<p>Bitenként: ha egyforma, 0; ha különböző, 1. " + d + " ⊕ " + k + " = " + c + ".</p>",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (s === c) return { ok: true, msg: "Helyes!" }; if (s.length !== n || !/^[01]+$/.test(s)) return { ok: false, msg: "Pontosan " + n + " bitet írj, csak 0 és 1 jegyekkel." }; if (s === d.split("").map((x, i) => x === "1" && k[i] === "1" ? "1" : "0").join("")) return { ok: false, msg: "Ez ÉS művelet. A XOR akkor 1, ha a két bit különböző." }; if (s === d.split("").map((x, i) => x === "1" || k[i] === "1" ? "1" : "0").join("")) return { ok: false, msg: "Ez VAGY művelet. A XOR-nál 1 ⊕ 1 = 0." }; return { ok: false, msg: "Nem jó. Bitenként: egyforma → 0, különböző → 1." }; } };
+    } },
+    { id: "ell", name: "Paritás, ellenőrzőjegy", gen(l){
+      if (l === 1){ const d = bin(rnd(1, 127), 7), ones = d.split("").filter(x => x === "1").length, p = ones % 2;
+        return { q: "Páros paritás: mi legyen a paritásbit ehhez az adathoz? <span class='num bits8'>" + d + "</span>", kind: "input", mode: "numeric", ph: "0 vagy 1", answer: p,
+          sol: "<p>Az 1-esek száma: " + ones + ". " + (p ? "Páratlan, ezért 1-et írunk a végére, hogy páros legyen." : "Már páros, ezért 0-t írunk a végére.") + " Az elküldött 8 bit: " + d + p + ".</p>", check: v => { const s = String(v).trim(); return s === String(p) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: s === "0" || s === "1" ? "Nem jó. Számold meg az 1-eseket: a paritásbittel együtt páros sok legyen." : "0-t vagy 1-et írj." }; } };
+      }
+      const len = l === 2 ? rnd(8, 10) : rnd(10, 12), base = Array.from({ length: len - 1 }, () => rnd(0, 9)); base[0] = rnd(1, 9);
+      const cd = luhnCheck(base);
+      if (l === 2){ const ok = Math.random() < 0.5, ds = base.concat([ok ? cd : (cd + rnd(1, 9)) % 10]);
+        return choice("Érvényes ez a szám a Luhn-ellenőrzés szerint? <span class='num'>" + ds.join("") + "</span>", ok ? "Érvényes" : "Hibás", [ok ? "Hibás" : "Érvényes"], "<p>Jobbról minden második jegyet duplázunk (9 fölött −9), az összeg: " + luhnSum(ds) + ". " + (ok ? "Osztható 10-zel: érvényes." : "Nem osztható 10-zel: hibás.") + "</p>", "Nem jó. Duplázd jobbról minden második jegyet, és nézd meg, osztható-e 10-zel az összeg.", luhnFrames(ds), "Kártyaszám ellenőrzése");
+      }
+      return { q: "Mi legyen az utolsó, ellenőrző jegy, hogy a szám érvényes legyen a Luhn-algoritmus szerint? <span class='num'>" + base.join("") + "?</span>", kind: "input", mode: "numeric", ph: "0–9", answer: cd, frames: luhnFrames(base.concat([cd])), title: "Kártyaszám ellenőrzése",
+        sol: "<p>Az ellenőrző jegy lesz a jobb szélső, ezért a mostani utolsó jegytől kezdve duplázunk minden másodikat. Az összeg az ellenőrző jegy nélkül: " + luhnSum(base.concat([0])) + ". Ennyi kell még, hogy osztható legyen 10-zel: " + cd + ".</p>",
+        check: v => { const s = String(v).trim(); return s === String(cd) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: /^\d$/.test(s) ? "Nem jó. Írd a 0-t a helyére, számold ki az összeget (jobbról a második jegytől duplázva), és egészítsd ki a következő tízesig." : "Egy számjegyet írj." }; } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "biztonsag", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["vírus", "fájlokba épül, azokkal terjed"], ["féreg", "magától terjed a hálózaton"], ["trójai", "hasznos programnak álcázza magát"], ["zsarolóvírus", "titkosít, pénzt kér"], ["kémprogram", "titokban figyel"], ["adathalászat", "hamis oldalra csal"], ["DDoS", "túlterheli a szervert"], ["tűzfal", "szűri a forgalmat"], ["kétlépcsős azonosítás", "jelszó + kód"]];
+  $("#cheat").innerHTML = "<tr><th>Fogalom</th><th>Röviden</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>

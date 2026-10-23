@@ -25,6 +25,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [CSS alapok](css-alapok.html) | Szelektorok, színek, dobozmodell, display és position, melyik szabály nyer |
 | [Git és GitHub alapok](git-alapok.html) | Munkamappa, staging, commit, ág, GitHub; parancsok beírása |
 | [Reszponzív weboldalak](reszponziv-weboldalak.html) | Viewport, media query, relatív mértékegységek, flex és grid, Bootstrap-rács; szélességállítható előnézet, kódolós feladatok több ablakszélességen ellenőrizve |
+| [IT-biztonság alapjai](it-biztonsag.html) | Linkvizsgáló (valódi domain, aldomain-, hasonló betű-, @- és IP-trükk), kártevők, támadások, helyzetgyakorlatok, XOR-titkosítás, nyilvános kulcs, paritásbit, Luhn-ellenőrzés, jelszó, digitális lábnyom |
 | [JavaScript-bevezető](javascript-bevezeto.html) | `<script>` és külső fájl, `console.log`, `alert`, változók, szöveg és szám, `prompt`, `if`, `for`, DOM, gombnyomás; elszigetelt JS-játszótér (`sandbox="allow-scripts"`, postMessage), a kódolós feladatok tényleg lefutnak |
 | [Elektronika alapjai](elektronika-alapjai.html) | Feszültség, áram, ellenállás, Ohm-törvény, teljesítmény, villanyszámla, soros és párhuzamos kapcsolás, színkód, LED előtét-ellenállása; áramkör csúszkákkal és biztosítékkal |
 | [Virtualizáció és felhő](virtualizacio-felho.html) | Virtuális gép, hipervizor, pillanatkép, konténer, IaaS/PaaS/SaaS, felhő vagy saját szerver, 3-2-1 mentés, jelszóerősség, kétlépcsős azonosítás; VM-építő és jelszómérő |

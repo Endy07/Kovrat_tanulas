@@ -1,0 +1,327 @@
+<!--@HEAD-->
+<title>IT-biztonság alapjai</title>
+<style>
+.urlin{width:100%!important;font-size:1rem!important}
+.urlparts{font-family:var(--mono);font-size:clamp(.78rem,3.3vw,1rem);overflow-wrap:anywhere;line-height:1.9}
+.urlparts span{border-radius:5px;padding:2px 3px}
+.u-proto{background:#27313E;color:#8C99AA}
+.u-sub{background:#27313E;color:#DCE3EC}
+.u-dom{background:#4a3a12;color:#FFB01F;font-weight:700;outline:2px solid #FFB01F}
+.u-path{color:#8C99AA}
+.u-user{background:#5a1f1a;color:#F2796C;text-decoration:line-through}
+.flags{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.flags li{padding:6px 10px;border-radius:8px;background:#27313E;font-size:.92rem}
+.flags li.w{background:#3A1C19;color:#F2796C}
+.flags li.g{background:#132C1E;color:#52C584}
+.verdict{font-family:var(--display);font-weight:800;font-size:clamp(1.2rem,5vw,1.8rem)}
+.verdict.y{color:#52C584}.verdict.n{color:#F2796C}.verdict.q{color:#FFB01F}
+.bits8{font-family:var(--mono);letter-spacing:.12em}
+.slide .eq{white-space:normal}
+.pb-stage table.pt td{min-width:1.6em}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · biztonság</span>
+  <h1>IT-biztonság alapjai</h1>
+  <p class="lead">A legtöbb támadás nem a gépet, hanem téged céloz: egy link, egy üzenet, egy jelszó. Tanuld meg kiolvasni egy link valódi címét, és megismered a kártevőket, a titkosítást és az ellenőrzőjegyeket.</p>
+  <div class="panel">
+    <span class="eyebrow">Linkvizsgáló: hová visz valójában?</span>
+    <input type="text" class="urlin" id="url" value="https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes" aria-label="Link" autocomplete="off" spellcheck="false" autocapitalize="off">
+    <div class="row" id="ex">
+      <button class="btn" data-u="https://www.otpbank.hu/portal/hu/Belepes">Valódi bank</button>
+      <button class="btn" data-u="https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes">Aldomain-trükk</button>
+      <button class="btn" data-u="https://www.paypa1.com/signin">Hasonló betű</button>
+      <button class="btn" data-u="https://posta.hu@csomag-kezbesites.net/vam">@ trükk</button>
+      <button class="btn" data-u="http://185.23.44.12/netflix/fizetes">IP-cím</button>
+    </div>
+    <div class="urlparts" id="parts"></div>
+    <div class="readout">
+      <div><div class="eyebrow">A valódi domain (jobbról olvasva)</div><div class="verdict q" id="dom"></div></div>
+      <div><div class="eyebrow">Értékelés</div><div class="verdict" id="verd"></div></div>
+      <div class="expr"><ul class="flags" id="flags"></ul></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="url" aria-selected="true">Link szétszedése</button>
+    <button class="tab" data-m="xor" aria-selected="false">XOR-titkosítás</button>
+    <button class="tab" data-m="luhn" aria-selected="false">Kártyaszám ellenőrzése</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A domaint „www.” nélkül írd (például otpbank.hu). A biteket 0 és 1 jegyekkel, szóköz nélkül. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Link olvasása</span><span>A domain a <b>://</b> után kezdődik és az <b>első /</b> jelig tart. Ebből a <b>jobb szélső két tag</b> a valódi cím. Ami a @ előtt van, azt a böngésző eldobja.</span></div>
+    <div class="trick"><span class="t">Lakat ≠ megbízható</span><span>A https csak azt jelenti, hogy titkosított a kapcsolat. A csaló oldalnak is lehet lakatja!</span></div>
+    <div class="trick"><span class="t">XOR</span><span class="mono">0⊕0=0 · 0⊕1=1 · 1⊕0=1 · 1⊕1=0</span><span>Ugyanazzal a kulccsal még egyszer XOR-olva visszakapod az eredetit.</span></div>
+    <div class="trick"><span class="t">Erős jelszó</span><span>Hosszú (12+), egyedi minden oldalon, jelszókezelőben tárolva, mellé kétlépcsős azonosítás.</span></div>
+    <div class="trick"><span class="t">Paritásbit (páros)</span><span>Annyi 1-es kerül a végére, hogy az 1-esek száma páros legyen. Egy elrontott bitet észrevesz.</span></div>
+    <div class="trick"><span class="t">Gyanús üzenet</span><span>Sürget, fenyeget, nyereményt ígér, jelszót vagy kártyaszámot kér? Ne kattints: nyisd meg magad a hivatalos oldalt.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, art } = K;
+  K.tts.rules.push([/https?:\/\//g, ""], [/\b([01]{4,})\b/g, m => m.split("").join(" ")], [/⊕/g, " kizáró vagy "], [/\s:\s/g, " osztva "]);
+
+  /* ---------- Link elemzése ---------- */
+  const SUF2 = ["co.uk", "com.au", "gov.hu", "org.hu", "co.hu", "com.br"];
+  const LOOK = /[0-9](?=[a-z])|[a-z](?=[0-9])|rn/;
+  const BRANDS = [["otpbank.hu", "OTP Bank"], ["posta.hu", "Magyar Posta"], ["netflix.com", "Netflix"], ["paypal.com", "PayPal"], ["google.com", "Google"], ["microsoft.com", "Microsoft"], ["instagram.com", "Instagram"], ["roblox.com", "Roblox"], ["steampowered.com", "Steam"], ["kreta.hu", "KRÉTA"]];
+  const EVIL = ["ugyfel-ellenorzes.com", "account-verify.net", "biztonsagi-frissites.info", "csomag-kezbesites.net", "secure-login.xyz", "nyeremeny-sorsolas.com", "fiok-zarolas.online"];
+  function parse(s){
+    s = String(s).trim();
+    const m = /^([a-z][a-z0-9+.-]*):\/\/([^/?#]*)(.*)$/i.exec(s);
+    if (!m) return null;
+    let auth = m[2], user = "";
+    const at = auth.lastIndexOf("@"); if (at >= 0){ user = auth.slice(0, at); auth = auth.slice(at + 1); }
+    const host = auth.replace(/:\d+$/, "").toLowerCase();
+    if (!host) return null;
+    const ip = /^\d{1,3}(\.\d{1,3}){3}$/.test(host);
+    const labels = host.split("."), two = labels.slice(-2).join("."), take = SUF2.includes(two) ? 3 : 2;
+    const dom = ip ? host : labels.slice(-take).join("."), sub = ip ? "" : labels.slice(0, -take).join(".");
+    return { proto: m[1].toLowerCase(), user, host, sub, dom, path: m[3], ip };
+  }
+  function analyse(p){
+    const F = [];
+    if (!p) return { F: [["w", "Ez nem teljes link (http:// vagy https:// kell az elejére)."]], bad: true };
+    const brand = BRANDS.find(b => b[0] === p.dom);
+    if (p.user) F.push(["w", "@ jel a címben: ami előtte van (" + p.user + "), azt a böngésző eldobja. A valódi cél: " + p.host + "."]);
+    if (p.ip) F.push(["w", "Név helyett IP-cím: rendes cég nem így küld linket."]);
+    if (p.proto !== "https") F.push(["w", "Nincs titkosítás (http, nem https)."]);
+    const inSub = BRANDS.find(b => (p.sub + "." + p.path).includes(b[0].split(".")[0]) && b[0] !== p.dom);
+    if (inSub && !brand) F.push(["w", "Egy ismert név (" + inSub[1] + ") szerepel a címben, de nem a valódi domainben: ez álcázás."]);
+    if (!brand && !p.ip && LOOK.test(p.dom.split(".")[0])) F.push(["w", "Gyanús betű-szám keverék a domainben (például 1 az l helyett, 0 az o helyett)."]);
+    if (!brand && /-/.test(p.dom)) F.push(["w", "Kötőjeles, hosszú domain („ellenorzes”, „login”, „verify”): tipikus csalás."]);
+    if (brand) F.push(["g", "A valódi domain " + brand[1] + " hivatalos címe."]);
+    if (p.proto === "https" && !F.some(f => f[0] === "w")) F.push(["g", "Titkosított kapcsolat (https). Ez magában még nem bizonyít semmit, de jó jel."]);
+    return { F, bad: F.some(f => f[0] === "w"), brand };
+  }
+  function hero(){
+    const s = $("#url").value, p = parse(s), a = analyse(p);
+    if (p){
+      const pre = s.trim().slice(0, s.trim().indexOf("://") + 3);
+      $("#parts").innerHTML = '<span class="u-proto">' + esc(pre) + "</span>" + (p.user ? '<span class="u-user">' + esc(p.user) + "@</span>" : "") + (p.sub ? '<span class="u-sub">' + esc(p.sub) + ".</span>" : "") + '<span class="u-dom">' + esc(p.dom) + "</span>" + '<span class="u-path">' + esc(p.path) + "</span>";
+      $("#dom").textContent = p.dom;
+    } else { $("#parts").textContent = ""; $("#dom").textContent = "?"; }
+    $("#verd").className = "verdict " + (a.bad ? "n" : a.brand ? "y" : "q");
+    $("#verd").textContent = a.bad ? "Gyanús, ne kattints!" : a.brand ? "Valódi cím" : "Ismeretlen oldal: óvatosan";
+    $("#flags").innerHTML = a.F.map(f => '<li class="' + f[0] + '">' + esc(f[1]) + "</li>").join("");
+  }
+  $("#url").addEventListener("input", hero);
+  $("#ex").addEventListener("click", e => { const b = e.target.closest("[data-u]"); if (b){ $("#url").value = b.dataset.u; hero(); } });
+  hero();
+
+  /* ---------- Generált linkek ---------- */
+  const look = d => { const [n, ...r] = d.split("."); const opts = []; if (/o/.test(n)) opts.push(n.replace("o", "0")); if (/l/.test(n)) opts.push(n.replace("l", "1")); if (/i/.test(n)) opts.push(n.replace("i", "1")); if (/m/.test(n)) opts.push(n.replace("m", "rn")); return opts.length ? pick(opts) + "." + r.join(".") : n + "-hu." + r.join("."); };
+  function genUrl(l){
+    const b = pick(BRANDS), path = pick(["/belepes", "/login", "/fiok/adatok", "/fizetes", "/csomag", "/jelszo-csere"]);
+    const legit = () => ({ u: "https://" + pick(["www.", "", "login.", "help."]) + b[0] + path, real: b[0], ok: true, why: "A valódi domain " + b[0] + ": ez " + b[1] + " hivatalos címe." });
+    const fakes = [
+      () => { const e = pick(EVIL); return { u: "https://www." + b[0] + "." + e + path, real: e, why: "A márkanév csak aldomain: a valódi domain " + e + "." }; },
+      () => { const d = b[0].split(".")[0] + pick(["-belepes", "-login", "-ugyfel", "-secure"]) + "." + pick(["com", "net", "info", "hu"]); return { u: "https://" + d + path, real: d, why: "Ez nem " + b[1] + " domainje: a kötőjeles kiegészítés egy teljesen más cím." }; },
+      () => ({ u: "http://" + rnd(11, 223) + "." + rnd(0, 255) + "." + rnd(0, 255) + "." + rnd(1, 254) + "/" + b[0].split(".")[0] + path, real: null, why: "Név helyett IP-cím, ráadásul titkosítás nélkül." })
+    ];
+    const fakes2 = [
+      () => { const d = look(b[0]); return { u: "https://www." + d + path, real: d, why: "Hasonló betű: " + d + ", nem " + b[0] + "." }; },
+      () => { const d = b[0].split(".")[0] + "." + pick(["co", "net", "info", "online"]); return { u: "https://" + d + path, real: d, why: "Más végződés: " + d + ", nem " + b[0] + "." }; }
+    ];
+    const fakes3 = [
+      () => { const e = pick(EVIL); return { u: "https://" + b[0] + "@" + e + path, real: e, why: "A @ előtti részt a böngésző eldobja: valójában " + e + " nyílik meg." }; },
+      () => { const e = pick(EVIL); return { u: "https://" + e + "/" + b[0] + path, real: e, why: "A márkanév csak az útvonalban (a / után) van: a domain " + e + "." }; },
+      () => { const e = pick(EVIL), s = b[0].replace(".", "-"); return { u: "https://" + s + ".secure." + e + path, real: e, why: "Hosszú aldomain, a valódi domain " + e + "." }; }
+    ];
+    const pool = l === 1 ? fakes : l === 2 ? fakes.concat(fakes2) : fakes2.concat(fakes3);
+    return Math.random() < 0.35 ? legit() : Object.assign({ ok: false }, pick(pool)());
+  }
+
+  /* ---------- Bitek, XOR, Luhn ---------- */
+  const bin = (n, k) => n.toString(2).padStart(k, "0");
+  const xorStr = (a, b) => a.split("").map((c, i) => c === b[i] ? "0" : "1").join("");
+  const luhnSum = ds => { let s = 0; ds.slice().reverse().forEach((d, i) => { let v = d; if (i % 2 === 1){ v = d * 2; if (v > 9) v -= 9; } s += v; }); return s; };
+  const luhnCheck = ds => (10 - luhnSum(ds.concat([0])) % 10) % 10;
+
+  /* ---------- Levezetések ---------- */
+  function urlFrames(u){
+    const p = parse(u), a = analyse(p), F = [];
+    const show = (k) => '<div class="urlparts">' +
+      '<span class="' + (k >= 1 ? "u-proto" : "") + '">' + esc(p.proto) + "://</span>" + (p.user ? '<span class="' + (k >= 2 ? "u-user" : "") + '">' + esc(p.user) + "@</span>" : "") +
+      (p.sub ? '<span class="' + (k >= 4 ? "u-sub" : "") + '">' + esc(p.sub) + ".</span>" : "") + '<span class="' + (k >= 4 ? "u-dom" : "") + '">' + esc(p.dom) + "</span>" +
+      '<span class="' + (k >= 3 ? "u-path" : "") + '">' + esc(p.path) + "</span></div>";
+    F.push({ cap: "Vizsgáljuk meg ezt a linket. Ne kattints rá, előbb olvasd végig!", html: show(0) });
+    F.push({ cap: "Az eleje a protokoll: " + p.proto + ". A https titkosított kapcsolatot jelent, de a csaló oldalnak is lehet.", html: show(1) });
+    if (p.user) F.push({ cap: "A címben @ jel van. Ami előtte áll, azt a böngésző felhasználónévnek veszi, és eldobja. Ez a rész csak téged akar becsapni.", html: show(2) });
+    F.push({ cap: "Az első perjeltől kezdve az útvonal jön: ez az oldal belsejét jelöli, a cím szempontjából nem számít, bármi állhat benne.", html: show(3) });
+    F.push({ cap: "Ami marad, az a gép neve. Jobbról olvasd: a jobb szélső két tag a valódi domain, ez most " + p.dom + ". Ami előtte van, az csak aldomain, azt bárki bármire beállíthatja a saját domainje alatt.", html: show(4) });
+    F.push({ cap: a.bad ? "Ítélet: gyanús. " + a.F.filter(f => f[0] === "w").map(f => f[1]).join(" ") : "Ítélet: a valódi domain hivatalos cím. Biztonságosabb mégis, ha a címet magad írod be, vagy könyvjelzőből nyitod meg.", html: show(4) + '<p class="big ' + (a.bad ? "" : "led") + '" style="margin-top:10px">' + (a.bad ? "Gyanús" : "Valódi") + "</p>" });
+    return F;
+  }
+  function xorFrames(d, k, dec){
+    const r = xorStr(d, k), F = [];
+    const tbl = (j) => '<div class="ptwrap"><table class="pt"><tr><th>' + (dec ? "titkos" : "adat") + "</th>" + d.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + c + "</td>").join("") + "</tr><tr><th>kulcs</th>" + k.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + c + "</td>").join("") + "</tr><tr><th>⊕</th>" + r.split("").map((c, i) => "<td" + (i === j ? ' class="hl"' : "") + ">" + (i <= j ? c : "") + "</td>").join("") + "</tr></table></div>";
+    F.push({ cap: (dec ? "Visszafejtés: a titkos üzenetet ugyanazzal a kulccsal XOR-oljuk." : "Titkosítás XOR-ral: az adat minden bitjét összevetjük a kulcs ugyanott álló bitjével.") + " Szabály: ha a két bit egyforma, 0; ha különböző, 1.", html: tbl(-1) });
+    for (let j = 0; j < d.length; j++) F.push({ cap: (j + 1) + ". bit: " + d[j] + " és " + k[j] + ": " + (d[j] === k[j] ? "egyforma, tehát 0." : "különböző, tehát 1."), html: tbl(j) });
+    F.push({ cap: "Eredmény: " + r + ". " + (dec ? "Visszakaptuk az eredeti adatot." : "Ha valaki nem ismeri a kulcsot, ebből nem tudja meg az adatot. Aki ismeri, ugyanazzal a kulccsal visszafejti."), html: tbl(d.length) + '<p class="big led bits8" style="margin-top:10px">' + r + "</p>" });
+    return F;
+  }
+  function luhnFrames(ds, full){
+    const F = [], rev = ds.slice().reverse(), steps = rev.map((d, i) => { if (i % 2 === 1){ let v = d * 2; return [d, v > 9 ? v - 9 : v, v > 9 ? d + " · 2 = " + v + ", mínusz 9 = " + (v - 9) : d + " · 2 = " + v]; } return [d, d, ""]; });
+    const tbl = (k) => '<div class="ptwrap"><table class="pt"><tr><th>jegy</th>' + ds.map((d, i) => "<td" + (ds.length - 1 - i < k ? ' class="hl"' : "") + ">" + d + "</td>").join("") + "</tr><tr><th>érték</th>" + ds.map((d, i) => { const j = ds.length - 1 - i; return "<td>" + (j < k ? steps[j][1] : "") + "</td>"; }).join("") + "</tr></table></div>";
+    const sum = luhnSum(ds);
+    F.push({ cap: "A Luhn-ellenőrzés a bankkártyaszámok elírását veszi észre. Jobbról balra haladunk, és minden második jegyet megduplázunk.", html: tbl(0) });
+    F.push({ cap: "A jobb szélső jegy marad, a tőle balra lévőt duplázzuk, és így tovább, felváltva. Ha a duplázás 9-nél többet ad, kivonunk belőle 9-et." + (steps.find(s => s[2] && /mínusz/.test(s[2])) ? " Például: " + steps.find(s => /mínusz/.test(s[2]))[2] + "." : ""), html: tbl(ds.length) });
+    F.push({ cap: "Összeadjuk az értékeket: " + sum + ". " + (sum % 10 === 0 ? "Ez osztható 10-zel, tehát a szám érvényes." : "Ez nem osztható 10-zel, tehát a szám hibás: valamelyik jegy el van írva."), html: tbl(ds.length) + '<p class="big ' + (sum % 10 === 0 ? "led" : "") + '" style="margin-top:10px">összeg: ' + sum + (sum % 10 === 0 ? " ✓" : " ✗") + "</p>" });
+    return F;
+  }
+  const MET = { url: "Link szétszedése", xor: "XOR-titkosítás", luhn: "Kártyaszám ellenőrzése" };
+  const MF = { url: () => urlFrames("https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes"), xor: () => xorFrames("01000001", "00101101"), luhn: () => luhnFrames([4, 5, 3, 9, 1, 4, 8, 8, 0, 3, 4, 3, 6, 4, 6, 7]) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "url" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mit védünk, és mitől?", h:
+      "<p>Az informatikai biztonság három dolgot véd (a CIA-hármas):</p><ul><li><b>Bizalmasság</b>: csak az lássa az adatot, akinek szabad (jelszó, titkosítás).</li><li><b>Sértetlenség</b>: az adat ne változzon meg észrevétlenül (ellenőrzőösszeg, hash).</li><li><b>Rendelkezésre állás</b>: az adat és a szolgáltatás elérhető legyen, amikor kell (mentés, védelem a túlterhelés ellen).</li></ul>" +
+      "<div class='note'><b>A leggyengébb láncszem az ember.</b> A támadások többsége egy becsapós üzenettel kezdődik, nem bonyolult feltöréssel.</div>" },
+    { k: "Adathalászat", t: "Adathalászat (phishing)", h:
+      "<p>A csaló egy ismert cégnek (bank, posta, Netflix, iskola) adja ki magát, és rávesz, hogy egy hamis oldalon add meg a jelszavad vagy a kártyaszámod.</p>" +
+      "<ul><li><b>Sürget vagy fenyeget</b>: „24 órán belül zároljuk a fiókod!”</li><li><b>Túl szép</b>: „Nyertél egy iPhone-t!”</li><li><b>Adatot kér</b>: jelszót, kódot, kártyaszámot. Valódi cég ezt soha nem kér üzenetben.</li><li><b>A link máshová visz</b>, mint ahová mutatja magát.</li></ul>" +
+      "<div class='mistake'><b>Mit tegyél?</b> Ne kattints. Nyisd meg te magad a hivatalos oldalt (könyvjelzőből, appból), és ott nézd meg. Szólj egy felnőttnek, és jelentsd az üzenetet.</div>" },
+    { k: "Link", t: "Hogyan olvass el egy linket?", h:
+      "<p class='eq'>https:// <b>www.otpbank.hu.</b><b class='hl'>ugyfel-ellenorzes.com</b> /belepes</p>" +
+      "<ol><li>A <b>://</b> után kezdődik a gép neve, és az <b>első /</b> jelig tart.</li><li>A névben <b>jobbról</b> olvass: a jobb szélső két tag a <b>valódi domain</b> (itt: ugyfel-ellenorzes.com).</li><li>Ami balra van, az csak aldomain: a domain tulajdonosa bármit odaírhat, akár „otpbank.hu”-t is.</li><li>Ha a címben <b>@</b> van, ami előtte áll, azt a böngésző eldobja.</li></ol>" +
+      "<p>Próbáld ki fent a linkvizsgálóval!</p>" + playBtn("url"), init: playInit },
+    { k: "Kártevők", t: "Kártevő programok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Név</th><th>Mit csinál?</th></tr>" +
+      "<tr><td>vírus</td><td style='text-align:left'>más fájlokba épül be, azokkal terjed, ha elindítod őket</td></tr><tr><td>féreg</td><td style='text-align:left'>magától terjed a hálózaton, nem kell elindítani</td></tr>" +
+      "<tr><td>trójai</td><td style='text-align:left'>hasznos programnak álcázza magát (például „ingyenes” játék), közben kaput nyit</td></tr><tr><td>zsarolóvírus</td><td style='text-align:left'>titkosítja a fájljaidat, és pénzt kér a visszafejtésért</td></tr>" +
+      "<tr><td>kémprogram</td><td style='text-align:left'>titokban figyel: billentyűleütés, jelszó, képernyő</td></tr><tr><td>reklámprogram</td><td style='text-align:left'>kéretlen reklámokat dob fel</td></tr><tr><td>botnet</td><td style='text-align:left'>sok fertőzött gép, amelyet a támadó távolról irányít</td></tr></table></div>" +
+      "<p>Védekezés: csak hivatalos helyről telepíts, frissíts, legyen víruskereső, és legyen <b>mentésed</b> (a zsarolóvírus ellen ez a legjobb).</p>" },
+    { k: "Támadások", t: "Gyakori támadások", h:
+      "<ul><li><b>Pszichológiai manipuláció</b> (social engineering): telefonon vagy üzenetben „rendszergazdának”, „tanárnak” adja ki magát.</li><li><b>Nyers erő</b>: a gép sorban próbálgatja a jelszavakat. A hosszú jelszó ellen esélytelen.</li><li><b>Túlterheléses támadás</b> (DDoS): sok gép egyszerre bombáz egy szervert, amíg az le nem áll.</li><li><b>Közbeékelődés</b> (man-in-the-middle): a nyilvános Wi-Fin valaki a forgalom közé áll. Ezért fontos a https.</li><li><b>Kiszivárgott jelszavak</b>: ha egy oldalról ellopják, a csalók minden más oldalon is kipróbálják. Ezért kell <b>minden oldalra más jelszó</b>.</li></ul>" },
+    { k: "Titkosítás", t: "Titkosítás: szimmetrikus és aszimmetrikus", h:
+      "<ul><li><b>Szimmetrikus</b>: ugyanaz a kulcs titkosít és fejt vissza (Caesar-kód, XOR, a valóságban AES). Gyors, de a kulcsot valahogy át kell adni.</li><li><b>Aszimmetrikus</b>: két kulcs van. A <b>nyilvános kulcs</b> olyan, mint egy nyitott lakat: bárki ráteheti az üzenetre. Kinyitni csak a <b>titkos kulcs</b> tulajdonosa tudja.</li></ul>" +
+      "<p>A https mindkettőt használja: az aszimmetrikus titkosítással biztonságosan megegyeznek egy közös kulcsban, aztán a gyors szimmetrikus titkosítással beszélnek.</p>" +
+      "<p class='eq'>01000001 ⊕ 00101101 = 01101100</p>" + playBtn("xor"), init: playInit },
+    { k: "Ellenőrzés", t: "Paritásbit, ellenőrzőjegy, hash", h:
+      "<ul><li><b>Paritásbit</b>: az adat végére egy bit kerül, hogy az 1-esek száma páros legyen. Ha átvitel közben egy bit megfordul, észrevesszük.</li><li><b>Ellenőrzőjegy</b>: a bankkártyaszám utolsó jegye a többiből jön (Luhn-algoritmus). Egy elírt jegyet azonnal kiszűr.</li><li><b>Hash</b> (ujjlenyomat): egy fájlból vagy jelszóból rövid, fix hosszú kód. A legkisebb változás is teljesen más hash-t ad, és visszafelé nem számolható. Az oldalak a jelszavadat nem tárolják, csak a hash-ét.</li></ul>" + playBtn("luhn"), init: playInit },
+    { k: "Jelszó", t: "Jelszó és kétlépcsős azonosítás", h:
+      "<ul><li><b>Hossz</b> a legfontosabb: egy 4 szavas mondatjelszó („LilaCiceraNyolcVonat”) erősebb, mint a „P@ssw0rd1”.</li><li><b>Mindenhol más</b>: a jelszókezelő megjegyzi helyetted.</li><li><b>Kétlépcsős azonosítás</b>: a jelszó mellé egy második bizonyíték is kell (kód a telefonon, hitelesítő app). Ha a jelszavad kiszivárog, a fiókod még így is védett.</li><li>A kódot, ami SMS-ben jön, <b>soha</b> ne mondd meg senkinek, aki felhív vagy üzen.</li></ul>" },
+    { k: "Adatvédelem", t: "Digitális lábnyom és adatvédelem", h:
+      "<p>Amit feltöltesz, az ott marad: képernyőképet készíthetnek róla, archiválják. Ez a <b>digitális lábnyomod</b>.</p>" +
+      "<ul><li>Ne ossz meg lakcímet, iskolát és napi menetrendet együtt.</li><li>A profilod legyen privát, ismeretlent ne fogadj el.</li><li>Más ember képét csak az engedélyével tedd közzé.</li><li>Az EU-ban a GDPR védi az adataidat: jogod van megtudni, mit tárolnak rólad, és kérni a törlést.</li></ul>" },
+    { k: "Hibák", t: "Tipikus tévhitek", h:
+      "<div class='mistake'><b>„Lakat van, tehát biztonságos.”</b> A lakat csak a titkosítást jelzi. Csaló oldalnak is lehet.</div>" +
+      "<div class='mistake'><b>„A linkben benne van az otpbank.hu.”</b> Nem az számít, hogy benne van-e, hanem hogy a jobb szélső két tag az-e.</div>" +
+      "<div class='mistake'><b>„Engem úgysem támadnak meg.”</b> A támadások gépiek, mindenkit végigpróbálnak.</div>" +
+      "<div class='mistake'><b>„Erős jelszavam van, mindenhol azt használom.”</b> Ha egy oldalról ellopják, minden fiókod veszélyben van.</div>" +
+      "<div class='mistake'><b>„A víruskereső mindent megfog.”</b> A trükkös üzenet ellen csak a figyelmed véd.</div>" },
+    { k: "Trükkök", t: "Biztonsági szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Megállni, gondolkodni</span><span>Sürget az üzenet? Pont ezért várj vele, és kérdezz meg valakit.</span></div>" +
+      "<div class='trick'><span class='t'>Magad írd be</span><span>Bankot, postát, iskolai rendszert könyvjelzőből vagy appból nyiss meg, ne linkből.</span></div>" +
+      "<div class='trick'><span class='t'>Frissíts</span><span>A frissítések biztonsági réseket zárnak be. Telefon, böngésző, játék: mind.</span></div>" +
+      "<div class='trick'><span class='t'>Mentés</span><span>3-2-1: három példány, két eszközön, egy máshol (lásd a felhő leckét).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const MAL = [
+    [["Más fájlokba épül be, és azokkal terjed, ha elindítod őket.", "vírus"], ["Magától terjed a hálózaton, nem kell elindítani.", "féreg"], ["Hasznos programnak, például ingyenes játéknak álcázza magát.", "trójai"], ["Titkosítja a fájljaidat, és pénzt kér a visszafejtésért.", "zsarolóvírus"], ["Titokban figyeli, mit gépelsz, és elküldi a jelszavaidat.", "kémprogram"], ["Kéretlen reklámokat dob fel a böngészőben.", "reklámprogram"]],
+    [["Üzenetben egy bank nevében hamis oldalra csalnak, hogy megadd a jelszavad.", "adathalászat"], ["Telefonon „rendszergazdának” adja ki magát, és elkéri a kódodat.", "pszichológiai manipuláció"], ["Sok ezer gép egyszerre bombáz egy szervert, amíg le nem áll.", "túlterheléses támadás (DDoS)"], ["Egy program sorban kipróbálja az összes lehetséges jelszót.", "nyers erős támadás"], ["A nyilvános Wi-Fin valaki a forgalmad közé áll, és olvassa.", "közbeékelődés"], ["Sok fertőzött gép, amelyet a támadó távolról irányít.", "botnet"]],
+    [["Szabályok szerint engedi vagy tiltja a hálózati forgalmat a gép és az internet között.", "tűzfal"], ["A jelszó mellé egy második bizonyítékot (kódot a telefonon) is kér.", "kétlépcsős azonosítás"], ["Minden oldalhoz külön, erős jelszót generál és megjegyez.", "jelszókezelő"], ["Az ismert biztonsági réseket befoltozza a programokban.", "frissítés"], ["Ha zsarolóvírus titkosítja a fájljaidat, ebből visszaállíthatod őket.", "biztonsági mentés"], ["Úgy alakítja át az adatot, hogy kulcs nélkül olvashatatlan legyen.", "titkosítás"], ["Felismeri és eltávolítja az ismert kártevőket.", "víruskereső"]]
+  ];
+  const SIT = [
+    ["SMS jön: „A csomagod vámkezelésre vár, fizess 590 Ft-ot ezen a linken.” Nem vársz csomagot.", "Nem kattintok, törlöm és jelentem.", ["Kifizetem, mert csak 590 Ft.", "Rákattintok, hogy megnézzem, mi az.", "Visszaírok, hogy kitől jött."]],
+    ["Egy „Roblox-moderátor” azt írja, hogy ingyen Robuxot kapsz, ha megadod a jelszavad.", "Nem adom meg: jelszót senki nem kérhet. Jelentem a fiókot.", ["Megadom, mert moderátor.", "Csak a jelszó felét adom meg.", "Megadom, aztán gyorsan megváltoztatom."]],
+    ["Valaki felhív, hogy a bankodtól van, és felolvastatja veled az SMS-ben kapott kódot.", "Leteszem, és a bank hivatalos számát én hívom fel.", ["Felolvasom, mert a banktól van.", "Csak az első három jegyét mondom meg.", "Megkérdezem a nevét, aztán felolvasom."]],
+    ["A kávézó nyílt Wi-Fi-jén be akarsz lépni a bankodba.", "Megvárom, amíg otthon vagy mobilneten leszek.", ["Belépek, mert https van.", "Belépek, de utána törlöm az előzményeket.", "Belépek, mert a jelszavam erős."]],
+    ["Egy weboldal szerint „vírusos a géped, töltsd le azonnal ezt a programot”.", "Bezárom az oldalt, nem töltök le semmit.", ["Letöltöm, mert sürgős.", "Felhívom a kiírt telefonszámot.", "Letöltöm, de nem indítom el."]],
+    ["Kiderül, hogy egy oldalról, ahol regisztráltál, ellopták a jelszavakat.", "Ott és mindenhol, ahol ugyanez volt, új jelszót állítok be, és bekapcsolom a kétlépcsős azonosítást.", ["Nem csinálok semmit, úgysem engem néznek.", "Csak ott cserélem le, ahonnan ellopták.", "Törlöm a böngésző előzményeit."]],
+    ["Egy osztálytársad kéri, hogy add kölcsön a KRÉTA-jelszavadat, mert az övé nem működik.", "Nem adom oda: a jelszó csak az enyém. Segítek neki jelszót visszaállítani.", ["Odaadom, mert barátom.", "Odaadom, aztán holnap lecserélem.", "Odaírom egy papírra, hogy ne hallja más."]],
+    ["Egy „nyereményjáték” a lakcímedet, a születési dátumodat és az iskolád nevét kéri.", "Nem adom meg: ezekkel visszaélhetnek, és nyeremény nincs.", ["Megadom, mert nyerhetek.", "Csak a lakcímet adom meg.", "Megadom, de álnéven."]]
+  ];
+  const types = [
+    { id: "valodi", name: "Valódi vagy csaló?", gen(l){
+      const g = genUrl(l), good = g.ok ? "Valódi" : "Csaló";
+      return choice("Valódi vagy csaló ez a link? <div class='urlparts' style='margin-top:6px'><code>" + esc(g.u) + "</code></div>", good, [g.ok ? "Csaló" : "Valódi"], "<p>" + esc(g.why) + "</p>", "Nem jó. Keresd meg a valódi domaint: a ://-től az első /-ig, és onnan a jobb szélső két tag.", urlFrames(g.u), "Link szétszedése");
+    } },
+    { id: "domain", name: "Mi a valódi domain?", gen(l){
+      let g; do { g = genUrl(l); } while (!parse(g.u) || parse(g.u).ip);
+      const d = parse(g.u).dom;
+      return { q: "Melyik oldal nyílik meg valójában? Írd be a valódi domaint! <div class='urlparts' style='margin-top:6px'><code>" + esc(g.u) + "</code></div>", kind: "input", ph: "pl. otpbank.hu", answer: d, frames: urlFrames(g.u), title: "Link szétszedése",
+        sol: "<p>A gép neve: " + esc(parse(g.u).host) + ". Jobbról a két tag: <b>" + esc(d) + "</b>." + (parse(g.u).user ? " A @ előtti részt a böngésző eldobja." : "") + "</p>",
+        check: v => { const s = String(v).trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/.*$/, ""); if (s === d) return { ok: true, msg: "Helyes!" }; if (BRANDS.some(b => b[0] === s) && s !== d) return { ok: false, msg: "Ezt akarja elhitetni veled a link! Olvasd jobbról: mi áll közvetlenül az első / előtt?" }; return { ok: false, msg: "Nem jó. A ://-től az első /-ig tart a név; ebből a jobb szélső két tag a domain." }; } };
+    } },
+    { id: "kartevo", name: "Kártevő, támadás, védelem", gen(l){
+      const pool = MAL[l - 1], q = pick(pool), o = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice((l === 3 ? "Melyik védekezés ez? " : l === 2 ? "Melyik támadás ez? " : "Melyik kártevő ez? ") + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat.");
+    } },
+    { id: "helyzet", name: "Mit tegyél?", gen(l){
+      const s = l === 1 ? pick(SIT.slice(0, 4)) : l === 2 ? pick(SIT.slice(2, 7)) : pick(SIT.slice(4));
+      return choice(s[0] + " Mit teszel?", s[1], s[2], "<p>A biztonságos lépés: <b>" + s[1] + "</b> Aki sürget, jelszót vagy kódot kér, az szinte biztosan csaló.</p>", "Nem ez a biztonságos lépés. Ki kérhet tőled jelszót vagy kódot? Senki.");
+    } },
+    { id: "xor", name: "XOR-titkosítás", gen(l){
+      const n = l === 1 ? 4 : 8, d = bin(rnd(0, Math.pow(2, n) - 1), n), k = bin(rnd(1, Math.pow(2, n) - 1), n), c = xorStr(d, k);
+      if (l === 3 && Math.random() < 0.5)
+        return { q: "Ezt a titkos üzenetet kaptad: <span class='num bits8'>" + c + "</span>. A kulcs: <span class='num bits8'>" + k + "</span>. Mi volt az eredeti adat?", kind: "input", mode: "numeric", ph: "8 bit", answer: d, frames: xorFrames(c, k, true), title: "XOR-visszafejtés",
+          sol: "<p>Visszafejtés: ugyanazzal a kulccsal még egyszer XOR. " + c + " ⊕ " + k + " = " + d + ".</p>", check: v => { const s = String(v).replace(/\s+/g, ""); return s === d ? { ok: true, msg: "Helyes!" } : { ok: false, msg: /^[01]+$/.test(s) && s.length === n ? "Nem jó. Bitenként: egyforma → 0, különböző → 1." : "8 bitet írj, csak 0 és 1 jegyekkel." }; } };
+      return { q: "Titkosítsd XOR-ral! Adat: <span class='num bits8'>" + d + "</span>, kulcs: <span class='num bits8'>" + k + "</span>.", kind: "input", mode: "numeric", ph: n + " bit", answer: c, frames: xorFrames(d, k), title: "XOR-titkosítás",
+        sol: "<p>Bitenként: ha egyforma, 0; ha különböző, 1. " + d + " ⊕ " + k + " = " + c + ".</p>",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (s === c) return { ok: true, msg: "Helyes!" }; if (s.length !== n || !/^[01]+$/.test(s)) return { ok: false, msg: "Pontosan " + n + " bitet írj, csak 0 és 1 jegyekkel." }; if (s === d.split("").map((x, i) => x === "1" && k[i] === "1" ? "1" : "0").join("")) return { ok: false, msg: "Ez ÉS művelet. A XOR akkor 1, ha a két bit különböző." }; if (s === d.split("").map((x, i) => x === "1" || k[i] === "1" ? "1" : "0").join("")) return { ok: false, msg: "Ez VAGY művelet. A XOR-nál 1 ⊕ 1 = 0." }; return { ok: false, msg: "Nem jó. Bitenként: egyforma → 0, különböző → 1." }; } };
+    } },
+    { id: "ell", name: "Paritás, ellenőrzőjegy", gen(l){
+      if (l === 1){ const d = bin(rnd(1, 127), 7), ones = d.split("").filter(x => x === "1").length, p = ones % 2;
+        return { q: "Páros paritás: mi legyen a paritásbit ehhez az adathoz? <span class='num bits8'>" + d + "</span>", kind: "input", mode: "numeric", ph: "0 vagy 1", answer: p,
+          sol: "<p>Az 1-esek száma: " + ones + ". " + (p ? "Páratlan, ezért 1-et írunk a végére, hogy páros legyen." : "Már páros, ezért 0-t írunk a végére.") + " Az elküldött 8 bit: " + d + p + ".</p>", check: v => { const s = String(v).trim(); return s === String(p) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: s === "0" || s === "1" ? "Nem jó. Számold meg az 1-eseket: a paritásbittel együtt páros sok legyen." : "0-t vagy 1-et írj." }; } };
+      }
+      const len = l === 2 ? rnd(8, 10) : rnd(10, 12), base = Array.from({ length: len - 1 }, () => rnd(0, 9)); base[0] = rnd(1, 9);
+      const cd = luhnCheck(base);
+      if (l === 2){ const ok = Math.random() < 0.5, ds = base.concat([ok ? cd : (cd + rnd(1, 9)) % 10]);
+        return choice("Érvényes ez a szám a Luhn-ellenőrzés szerint? <span class='num'>" + ds.join("") + "</span>", ok ? "Érvényes" : "Hibás", [ok ? "Hibás" : "Érvényes"], "<p>Jobbról minden második jegyet duplázunk (9 fölött −9), az összeg: " + luhnSum(ds) + ". " + (ok ? "Osztható 10-zel: érvényes." : "Nem osztható 10-zel: hibás.") + "</p>", "Nem jó. Duplázd jobbról minden második jegyet, és nézd meg, osztható-e 10-zel az összeg.", luhnFrames(ds), "Kártyaszám ellenőrzése");
+      }
+      return { q: "Mi legyen az utolsó, ellenőrző jegy, hogy a szám érvényes legyen a Luhn-algoritmus szerint? <span class='num'>" + base.join("") + "?</span>", kind: "input", mode: "numeric", ph: "0–9", answer: cd, frames: luhnFrames(base.concat([cd])), title: "Kártyaszám ellenőrzése",
+        sol: "<p>Az ellenőrző jegy lesz a jobb szélső, ezért a mostani utolsó jegytől kezdve duplázunk minden másodikat. Az összeg az ellenőrző jegy nélkül: " + luhnSum(base.concat([0])) + ". Ennyi kell még, hogy osztható legyen 10-zel: " + cd + ".</p>",
+        check: v => { const s = String(v).trim(); return s === String(cd) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: /^\d$/.test(s) ? "Nem jó. Írd a 0-t a helyére, számold ki az összeget (jobbról a második jegytől duplázva), és egészítsd ki a következő tízesig." : "Egy számjegyet írj." }; } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "biztonsag", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["vírus", "fájlokba épül, azokkal terjed"], ["féreg", "magától terjed a hálózaton"], ["trójai", "hasznos programnak álcázza magát"], ["zsarolóvírus", "titkosít, pénzt kér"], ["kémprogram", "titokban figyel"], ["adathalászat", "hamis oldalra csal"], ["DDoS", "túlterheli a szervert"], ["tűzfal", "szűri a forgalmat"], ["kétlépcsős azonosítás", "jelszó + kód"]];
+  $("#cheat").innerHTML = "<tr><th>Fogalom</th><th>Röviden</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
