@@ -1,0 +1,733 @@
+<!--@HEAD-->
+<title>Táblázatkezelés</title>
+<style>
+body,table,input,code,.code,.fx,.opt{font-variant-ligatures:none}
+.fbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fbar .nm{font-family:var(--mono);font-weight:700;color:var(--led);min-width:3.2em}
+.fbar input[type=text]{flex:1 1 180px;min-width:0;width:auto;font-variant-ligatures:none}
+table.sheet{border-collapse:collapse;font-family:var(--mono);font-size:.88rem;font-variant-ligatures:none}
+table.sheet th,table.sheet td{border:1.5px solid #3A4656;padding:5px 8px;min-width:74px;height:32px;white-space:nowrap}
+table.sheet th{background:#27313E;color:var(--panel-muted);font-weight:700;min-width:28px;text-align:center}
+table.sheet td{cursor:pointer;text-align:left}
+table.sheet td.n{text-align:right}
+table.sheet td.f{background:rgba(114,166,242,.10)}
+table.sheet td.e{color:#F2796C;font-weight:700}
+table.sheet td.sel{outline:3px solid var(--led);outline-offset:-3px}
+table.sheet td.chg{background:rgba(242,158,12,.22)}
+table.mini{border-collapse:collapse;font-family:var(--mono);font-size:.9rem;margin-top:8px;font-variant-ligatures:none}
+table.mini th,table.mini td{border:1.5px solid var(--line);padding:4px 10px;text-align:right;min-width:2.6em}
+table.mini th{background:var(--surface-2);text-align:center;color:var(--muted)}
+table.mini td.t{text-align:left}
+table.mini td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
+.pb-stage table.mini th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.pb-stage table.mini td{border-color:#3A4656}
+.pb-stage table.mini td.hl{background:#4a3a12;color:#FFB01F}
+.fx{font-family:var(--mono);font-weight:700;font-size:1.05rem;color:var(--accent);overflow-wrap:anywhere;font-variant-ligatures:none}
+.pb-stage .fx{color:#FFB01F;margin-top:10px}
+.pb-stage .fx .old{color:#7E8B9C;text-decoration:line-through}
+.slide .eq{white-space:normal}
+.prompt code,.solution code,.opt{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Digitális kultúra · adatkezelés</span>
+  <h1>Táblázatkezelés: képletek és függvények</h1>
+  <p class="lead">Excel, Google Táblázatok, LibreOffice Calc: mindegyik ugyanúgy számol. Kattints egy cellára, írj bele számot vagy képletet, és nézd, hogyan számolódik újra minden.</p>
+  <div class="panel">
+    <span class="eyebrow">Mini-táblázatkezelő · a képlet = jellel kezdődik</span>
+    <div class="fbar">
+      <span class="nm" id="nm">D2</span>
+      <input id="fx" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="A cella tartalma">
+      <button class="btn" id="put">Beír</button>
+    </div>
+    <div class="ptwrap"><table class="sheet" id="grid"></table></div>
+    <div class="row">
+      <button class="btn" id="fill">⬇ Kitöltés lefelé</button>
+      <button class="btn" id="fillr">➡ Kitöltés jobbra</button>
+      <button class="btn" id="reset">↺ Újra</button>
+    </div>
+    <div class="readout"><div class="expr" id="info"></div></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="kiert" aria-selected="true">Egy képlet kiszámolása</button>
+    <button class="tab" data-m="masol" aria-selected="false">Másolás és hivatkozások</button>
+    <button class="tab" data-m="ha" aria-selected="false">A HA függvény</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A képletet = jellel kezdd. A magyar függvénynevek (SZUM, ÁTLAG, HA…) és az angolok (SUM, AVERAGE, IF…) is jók; az elválasztó lehet pontosvessző (magyar Excel) vagy vessző. A tizedes törtet vesszővel vagy ponttal is írhatod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Hivatkozások</span><span class="mono">B2 · $B$2 · $B2 · B$2</span><span>Relatív (mozog) · abszolút (áll) · az oszlop áll · a sor áll. Excelben az F4 billentyű váltogat köztük.</span></div>
+    <div class="trick"><span class="t">Műveleti sorrend</span><span>zárójel → hatvány (^) → szorzás és osztás → összeadás és kivonás. A % a százalékjel: 20% = 0,2.</span></div>
+    <div class="trick"><span class="t">Százalék</span><span class="mono">rész : egész · 100</span><span>Képletben: =B2/$B$7, és százalék formátum. Növelés 27%-kal: =B2*(1+27%).</span></div>
+    <div class="trick"><span class="t">Hibaüzenetek</span><span>#ZÉRÓOSZTÓ! nullával osztás · #NÉV? elírt név vagy idézőjel nélküli szöveg · #HIV! nem létező cella · #ÉRTÉK! szöveggel számolsz · #### keskeny az oszlop</span></div>
+    <div class="trick"><span class="t">Diagram</span><span>Oszlop: összehasonlítás · kör: egész részei (%) · vonal: változás időben · pont: két mennyiség kapcsolata.</span></div>
+    <div class="trick"><span class="t">Magyar és angol Excel</span><span>Magyarul a függvény neve magyar, az elválasztó pontosvessző, a tizedesjel vessző: =KEREKÍTÉS(B2;1). Angolul: =ROUND(B2,1).</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push(
+    [/(\$?[A-Z]{1,2}\$?\d+):(\$?[A-Z]{1,2}\$?\d+)/g, "$1-től $2-ig"], [/\$/g, " dollár "], [/;/g, ", "], [/&lt;&gt;/g, " nem egyenlő "],
+    [/&gt;=/g, " nagyobb vagy egyenlő "], [/&lt;=/g, " kisebb vagy egyenlő "], [/&gt;/g, " nagyobb, mint "], [/&lt;/g, " kisebb, mint "],
+    [/\^/g, " a következő hatványon: "], [/#/g, " kettőskereszt "], [/\*/g, " szorozva "]
+  );
+
+  /*ENGINE*/
+  // Kis táblázatkezelő-motor: tokenizáló, rekurzív leszálló értelmező, kiértékelés (eval nélkül), másolás (hivatkozás-eltolás)
+  const SH = (function(){
+    function E(code){ this.e = code; }
+    function Syn(msg){ this.syn = msg; }
+    const ER = { div: "#ZÉRÓOSZTÓ!", name: "#NÉV?", ref: "#HIV!", val: "#ÉRTÉK!", circ: "#KÖR!", syn: "#HIBA!", num: "#SZÁM!" };
+    const err = c => new E(c), isE = v => v instanceof E;
+    const LET = "A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű";
+    const reLet = new RegExp("[" + LET + "]"), reAfterRef = new RegExp("^[" + LET + "\\d(]"), reName = new RegExp("^[" + LET + "][" + LET + "\\d.]*");
+    const colN = s => { let n = 0; for (const ch of s.toUpperCase()) n = n * 26 + ch.charCodeAt(0) - 64; return n; };
+    const colS = n => { let s = ""; while (n > 0){ const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+    const FN = { "SZUM": "SUM", "SUM": "SUM", "ÁTLAG": "AVG", "AVERAGE": "AVG", "MIN": "MIN", "MAX": "MAX", "DARAB": "COUNT", "COUNT": "COUNT", "HA": "IF", "IF": "IF",
+      "DARABTELI": "COUNTIF", "COUNTIF": "COUNTIF", "SZUMHA": "SUMIF", "SUMIF": "SUMIF", "KEREKÍTÉS": "ROUND", "ROUND": "ROUND" };
+    const BOOL = { "IGAZ": true, "TRUE": true, "HAMIS": false, "FALSE": false };
+    function tokenize(src){
+      const semi = src.indexOf(";") >= 0, t = [];
+      let i = 0;
+      while (i < src.length){
+        const c = src[i], rest = src.slice(i);
+        if (/\s/.test(c)){ i++; continue; }
+        if (c === '"'){ const j = src.indexOf('"', i + 1); if (j < 0) throw new Syn("hiányzik a záró idézőjel"); t.push({ k: "str", v: src.slice(i + 1, j) }); i = j + 1; continue; }
+        let m = (semi ? /^\d+(?:[.,]\d+)?/ : /^\d+(?:\.\d+)?/).exec(rest);
+        if (m){ t.push({ k: "num", v: Number(m[0].replace(",", ".")) }); i += m[0].length; continue; }
+        m = /^(\$?)([A-Za-z]{1,2})(\$?)(\d+)(?::(\$?)([A-Za-z]{1,2})(\$?)(\d+))?/.exec(rest);
+        if (m && !reAfterRef.test(rest.slice(m[0].length))){
+          const a = { c: colN(m[2]), r: +m[4] };
+          if (m[6]){ const b = { c: colN(m[6]), r: +m[8] }; t.push({ k: "range", c1: Math.min(a.c, b.c), c2: Math.max(a.c, b.c), r1: Math.min(a.r, b.r), r2: Math.max(a.r, b.r) }); }
+          else t.push({ k: "ref", c: a.c, r: a.r });
+          i += m[0].length; continue;
+        }
+        m = reName.exec(rest);
+        if (m){
+          const up = m[0].toUpperCase(), after = rest.slice(m[0].length).replace(/^\s+/, "");
+          if (after[0] === "(") t.push({ k: "fn", v: up });
+          else if (up in BOOL) t.push({ k: "bool", v: BOOL[up] });
+          else t.push({ k: "name", v: m[0] });
+          i += m[0].length; continue;
+        }
+        const two = rest.slice(0, 2);
+        if (two === "<=" || two === ">=" || two === "<>"){ t.push({ k: "op", v: two }); i += 2; continue; }
+        if ("+-*/^&()=<>%".indexOf(c) >= 0){ t.push({ k: "op", v: c }); i++; continue; }
+        if (c === ";" || c === ","){ t.push({ k: "sep" }); i++; continue; }
+        throw new Syn("ismeretlen jel: " + c);
+      }
+      return t;
+    }
+    function parse(src){
+      let s = String(src).trim();
+      if (s[0] === "=") s = s.slice(1);
+      if (!s.trim()) throw new Syn("üres képlet");
+      const T = tokenize(s); let p = 0;
+      const next = () => T[p++], isOp = v => T[p] && T[p].k === "op" && T[p].v === v;
+      const CMP = ["=", "<>", "<", ">", "<=", ">="];
+      function cmp(){ let a = cat(); while (T[p] && T[p].k === "op" && CMP.indexOf(T[p].v) >= 0){ const o = next().v; a = { k: "bin", o, a, b: cat() }; } return a; }
+      function cat(){ let a = add(); while (isOp("&")){ next(); a = { k: "bin", o: "&", a, b: add() }; } return a; }
+      function add(){ let a = mul(); while (isOp("+") || isOp("-")){ const o = next().v; a = { k: "bin", o, a, b: mul() }; } return a; }
+      function mul(){ let a = pw(); while (isOp("*") || isOp("/")){ const o = next().v; a = { k: "bin", o, a, b: pw() }; } return a; }
+      function pw(){ let a = un(); while (isOp("^")){ next(); a = { k: "bin", o: "^", a, b: un() }; } return a; }
+      function un(){ if (isOp("-")){ next(); return { k: "neg", a: un() }; } if (isOp("+")){ next(); return un(); } return post(); }
+      function post(){ let a = prim(); while (isOp("%")){ next(); a = { k: "pct", a }; } return a; }
+      function prim(){
+        const t = next();
+        if (!t) throw new Syn("hiányos képlet");
+        if (t.k === "num" || t.k === "str" || t.k === "bool") return { k: "lit", v: t.v };
+        if (t.k === "ref" || t.k === "range") return t;
+        if (t.k === "name") return { k: "lit", v: err(ER.name) };
+        if (t.k === "fn"){
+          next();
+          const args = [];
+          if (!isOp(")")){
+            for (;;){ args.push(cmp()); if (T[p] && T[p].k === "sep"){ next(); continue; } break; }
+          }
+          if (!isOp(")")) throw new Syn("hiányzik a záró zárójel");
+          next();
+          return { k: "fn", f: FN[t.v] || null, name: t.v, args };
+        }
+        if (t.k === "op" && t.v === "("){ const a = cmp(); if (!isOp(")")) throw new Syn("hiányzik a záró zárójel"); next(); return a; }
+        throw new Syn("váratlan jel" + (t.v ? ": " + t.v : ""));
+      }
+      const r = cmp();
+      if (p < T.length) throw new Syn("fölösleges jel" + (T[p].v ? ": " + T[p].v : ""));
+      return r;
+    }
+    const toNum = v => {
+      if (isE(v)) return v;
+      if (v === null || v === undefined || v === "") return 0;
+      if (typeof v === "number") return v;
+      if (typeof v === "boolean") return v ? 1 : 0;
+      const x = String(v).trim().replace(",", ".");
+      return /^-?\d+(\.\d+)?$/.test(x) ? Number(x) : err(ER.val);
+    };
+    const rank = v => typeof v === "string" ? 1 : typeof v === "boolean" ? 2 : 0;
+    function compare(o, a, b){
+      if (a === null || a === undefined) a = typeof b === "string" ? "" : 0;
+      if (b === null || b === undefined) b = typeof a === "string" ? "" : 0;
+      let d;
+      if (rank(a) !== rank(b)) d = rank(a) - rank(b);
+      else if (typeof a === "string"){ const x = a.toLowerCase(), y = b.toLowerCase(); d = x < y ? -1 : x > y ? 1 : 0; }
+      else d = Number(a) - Number(b);
+      return o === "=" ? d === 0 : o === "<>" ? d !== 0 : o === "<" ? d < 0 : o === ">" ? d > 0 : o === "<=" ? d <= 0 : d >= 0;
+    }
+    const cellsOf = n => { const out = []; for (let r = n.r1; r <= n.r2; r++) for (let c = n.c1; c <= n.c2; c++) out.push(colS(c) + r); return out; };
+    function matcher(c){
+      if (typeof c === "number") return v => typeof v === "number" && v === c;
+      const m = /^(<=|>=|<>|<|>|=)?([\s\S]*)$/.exec(String(c)), op = m[1] || "=", rhs = m[2], rx = rhs.trim().replace(",", ".");
+      const rn = /^-?\d+(\.\d+)?$/.test(rx) ? Number(rx) : null;
+      return v => {
+        if (rn !== null){ if (typeof v !== "number") return op === "<>"; return compare(op, v, rn); }
+        if (v === null || v === undefined) v = "";
+        return compare(op, String(v), rhs);
+      };
+    }
+    function evaluate(n, get){
+      const ev = x => evaluate(x, get);
+      switch (n.k){
+        case "lit": return n.v;
+        case "ref": return n.c < 1 || n.r < 1 ? err(ER.ref) : get(colS(n.c) + n.r);
+        case "range": return err(ER.val);
+        case "neg": { const x = toNum(ev(n.a)); return isE(x) ? x : -x; }
+        case "pct": { const x = toNum(ev(n.a)); return isE(x) ? x : x / 100; }
+        case "bin": {
+          const a = ev(n.a), b = ev(n.b);
+          if (isE(a)) return a; if (isE(b)) return b;
+          if (n.o === "&") return show(a) + show(b);
+          if (["=", "<>", "<", ">", "<=", ">="].indexOf(n.o) >= 0) return compare(n.o, a, b);
+          const x = toNum(a), y = toNum(b);
+          if (isE(x)) return x; if (isE(y)) return y;
+          if (n.o === "+") return x + y;
+          if (n.o === "-") return x - y;
+          if (n.o === "*") return x * y;
+          if (n.o === "/") return y === 0 ? err(ER.div) : x / y;
+          const r = Math.pow(x, y); return isFinite(r) ? r : err(ER.num);
+        }
+        case "fn": return callFn(n, get);
+      }
+      return err(ER.val);
+    }
+    // számok a függvény argumentumaiból: tartományban csak a számok számítanak, közvetlen argumentum számmá alakul
+    function nums(args, get){
+      const out = [];
+      for (const a of args){
+        if (a.k === "range"){ for (const nm of cellsOf(a)){ const v = get(nm); if (isE(v)) return v; if (typeof v === "number") out.push(v); } }
+        else { const v = evaluate(a, get); if (isE(v)) return v; if (a.k === "ref" && typeof v !== "number") continue; const x = toNum(v); if (isE(x)) return x; out.push(x); }
+      }
+      return out;
+    }
+    const asRange = a => a.k === "range" ? a : a.k === "ref" ? { k: "range", c1: a.c, c2: a.c, r1: a.r, r2: a.r } : null;
+    function callFn(n, get){
+      const A = n.args, ev = x => evaluate(x, get);
+      if (!n.f) return err(ER.name);
+      switch (n.f){
+        case "SUM": case "AVG": case "MIN": case "MAX": {
+          if (!A.length) return err(ER.val);
+          const xs = nums(A, get); if (isE(xs)) return xs;
+          if (n.f === "SUM") return xs.reduce((p, q) => p + q, 0);
+          if (n.f === "AVG") return xs.length ? xs.reduce((p, q) => p + q, 0) / xs.length : err(ER.div);
+          if (!xs.length) return 0;
+          return n.f === "MIN" ? Math.min.apply(null, xs) : Math.max.apply(null, xs);
+        }
+        case "COUNT": {
+          let k = 0;
+          for (const a of A){
+            if (a.k === "range"){ for (const nm of cellsOf(a)) if (typeof get(nm) === "number") k++; }
+            else { const v = ev(a); if (typeof v === "number" || (!isE(v) && a.k !== "ref" && !isE(toNum(v)) && typeof v !== "boolean")) k++; }
+          }
+          return k;
+        }
+        case "IF": {
+          if (A.length < 2 || A.length > 3) return err(ER.val);
+          const c = ev(A[0]); if (isE(c)) return c;
+          let ok;
+          if (typeof c === "boolean") ok = c; else if (c === null) ok = false; else { const x = toNum(c); if (isE(x)) return x; ok = x !== 0; }
+          return ok ? ev(A[1]) : A.length > 2 ? ev(A[2]) : false;
+        }
+        case "COUNTIF": case "SUMIF": {
+          if (A.length < 2 || (n.f === "COUNTIF" && A.length > 2) || A.length > 3) return err(ER.val);
+          const rg = asRange(A[0]); if (!rg) return err(ER.val);
+          const cr = ev(A[1]); if (isE(cr)) return cr;
+          const test = matcher(cr), cells = cellsOf(rg);
+          if (n.f === "COUNTIF") return cells.filter(nm => test(get(nm))).length;
+          const sr = A[2] ? asRange(A[2]) : rg; if (!sr) return err(ER.val);
+          let s = 0;
+          cells.forEach((nm, i) => {
+            if (!test(get(nm))) return;
+            const dr = Math.floor(i / (rg.c2 - rg.c1 + 1)), dc = i % (rg.c2 - rg.c1 + 1);
+            const v = get(colS(sr.c1 + dc) + (sr.r1 + dr));
+            if (typeof v === "number") s += v;
+          });
+          return s;
+        }
+        case "ROUND": {
+          if (A.length < 1 || A.length > 2) return err(ER.val);
+          const x = toNum(ev(A[0])); if (isE(x)) return x;
+          const d = A[1] ? toNum(ev(A[1])) : 0; if (isE(d)) return d;
+          const f = Math.pow(10, Math.trunc(d)), sg = x < 0 ? -1 : 1;
+          return sg * Math.round(Math.abs(x) * f + 1e-9) / f;
+        }
+      }
+      return err(ER.name);
+    }
+    function fmt(x){
+      if (!isFinite(x)) return ER.num;
+      const r = Math.round(x * 1e9) / 1e9;
+      return String(Object.is(r, -0) ? 0 : r).replace(".", ",");
+    }
+    function show(v){
+      if (isE(v)) return v.e;
+      if (v === null || v === undefined) return "";
+      if (typeof v === "boolean") return v ? "IGAZ" : "HAMIS";
+      if (typeof v === "number") return fmt(v);
+      return String(v);
+    }
+    function literal(s){ const x = String(s).trim().replace(",", "."); return /^-?\d+(\.\d+)?$/.test(x) ? Number(x) : String(s); }
+    function sheet(raw){
+      const R = Object.assign({}, raw || {}); let memo = {}, syn = {};
+      function val(name, stack){
+        if (name in memo) return memo[name];
+        const s = R[name];
+        if (s === null || s === undefined || s === "") return null;
+        const t = String(s);
+        if (t[0] !== "=") return literal(t);
+        if (stack.indexOf(name) >= 0) return err(ER.circ);
+        let v;
+        try { v = evaluate(parse(t), nm => val(nm, stack.concat(name))); delete syn[name]; }
+        catch (e){ if (e instanceof Syn){ v = err(ER.syn); syn[name] = e.syn; } else v = err(ER.val); }
+        memo[name] = v; return v;
+      }
+      return {
+        set(n, s){ R[n] = s; memo = {}; syn = {}; },
+        raw: n => R[n] == null ? "" : String(R[n]),
+        val: n => val(n, []), show: n => show(val(n, [])), syn: n => { val(n, []); return syn[n] || ""; },
+        data: () => Object.assign({}, R)
+      };
+    }
+    // egy képlet kiértékelése adott adatokon; { v } vagy { syn }
+    function run(f, data){
+      const sh = sheet(data);
+      try { return { v: evaluate(parse(f), nm => sh.val(nm)) }; }
+      catch (e){ return { syn: e instanceof Syn ? e.syn : "hibás képlet" }; }
+    }
+    // másolás: a $ nélküli oszlop dc-vel, a $ nélküli sor dr-rel tolódik (idézőjeles szövegben nem)
+    function shift(f, dr, dc){
+      return String(f).split('"').map((seg, i) => i % 2 ? seg : seg.replace(/(\$?)([A-Za-z]{1,2})(\$?)(\d+)/g, (m, d1, c, d2, r, off, all) => {
+        const prev = all[off - 1], nxt = all.slice(off + m.length);
+        if ((prev && reLet.test(prev)) || reAfterRef.test(nxt)) return m;
+        let cn = colN(c), rn = +r;
+        if (!d1) cn += dc; if (!d2) rn += dr;
+        if (cn < 1 || rn < 1) return "#HIV!";
+        return d1 + colS(cn) + d2 + rn;
+      })).join('"');
+    }
+    return { sheet, run, shift, show, fmt, parse, isE, colN, colS, ER };
+  })();
+  /*ENDENGINE*/
+
+  /* ---------- Segédek ---------- */
+  const artC = n => /^\$?[AEFILMNORSUX]/i.test(n) ? "az" : "a";
+  const ArtC = n => { const a = artC(n); return a[0].toUpperCase() + a.slice(1); };
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", "."); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const normF = s => String(s).replace(/\s+/g, "").replace(/,/g, ";").replace(/[“”„]/g, '"').toUpperCase();
+  const fx = s => '<div class="fx">' + esc(s) + "</div>";
+  // kis táblázat: a megadott adatok értékei; hl: kiemelt cellák, q: a kérdéses cella
+  function mini(data, o){
+    o = o || {};
+    const sh = SH.sheet(data), keys = Object.keys(data).concat(o.q ? [o.q] : []);
+    let mc = 1, mr = 1;
+    keys.forEach(k => { const m = /^([A-Z]+)(\d+)$/.exec(k); if (m){ mc = Math.max(mc, SH.colN(m[1])); mr = Math.max(mr, +m[2]); } });
+    let h = '<div class="ptwrap"><table class="mini"><tr><th></th>';
+    for (let c = 1; c <= mc; c++) h += "<th>" + SH.colS(c) + "</th>";
+    h += "</tr>";
+    for (let r = 1; r <= mr; r++){
+      h += "<tr><th>" + r + "</th>";
+      for (let c = 1; c <= mc; c++){
+        const nm = SH.colS(c) + r;
+        if (nm === o.q){ h += '<td class="q">?</td>'; continue; }
+        const v = sh.val(nm), cls = (typeof v === "number" ? "" : "t") + (o.hl && o.hl.indexOf(nm) >= 0 ? " hl" : "");
+        h += '<td class="' + cls + '">' + esc(o.formulas && String(data[nm] || "")[0] === "=" ? data[nm] : sh.show(nm)) + "</td>";
+      }
+      h += "</tr>";
+    }
+    return h + "</table></div>";
+  }
+  // a képletben szereplő cellák neve (tartományt kibontva)
+  function refsIn(f){
+    const out = [];
+    String(f).split('"').forEach((seg, i) => {
+      if (i % 2) return;
+      seg.replace(/(\$?)([A-Za-z]{1,2})(\$?)(\d+)(?::(\$?)([A-Za-z]{1,2})(\$?)(\d+))?/g, (m, a, c, b, r, x, c2, y, r2, off, all) => {
+        if (off && /[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(all[off - 1])) return m;
+        if (/^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű(]/.test(all.slice(off + m.length))) return m;
+        if (c2){ for (let rr = Math.min(+r, +r2); rr <= Math.max(+r, +r2); rr++) for (let cc = Math.min(SH.colN(c), SH.colN(c2)); cc <= Math.max(SH.colN(c), SH.colN(c2)); cc++) out.push(SH.colS(cc) + rr); }
+        else out.push(c.toUpperCase() + r);
+        return m;
+      });
+    });
+    return Array.from(new Set(out));
+  }
+  // behelyettesítés: a hivatkozások helyére az értékük, a tartomány helyére az értékek listája
+  function subst(f, data){
+    const sh = SH.sheet(data);
+    return String(f).split('"').map((seg, i) => i % 2 ? seg : seg
+      .replace(/\$?([A-Za-z]{1,2})\$?(\d+):\$?([A-Za-z]{1,2})\$?(\d+)/g, (m, c1, r1, c2, r2) => {
+        const vs = []; for (let r = Math.min(+r1, +r2); r <= Math.max(+r1, +r2); r++) for (let c = Math.min(SH.colN(c1), SH.colN(c2)); c <= Math.max(SH.colN(c1), SH.colN(c2)); c++){ const v = sh.val(SH.colS(c) + r); if (typeof v === "number") vs.push(SH.fmt(v)); }
+        return "[" + vs.join("; ") + "]"; })
+      .replace(/\$?([A-Za-z]{1,2})\$?(\d+)/g, (m, c, r, off, all) => {
+        if (off && /[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű]/.test(all[off - 1])) return m;
+        if (/^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű(]/.test(all.slice(off + m.length))) return m;
+        const v = sh.val(c.toUpperCase() + r); return typeof v === "string" ? '"' + v + '"' : SH.show(v === null ? 0 : v); })).join('"');
+  }
+  function evalFrames(f, data, title){
+    const res = SH.run(f, data), out = res.syn ? "hibás képlet" : SH.show(res.v), refs = refsIn(f);
+    return [
+      { cap: "A képlet: " + esc(f) + ". Először kikeressük a hivatkozott cellák értékét.", html: mini(data) + fx(f) },
+      { cap: "A hivatkozások helyére az értékük kerül" + (/:/.test(f) ? ", a tartomány helyére a benne lévő számok" : "") + ": " + esc(subst(f, data)) + ".", html: mini(data, { hl: refs }) + fx(subst(f, data)) },
+      { cap: "Kiszámoljuk a műveleti sorrend szerint: zárójel, hatvány, szorzás és osztás, végül összeadás és kivonás. Az eredmény: " + out + ".", html: mini(data, { hl: refs }) + fx(subst(f, data) + " → " + out) }
+    ];
+  }
+
+  /* ---------- Hero: mini-táblázatkezelő ---------- */
+  const START = { A1: "Termék", B1: "Ár (Ft)", C1: "Darab", D1: "Fizetendő", E1: "Kedvezmény",
+    A2: "Füzet", B2: "350", C2: "4", D2: "=B2*C2*(1-$E$2)", E2: "0,1",
+    A3: "Toll", B3: "290", C3: "6", A4: "Radír", B4: "120", C4: "3",
+    A5: "Összesen", C5: "=SZUM(C2:C4)", D5: "=SZUM(D2:D4)", A6: "Átlagár", B6: "=KEREKÍTÉS(ÁTLAG(B2:B4);0)" };
+  const NC = 6, NR = 6;
+  let hs = SH.sheet(START), sel = "D2", changed = [];
+  const EXPL = { "#ZÉRÓOSZTÓ!": "nullával (vagy üres cellával) osztasz", "#NÉV?": "ismeretlen név: elírt függvény, vagy idézőjel nélküli szöveg", "#HIV!": "nem létező cellára hivatkozol", "#ÉRTÉK!": "szöveggel próbálsz számolni, vagy rossz az argumentum", "#KÖR!": "körkörös hivatkozás: a képlet önmagára (vagy körben vissza) hivatkozik", "#HIBA!": "a képlet nyelvtanilag hibás", "#SZÁM!": "túl nagy szám" };
+  function drawGrid(){
+    let h = "<tr><th></th>";
+    for (let c = 1; c <= NC; c++) h += "<th>" + SH.colS(c) + "</th>";
+    h += "</tr>";
+    for (let r = 1; r <= NR; r++){
+      h += "<tr><th>" + r + "</th>";
+      for (let c = 1; c <= NC; c++){
+        const nm = SH.colS(c) + r, v = hs.val(nm), raw = hs.raw(nm);
+        const cls = [typeof v === "number" ? "n" : "", raw[0] === "=" ? "f" : "", SH.isE(v) ? "e" : "", nm === sel ? "sel" : "", changed.indexOf(nm) >= 0 ? "chg" : ""].join(" ");
+        h += '<td class="' + cls + '" data-c="' + nm + '" tabindex="0" aria-label="' + nm + '">' + esc(SH.show(v)) + "</td>";
+      }
+      h += "</tr>";
+    }
+    $("#grid").innerHTML = h;
+    $("#nm").textContent = sel; $("#fx").value = hs.raw(sel);
+    const m = /^([A-Z]+)(\d+)$/.exec(sel);
+    $("#fill").disabled = +m[2] >= NR; $("#fillr").disabled = SH.colN(m[1]) >= NC;
+  }
+  function info(extra){
+    const raw = hs.raw(sel), v = hs.val(sel), s = SH.show(v);
+    let h = "Cella: <b>" + sel + "</b> · tartalom: <b>" + (raw ? esc(raw) : "(üres)") + "</b>" + (raw[0] === "=" ? " · érték: <b>" + esc(s) + "</b>" : "");
+    if (SH.isE(v)) h += "<br>" + esc(s) + ": " + (EXPL[s] || "hiba") + (hs.syn(sel) ? " (" + esc(hs.syn(sel)) + ")" : "") + ".";
+    else if (raw[0] === "=") h += "<br>A hivatkozott cellák: " + refsIn(raw).map(n => n + " = " + esc(SH.show(hs.val(n)) || "üres")).join(", ") + ".";
+    $("#info").innerHTML = h + (extra ? "<br>" + extra : "") + (raw ? "" : "<br>Írj bele egy számot, egy szöveget, vagy egy = jellel kezdődő képletet, például =B3*C3.");
+  }
+  function select(nm){ sel = nm; changed = []; drawGrid(); info(); }
+  function put(){ hs.set(sel, $("#fx").value.trim()); changed = []; drawGrid(); info(); }
+  function fill(dr, dc){
+    const m = /^([A-Z]+)(\d+)$/.exec(sel), to = SH.colS(SH.colN(m[1]) + dc) + (+m[2] + dr), raw = hs.raw(sel);
+    const nw = raw[0] === "=" ? SH.shift(raw, dr, dc) : raw;
+    hs.set(to, nw); const from = sel; sel = to; changed = [from, to]; drawGrid();
+    info(raw[0] === "=" ? "Másolás: " + from + " → " + to + ". Előtte: <b>" + esc(raw) + "</b>, utána: <b>" + esc(nw) + "</b>. A $ nélküli " + (dr ? "sorszámok eggyel nőttek" : "oszlopbetűk eggyel jobbra léptek") + ", a $ jellel rögzített rész nem változott." : "Másolás: " + from + " → " + to + ". Nem képlet, ezért változatlanul másolódott.");
+  }
+  $("#grid").addEventListener("click", e => { const td = e.target.closest("td[data-c]"); if (td) select(td.dataset.c); });
+  $("#grid").addEventListener("keydown", e => { const td = e.target.closest("td[data-c]"); if (td && e.key === "Enter"){ select(td.dataset.c); $("#fx").focus(); } });
+  $("#fx").addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); put(); } });
+  $("#put").addEventListener("click", put);
+  $("#fill").addEventListener("click", () => fill(1, 0));
+  $("#fillr").addEventListener("click", () => fill(0, 1));
+  $("#reset").addEventListener("click", () => { hs = SH.sheet(START); select("D2"); });
+  drawGrid(); info("Próbáld ki: maradj a D2 cellán, és nyomd meg kétszer a „Kitöltés lefelé” gombot.");
+
+  /* ---------- Levezetések ---------- */
+  const DEMO = { A1: "Termék", B1: "Ár", C1: "Db", D1: "Fizetendő", E1: "Kedv.", A2: "Füzet", B2: "350", C2: "4", E2: "0,1", A3: "Toll", B3: "290", C3: "6", A4: "Radír", B4: "120", C4: "3" };
+  function kiertFrames(){
+    const d = Object.assign({}, DEMO), hl = ["B2", "C2", "E2"];
+    return [
+      { cap: "A D2 cellába ezt írjuk: =B2*C2*(1-$E$2). A füzet ára szorozva a darabszámmal, és levonjuk a 10 százalék kedvezményt.", html: mini(d, { q: "D2" }) + fx("=B2*C2*(1-$E$2)") },
+      { cap: "Először kikeressük a hivatkozott cellákat: B2 = 350, C2 = 4, E2 = 0,1.", html: mini(d, { q: "D2", hl }) + fx("=B2*C2*(1-$E$2)") },
+      { cap: "Behelyettesítve: 350 · 4 · (1 − 0,1).", html: mini(d, { q: "D2", hl }) + fx("=350*4*(1-0,1)") },
+      { cap: "A zárójel az első: 1 − 0,1 = 0,9.", html: mini(d, { q: "D2", hl }) + fx("=350*4*0,9") },
+      { cap: "Aztán balról jobbra a szorzások: 350 · 4 = 1400, és 1400 · 0,9 = 1260.", html: mini(d, { q: "D2", hl }) + fx("=1400*0,9 → 1260") },
+      { cap: "A D2 cellában 1260 jelenik meg. Ha átírod az árat vagy a darabszámot, a képlet magától újraszámol.", html: mini(Object.assign(d, { D2: "=B2*C2*(1-$E$2)" }), { hl: ["D2"] }) + fx("=B2*C2*(1-$E$2) → 1260") }
+    ];
+  }
+  function masolFrames(){
+    const d = Object.assign({}, DEMO, { D2: "=B2*C2*(1-$E$2)" }), F = [];
+    F.push({ cap: "A D2 cellában ez a képlet áll: =B2*C2*(1-$E$2). Lefelé másoljuk a D3 és a D4 cellába (kitöltés).", html: mini(d, { formulas: true, hl: ["D2"] }) });
+    F.push({ cap: "A relatív hivatkozás (B2, C2) azt jegyzi meg, hogy hol van a képlethez képest: ugyanabban a sorban, kettővel és eggyel balra. Lefelé másolva ezért a sorszám nő.", html: mini(d, { formulas: true, hl: ["B2", "C2"] }) });
+    d.D3 = SH.shift(d.D2, 1, 0);
+    F.push({ cap: "A D3 cellában: =B3*C3*(1-$E$2). A B2 és C2 helyett B3 és C3 lett, a $E$2 nem változott: a dollárjel rögzíti.", html: mini(d, { formulas: true, hl: ["D3"] }) + fx("=B2*C2*(1-$E$2) → =B3*C3*(1-$E$2)") });
+    d.D4 = SH.shift(d.D2, 2, 0);
+    F.push({ cap: "A D4 cellában: =B4*C4*(1-$E$2). Ha a $ jel hiányozna, itt E4 állna, ami üres, és a kedvezmény elveszne.", html: mini(d, { formulas: true, hl: ["D4"] }) + fx("=B2*C2*(1-$E$2) → =B4*C4*(1-$E$2)") });
+    F.push({ cap: "Az értékek: 1260, 1566 és 324. Egy képletet írtunk, a többit a másolás csinálta.", html: mini(d, { hl: ["D2", "D3", "D4"] }) });
+    return F;
+  }
+  function haFrames(){
+    const d = { A1: "Név", B1: "Pont", C1: "Eredmény", A2: "Anna", B2: "72", A3: "Bence", B3: "48", A4: "Csilla", B4: "50", A5: "Dani", B5: "31" }, F = [];
+    const f = r => '=HA(B' + r + '>=50;"megfelelt";"nem felelt meg")';
+    F.push({ cap: "A dolgozat 50 ponttól sikeres. A C2 cellába ez kerül: =HA(B2>=50; \"megfelelt\"; \"nem felelt meg\"). Három része van: a feltétel, az érték, ha igaz, és az érték, ha hamis.", html: mini(d) + fx(f(2)) });
+    [2, 3, 4, 5].forEach(r => {
+      const p = +d["B" + r], ok = p >= 50; d["C" + r] = f(r);
+      F.push({ cap: "Sor: " + r + ". Pontszám: " + p + ". A feltétel: " + p + " ≥ 50? " + (ok ? "Igaz" : "Hamis") + ", ezért az eredmény: " + (ok ? "megfelelt" : "nem felelt meg") + "." + (p === 50 ? " Figyeld meg: a ≥ jel miatt az 50 még éppen jó." : ""), html: mini(d, { hl: ["B" + r, "C" + r] }) + fx(f(r)) });
+    });
+    F.push({ cap: "Egy képletet írtunk a C2 cellába, és lemásoltuk. A szöveget mindig idézőjelbe tesszük, különben #NÉV? hibát kapunk.", html: mini(d, { hl: ["C2", "C3", "C4", "C5"] }) });
+    return F;
+  }
+  const MET = { kiert: "Egy képlet kiszámolása", masol: "Másolás és hivatkozások", ha: "A HA függvény" };
+  const MF = { kiert: kiertFrames, masol: masolFrames, ha: haFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "kiert" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Cella, oszlop, sor, tartomány", h:
+      "<p>A táblázat <b>cellákból</b> áll. Az oszlopokat betűk (A, B, C…), a sorokat számok (1, 2, 3…) jelölik. A cella neve a kettő együtt: <b>B3</b> a B oszlop 3. sora. Ez a <b>cellahivatkozás</b>.</p>" +
+      "<p>A <b>tartomány</b> egy téglalap alakú cellacsoport: <b>B2:B6</b> a B oszlop 2–6. sora, <b>A1:C4</b> egy 3 × 4-es téglalap (12 cella).</p>" +
+      "<div class='note'><b>Hasonlat:</b> olyan, mint a torpedó játék: „B3” megmondja, melyik mezőről beszélünk.</div>" },
+    { k: "Képlet", t: "A képlet = jellel kezdődik", h:
+      "<p>Ha a cella tartalma <b>=</b> jellel kezdődik, az <b>képlet</b>: a program kiszámolja, és az eredményt mutatja. A képletben számok helyett <b>hivatkozásokat</b> használunk, így ha az adat változik, az eredmény magától frissül.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Művelet</th><th>Példa</th></tr><tr><td>+ −</td><td>összeadás, kivonás</td><td>=B2+C2</td></tr><tr><td>* /</td><td>szorzás, osztás</td><td>=B2*C2</td></tr><tr><td>^</td><td>hatványozás</td><td>=A1^2</td></tr><tr><td>%</td><td>százalék</td><td>=B2*20%</td></tr><tr><td>&amp;</td><td>szövegek összefűzése</td><td>=A2&amp;\" \"&amp;B2</td></tr></table></div>" +
+      "<p>Műveleti sorrend, mint a matekban: zárójel → hatvány → szorzás, osztás → összeadás, kivonás. =2+3*4 eredménye 14, nem 20.</p>" + playBtn("kiert"), init: playInit },
+    { k: "Függvények", t: "A leggyakoribb függvények", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Magyar</th><th>Angol</th><th>Mit ad?</th></tr><tr><td>SZUM</td><td>SUM</td><td style='text-align:left'>összeg</td></tr><tr><td>ÁTLAG</td><td>AVERAGE</td><td style='text-align:left'>átlag</td></tr><tr><td>MIN, MAX</td><td>MIN, MAX</td><td style='text-align:left'>legkisebb, legnagyobb</td></tr><tr><td>DARAB</td><td>COUNT</td><td style='text-align:left'>hány cellában van szám</td></tr><tr><td>KEREKÍTÉS</td><td>ROUND</td><td style='text-align:left'>kerekítés adott tizedesre</td></tr></table></div>" +
+      "<p class='eq'>=SZUM(B2:B6) &nbsp;·&nbsp; =ÁTLAG(B2:B6) &nbsp;·&nbsp; =KEREKÍTÉS(ÁTLAG(B2:B6);1)</p>" +
+      "<div class='note'><b>Elválasztó:</b> a magyar Excel pontosvesszőt használ a függvény argumentumai között (=KEREKÍTÉS(B2;1)), mert a vessző a tizedesjel. Az angol Excel és sokszor a Google Táblázatok vesszőt: =ROUND(B2,1).</div>" },
+    { k: "Másolás", t: "Relatív hivatkozás: másoláskor elmozdul", h:
+      "<p>Ha egy képletet lemásolsz (vagy a cella jobb alsó sarkát lehúzod: <b>kitöltés</b>), a hivatkozások <b>ugyanannyit mozdulnak</b>, amennyit a képlet. Ez a <b>relatív</b> hivatkozás.</p>" +
+      "<ul><li>D2: =B2*C2 → egy sorral lejjebb, D3: =B3*C3</li><li>B7: =SZUM(B2:B6) → egy oszloppal jobbra, C7: =SZUM(C2:C6)</li></ul>" +
+      "<p>Ezért elég egyszer megírni a képletet, és lehúzni az egész oszlopra. Próbáld ki fent a „Kitöltés lefelé” gombbal!</p>" + playBtn("masol"), init: playInit },
+    { k: "Dollárjel", t: "Abszolút és vegyes hivatkozás", h:
+      "<p>A <b>$</b> jel rögzíti azt, ami mögötte áll: másoláskor az nem változik.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Hivatkozás</th><th>Neve</th><th>Másoláskor</th></tr><tr><td>B2</td><td>relatív</td><td style='text-align:left'>oszlop és sor is mozog</td></tr><tr><td>$B$2</td><td>abszolút</td><td style='text-align:left'>semmi sem mozog</td></tr><tr><td>$B2</td><td>vegyes</td><td style='text-align:left'>az oszlop áll, a sor mozog</td></tr><tr><td>B$2</td><td>vegyes</td><td style='text-align:left'>a sor áll, az oszlop mozog</td></tr></table></div>" +
+      "<p>Mikor kell? Ha minden sor ugyanarra az egy cellára hivatkozik: árfolyam, ÁFA-kulcs, kedvezmény, összesen. Például =B2/$B$7 (a rész az egészhez képest).</p>" +
+      "<p>Szorzótábla egyetlen képlettel: B2-be =$A2*B$1, aztán jobbra és lefelé kitöltöd. Excelben az <b>F4</b> billentyű váltogatja a $ jeleket.</p>" },
+    { k: "Döntés", t: "A HA függvény", h:
+      "<p class='eq'>=HA(feltétel; érték, ha igaz; érték, ha hamis)</p>" +
+      "<p>Példa: =HA(B2>=50;\"megfelelt\";\"nem felelt meg\"). Angolul: =IF(B2>=50,\"passed\",\"failed\").</p>" +
+      "<p>Összehasonlító jelek: <code>=</code> egyenlő, <code>&lt;&gt;</code> nem egyenlő, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.</p>" +
+      "<p><b>Egymásba ágyazva</b> több lehetőség is lehet: =HA(B2>=85;5;HA(B2>=70;4;HA(B2>=50;3;HA(B2>=35;2;1)))) pontszámból jegyet ad.</p>" +
+      "<div class='mistake'>A szöveget <b>idézőjelbe</b> tedd! =HA(B2>=50;megfelelt;nem) hibás: #NÉV?</div>" + playBtn("ha"), init: playInit },
+    { k: "Feltételes", t: "DARABTELI és SZUMHA", h:
+      "<ul><li><b>DARABTELI</b> (COUNTIF): megszámolja, hány cella felel meg a feltételnek. =DARABTELI(C2:C30;5) → hány ötös van. =DARABTELI(B2:B30;\">=50\") → hányan értek el legalább 50 pontot.</li>" +
+      "<li><b>SZUMHA</b> (SUMIF): csak azokat a számokat adja össze, amelyeknél a feltétel teljesül. =SZUMHA(A2:A20;\"alma\";B2:B20) → az almaeladások összege.</li></ul>" +
+      "<p>A feltétel idézőjelben van, ha összehasonlító jel is tartozik hozzá: \">=50\", \"&lt;&gt;0\".</p>" },
+    { k: "Százalék", t: "Százalékszámítás táblázatban", h:
+      "<ul><li>Hány százalék? rész : egész. =B2/B7, és a cella formátuma <b>százalék</b> (0,25 → 25%).</li><li>A 30 százaléka: =B2*30% vagy =B2*0,3.</li><li>Növelés 27%-kal (ÁFA): =B2*(1+27%) vagy =B2*1,27.</li><li>Csökkentés 10%-kal: =B2*(1-10%) vagy =B2*0,9.</li></ul>" +
+      "<div class='note'><b>A formátum nem változtat az értéken.</b> A 0,25 és a 25% ugyanaz a szám, csak másképp mutatjuk. Ugyanígy a kerekített formátum csak megjeleníti a kevesebb tizedest; a KEREKÍTÉS függvény ténylegesen kerekít.</div>" },
+    { k: "Adatok", t: "Rendezés, szűrés, diagram", h:
+      "<ul><li><b>Rendezés</b>: az egész táblázatot jelöld ki (fejléccel), különben a sorok szétcsúsznak: a nevek mellé más pontszám kerül.</li><li><b>Szűrés</b>: csak a feltételnek megfelelő sorok látszanak (például csak a 9.B). A többi nincs törölve, csak el van rejtve.</li></ul>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Diagram</th><th>Mire jó?</th></tr><tr><td>oszlop</td><td style='text-align:left'>összehasonlítás (melyik osztály gyűjtött többet)</td></tr><tr><td>kör</td><td style='text-align:left'>egy egész részei (a zsebpénz mire megy el)</td></tr><tr><td>vonal</td><td style='text-align:left'>változás az időben (hőmérséklet hónaponként)</td></tr><tr><td>pont (XY)</td><td style='text-align:left'>két mennyiség kapcsolata (tanulási idő és pontszám)</td></tr></table></div>" },
+    { k: "Hibaüzenetek", t: "Mit jelent a # jel?", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Magyarul</th><th>Angolul</th><th>Oka</th></tr><tr><td>#ZÉRÓOSZTÓ!</td><td>#DIV/0!</td><td style='text-align:left'>nullával vagy üres cellával osztasz</td></tr><tr><td>#NÉV?</td><td>#NAME?</td><td style='text-align:left'>elírt függvénynév, vagy idézőjel nélküli szöveg</td></tr><tr><td>#HIV!</td><td>#REF!</td><td style='text-align:left'>a hivatkozott cella nem létezik (törölted, vagy kicsúszott a táblából)</td></tr><tr><td>#ÉRTÉK!</td><td>#VALUE!</td><td style='text-align:left'>szöveggel számolsz, rossz az argumentum</td></tr><tr><td>####</td><td>####</td><td style='text-align:left'>nem hiba: keskeny az oszlop, szélesítsd</td></tr></table></div>" +
+      "<p><b>Körkörös hivatkozás</b>: ha a képlet önmagára hivatkozik (például A5-ben =SZUM(A1:A5)), a program figyelmeztet. A fenti táblázatban ezt #KÖR! jelzi.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Kimarad az = jel.</b> B2*C2 csak szöveg, nem számol semmit.</div>" +
+      "<div class='mistake'><b>Számot írsz a hivatkozás helyett.</b> =350*4 most jó, de ha az ár változik, nem frissül. Írd így: =B2*C2.</div>" +
+      "<div class='mistake'><b>Hiányzó $ jel.</b> A kedvezmény cellája lefelé másolva elcsúszik (E2 → E3 → E4), és üres cellával számol.</div>" +
+      "<div class='mistake'><b>Rossz műveleti sorrend.</b> =B2+C2/2 nem a kettő átlaga: =(B2+C2)/2 vagy =ÁTLAG(B2:C2).</div>" +
+      "<div class='mistake'><b>Rendezés csak egy oszlopra.</b> A nevek és a pontszámok elválnak egymástól.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Kitöltés</span><span>A cella jobb alsó sarkát húzd le, vagy kattints rá duplán: az egész oszlop megkapja a képletet.</span></div>" +
+      "<div class='trick'><span class='t'>F4</span><span>Képlet írása közben az F4 körbe váltja: B2 → $B$2 → B$2 → $B2.</span></div>" +
+      "<div class='trick'><span class='t'>Gyors összeg</span><span>Jelöld ki a számokat, és nézd meg az ablak alján: összeg, átlag, darabszám, képlet nélkül.</span></div>" +
+      "<div class='trick'><span class='t'>Képlet ellenőrzése</span><span>Kattints a cellára, és nézd a szerkesztőlécet: a hivatkozott cellák színes kerettel látszanak.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const hu = (h, e) => Math.random() < 0.75 ? h : e;               // többnyire magyar, néha angol függvénynév
+  const grid3 = (lo, hi) => { const d = {}; ["A", "B", "C"].forEach(c => { for (let r = 1; r <= 4; r++) d[c + r] = String(rnd(lo, hi)); }); return d; };
+  const r2 = x => Math.round(x * 100) / 100;
+  const types = [
+    { id: "ertek", name: "Mennyi az értéke?", gen(l){
+      const d = grid3(1, l === 1 ? 20 : 30);
+      let f;
+      if (l === 1) f = pick(["=A1+B1", "=A2*B3", "=C1-A4", "=A1+B2*2", "=(A1+B2)*2", "=C3*C4-A1", "=B1+B2+B3", "=A4*2-C2"]);
+      else if (l === 2){ f = pick(["=" + hu("SZUM", "SUM") + "(A1:A4)", "=" + hu("ÁTLAG", "AVERAGE") + "(B1:B4)", "=MAX(A1:C1)", "=MIN(A1:C4)", "=" + hu("DARAB", "COUNT") + "(A1:C4)", "=" + hu("SZUM", "SUM") + "(A1:B2)"]);
+        if (/DARAB|COUNT/.test(f)){ d[pick(["A2", "B3", "C1"])] = pick(["nincs", "hiányzik", "x"]); delete d[pick(["A4", "C3", "B1"])]; } }
+      else f = pick(["=" + hu("KEREKÍTÉS", "ROUND") + "(" + hu("ÁTLAG", "AVERAGE") + "(A1:C1);1)", '=' + hu("DARABTELI", "COUNTIF") + '(A1:C4;">15")', '=' + hu("SZUMHA", "SUMIF") + '(A1:A4;">=10";B1:B4)', "=A1^2-B1*(C1-2)", "=" + hu("SZUM", "SUM") + "(A1:B2)/" + hu("DARAB", "COUNT") + "(A1:B2)", "=MAX(A1:A4)-MIN(A1:A4)", "=10%*" + hu("SZUM", "SUM") + "(C1:C4)"]);
+      // angol függvénynévvel az angol elválasztó (vessző) jár
+      if (/\b(SUM|AVERAGE|COUNT|COUNTIF|SUMIF|ROUND)\(/.test(f)) f = f.replace(/;/g, ",");
+      const v = SH.run(f, d).v, val = typeof v === "number" ? v : NaN, ans = SH.fmt(r2(val));
+      return { q: "Mi jelenik meg a cellában, ha ezt a képletet írod bele? <div class='fx'>" + esc(f) + "</div>" + mini(d) + "<span class='hint'>Ha nem egész, két tizedesre kerekítve írd.</span>", kind: "input", mode: "decimal", answer: ans,
+        frames: evalFrames(f, d), title: "Egy képlet kiszámolása",
+        sol: "<p>A hivatkozott cellák: " + refsIn(f).map(n => n + " = " + (SH.sheet(d).show(n) || "üres")).join(", ") + ".</p><p>Behelyettesítve: <code>" + esc(subst(f, d)) + "</code> → " + SH.fmt(r2(val)) + ".</p>" +
+          (/DARAB|COUNT/.test(f) && !/SZUM|SUM/.test(f) ? "<p>A DARAB csak a számot tartalmazó cellákat számolja, a szöveget és az üreset nem.</p>" : ""),
+        check: x => { const y = num(x); if (isNaN(y)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(y - val) <= 0.0051) return { ok: true, msg: "Helyes!" };
+          if (f === "=A1+B2*2" && Math.abs(y - (+d.A1 + +d.B2) * 2) < 1e-9) return { ok: false, msg: "A szorzás előbb jön, mint az összeadás." };
+          return { ok: false, msg: "Nem jó. Keresd ki a cellák értékét, helyettesítsd be, és számolj a műveleti sorrend szerint." }; } };
+    } },
+    { id: "masol", name: "Másolás után", gen(l){
+      let src, from, dr = 0, dc = 0;
+      if (l === 1){
+        if (Math.random() < 0.6){ from = "D2"; src = pick(["=B2*C2", "=B2+C2", "=C2-B2", "=" + hu("SZUM", "SUM") + "(A2:C2)", "=B2/C2"]); dr = rnd(1, 6); }
+        else { from = "B7"; src = pick(["=" + hu("SZUM", "SUM") + "(B2:B6)", "=" + hu("ÁTLAG", "AVERAGE") + "(B2:B6)", "=MAX(B2:B6)"]); dc = rnd(1, 4); }
+      } else if (l === 2){
+        if (Math.random() < 0.6){ from = "D2"; src = pick(["=B2*$E$1", "=C2/$F$1", "=B2*(1+$E$2)", "=B2/$B$7", "=$G$1-C2"]); dr = rnd(1, 6); }
+        else { from = "B8"; src = pick(["=" + hu("SZUM", "SUM") + "(B2:B6)*$H$1", "=B7/$B$9", "=B6-$A$6"]); dc = rnd(1, 4); }
+      } else {
+        from = pick(["B2", "C3"]); src = from === "B2" ? pick(["=$A2*B$1", "=A$1+$B2", "=$A$1*B2+C$1", "=$A2^B$1"]) : pick(["=$B3*C$2", "=B$1-$A3", "=$A$1+B3*C$2"]);
+        do { dr = rnd(0, 4); dc = rnd(0, 4); } while (!dr && !dc);
+      }
+      const m = /^([A-Z]+)(\d+)$/.exec(from), to = SH.colS(SH.colN(m[1]) + dc) + (+m[2] + dr), ans = SH.shift(src, dr, dc);
+      const dir = (dr ? dr + " sorral lejjebb" : "") + (dr && dc ? " és " : "") + (dc ? dc + " oszloppal jobbra" : "");
+      return { q: ArtC(from) + " " + from + " cellában ez a képlet áll: <div class='fx'>" + esc(src) + "</div>Átmásolod " + artC(to) + " " + to + " cellába (" + dir + "). Mi lesz ott a képlet?", kind: "input", ph: "=…", answer: ans,
+        sol: "<p>Elmozdulás: " + dir + ". A $ nélküli sorszámokhoz hozzáadunk ennyit: " + dr + ", a $ nélküli oszlopbetűket ennyivel léptetjük jobbra: " + dc + ". Ami előtt $ áll, az nem változik.</p><p><code>" + esc(src) + "</code> → <code>" + esc(ans) + "</code></p>",
+        check: v => { const s = normF(v); if (s[0] !== "=") return { ok: false, msg: "A képlet = jellel kezdődik." }; if (s === normF(ans)) return { ok: true, msg: "Helyes!" };
+          if (s === normF(src)) return { ok: false, msg: "Másoláskor a relatív hivatkozások elmozdulnak, nem maradnak ugyanazok." };
+          if (/\$/.test(src) && s === normF(SH.shift(src.replace(/\$/g, ""), dr, dc))) return { ok: false, msg: "A $ jellel rögzített részt nem szabad elmozdítani." };
+          return { ok: false, msg: "Nem jó. Minden $ nélküli sorszám és oszlopbetű ugyanannyit mozdul, amennyit a képlet; a $ mögötti rész áll." }; } };
+    } },
+    { id: "irj", name: "Írd meg a képletet", gen(l){
+      const pts = () => String(rnd(0, 100)), price = () => String(rnd(1, 40) * 10), fr = ["alma", "körte", "szilva"];
+      const T = [
+        [1, "E2", "összeadja a B2 és a C2 cella értékét.", "=B2+C2", () => ({ B1: "1. dolgozat", C1: "2. dolgozat", B2: pts(), C2: pts() })],
+        [1, "D2", "kiszámolja a fizetendő összeget: az ár (B2) szorozva a darabszámmal (C2).", "=B2*C2", () => ({ B1: "Ár", C1: "Darab", B2: price(), C2: String(rnd(1, 9)) })],
+        [1, "B7", "összeadja a B2:B6 tartomány számait.", "=SZUM(B2:B6)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [1, "D2", "kiszámolja a különbséget: C2 mínusz B2.", "=C2-B2", () => ({ B1: "Tavaly", C1: "Idén", B2: pts(), C2: pts() })],
+        [2, "B7", "kiszámolja a B2:B6 tartomány átlagát.", "=ÁTLAG(B2:B6)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [2, "B7", "megadja a legnagyobb pontszámot a B2:B6 tartományból.", "=MAX(B2:B6)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [2, "B7", "megadja a legkisebb pontszámot a B2:B6 tartományból.", "=MIN(B2:B6)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [2, "B7", "megszámolja, hány cellában van szám a B2:B6 tartományban (aki hiányzott, annál szöveg áll).", "=DARAB(B2:B6)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = Math.random() < 0.3 ? "hiányzott" : pts(); return d; }],
+        [2, "D2", "kiszámolja a kedvezményt forintban: az ár (B2) és a kedvezmény százaléka (C2, például 20) alapján.", "=B2*C2/100", () => ({ B1: "Ár", C1: "Kedv. %", B2: price(), C2: String(pick([5, 10, 15, 20, 25, 50])) })],
+        [3, "C2", "kiírja, hogy „megfelelt”, ha a pontszám (B2) legalább 50, különben azt, hogy „nem felelt meg”.", '=HA(B2>=50;"megfelelt";"nem felelt meg")', () => ({ B1: "Pont", B2: String(pick([rnd(0, 100), 50, 49])) })],
+        [3, "B7", "megszámolja, hányan értek el legalább 50 pontot a B2:B6 tartományban.", '=DARABTELI(B2:B6;">=50")', () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [3, "B8", "összeadja az alma eladásait: az A2:A6 tartományban a gyümölcs neve, a B2:B6 tartományban a mennyiség.", '=SZUMHA(A2:A6;"alma";B2:B6)', () => { const d = { A1: "Gyümölcs", B1: "kg" }; for (let r = 2; r <= 6; r++){ d["A" + r] = pick(fr); d["B" + r] = String(rnd(1, 30)); } return d; }],
+        [3, "B7", "kiszámolja a B2:B6 tartomány átlagát egy tizedesre kerekítve.", "=KEREKÍTÉS(ÁTLAG(B2:B6);1)", () => { const d = { B1: "Pont" }; for (let r = 2; r <= 6; r++) d["B" + r] = pts(); return d; }],
+        [3, "C2", "kiszámolja a bruttó árat: a nettó ár (B2) megnövelve az E1 cellában lévő ÁFA-kulccsal (0,27). Úgy írd, hogy lefelé másolva is jó legyen!", "=B2*(1+$E$1)", () => ({ B1: "Nettó", C1: "Bruttó", D1: "ÁFA:", E1: "0,27", B2: price() })]
+      ].filter(t => t[0] === l);
+      const t = pick(T), sets = [t[4](), t[4](), t[4]()];
+      const res = (f, d) => SH.run(f, d), same = (a, b) => a.v !== undefined && b.v !== undefined && (typeof a.v === "number" && typeof b.v === "number" ? Math.abs(a.v - b.v) < 1e-9 : SH.show(a.v).toLowerCase() === SH.show(b.v).toLowerCase());
+      return { q: "Írj képletet " + artC(t[1]) + " " + t[1] + " cellába, amely " + t[2] + mini(sets[0], { q: t[1] }), kind: "input", ph: "=…", answer: t[3],
+        sol: "<p>Egy lehetséges képlet: <code>" + esc(t[3]) + "</code>. Angolul: <code>" + esc(t[3].replace(/SZUMHA/g, "SUMIF").replace(/SZUM/g, "SUM").replace(/ÁTLAG/g, "AVERAGE").replace(/DARABTELI/g, "COUNTIF").replace(/DARAB/g, "COUNT").replace(/KEREKÍTÉS/g, "ROUND").replace(/HA\(/g, "IF(").replace(/;/g, ",")) + "</code>.</p>",
+        check: v => {
+          const s = String(v).trim();
+          if (!s) return { ok: false, msg: "Írj be egy képletet." };
+          if (s[0] !== "=") return { ok: false, msg: "A képlet = jellel kezdődik." };
+          const p = res(s, sets[0]); if (p.syn) return { ok: false, msg: "A képlet hibás: " + p.syn + "." };
+          if (t[3].indexOf("$E$1") >= 0 && !/\$E\$1/i.test(s) && /E1/i.test(s)) return { ok: false, msg: "Most jó lenne, de lefelé másolva elcsúszik: az E1 cellát $ jellel rögzítsd." };
+          for (const d of sets){ const a = res(s, d), b = res(t[3], d); if (!same(a, b)) {
+            if (!/[A-Za-z]{1,2}\d/.test(s)) return { ok: false, msg: "Hivatkozással dolgozz (például B2), ne a számokat írd be!" };
+            return { ok: false, msg: "Nem jó. Ezekkel az adatokkal ez jönne ki: " + SH.show(a.v) + ", de ennek kellene: " + SH.show(b.v) + "." }; } }
+          return { ok: true, msg: "Helyes! Több adatsoron is kipróbáltam a képletedet." };
+        } };
+    } },
+    { id: "fuggv", name: "Melyik függvény?", gen(l){
+      const P = [
+        [1, "Összeadja a megadott cellák számait.", "SZUM (SUM)"], [1, "Kiszámolja a számok átlagát.", "ÁTLAG (AVERAGE)"], [1, "A legkisebb számot adja a tartományból.", "MIN"],
+        [1, "A legnagyobb számot adja a tartományból.", "MAX"], [1, "Megszámolja, hány cellában van szám.", "DARAB (COUNT)"],
+        [2, "Feltételtől függően az egyik vagy a másik értéket adja (például „megfelelt” vagy „nem felelt meg”).", "HA (IF)"], [2, "Adott számú tizedesjegyre kerekít.", "KEREKÍTÉS (ROUND)"],
+        [2, "Mennyi volt a hónap legmelegebb napjának hőmérséklete?", "MAX"], [2, "Mennyi pénzt gyűjtött össze az osztály összesen?", "SZUM (SUM)"],
+        [3, "Megszámolja, hány cella felel meg egy feltételnek (például hány ötös jegy van).", "DARABTELI (COUNTIF)"], [3, "Csak azoknak a soroknak a számait adja össze, ahol a feltétel teljesül (például csak az alma eladásai).", "SZUMHA (SUMIF)"],
+        [3, "Az átlagot egy tizedesjegyre szeretnéd kerekíteni.", "KEREKÍTÉS (ROUND)"],[3, "Hányan kaptak legalább 4-est?", "DARABTELI (COUNTIF)"], [3, "Mennyi a 9.B osztály tanulóinak összes pontja egy közös táblázatban?", "SZUMHA (SUMIF)"]
+      ];
+      const own = P.filter(x => x[0] === l), q = pick(own), labels = Array.from(new Set(P.filter(x => x[0] <= Math.max(l, 2)).map(x => x[2]))).filter(x => x !== q[2]);
+      return choice("Melyik függvény kell ehhez? " + q[1], q[2], shuffle(labels).slice(0, 3), "<p>" + q[1] + " → <b>" + q[2] + "</b>. Nézd meg a puskát.</p>", "Nem ez. A helyes: " + q[2] + ".");
+    } },
+    { id: "ha", name: "HA függvény", gen(l){
+      let d, f;
+      if (l === 1){
+        const th = pick([40, 50, 60]), op = pick([">=", ">", "<"]), tx = pick([["megfelelt", "nem felelt meg"], ["igen", "nem"], ["jó", "gyenge"]]);
+        d = { B1: "Pont", B2: String(pick([th, th - 1, th + 1, rnd(0, 100)])) };
+        f = "=HA(B2" + op + th + ';"' + tx[0] + '";"' + tx[1] + '")';
+      } else if (l === 2){
+        const k = rnd(0, 2);
+        if (k === 0){ d = { B1: "Ár", B2: String(pick([rnd(5, 20) * 10, 100, 110])) }; f = "=HA(B2>100;B2*0,9;B2)"; }
+        else if (k === 1){ const a = rnd(1, 9); d = { B1: "Tipp", C1: "Eredmény", B2: String(a), C2: String(pick([a, rnd(1, 9)])) }; f = '=HA(B2<>C2;"eltér";"egyezik")'; }
+        else { d = { B1: "1. félév", C1: "2. félév", B2: String(rnd(10, 60)), C2: String(rnd(10, 60)) }; f = '=HA(B2+C2>=80;"elég";"kevés")'; }
+      } else {
+        if (Math.random() < 0.6){ d = { B1: "Pont", B2: String(pick([rnd(0, 100), 85, 84, 70, 69, 50, 49, 35, 34])) }; f = "=HA(B2>=85;5;HA(B2>=70;4;HA(B2>=50;3;HA(B2>=35;2;1))))"; }
+        else { d = { A1: "Gyümölcs", B1: "kg", A2: pick(["alma", "körte", "Alma"]), B2: String(rnd(1, 20)) }; f = '=HA(A2="alma";B2*2;B2)'; }
+      }
+      const v = SH.run(f, d).v, ans = SH.show(v), isNum = typeof v === "number";
+      const cond = /HA\(([^;]+);/.exec(f)[1];
+      const cv = SH.run("=" + cond, d).v;
+      return { q: "Mi jelenik meg a cellában? <div class='fx'>" + esc(f) + "</div>" + mini(d), kind: "input", mode: isNum ? "decimal" : "text", answer: ans, frames: evalFrames(f, d), title: "A HA függvény",
+        sol: "<p>A (legkülső) feltétel: <code>" + esc(cond) + "</code> → behelyettesítve <code>" + esc(subst("=" + cond, d).slice(1)) + "</code>, ez " + (cv ? "igaz" : "hamis") + ", ezért " + (cv ? "a második" : "a harmadik") + " rész számít." + (/HA\(.*HA\(/.test(f) && !cv ? " Ez egy újabb HA: ugyanígy folytasd." : "") + " Eredmény: " + esc(ans) + ".</p>" + (/="alma"/.test(f) ? "<p>A szöveg-összehasonlítás nem érzékeny a kis- és nagybetűre: „Alma” = „alma”.</p>" : ""),
+        check: x => { const s = String(x).trim().replace(/^["„”']+|["„”']+$/g, "");
+          if (isNum){ const y = num(s); return !isNaN(y) && Math.abs(y - v) < 1e-9 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Döntsd el, igaz-e a feltétel, és aszerint számolj a második vagy a harmadik résszel." }; }
+          return s.toLowerCase() === ans.toLowerCase() ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Ha a feltétel igaz, a második rész jelenik meg, ha hamis, a harmadik." }; } };
+    } },
+    { id: "hiba", name: "Hibaüzenetek", gen(l){
+      const C = { div: "#ZÉRÓOSZTÓ! (#DIV/0!)", name: "#NÉV? (#NAME?)", ref: "#HIV! (#REF!)", wide: "####", val: "#ÉRTÉK! (#VALUE!)" };
+      const S = [
+        ["A cellában =A1/B1 áll, és a B1 cella üres.", "div"], ["A cellában =B2/C2 áll, és a C2 értéke 0.", "div"], ["Elírtad a függvény nevét: =SZUMM(A1:A5).", "name"],
+        ["A szöveget nem tetted idézőjelbe: =HA(B2>=50;igen;nem).", "name"], ["Kitörölted azt az oszlopot, amelyre a képlet hivatkozott.", "ref"],
+        ["Egy képletet annyira felfelé másoltál, hogy a hivatkozása az 1. sor fölé került.", "ref"], ["A cellában egy hosszú szám van, de az oszlop túl keskeny.", "wide"],
+        ["A cellában =B2*C2 áll, de a C2 cellába az „öt” szót írták, nem számot.", "val"], ["A cellában =A2+B2 áll, és az A2 cellában ez a szöveg: „nincs adat”.", "val"]
+      ].filter(s => l > 1 || s[1] !== "val");
+      if (l < 3){ const s = pick(S), pool = Object.keys(C).filter(k => (l > 1 || k !== "val") && k !== s[1]).map(k => C[k]);
+        return choice("Milyen hibaüzenetet kapsz? " + s[0], C[s[1]], shuffle(pool).slice(0, 3), "<p>" + s[0] + " → <b>" + C[s[1]] + "</b>.</p>", "Nem ez. Nézd meg a hibaüzenetek diáját."); }
+      const R = { div: "Nullával vagy üres cellával osztasz.", name: "Elírt függvénynév, vagy idézőjel nélküli szöveg.", ref: "A hivatkozott cella nem létezik (törölted, vagy kicsúszott a táblából).", wide: "Nem hiba: az oszlop túl keskeny a számhoz.", val: "Szöveggel próbálsz számolni." };
+      const k = pick(Object.keys(R)), pool = Object.keys(R).filter(x => x !== k).map(x => R[x]);
+      return choice("Mi okozza ezt? <span class='num'>" + C[k] + "</span>", R[k], shuffle(pool).slice(0, 3), "<p>" + C[k] + ": " + R[k] + "</p>", "Nem ez. Nézd meg a hibaüzenetek diáját.");
+    } },
+    { id: "hiv", name: "Hivatkozástípus", gen(l){
+      const c = pick(["B", "C", "D", "E", "F", "G", "H"]), r = rnd(1, 9);
+      const forms = { rel: c + r, abs: "$" + c + "$" + r, col: "$" + c + r, row: c + "$" + r };
+      if (l === 1){
+        const k = pick(Object.keys(forms)), N = { rel: "relatív", abs: "abszolút", col: "vegyes: az oszlop rögzített", row: "vegyes: a sor rögzített" };
+        return choice("Milyen hivatkozás ez? <span class='num'>" + forms[k] + "</span>", N[k], Object.keys(N).filter(x => x !== k).map(x => N[x]),
+          "<p>A $ jel azt rögzíti, ami közvetlenül mögötte áll: $ az oszlopbetű előtt → az oszlop áll; $ a sorszám előtt → a sor áll.</p>", "Nem ez. Nézd meg, hol áll a $ jel: az oszlopbetű vagy a sorszám előtt?");
+      }
+      if (l === 2){
+        const k = pick(Object.keys(forms));
+        const Q = { rel: "lefelé másolva a sorszám, jobbra másolva az oszlopbetű is változzon", abs: "lefelé és jobbra másolva is mindig ugyanarra a cellára mutasson", col: "jobbra másolva az oszlopbetű ne változzon, de lefelé másolva a sorszám igen", row: "lefelé másolva a sorszám ne változzon, de jobbra másolva az oszlopbetű igen" };
+        return choice("Melyik hivatkozást írod a képletbe, ha azt szeretnéd, hogy " + Q[k] + "?", forms[k], Object.keys(forms).filter(x => x !== k).map(x => forms[x]),
+          "<p>" + forms[k] + ": " + Q[k] + ". A $ jel azt rögzíti, ami mögötte áll.</p>", "Nem ez. A $ az oszlopbetű előtt az oszlopot, a sorszám előtt a sort rögzíti.");
+      }
+      const k = pick(Object.keys(forms)), dr = rnd(0, 4), dc = rnd(dr ? 0 : 1, 4), ans = SH.shift("=" + forms[k], dr, dc).slice(1);
+      const dir = (dr ? dr + " sorral lejjebb" : "") + (dr && dc ? " és " : "") + (dc ? dc + " oszloppal jobbra" : "");
+      return { q: "Egy képletben ez a hivatkozás áll: <span class='num'>" + forms[k] + "</span>. A képletet " + dir + " másolod. Mi lesz belőle?", kind: "input", ph: "pl. $C5", answer: ans,
+        sol: "<p>Az oszlopbetű " + (forms[k][0] === "$" ? "rögzített, nem változik" : "ennyit lép jobbra: " + dc) + "; a sorszám " + (forms[k].indexOf("$", 1) > 0 ? "rögzített, nem változik" : "ennyivel nő: " + dr) + ". Eredmény: " + ans + ".</p>",
+        check: v => { const s = String(v).replace(/\s+/g, "").replace(/^=/, "").toUpperCase(); return s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: s === forms[k] ? "Ez nem változott, pedig a $ nélküli rész mozog." : "Nem jó. Ami előtt $ áll, az marad; a többi annyit mozdul, amennyit a képlet." }; } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "tablazat", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["SZUM", "SUM", "=SZUM(B2:B6)", "összeg"], ["ÁTLAG", "AVERAGE", "=ÁTLAG(B2:B6)", "átlag"], ["MIN / MAX", "MIN / MAX", "=MAX(B2:B6)", "legkisebb / legnagyobb"], ["DARAB", "COUNT", "=DARAB(B2:B6)", "hány szám van"],
+    ["HA", "IF", '=HA(B2>=50;"jó";"rossz")', "döntés"], ["DARABTELI", "COUNTIF", '=DARABTELI(B2:B6;">=50")', "hány felel meg"], ["SZUMHA", "SUMIF", '=SZUMHA(A2:A6;"alma";B2:B6)', "feltételes összeg"], ["KEREKÍTÉS", "ROUND", "=KEREKÍTÉS(B2;1)", "kerekítés"]];
+  $("#cheat").innerHTML = "<tr><th>Magyar</th><th>Angol</th><th>Példa</th><th>Mit ad?</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td><td style='text-align:left'>" + esc(r[2]) + "</td><td style='text-align:left'>" + r[3] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
