@@ -23,6 +23,7 @@ node tools/lessons/build.js <név>     # tools/lessons/<név>.src.html → ./<n�
 - Feladat (`gen(szint)` visszatérése): `{q, kind:"input"|"choice"|"code", check(érték)→{ok,msg}, answer, sol, frames, title}`.
   Választós: `options:[{l, ok}]`, a `check` kapja `{idx, v}`-t. Kódos: `starter`, a `check` kapja `{doc, win, parsed, code}`-t
   (a `parsed` a begépelt kód DOMParser-es dokumentuma, a `doc`/`win` az élő előnézet: `getComputedStyle`-hoz).
+- **Gépi ellenőrzés:** `node tools/lessons/lesson-test.js <név> 40` (a részletek a 9. szakasz végén).
 - **Ellenőrzés (kötelező):** minden típus × szint × 40–80 feladat szkripttel: a megoldásban kiírt „Jó válasz” átmegy-e;
   kódos feladatnál a kiinduló kód **ne** menjen át. Telefonszélesség: iframe-ben 390 px, minden feladat megoldással
   megnyitva, `documentElement.scrollWidth` ne nőjön (az iframe görgetősávja miatt 371 az alapérték). Sötét téma.
@@ -294,3 +295,45 @@ git config core.hooksPath .githooks
   `pdftotext -enc UTF-8 -layout fájl.pdf ki.txt` (Git Bash, `pdftotext` megvan), és grep-pel keress benne.
 - **Szkriptes vizsgálat `browser_evaluate`-tel:** a lecke-IIFE belső változói nem érhetők el, ezért a gyakorlót a DOM-on
   át vezéreld (fül, szint, „Új feladat”, „Megoldás lépésenként”, a „Jó válasz” kiolvasása, beírás, `submit` esemény).
+
+### A 2026. 10. 23-i (éjszakai) leckék: gépi tesztelő és új buktatók
+
+**Gépi tesztelő:** `node tools/lessons/lesson-test.js <név> [N=40]` (a localhoston futó, már lefordított leckét nézi; a
+globális `playwright` csomag és a gépen lévő `ms-playwright\chromium-*` kell hozzá, letöltés nélkül). Végigkattint minden
+diát és lejátszó-kockát; minden gyakorlótípus × szint × N feladatnál beírja a „Jó válasz”-t (választósnál a gombot keresi),
+kódos feladatnál előbb a kiinduló kódot is ellenőrzi; lefuttat egy próbadolgozatot; 390 px-en minden diánál, kockánál és
+megnyitott megoldásnál méri a vízszintes túllógást (a bűnös elemekkel); képet ment világos 390 px-es és sötét témában
+(`.playwright-mcp/<név>-390.png`, `-dark.png`). Kb. 10–30 másodperc leckénként.
+
+- **A tesztelő néma legyen.** Windowson a headless Chromium is **kimondja** a felolvasást, ha a lejátszót léptetik (Endit
+  éjjel zavarta). Ezért `--mute-audio`, és az init-szkript kikapcsolja a felolvasást (`kovrat-tts` = 0, `speak` üres).
+- **Csak akkor megbízható, ha a „Jó válasz” pontosan a beírandó szöveg.** A `logikai-muveletek` igazságtáblájánál és a
+  `tizenhatos-szamrendszer` átváltásainál a „Jó válasz” magyarázatot vagy alsó indexet is tartalmaz: ott hamis hibát jelez.
+- **Végtelen ciklus a generátorban:** a tesztelő ilyenkor nem ér véget (a böngésző lefagy). Ok: `do { x2 = … } while (… x1 …)`,
+  ahol a feltétel olyan változótól is függ, amit a ciklus nem sorsol újra. **Minden változót, amitől a feltétel függ, a
+  ciklusban sorsolj**, vagy tegyél bele őrszámlálót. Lefagyott tesztnél a saját `node` folyamatot állítsd le (PID alapján).
+- **Ha a közös készletet (`kit.js`, `kit.css`) épp más módosítja** (párhuzamos munka), a kész leckét a HEAD-beli készlettel
+  építsd: másold a `git show HEAD:tools/lessons/kit.js` (és `kit.css`, `update.js`, `build.js`) kimenetét egy ideiglenes
+  `tools/lessons` mappába a forrással és a `version.json`-nal, ott futtasd a `build.js`-t, és a kimenetet másold vissza. Így a
+  commitba nem kerül félkész készlet. A készlet módosítását a régi leckékkel is teszteld: építsd őket ideiglenesen
+  (`.playwright-mcp/kcN/`, nincs commitolva), és futtasd rajtuk a tesztelőt.
+- **A `.eq` osztály nem tördel** (`white-space:nowrap`): a diákon a hosszabb képletsor 390 px-en a dobozában görget. A tesztelő
+  ezt nem jelzi (az oldal nem szélesebb), csak a képen látszik. Leckében: `.slide .eq{white-space:normal}`.
+- **A lejátszó `pop` animációja 1,25-szörösére nagyít:** a teljes szélességű soroknál a bal szél levágódik; ezekre
+  `transform-origin:left center`.
+- **Saját CSS-osztály neve ne legyen `code`:** a `kit.css` `code,.code{background:…}` szabálya felülírja.
+- **`</script>` a lecke szkriptjében lévő szövegben** lezárja a szkriptet („Invalid or unexpected token”): `<\/script>` kell.
+- **JetBrains Mono ligatúrák:** a `===`, `!==`, `<=`, `>=`, `<>` egy jellé olvad (≡, ≤), a diák mást lát, mint amit be kell
+  gépelnie. Kódnál `font-variant-ligatures:none`.
+- **Felolvasandó feliratban `<` vagy `>`:** `&lt;`/`&gt;` alakban írd, és adj hozzá felolvasó-szabályt, különben a felolvasó
+  címkének nézi, és lenyel egy darabot.
+- **Változók felsorolásában ne `·` legyen az elválasztó** (a felolvasó szorzásnak olvassa): vessző.
+- **A névelőt ne javítsd utólag `.replace`-szel** a generált mondatban (törékeny, csendben elmarad): eleve `K.art(n)`.
+- **Szótárból kell minden toldalékolt alak** változó után: „osztható 3-mal” (`VEL` szótár), ismétlésszám („háromszor”),
+  szereplőnevek toldalékolt alakjai.
+- **Folyamatábra SVG-ben:** a feliratot ne tedd a rombusz élére (ráfut), a mellékág fölé tedd.
+- **JS-futtató (`K.jsrun`, `K.jseditor`, `kind: "js"`):** `iframe sandbox="allow-scripts"` (azonos eredet nélkül), `srcdoc`,
+  előtét-szkript + `postMessage` (e.source és futás-token); a ciklustörzsekbe számláló kerül, 4 mp időkorlát. A kapcsos zárójel
+  nélküli ciklustörzsre nem kerül számláló: ott csak az időkorlát véd, és ha az iframe ugyanabban a folyamatban fut, az oldal
+  addig megfagyhat. A `K.practice` aszinkron check-et is elfogad (Promise).
+- **Törlés a munkafában:** a `rm -rf` parancsot egy védőhook megállítja; ideiglenes mappához inkább új, üres nevet használj.

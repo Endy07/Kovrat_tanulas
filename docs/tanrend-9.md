@@ -94,12 +94,35 @@ A tanév 2026. szeptember 1-jétől; az első félév ~január közepéig. A sor
 - **Második félév, ha belefér:** reszponzív oldal, JavaScript-bevezető, Git alapok (ez szöveges magyarázat, nem futtatható).
 - **Kimarad (nem programozás-oldali, gyakorlati, tanteremben kell):** PC-összeszerelés, nyomtató, laptop, Windows-telepítés.
 
+## Döntések 2026-10-23 éjjel (⚠️ feltételezés, Kovrat válasza felülírhatja)
+
+Kovrat válaszai még nem jöttek meg, ezért a programtanterv alapján döntöttem. A részletes sorrend és indoklás:
+[`leckek-terv.md`](leckek-terv.md); a 10. évfolyam vázlata: [`tanrend-10.md`](tanrend-10.md).
+
+- **A hálózatok a 9.-ben „A dolgok internete” (8 óra) mellé kerültek (május)**, a másik iskola listája alapján. Az országos
+  programtantervben a hálózatok részletesen a 10.-ben jönnek (Informatikai és távközlési alapok II.), a lecke ennek az előszobája.
+- **Elektronika: február**, ahogy a becsült tanrendben volt. A 230 V-tal kísérletezést a lecke kifejezetten tiltja.
+- **Algoritmusok és játékos programozás: szeptember.** A Scratch maga iskolai eszköz, a lecke a gondolkodást (szekvencia,
+  ciklus, elágazás, folyamatábra) gyakoroltatja, és magyar kulcsszavas pszeudokódot használ (`ciklus i = 1-től N-ig`, `amíg`).
+  Ha az iskola más jelölést használ, ehhez kell igazítani.
+- **A számítógép felépítése: december** (mikroprocesszor, a PC részei). A PC-összeszerelés gyakorlata továbbra is iskolai.
+- **Virtualizáció és felhő: április**, a jelszóerősséggel és a 3-2-1 mentéssel együtt (a 10.-es IT-biztonság előzménye).
+- **JavaScript-bevezető: április.** A programtanterv csak 4 órát ad (beágyazás, `alert`, külső fájl); a lecke ennél bővebb
+  (`prompt`, `if`, `for`, DOM, esemény), mert a 10.-es Python ugyanezekre épít.
+- **Matek a programozáshoz** (a „minden, ami egy 8.–9.-esnek kell” kérés szerint): oszthatóság és statisztika,
+  koordináták és függvények; a 9.-es matek elejéről halmazok, algebrai kifejezések, egyenletek. A matekórai sorrendet
+  (melyik hónap) nem ismerjük, ezért ezek az „Előkészítés” csoportban vannak, nem hónaphoz kötve.
+- **Logikai fejtörők** egész évre (versenyekre és a programozói gondolkodásra), nem hónaphoz kötve.
+
 ## Mit kell megkérdezni Kovrattól (a tanrend bizonytalanságai)
 
 1. Mit használnak most programozásórán: Scratch vagy más blokkos eszköz, vagy már HTML?
 2. Tanultak-e már logikai műveleteket (ÉS, VAGY, NEM), tizenhatos számrendszert, ASCII-t?
 3. A tanár sorrendje: mikor jön a HTML / a Python? Van-e tankönyv vagy jegyzet (Teams)?
 4. Melyik nyelv a szakirányban (Python vagy C#)? A 9.-ben ez még nem kérdés.
+5. Van-e digitális kultúra vagy irodai óra (táblázatkezelés)? A táblázatkezelés-lecke ⚠️ feltételezésből készül.
+6. Matekórán hol tartanak (halmazok, algebrai kifejezések, egyenletek)? Ehhez igazítjuk a matekos leckéket.
+7. Milyen pszeudokód-jelölést használ a tanár (ha használ)?
 
 ## Források
 
