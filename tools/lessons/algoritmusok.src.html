@@ -1,0 +1,644 @@
+<!--@HEAD-->
+<title>Algoritmusok és játékos programozás</title>
+<style>
+.grid{border-collapse:collapse;font-family:var(--mono);flex:none}
+.grid td{width:34px;height:34px;min-width:34px;border:1.5px solid var(--line);text-align:center;vertical-align:middle;font-size:1.15rem;line-height:1;padding:0;background:var(--surface)}
+.grid th{font-size:.72rem;color:var(--muted);font-weight:400;padding:0 4px;height:18px}
+.grid td.wall{background:#5A6676}
+.grid td.tr{background:color-mix(in srgb,var(--led) 22%,var(--surface))}
+.grid td.goal{color:var(--led);font-weight:700}
+.grid td.rob{color:var(--accent);font-weight:700}
+.grid td.crash{background:var(--bad-bg);color:var(--bad)}
+.panel .grid td,.pb-stage .grid td{border-color:#3A4656;background:#151B23}
+.panel .grid th,.pb-stage .grid th{color:#7E8B9C}
+.panel .grid td.wall,.pb-stage .grid td.wall{background:#5A6676}
+.panel .grid td.tr,.pb-stage .grid td.tr{background:#4a3a12}
+.panel .grid td.rob,.pb-stage .grid td.rob{color:#9DC0F5}
+.panel .grid td.goal,.pb-stage .grid td.goal{color:#FFB01F}
+.panel .grid td.crash,.pb-stage .grid td.crash{background:#5a1f1a;color:#F2796C}
+.rv{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-start}
+.pl{font-family:var(--mono);font-size:.92rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.pl div{padding:1px 6px;border-radius:6px;overflow-wrap:anywhere}
+.pl .ln{display:inline-block;min-width:1.6em;color:var(--muted)}
+.pl .cur{background:color-mix(in srgb,var(--led) 25%,transparent);font-weight:700}
+.panel .pl .ln,.pb-stage .pl .ln{color:#7E8B9C}
+.panel .pl .cur,.pb-stage .pl .cur{background:#4a3a12;color:#FFB01F}
+.cmds{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cmds .btn{font-size:.9rem;padding:.4em .8em}
+.cmds select{font-size:.9rem;padding:.3em .4em}
+.lvls{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.lvls .btn[aria-pressed="true"]{border-color:var(--led);color:var(--led)}
+.status{font-family:var(--mono);font-size:.95rem;min-height:1.6em}
+.status.ok{color:#52C584}.status.bad{color:#F2796C}
+.code{white-space:pre}
+.pcode{font-family:var(--mono);font-size:.9rem;display:flex;flex-direction:column;gap:1px}
+.pcode div{padding:1px 6px;border-radius:6px;white-space:pre}
+.pcode .cur{background:#4a3a12;color:#FFB01F;font-weight:700}
+.vars{margin-top:10px}
+.fc{width:100%;max-width:340px;height:auto;display:block}
+.fc .bx{fill:var(--surface);stroke:var(--muted);stroke-width:1.6}
+.fc text{fill:var(--ink);font-family:var(--mono);font-size:13px}
+.fc .ln{stroke:var(--muted);stroke-width:1.6;fill:none}
+.fc .ah{fill:var(--muted)}
+.fc .lb{font-size:11px;fill:var(--muted)}
+.fc .cur .bx{stroke:var(--led);stroke-width:2.6;fill:color-mix(in srgb,var(--led) 22%,var(--surface))}
+.pb-stage .fc .bx{fill:#151B23;stroke:#7E8B9C}
+.pb-stage .fc text{fill:#DCE3EC}
+.pb-stage .fc .ln{stroke:#7E8B9C}.pb-stage .fc .ah{fill:#7E8B9C}.pb-stage .fc .lb{fill:#7E8B9C}
+.pb-stage .fc .cur .bx{stroke:#FFB01F;fill:#4a3a12}
+.pb-stage .fc .cur text{fill:#FFB01F}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.legend div{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:.92rem}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · játékos programozás</span>
+  <h1>Algoritmusok és játékos programozás</h1>
+  <p class="lead">Az algoritmus pontos lépések sorozata. Rakj össze egy programot a gombokkal, és vezesd el a robotot a csillagig. Használj ismétlést, hogy rövidebb legyen!</p>
+  <div class="panel">
+    <span class="eyebrow">Robot a rácson</span>
+    <div class="lvls" id="lvls"><span class="eyebrow">Pálya:</span><button class="btn" data-lv="0">1</button><button class="btn" data-lv="1">2</button><button class="btn" data-lv="2">3</button></div>
+    <div class="rv"><div id="hgrid"></div><div class="pl" id="hprog"></div></div>
+    <div class="cmds" id="hcmds">
+      <button class="btn" data-c="F">▲ Előre</button>
+      <button class="btn" data-c="L">↶ Balra</button>
+      <button class="btn" data-c="R">↷ Jobbra</button>
+      <span class="row" style="gap:6px"><button class="btn" data-c="open">Ismételd</button><select id="hn" aria-label="Hányszor"><option value="2">kétszer</option><option value="3" selected>háromszor</option><option value="4">négyszer</option><option value="5">ötször</option><option value="6">hatszor</option><option value="7">hétszer</option><option value="8">nyolcszor</option><option value="9">kilencszer</option></select></span>
+      <button class="btn" data-c="close">] Ismétlés vége</button>
+      <button class="btn" data-c="del">⌫ Utolsó törlése</button>
+      <button class="btn" data-c="clear">Törlés</button>
+    </div>
+    <div class="row"><button class="btn primary" id="hrun" style="background:var(--led);border-color:var(--led);color:var(--led-ink)">▶ Futtatás</button><button class="btn" id="hstop">■ Megállítás</button></div>
+    <div class="status" id="hstat" aria-live="polite"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: hogyan gondolkodik a gép?</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="robot" aria-selected="true">Robot lépésenként</button>
+    <button class="tab" data-m="valt" aria-selected="false">Változók követése</button>
+    <button class="tab" data-m="fc" aria-selected="false">Folyamatábra bejárása</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A mező nevét betűvel és számmal írd (például C3). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Három alapszerkezet</span><span><b>szekvencia</b> (sorban egymás után) · <b>elágazás</b> (ha … különben) · <b>ciklus</b> (ismétlés). Minden algoritmus ezekből épül.</span></div>
+    <div class="trick"><span class="t">Robot: merre fordul?</span><span>A Balra és a Jobbra <b>a robot szemszögéből</b> értendő. Ha lefelé néz, a Balra kelet felé fordítja.</span></div>
+    <div class="trick"><span class="t">Követés táblázattal</span><span>Írd fel a változókat oszlopnak, és minden értékadás után új sort: így nem tévedsz el.</span></div>
+    <div class="trick"><span class="t">Ciklus mint utasítás</span><span>Az „Ismételd háromszor: [Előre, Jobbra]” 3 utasítás: maga az ismétlés, és ami benne van.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/[▲▶▼◀★↶↷]/g, ""], [/\s&lt;\s/g, " kisebb, mint "], [/\s&gt;\s/g, " nagyobb, mint "], [/\s≠\s/g, " nem egyenlő "], [/\s:\s/g, " osztva "], [/\s≥\s/g, " nagyobb vagy egyenlő, mint "], [/\bmod\b/g, "maradék"]);
+
+  /* ---------- Robot: program, futtatás, rajz ---------- */
+  const COLS = "ABCDEFGH", DX = [0, 1, 0, -1], DY = [1, 0, -1, 0], ARW = ["▲", "▶", "▼", "◀"];
+  const DIRN = ["észak", "kelet", "dél", "nyugat"];
+  const CN = { F: "Előre", L: "Balra", R: "Jobbra" };
+  const TIMES = ["", "egyszer", "kétszer", "háromszor", "négyszer", "ötször", "hatszor", "hétszer", "nyolcszor", "kilencszer", "tízszer"];
+  const cell = (x, y) => COLS[x] + (y + 1);
+  const C = c => ({ c }), LOOP = (n, b) => ({ n, b });
+  const clone = p => JSON.parse(JSON.stringify(p));
+  const ptxt = p => p.map(it => it.c ? CN[it.c] : "Ismételd " + TIMES[it.n] + ": [" + ptxt(it.b) + "]").join(", ");
+  const pcount = p => p.reduce((s, it) => s + (it.c ? 1 : 1 + pcount(it.b)), 0);
+  function plines(p, dep, out){
+    out = out || []; dep = dep || 0;
+    p.forEach(it => { it._l = out.length; out.push({ t: it.c ? CN[it.c] : "Ismételd " + TIMES[it.n] + ":", dep }); if (!it.c) plines(it.b, dep + 1, out); });
+    return out;
+  }
+  const listHtml = (p, cur) => '<div class="pl">' + plines(p).map((l, i) => '<div class="' + (i === cur ? "cur" : "") + '" style="padding-left:' + (0.4 + l.dep * 1.4) + 'em"><span class="ln">' + (i + 1) + "</span>" + l.t + "</div>").join("") + "</div>";
+  function run(env, p){
+    const S = { x: env.sx, y: env.sy, d: env.sd, crash: false }, tr = [], trail = [[S.x, S.y]];
+    (function ex(p){
+      for (const it of p){
+        if (S.crash || tr.length > 400) return;
+        if (it.c){
+          if (it.c === "F"){
+            const nx = S.x + DX[S.d], ny = S.y + DY[S.d];
+            if (nx < 0 || ny < 0 || nx >= env.W || ny >= env.H || env.walls.has(nx + "," + ny)){ S.crash = true; tr.push({ it, ev: "crash", x: S.x, y: S.y, d: S.d, n: trail.length, cx: nx, cy: ny }); return; }
+            S.x = nx; S.y = ny; trail.push([nx, ny]);
+          } else S.d = (S.d + (it.c === "L" ? 3 : 1)) % 4;
+          tr.push({ it, ev: it.c, x: S.x, y: S.y, d: S.d, n: trail.length });
+        } else for (let k = 1; k <= it.n; k++){ tr.push({ it, ev: "rep", k, x: S.x, y: S.y, d: S.d, n: trail.length }); ex(it.b); if (S.crash) return; }
+      }
+    })(p);
+    return { x: S.x, y: S.y, d: S.d, crash: S.crash, tr, trail };
+  }
+  const reaches = (env, p) => { const r = run(env, p); return !r.crash && r.x === env.gx && r.y === env.gy; };
+  function gridHtml(env, st){
+    const T = new Set((st.trail || []).map(a => a[0] + "," + a[1]));
+    let h = '<table class="grid" aria-label="Pálya">';
+    for (let y = env.H - 1; y >= 0; y--){
+      h += "<tr><th>" + (y + 1) + "</th>";
+      for (let x = 0; x < env.W; x++){
+        const k = x + "," + y, cls = []; let s = "";
+        if (env.walls.has(k)) cls.push("wall"); else if (T.has(k)) cls.push("tr");
+        if (env.gx === x && env.gy === y){ cls.push("goal"); s = "★"; }
+        if (st.crash && st.crash[0] === x && st.crash[1] === y) cls.push("crash");
+        if (st.x === x && st.y === y){ cls.push("rob"); s = ARW[st.d]; }
+        h += '<td class="' + cls.join(" ") + '">' + s + "</td>";
+      }
+      h += "</tr>";
+    }
+    return h + "<tr><th></th>" + Array.from({ length: env.W }, (_, x) => "<th>" + COLS[x] + "</th>").join("") + "</tr></table>";
+  }
+  const startView = env => gridHtml(env, { x: env.sx, y: env.sy, d: env.sd, trail: [] });
+  function robotFrames(env, p, extra){
+    const r = run(env, p); plines(p);
+    const view = (st, cur) => '<div class="rv">' + gridHtml(env, st) + listHtml(p, cur) + "</div>";
+    const F = [{ cap: "Kiindulás: a robot helye " + cell(env.sx, env.sy) + ", " + DIRN[env.sd] + " felé néz." + (env.gx != null ? " A cél a csillag: " + cell(env.gx, env.gy) + "." : "") + " Végrehajtjuk a programot sorról sorra.", html: view({ x: env.sx, y: env.sy, d: env.sd, trail: [] }, -1) }];
+    r.tr.forEach(e => {
+      const st = { x: e.x, y: e.y, d: e.d, trail: r.trail.slice(0, e.n) };
+      let cap;
+      if (e.ev === "rep") cap = "Ismételd: " + e.k + ". kör, összesen " + e.it.n + ".";
+      else if (e.ev === "F") cap = "Előre: egy mezőt lép. Új hely: " + cell(e.x, e.y) + ".";
+      else if (e.ev === "L" || e.ev === "R") cap = CN[e.ev] + ": helyben fordul, most " + DIRN[e.d] + " felé néz.";
+      else { st.crash = [e.cx, e.cy]; cap = "Előre: de ott fal vagy a pálya széle van! A robot nem léphet oda, a program itt elakad."; }
+      F.push({ cap, html: view(st, e.it._l) });
+    });
+    const last = { x: r.x, y: r.y, d: r.d, trail: r.trail };
+    if (!r.crash) F.push({ cap: (env.gx != null ? (r.x === env.gx && r.y === env.gy ? "Célba ért: a robot a csillagon áll (" + cell(r.x, r.y) + ")." : "A program véget ért, de a robot nem a csillagon áll, hanem itt: " + cell(r.x, r.y) + ".") : "A program véget ért. A robot helye: " + cell(r.x, r.y) + ", " + DIRN[r.d] + " felé néz.") + (extra || ""), html: view(last, -1) });
+    else if (extra) F.push({ cap: extra.trim(), html: F[F.length - 1].html });
+    return F;
+  }
+
+  /* ---------- Hero: programozd a robotot ---------- */
+  const W = s => new Set(s);
+  const stair = []; for (let x = 0; x < 6; x++) for (let y = 0; y < 6; y++) if (y - x === 2 || x - y === 1) stair.push(x + "," + y);
+  const LV = [
+    { W: 5, H: 5, walls: W([]), sx: 0, sy: 0, sd: 0, gx: 2, gy: 3, tip: "Tipp: 3 lépés fel, jobbra fordulás, 2 lépés." },
+    { W: 6, H: 6, walls: W(["2,0", "2,1", "2,2", "2,3", "4,2", "4,3", "4,4", "4,5"]), sx: 0, sy: 0, sd: 0, gx: 5, gy: 0, tip: "Tipp: a hosszú egyenesekhez használd az Ismételd gombot." },
+    { W: 6, H: 6, walls: W(stair), sx: 0, sy: 0, sd: 0, gx: 5, gy: 5, tip: "Tipp: a lépcső ugyanaz a négy utasítás, újra és újra." }
+  ];
+  const H = { lv: 0, toks: [], timer: null };
+  function parseToks(toks){
+    const root = [], st = [root];
+    toks.forEach((t, i) => {
+      const cur = st[st.length - 1];
+      if (t.c === "open"){ const it = { n: t.n, b: [], ti: i }; cur.push(it); st.push(it.b); }
+      else if (t.c === "close"){ if (st.length > 1) st.pop(); }
+      else cur.push({ c: t.c, ti: i });
+    });
+    const prune = p => p.filter(it => it.c || (it.b = prune(it.b)).length);
+    return prune(root);
+  }
+  function depthOf(i){ let d = 0; for (let j = 0; j < i; j++){ if (H.toks[j].c === "open") d++; else if (H.toks[j].c === "close" && d) d--; } return d; }
+  function hRender(st, curTok){
+    const env = LV[H.lv];
+    $("#hgrid").innerHTML = gridHtml(env, st || { x: env.sx, y: env.sy, d: env.sd, trail: [] });
+    $("#hprog").innerHTML = H.toks.length ? H.toks.map((t, i) => {
+      const d = depthOf(i) - (t.c === "close" ? 1 : 0);
+      const tx = t.c === "open" ? "Ismételd " + TIMES[t.n] + ": [" : t.c === "close" ? "]" : CN[t.c];
+      return '<div class="' + (i === curTok ? "cur" : "") + '" style="padding-left:' + (0.4 + Math.max(0, d) * 1.4) + 'em"><span class="ln">' + (i + 1) + "</span>" + tx + "</div>";
+    }).join("") : '<div><span class="ln"></span>A program üres. Kattints a gombokra!</div>';
+    const open = H.toks.reduce((d, t) => t.c === "open" ? d + 1 : t.c === "close" && d ? d - 1 : d, 0);
+    $('#hcmds [data-c="close"]').disabled = !open;
+  }
+  function hStop(){ clearInterval(H.timer); H.timer = null; }
+  function hLevel(i){
+    hStop(); H.lv = i; H.toks = [];
+    $$("#lvls [data-lv]").forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.lv) === i)));
+    const s = $("#hstat"); s.className = "status"; s.textContent = "Cél: a csillag (" + cell(LV[i].gx, LV[i].gy) + "). " + LV[i].tip;
+    hRender();
+  }
+  function hRun(){
+    hStop();
+    const env = LV[H.lv], p = parseToks(H.toks), r = run(env, p), s = $("#hstat");
+    if (!p.length){ s.className = "status bad"; s.textContent = "Előbb rakj össze egy programot."; return; }
+    let k = 0;
+    s.className = "status"; s.textContent = "Fut…";
+    const step = () => {
+      if (k >= r.tr.length){
+        hStop(); hRender({ x: r.x, y: r.y, d: r.d, trail: r.trail }, -1);
+        const ok = !r.crash && r.x === env.gx && r.y === env.gy;
+        s.className = "status " + (ok ? "ok" : "bad");
+        s.textContent = r.crash ? "Ütközés! A robot falnak vagy a pálya szélének ment. Javítsd a programot." : ok ? "Célba értél! Utasítások száma: " + pcount(p) + "." + (pcount(p) > 6 ? " Rövidebben is megy ismétléssel?" : "") : "A program véget ért, de a robot nem a csillagon áll (helye: " + cell(r.x, r.y) + ").";
+        if (r.crash){ const e = r.tr[r.tr.length - 1]; hRender({ x: e.x, y: e.y, d: e.d, trail: r.trail, crash: [e.cx, e.cy] }, e.it.ti); }
+        return;
+      }
+      const e = r.tr[k++];
+      hRender({ x: e.x, y: e.y, d: e.d, trail: r.trail.slice(0, e.n) }, e.it.ti);
+    };
+    step(); H.timer = setInterval(step, 420);
+  }
+  $("#hcmds").addEventListener("click", e => {
+    const b = e.target.closest("[data-c]"); if (!b || b.disabled) return;
+    hStop();
+    const c = b.dataset.c;
+    if (c === "del") H.toks.pop();
+    else if (c === "clear") H.toks = [];
+    else if (c === "open") H.toks.push({ c: "open", n: Number($("#hn").value) });
+    else if (H.toks.length < 40) H.toks.push({ c });
+    $("#hstat").className = "status"; $("#hstat").textContent = "Utasítások: " + pcount(parseToks(H.toks)) + ". Ha kész, nyomd meg a Futtatás gombot.";
+    hRender();
+  });
+  $("#lvls").addEventListener("click", e => { const b = e.target.closest("[data-lv]"); if (b) hLevel(Number(b.dataset.lv)); });
+  $("#hrun").addEventListener("click", hRun);
+  $("#hstop").addEventListener("click", () => { hStop(); hRender(); });
+  hLevel(0);
+
+  /* ---------- Pszeudokód: kis értelmező ---------- */
+  // csomópontok: set {v,t,f} · out {t,f} · for {v,a,b,body} · while {t,c,body} · if {t,c,then,els}
+  function codeLines(ast){
+    const out = [];
+    (function w(list, dep){
+      list.forEach(n => {
+        n._l = out.length;
+        if (n.k === "for"){ out.push({ t: "ciklus " + n.v + " = " + n.a + "-" + (n.a === 0 ? "tól" : "től") + " " + n.b + "-ig", dep }); w(n.body, dep + 1); out.push({ t: "ciklus vége", dep }); }
+        else if (n.k === "while"){ out.push({ t: "amíg " + n.t, dep }); w(n.body, dep + 1); out.push({ t: "ciklus vége", dep }); }
+        else if (n.k === "if"){ out.push({ t: "ha " + n.t + " akkor", dep }); w(n.then, dep + 1); if (n.els){ n._e = out.length; out.push({ t: "különben", dep }); w(n.els, dep + 1); } out.push({ t: "elágazás vége", dep }); }
+        else out.push({ t: n.t, dep });
+      });
+    })(ast, 0);
+    return out;
+  }
+  function interp(ast){
+    const L = codeLines(ast), V = {}, order = [], F = [];
+    let outv = null, guard = 0;
+    const setv = (k, v) => { if (!order.includes(k)) order.push(k); V[k] = v; };
+    const view = cur => '<div class="pcode">' + L.map((l, i) => '<div class="' + (i === cur ? "cur" : "") + '">' + "  ".repeat(l.dep) + esc(l.t) + "</div>").join("") + "</div>" +
+      (order.length ? '<div class="ptwrap vars"><table class="pt"><tr>' + order.map(k => "<th>" + k + "</th>").join("") + "</tr><tr>" + order.map(k => "<td>" + V[k] + "</td>").join("") + "</tr></table></div>" : "");
+    const snap = (l, cap) => F.push({ cap, html: view(l) });
+    (function ex(list){
+      for (const n of list){
+        if (guard++ > 300) return;
+        if (n.k === "set"){ setv(n.v, n.f(V)); snap(n._l, esc(n.t) + ". Az új érték: " + n.v + " = " + V[n.v] + "."); }
+        else if (n.k === "out"){ outv = n.f(V); snap(n._l, "Kiírás: " + outv + "."); }
+        else if (n.k === "for"){
+          for (let i = n.a; i <= n.b; i++){ setv(n.v, i); snap(n._l, "Ciklus: " + n.v + " = " + i + "."); ex(n.body); }
+          snap(n._l, "A ciklusváltozó elérte a végértéket, a ciklus véget ért.");
+        } else if (n.k === "while"){
+          for (;;){ const c = n.c(V); snap(n._l, "Feltétel: " + esc(n.t) + "? " + (c ? "Igaz, jön a ciklusmag." : "Hamis, a ciklus véget ér.")); if (!c || guard > 300) break; ex(n.body); }
+        } else if (n.k === "if"){
+          const c = n.c(V); snap(n._l, "Feltétel: " + esc(n.t) + "? " + (c ? "Igaz." : "Hamis.") + (c || n.els ? "" : " Nem csinálunk semmit."));
+          if (c) ex(n.then); else if (n.els){ snap(n._e, "Különben ág."); ex(n.els); }
+        }
+      }
+    })(ast);
+    return { L, F, out: outv, steps: guard };
+  }
+  const S_ = (v, t, f) => ({ k: "set", v, t, f }), O_ = (t, f) => ({ k: "out", t, f });
+  function codeTask(l){
+    for (let g = 0; g < 100; g++){
+      let ast, note = "";
+      if (l === 1){
+        const A = rnd(2, 9), B = rnd(2, 9), Cc = rnd(2, 4);
+        ast = pick([
+          () => [S_("x", "x = " + A, () => A), S_("x", "x = x + " + B, V => V.x + B), S_("x", "x = x · " + Cc, V => V.x * Cc), O_("ki: x", V => V.x)],
+          () => [S_("a", "a = " + A, () => A), S_("b", "b = " + B, () => B), S_("a", "a = a + b", V => V.a + V.b), S_("b", "b = a − b", V => V.a - V.b), O_("ki: a · b", V => V.a * V.b)],
+          () => [S_("x", "x = " + A, () => A), S_("y", "y = x · 2", V => V.x * 2), S_("x", "x = y − " + B, V => V.y - B), O_("ki: x + y", V => V.x + V.y)]
+        ])();
+      } else if (l === 2){
+        const N = rnd(3, 7), K2 = rnd(2, 3), M = rnd(2, 5);
+        ast = pick([
+          () => [S_("s", "s = 0", () => 0), { k: "for", v: "i", a: 1, b: N, body: [S_("s", "s = s + i", V => V.s + V.i)] }, O_("ki: s", V => V.s)],
+          () => [S_("p", "p = 1", () => 1), { k: "for", v: "i", a: 1, b: Math.min(N, 5), body: [S_("p", "p = p · " + K2, V => V.p * K2)] }, O_("ki: p", V => V.p)],
+          () => { note = " (A mod az osztási maradék: 7 mod 3 = 1.)"; const NN = rnd(8, 20); return [S_("db", "db = 0", () => 0), { k: "for", v: "i", a: 1, b: NN, body: [{ k: "if", t: "i mod " + M + " = 0", c: V => V.i % M === 0, then: [S_("db", "db = db + 1", V => V.db + 1)] }] }, O_("ki: db", V => V.db)]; },
+          () => [S_("s", "s = " + M, () => M), { k: "for", v: "i", a: 1, b: N, body: [S_("s", "s = s + " + K2, V => V.s + K2)] }, O_("ki: s", V => V.s)]
+        ])();
+      } else {
+        ast = pick([
+          () => { const A = rnd(1, 9), Lm = pick([20, 30, 50, 64, 100, 150]); return [S_("x", "x = " + A, () => A), S_("db", "db = 0", () => 0), { k: "while", t: "x < " + Lm, c: V => V.x < Lm, body: [S_("x", "x = x · 2", V => V.x * 2), S_("db", "db = db + 1", V => V.db + 1)] }, O_("ki: db", V => V.db)]; },
+          () => { const A = rnd(2, 9) * rnd(2, 6), B = rnd(2, 9) * rnd(1, 4); return [S_("a", "a = " + A, () => A), S_("b", "b = " + B, () => B), { k: "while", t: "a ≠ b", c: V => V.a !== V.b, body: [{ k: "if", t: "a > b", c: V => V.a > V.b, then: [S_("a", "a = a − b", V => V.a - V.b)], els: [S_("b", "b = b − a", V => V.b - V.a)] }] }, O_("ki: a", V => V.a)]; },
+          () => { note = " (mod: osztási maradék, div: az osztás egész része. 47 mod 10 = 7, 47 div 10 = 4.)"; const N = rnd(102, 989); return [S_("n", "n = " + N, () => N), S_("s", "s = 0", () => 0), { k: "while", t: "n > 0", c: V => V.n > 0, body: [S_("s", "s = s + n mod 10", V => V.s + V.n % 10), S_("n", "n = n div 10", V => Math.floor(V.n / 10))] }, O_("ki: s", V => V.s)]; }
+        ])();
+      }
+      const r = interp(ast);
+      if (r.F.length > 46 || r.out == null) continue;
+      return { ast, r, note };
+    }
+  }
+
+  /* ---------- Folyamatábra: rajz és bejárás ---------- */
+  // blokkok: start · in {v} · op {s,v,f} · dec {s,c,side:op} · loop {s,c,body:[op]} · out {s,f} · stop
+  const FX = 140;
+  function fcSvg(B, cur){
+    let y = 12, g = "";
+    const ah = (x, y, dir) => { const p = dir === "d" ? [[x - 5, y - 8], [x + 5, y - 8], [x, y]] : dir === "r" ? [[x - 8, y - 5], [x - 8, y + 5], [x, y]] : [[x + 8, y - 5], [x + 8, y + 5], [x, y]]; return '<polygon class="ah" points="' + p.map(a => a.join(",")).join(" ") + '"/>'; };
+    const ln = pts => '<path class="ln" d="M' + pts.map(a => a.join(",")).join(" L") + '"/>';
+    const tx = (x, y, s, cls) => '<text x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="middle"' + (cls ? ' class="' + cls + '"' : "") + ">" + esc(s) + "</text>";
+    const grp = (id, inner) => '<g class="' + (id === cur ? "cur" : "") + '">' + inner + "</g>";
+    const rect = (id, cx, y, w, s, r) => grp(id, '<rect class="bx" x="' + (cx - w / 2) + '" y="' + y + '" width="' + w + '" height="32" rx="' + (r || 3) + '"/>' + tx(cx, y + 16, s));
+    const arrowTo = y2 => ln([[FX, y], [FX, y2]]) + ah(FX, y2, "d");
+    B.forEach((b, i) => {
+      if (i) { g += arrowTo(y + 22); y += 22; }
+      if (b.t === "start" || b.t === "stop"){ g += rect(String(i), FX, y, 90, b.t === "start" ? "Start" : "Stop", 16); y += 32; }
+      else if (b.t === "in" || b.t === "out"){ g += grp(String(i), '<polygon class="bx" points="' + [[FX - 58, y], [FX + 72, y], [FX + 58, y + 32], [FX - 72, y + 32]].map(a => a.join(",")).join(" ") + '"/>' + tx(FX, y + 16, b.t === "in" ? "Be: " + b.v : b.s)); y += 32; }
+      else if (b.t === "op"){ g += rect(String(i), FX, y, 130, b.s); y += 32; }
+      else if (b.t === "dec"){
+        g += grp(String(i), '<polygon class="bx" points="' + [[FX, y], [FX + 75, y + 27], [FX, y + 54], [FX - 75, y + 27]].map(a => a.join(",")).join(" ") + '"/>' + tx(FX, y + 27, b.s));
+        g += ln([[FX + 75, y + 27], [218, y + 27]]) + ah(220, y + 27, "r") + tx(244, y + 4, "igen", "lb");
+        g += rect(i + "s", 275, y + 11, 110, b.side.s);
+        const yj = y + 54 + 20;
+        g += ln([[275, y + 43], [275, yj], [FX, yj]]) + ah(FX + 1, yj, "l") + tx(FX + 18, y + 64, "nem", "lb") + ln([[FX, y + 54], [FX, yj]]);
+        y = yj;
+      } else if (b.t === "loop"){
+        const y0 = y;
+        g += grp(String(i), '<polygon class="bx" points="' + [[FX, y], [FX + 75, y + 27], [FX, y + 54], [FX - 75, y + 27]].map(a => a.join(",")).join(" ") + '"/>' + tx(FX, y + 27, b.s));
+        g += tx(FX + 18, y + 64, "igen", "lb");
+        y += 54;
+        b.body.forEach((o, j) => { g += arrowTo(y + 18); y += 18; g += rect(i + "b" + j, FX, y, 130, o.s); y += 32; });
+        g += ln([[FX, y], [FX, y + 12], [22, y + 12], [22, y0 - 12], [FX, y0 - 12]]) + ah(FX - 1, y0 - 12, "r");
+        const ya = y + 34;
+        g += ln([[FX + 75, y0 + 27], [318, y0 + 27], [318, ya], [FX, ya]]) + ah(FX + 1, ya, "l") + tx(FX + 96, y0 + 18, "nem", "lb");
+
+        y = ya;
+      }
+    });
+    return '<svg class="fc" viewBox="0 0 340 ' + (y + 10) + '" role="img" aria-label="Folyamatábra">' + g + "</svg>";
+  }
+  function fcRun(B, input){
+    const V = {}, order = [], F = [];
+    let outv = null, guard = 0;
+    const setv = (k, v) => { if (!order.includes(k)) order.push(k); V[k] = v; };
+    const vt = () => order.length ? '<div class="ptwrap vars"><table class="pt"><tr>' + order.map(k => "<th>" + k + "</th>").join("") + "</tr><tr>" + order.map(k => "<td>" + V[k] + "</td>").join("") + "</tr></table></div>" : "";
+    const snap = (id, cap) => F.push({ cap, html: fcSvg(B, id) + vt() });
+    const op = (o, id) => { o.f(V); setv(o.v, V[o.v]); snap(id, esc(o.s) + ". Az új érték: " + o.v + " = " + V[o.v] + "."); };
+    B.forEach((b, i) => {
+      const id = String(i);
+      if (b.t === "start") snap(id, "Start: a program elindul.");
+      else if (b.t === "stop") snap(id, "Stop: a program véget ért.");
+      else if (b.t === "in"){ setv(b.v, input); snap(id, "Beolvasás: " + b.v + " = " + input + "."); }
+      else if (b.t === "op") op(b, id);
+      else if (b.t === "out"){ outv = b.f(V); snap(id, "Kiírás: " + outv + "."); }
+      else if (b.t === "dec"){ const c = b.c(V); snap(id, "Döntés: " + esc(b.s) + " " + (c ? "Igen, a jobb oldali ágon megyünk." : "Nem, egyenesen lefelé megyünk.")); if (c) op(b.side, i + "s"); }
+      else if (b.t === "loop"){
+        for (;;){ const c = b.c(V); snap(id, "Döntés: " + esc(b.s) + " " + (c ? "Igen, végrehajtjuk a ciklusmagot." : "Nem, kilépünk a ciklusból.")); if (!c || guard++ > 20) break; b.body.forEach((o, j) => op(o, i + "b" + j)); }
+      }
+    });
+    return { F, out: outv };
+  }
+  const OP = (s, v, f) => ({ t: "op", s, v, f });
+  function fcTask(l){
+    for (let g = 0; g < 100; g++){
+      let B, x;
+      if (l === 1){
+        const T = rnd(5, 15), K1 = rnd(2, 9);
+        const side = pick([OP("x = x − " + T, "x", V => { V.x -= T; }), OP("x = x · 2", "x", V => { V.x *= 2; })]);
+        B = [{ t: "start" }, { t: "in", v: "x" }, { t: "dec", s: "x > " + T + "?", c: V => V.x > T, side }, OP("x = x + " + K1, "x", V => { V.x += K1; }), { t: "out", s: "Ki: x", f: V => V.x }, { t: "stop" }];
+        x = rnd(1, 25);
+      } else if (l === 2){
+        const Lm = pick([20, 30, 40, 50, 60]), K2 = rnd(3, 9);
+        const body = pick([[OP("x = x + " + K2, "x", V => { V.x += K2; })], [OP("x = x · 2", "x", V => { V.x *= 2; })]]);
+        B = [{ t: "start" }, { t: "in", v: "x" }, OP("db = 0", "db", V => { V.db = 0; }), { t: "loop", s: "x < " + Lm + "?", c: V => V.x < Lm, body: body.concat([OP("db = db + 1", "db", V => { V.db += 1; })]) }, { t: "out", s: "Ki: db", f: V => V.db }, { t: "stop" }];
+        x = rnd(1, Lm - 1);
+        const r = fcRun(B, x); if (r.out < 1 || r.out > 7) continue;
+      } else {
+        const T = rnd(8, 20), K3 = rnd(2, 9);
+        B = [{ t: "start" }, { t: "in", v: "x" }, { t: "dec", s: "x > " + T + "?", c: V => V.x > T, side: OP("x = x − " + T, "x", V => { V.x -= T; }) },
+          { t: "dec", s: "x páros?", c: V => V.x % 2 === 0, side: OP("x = x : 2", "x", V => { V.x /= 2; }) }, OP("x = x + " + K3, "x", V => { V.x += K3; }), { t: "out", s: "Ki: x", f: V => V.x }, { t: "stop" }];
+        x = rnd(1, 40);
+      }
+      const r = fcRun(B, x);
+      return { B, x, r };
+    }
+  }
+
+  /* ---------- Levezetések ---------- */
+  const DEMO = { W: 6, H: 6, walls: W(stair), sx: 0, sy: 0, sd: 0, gx: 5, gy: 5 };
+  const DEMOP = [LOOP(5, [C("F"), C("R"), C("F"), C("L")])];
+  const demoCode = () => { const ast = [S_("s", "s = 0", () => 0), { k: "for", v: "i", a: 1, b: 4, body: [S_("s", "s = s + i", V => V.s + V.i)] }, O_("ki: s", V => V.s)]; return interp(ast); };
+  const demoFc = () => { const B = [{ t: "start" }, { t: "in", v: "x" }, OP("db = 0", "db", V => { V.db = 0; }), { t: "loop", s: "x < 40?", c: V => V.x < 40, body: [OP("x = x · 2", "x", V => { V.x *= 2; }), OP("db = db + 1", "db", V => { V.db += 1; })] }, { t: "out", s: "Ki: db", f: V => V.db }, { t: "stop" }]; return fcRun(B, 5); };
+  const MET = { robot: "Robot lépésenként", valt: "Változók követése", fc: "Folyamatábra bejárása" };
+  const MF = {
+    robot: () => robotFrames(DEMO, clone(DEMOP), " Egy négy utasításból álló minta ötször: 5 utasítás helyett 21 lett volna ismétlés nélkül."),
+    valt: () => { const r = demoCode(); return [{ cap: "Ez a program összeadja a számokat 1-től 4-ig. Kövessük a változókat egy táblázatban!", html: r.F[0].html }].concat(r.F, [{ cap: "A kiírt érték: " + r.out + ". Ellenőrzés: 1 + 2 + 3 + 4 = 10.", html: r.F[r.F.length - 1].html }]); },
+    fc: () => { const r = demoFc(); return [{ cap: "Folyamatábra: a bemenet x = 5. Hányszor kell duplázni, hogy elérje a 40-et? A nyilak mentén haladunk.", html: r.F[0].html }].concat(r.F); }
+  };
+  const pb = K.player($("#pb"));
+  const PB = { m: "robot" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const bindPlay = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const legend = () => {
+    const B1 = [{ t: "start" }], one = (svgInner, h) => '<svg class="fc" viewBox="0 0 160 ' + h + '" style="max-width:150px">' + svgInner + "</svg>";
+    void B1;
+    return "<div class='legend'>" +
+      "<div>" + one('<rect class="bx" x="35" y="6" width="90" height="32" rx="16"/><text x="80" y="22" text-anchor="middle" dominant-baseline="middle">Start</text>', 44) + "<b>lekerekített téglalap</b>a program eleje és vége</div>" +
+      "<div>" + one('<polygon class="bx" points="22,6 152,6 138,38 8,38"/><text x="80" y="22" text-anchor="middle" dominant-baseline="middle">Be: x</text>', 44) + "<b>paralelogramma</b>beolvasás, kiírás</div>" +
+      "<div>" + one('<rect class="bx" x="15" y="6" width="130" height="32" rx="3"/><text x="80" y="22" text-anchor="middle" dominant-baseline="middle">x = x + 1</text>', 44) + "<b>téglalap</b>művelet, értékadás</div>" +
+      "<div>" + one('<polygon class="bx" points="80,4 152,31 80,58 8,31"/><text x="80" y="31" text-anchor="middle" dominant-baseline="middle">x &gt; 10?</text>', 62) + "<b>rombusz</b>döntés: igen vagy nem</div></div>";
+  };
+  const slides = [
+    { k: "Alap", t: "Mi az algoritmus?", h:
+      "<p>Az <b>algoritmus</b> lépések pontos sorozata, amely egy feladatot megold. Olyan, mint egy recept: ha valaki pontosan követi, mindig ugyanoda jut.</p>" +
+      "<ul><li><b>Egyértelmű</b>: minden lépésnél tudni kell, mit csinálj. (A „sózd ízlés szerint” nem az.)</li><li><b>Véges</b>: egyszer véget ér.</li><li><b>Lépésekből áll</b>, és ugyanarra a bemenetre mindig ugyanazt adja.</li></ul>" +
+      "<div class='note'><b>A program</b> egy algoritmus olyan nyelven leírva, amit a gép megért: Scratch-blokkok, Python, JavaScript. A gép nem gondolkodik helyetted: pontosan azt csinálja, amit leírtál.</div>" },
+    { k: "Szekvencia", t: "Utasítások sorban", h:
+      "<p>A legegyszerűbb szerkezet a <b>szekvencia</b>: az utasítások egymás után, sorban hajtódnak végre. <b>A sorrend számít!</b></p>" +
+      "<p>A fenti robotnak három utasítása van: <b>Előre</b> (egy mezőt lép), <b>Balra</b> és <b>Jobbra</b> (helyben fordul 90 fokot, nem lép).</p>" +
+      "<p class='eq'>Előre, Előre, Jobbra, Előre</p>" +
+      "<p>Ha felcseréled az utolsó kettőt (Előre, Előre, Előre, Jobbra), a robot máshova ér. Próbáld ki az 1. pályán!</p>" },
+    { k: "Ciklus", t: "Ismétlés: ne írd le hússzor", h:
+      "<p>Ha valami ismétlődik, használj <b>ciklust</b>. A Scratchben ez az „ismételd 10-szer” blokk.</p>" +
+      "<pre class='code'>Ismételd négyszer:\n  Előre\n  Előre\n  Jobbra</pre>" +
+      "<p>Ez 12 utasítás helyett 4 (maga az ismétlés és a benne lévő 3), és a robot körbejár egy négyzetet. A ciklusban lévő utasítások a <b>ciklusmag</b>.</p>" +
+      playBtn("robot"), init: bindPlay },
+    { k: "Elágazás", t: "Ha … akkor … különben", h:
+      "<p>Az <b>elágazás</b> egy feltételtől függően más-más utasítást hajt végre:</p>" +
+      "<pre class='code'>ha fal van előtted akkor\n  Jobbra\nkülönben\n  Előre\nelágazás vége</pre>" +
+      "<p>A feltétel mindig <b>igaz vagy hamis</b>. Így a robot olyan pályán is boldogul, amit előre nem ismersz: ezt hívják szenzornak (érzékelőnek) a robotikában.</p>" +
+      "<div class='note'><b>Három alapszerkezet:</b> szekvencia, elágazás, ciklus. Minden program ezekből épül, a legnagyobb játék is.</div>" },
+    { k: "Változó", t: "A változó: dobozka névvel", h:
+      "<p>A <b>változó</b> egy névvel ellátott tároló, benne egy érték, ami menet közben változhat. Például: pont, élet, db.</p>" +
+      "<pre class='code'>pont = 0\npont = pont + 10</pre>" +
+      "<p>Az <b>értékadás</b> (=) nem egyenlet! Jelentése: számold ki a jobb oldalt, és az eredményt tedd a bal oldali dobozba. A pont = pont + 10 után a pont 10 lesz.</p>" +
+      "<p>A <b>számláló</b> egy változó, amit minden alkalommal 1-gyel növelünk (db = db + 1). Így számoljuk meg, hányszor történt valami.</p>" },
+    { k: "Ciklusfajták", t: "Számlálós és feltételes ciklus", h:
+      "<ul><li><b>Számlálós ciklus</b>: tudjuk előre, hányszor fut. <code>ciklus i = 1-től 10-ig</code></li><li><b>Elöltesztelő ciklus</b>: amíg a feltétel igaz, ismétel; a feltételt a ciklusmag előtt nézi. <code>amíg x &lt; 100</code></li><li><b>Hátultesztelő ciklus</b>: a ciklusmag egyszer biztosan lefut, a feltételt a végén nézi.</li></ul>" +
+      "<pre class='code'>s = 0\nciklus i = 1-től 4-ig\n  s = s + i\nciklus vége\nki: s</pre>" +
+      "<div class='mistake'><b>Végtelen ciklus:</b> ha a feltétel sosem lesz hamis (például amíg x &gt; 0, és x csak nő), a program soha nem áll meg.</div>" +
+      playBtn("valt"), init: bindPlay },
+    { k: "Folyamatábra", t: "Az algoritmus rajzban", h:
+      "<p>A <b>folyamatábra</b> az algoritmus rajza. A nyilak mutatják, merre megyünk tovább.</p>" + legend() +
+      "<p>A rombuszból két nyíl indul: <b>igen</b> és <b>nem</b>. Ha a nyíl visszafelé, felfelé mutat, az ciklus.</p>" + playBtn("fc"), init: bindPlay },
+    { k: "Nyelvek", t: "Ugyanaz háromféleképpen", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Pszeudokód</th><th>Scratch</th><th>Python (10.-ben)</th></tr>" +
+      "<tr><td>ismételd tízszer</td><td>ismételd 10</td><td>for i in range(10):</td></tr>" +
+      "<tr><td>ha x &gt; 5 akkor</td><td>ha x &gt; 5 akkor</td><td>if x &gt; 5:</td></tr>" +
+      "<tr><td>amíg x &lt; 100</td><td>ismételd eddig: x &gt; 99</td><td>while x &lt; 100:</td></tr>" +
+      "<tr><td>pont = pont + 1</td><td>változtasd: pont 1-gyel</td><td>pont = pont + 1</td></tr>" +
+      "<tr><td>ki: pont</td><td>mondd: pont</td><td>print(pont)</td></tr></table></div>" +
+      "<p>A gondolkodás ugyanaz, csak a nyelv más. Ezért érdemes a blokkokkal kezdeni: a szerkezetet tanulod meg, nem a nyelvtant.</p>" },
+    { k: "Hibakeresés", t: "Debug: a hiba megkeresése", h:
+      "<ol><li><b>Futtasd lépésenként</b>, és figyeld, hol tér el attól, amit vártál.</li><li><b>Kövesd a változókat</b> táblázatban: minden sor után írd fel az értékeket.</li><li><b>Egyszerre egy dolgot változtass</b>, aztán próbáld újra.</li><li><b>Mondd ki hangosan</b>, mit csinál a program (gumikacsa-módszer: elmagyarázod valakinek, akár egy gumikacsának).</li></ol>" +
+      "<div class='note'><b>Miért bug?</b> 1947-ben egy számítógép hibáját egy beszorult moly (angolul bug) okozta. Azóta hívják a programhibát bugnak, a javítást debugnak.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Balra a saját szemszögedből.</b> A robot a saját orrához képest fordul. Ha lefelé néz, a Balra kelet felé fordítja.</div>" +
+      "<div class='mistake'><b>A fordulás nem lépés.</b> A Balra és a Jobbra helyben fordít, utána kell egy Előre.</div>" +
+      "<div class='mistake'><b>Eggyel több vagy kevesebb ismétlés.</b> A ciklus 1-től 4-ig négyszer fut, nem háromszor. Számold meg a köröket!</div>" +
+      "<div class='mistake'><b>Az = mint egyenlet.</b> Az x = x + 1 nem „lehetetlen egyenlet”, hanem: x új értéke a régi plusz 1.</div>" +
+      "<div class='mistake'><b>Végtelen ciklus.</b> Ellenőrizd, hogy a ciklusmag közelebb viszi-e a feltételt a hamishoz.</div>" },
+    { k: "Trükkök", t: "Hogy gondolkodj?", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Ismétlődő minta</span><span>Keresd a programban az ismétlődő részt: az lesz a ciklusmag, az ismétlések száma a ciklus száma.</span></div>" +
+      "<div class='trick'><span class='t'>Hol vagy, merre nézel?</span><span>A robotnál mindig két dolgot jegyezz: a helyét (pl. C3) és az irányát (pl. kelet).</span></div>" +
+      "<div class='trick'><span class='t'>Kis lépésekben</span><span>Írj meg egy kis részt, próbáld ki, utána folytasd. Így a hiba mindig a legutóbbi részben van.</span></div>" +
+      "<div class='trick'><span class='t'>Rajzold le</span><span>Bonyolult feladatnál rajzolj folyamatábrát vagy táblázatot, mielőtt kódolsz.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const flat = n => Array.from({ length: n }, () => C(pick(["F", "F", "F", "L", "R"])));
+  function randProg(l){
+    if (l === 1) return flat(rnd(3, 5));
+    if (l === 2){ const b = Math.random() < 0.5 ? [C("F")] : shuffle([C("F"), C(pick(["L", "R"]))]); return flat(rnd(0, 2)).concat([LOOP(rnd(2, 4), b)], flat(rnd(0, 2))); }
+    const b = [C("F"), C(pick(["L", "R"]))].concat(Math.random() < 0.5 ? [C(pick(["F", "L", "R"]))] : []);
+    return flat(rnd(0, 2)).concat([LOOP(rnd(2, 4), shuffle(b))], flat(rnd(1, 2)));
+  }
+  const envGen = (Wd, Ht) => ({ W: Wd, H: Ht, walls: new Set(), sx: rnd(0, Wd - 1), sy: rnd(0, Ht - 1), sd: rnd(0, 3) });
+  const addWalls = (env, trail, n) => { const T = new Set(trail.map(a => a[0] + "," + a[1])); let g = 0; while (env.walls.size < n && g++ < 200){ const k = rnd(0, env.W - 1) + "," + rnd(0, env.H - 1); if (!T.has(k) && k !== env.gx + "," + env.gy) env.walls.add(k); } };
+  // tokenekre bontás és vissza (a változatokhoz)
+  const toT = p => p.flatMap(it => it.c ? [it.c] : ["[" + it.n].concat(toT(it.b), ["]"]));
+  function fromT(t){
+    const root = [], st = [root];
+    for (const x of t){
+      if (x[0] === "["){ const it = LOOP(Number(x.slice(1)), []); st[st.length - 1].push(it); st.push(it.b); }
+      else if (x === "]"){ if (st.length < 2) return null; if (!st[st.length - 1].length) return null; st.pop(); }
+      else st[st.length - 1].push(C(x));
+    }
+    return st.length === 1 && root.length ? root : null;
+  }
+  function mutants(p){
+    const t = toT(p), out = [];
+    t.forEach((x, i) => {
+      if ("FLR".includes(x)){
+        "FLR".split("").filter(y => y !== x).forEach(y => out.push(t.slice(0, i).concat([y], t.slice(i + 1))));
+        out.push(t.slice(0, i).concat(t.slice(i + 1)));
+        out.push(t.slice(0, i).concat(["F"], t.slice(i)));
+        if (i + 1 < t.length && "FLR".includes(t[i + 1]) && t[i + 1] !== x) out.push(t.slice(0, i).concat([t[i + 1], x], t.slice(i + 2)));
+      } else if (x[0] === "["){
+        const n = Number(x.slice(1));
+        [n - 1, n + 1].filter(m => m >= 2 && m <= 9).forEach(m => out.push(t.slice(0, i).concat(["[" + m], t.slice(i + 1))));
+      }
+    });
+    out.push(t.concat(["F"]));
+    return out.map(fromT).filter(Boolean);
+  }
+  const inBoard = s => /^[A-H][1-9]$/.test(s);
+  const types = [
+    { id: "hova", name: "Hova ér a robot?", gen(l){
+      for (let g = 0; g < 300; g++){
+        const env = envGen(l === 3 ? 6 : 5, l === 3 ? 6 : 5), p = randProg(l), r = run(env, p);
+        if (r.crash || r.trail.length < 3) continue;
+        const ans = cell(r.x, r.y), st = cell(env.sx, env.sy);
+        return { q: "A robot itt áll: " + st + ", " + DIRN[env.sd] + " felé néz. Hova ér a program végén? Írd be a mező nevét (például C3).<div class='rv' style='margin-top:10px'>" + startView(env) + listHtml(clone(p), -1) + "</div>", kind: "input", ph: "pl. C3", answer: ans,
+          sol: "<p>Kövesd lépésenként: hol áll a robot, és merre néz. A fordulás nem lép, csak irányt vált.</p><p>Program: " + ptxt(p) + "</p>", frames: robotFrames(env, clone(p)), title: "Hova ér a robot?",
+          check: v => { const s = String(v).replace(/\s+/g, "").toUpperCase(); if (s === ans) return { ok: true, msg: "Helyes!" }; if (s === ans[1] + ans[0]) return { ok: false, msg: "Fordítva: előbb a betű (oszlop), aztán a szám (sor)." }; if (!inBoard(s)) return { ok: false, msg: "Egy betűt és egy számot írj, például C3." }; if (s === st) return { ok: false, msg: "Ez a kiindulási hely. Hajtsd végre a programot!" }; return { ok: false, msg: "Nem jó. A Balra és a Jobbra a robot szemszögéből értendő. Nézd meg lejátszva!" }; } };
+      }
+    } },
+    { id: "melyik", name: "Melyik program jó?", gen(l){
+      for (let g = 0; g < 400; g++){
+        const env = envGen(5, 5), p = randProg(l), r = run(env, p);
+        if (r.crash || r.trail.length < 3 || (r.x === env.sx && r.y === env.sy)) continue;
+        env.gx = r.x; env.gy = r.y;
+        if (l >= 2) addWalls(env, r.trail, rnd(3, 5));
+        const good = ptxt(p), seen = new Set([good]), bad = [];
+        shuffle(mutants(p)).forEach(q => { const tq = ptxt(q); if (bad.length < 3 && !seen.has(tq) && !reaches(env, q)){ seen.add(tq); bad.push(tq); } });
+        if (bad.length < 3) continue;
+        const opts = shuffle([{ l: good, ok: true }].concat(bad.map(b => ({ l: b, ok: false }))));
+        return { q: "Melyik program viszi el a robotot a csillagig, falnak ütközés nélkül? A robot " + DIRN[env.sd] + " felé néz.<div style='margin-top:10px'>" + startView(env) + "</div>", kind: "choice", options: opts, answer: good,
+          sol: "<p>Próbáld végig mindegyiket ujjal a rácson. A helyes: " + good + "</p>", frames: robotFrames(env, clone(p)), title: "Melyik program jó?",
+          check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez: ez a program nem a csillagra visz (vagy falnak megy). Nézd meg lejátszva a helyeset." }) };
+      }
+    } },
+    { id: "valt", name: "Mit ír ki?", gen(l){
+      const t = codeTask(l), ans = t.r.out;
+      return { q: "Mit ír ki ez a program?" + t.note + "<pre class='code' style='margin-top:8px;font-size:1rem'>" + esc(t.r.L.map(x => "  ".repeat(x.dep) + x.t).join("\n")) + "</pre>", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Kövesd a változókat egy táblázatban, soronként. A lejátszás megmutatja minden lépés után az értékeket.</p>", frames: t.r.F, title: "Változók követése",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^-?\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Írd fel a változókat oszlopnak, és minden sor után az új értéket. Figyelj, hányszor fut a ciklus!" }; } };
+    } },
+    { id: "fc", name: "Folyamatábra", gen(l){
+      const t = fcTask(l), ans = t.r.out;
+      return { q: "Mit ír ki ez a folyamatábra, ha a bemenet <span class='num'>x = " + t.x + "</span>?<div style='margin-top:10px'>" + fcSvg(t.B, null) + "</div>", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Kövesd a nyilakat a Starttól. A rombusznál döntsd el, igaz-e a feltétel, és arra menj tovább. Írd fel x " + (l === 2 ? "és db " : "") + "értékét minden lépés után.</p>", frames: t.r.F, title: "Folyamatábra bejárása",
+        check: v => { const s = String(v).replace(/\s+/g, "").replace(",", "."); if (!/^-?\d+(\.\d+)?$/.test(s)) return { ok: false, msg: "Egy számot írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. A rombusznál nézd meg pontosan a feltételt (például a > nem ugyanaz, mint a ≥), és kövesd a nyilat." }; } };
+    } },
+    { id: "hiba", name: "Hibakeresés", gen(l){
+      for (let g = 0; g < 500; g++){
+        const env = envGen(5, 5), n = l === 1 ? rnd(4, 5) : l === 2 ? rnd(5, 7) : rnd(7, 9);
+        const p = flat(n), r = run(env, p);
+        if (r.crash || r.trail.length < 3 || (r.x === env.sx && r.y === env.sy)) continue;
+        env.gx = r.x; env.gy = r.y;
+        if (l >= 2) addWalls(env, r.trail, rnd(3, 5));
+        const m = rnd(0, n - 1), bug = clone(p); bug[m] = C(pick("FLR".split("").filter(y => y !== p[m].c)));
+        if (reaches(env, bug)) continue;
+        const fix = [];
+        for (let i = 0; i < n; i++) if ("FLR".split("").some(y => { if (y === bug[i].c) return false; const q = clone(bug); q[i] = C(y); return reaches(env, q); })) fix.push(i);
+        if (fix.length !== 1 || fix[0] !== m) continue;
+        const ans = m + 1;
+        return { q: "Ennek a programnak a csillagra kellene vinnie a robotot, de <b>egy utasítás hibás</b>. Hányadik? A robot " + DIRN[env.sd] + " felé néz.<div class='rv' style='margin-top:10px'>" + startView(env) + listHtml(clone(bug), -1) + "</div>", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>" + K.Art(ans) + " " + ans + ". sorban " + CN[bug[m].c] + " helyett " + CN[p[m].c] + " kell. Javítva: " + ptxt(p) + "</p>", frames: robotFrames(env, clone(bug), " A hibás sor: " + ans + ". Itt " + CN[bug[m].c] + " helyett " + CN[p[m].c] + " kell."), title: "Hibakeresés",
+          check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "A hibás sor számát írd be." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem ez. Kövesd a programot lépésenként, és figyeld, hol tér le a robot a jó útról." }; } };
+      }
+    } },
+    { id: "rovid", name: "Rövidítés ciklussal", gen(l){
+      const prim = w => { for (let d = 1; d < w.length; d++) if (w.length % d === 0 && w.every((x, i) => x === w[i % d])) return false; return true; };
+      let pat; do { pat = Array.from({ length: l === 1 ? rnd(1, 2) : rnd(2, 3) }, () => pick(["F", "F", "L", "R"])); } while (!prim(pat) || !pat.includes("F"));
+      const k = l === 1 ? rnd(3, 7) : rnd(2, 5);
+      if (l < 3){
+        const seq = Array.from({ length: k }, () => pat).flat();
+        return { q: "Ezt a programot ciklussal akarjuk rövidebben leírni. Hányszor kell ismételni a legrövidebb ismétlődő részt?<p class='code' style='margin-top:8px;white-space:normal'>" + seq.map(x => CN[x]).join(", ") + "</p>", kind: "input", mode: "numeric", answer: k,
+          sol: "<p>Az ismétlődő rész: " + pat.map(x => CN[x]).join(", ") + ". Ez " + k + " alkalommal jön egymás után: Ismételd " + TIMES[k] + ": [" + pat.map(x => CN[x]).join(", ") + "].</p>",
+          check: v => { const s = String(v).replace(/\s+/g, ""); if (+s === k) return { ok: true, msg: "Helyes!" }; if (+s === seq.length) return { ok: false, msg: "Ez az utasítások száma. Keresd az ismétlődő mintát, és azt számold!" }; return { ok: false, msg: "Nem jó. Keresd meg a legrövidebb részt, amelyből ismételgetve kijön az egész." }; } };
+      }
+      const pre = Array.from({ length: rnd(0, 2) }, () => pick(["F", "L", "R"])), post = Array.from({ length: rnd(0, 1) }, () => pick(["F", "L", "R"]));
+      const seq = pre.concat(Array.from({ length: k + 1 }, () => pat).flat(), post), N = seq.length;
+      let best = N, form = null;
+      for (let i = 0; i < N; i++) for (let len = 1; i + len * 2 <= N; len++){
+        let kk = 1; while (i + len * (kk + 1) <= N && seq.slice(i + len * kk, i + len * (kk + 1)).join() === seq.slice(i, i + len).join()) kk++;
+        if (kk >= 2){ const c = i + 1 + len + (N - i - len * kk); if (c < best){ best = c; form = { i, len, kk }; } }
+      }
+      const fs = form ? (form.i ? seq.slice(0, form.i).map(x => CN[x]).join(", ") + ", " : "") + "Ismételd " + TIMES[form.kk] + ": [" + seq.slice(form.i, form.i + form.len).map(x => CN[x]).join(", ") + "]" + (form.i + form.len * form.kk < N ? ", " + seq.slice(form.i + form.len * form.kk).map(x => CN[x]).join(", ") : "") : "";
+      return { q: "Írd le ezt a programot a lehető legkevesebb utasítással, <b>egy</b> ciklust használva. Hány utasítás lesz? (Az ismétlés 1 utasítás, plusz ami benne van.)<p class='code' style='margin-top:8px;white-space:normal'>" + seq.map(x => CN[x]).join(", ") + "</p>", kind: "input", mode: "numeric", answer: best,
+        sol: "<p>A legrövidebb alak: " + fs + ". Ez " + best + " utasítás.</p>",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (+s === best) return { ok: true, msg: "Helyes!" }; if (+s === N) return { ok: false, msg: "Ez ciklus nélkül ennyi. Keresd az ismétlődő mintát!" }; return { ok: false, msg: "Nem jó. Keresd meg a leghosszabb ismétlődő szakaszt, és számold: ami előtte van + 1 (az ismétlés) + a minta + ami utána marad." }; } };
+    } },
+    { id: "fog", name: "Fogalmak", gen(l){
+      const P = [
+        [["Melyik alakzat jelöli a folyamatábrában a döntést?", "rombusz"], ["Melyik alakzat jelöli a folyamatábrában a műveletet, például x = x + 1?", "téglalap"], ["Melyik alakzat jelöli a folyamatábrában a beolvasást és a kiírást?", "paralelogramma"], ["Melyik alakzat jelöli a folyamatábrában a Startot és a Stopot?", "lekerekített téglalap"]],
+        [["Lépések véges, egyértelmű sorozata, amely egy feladatot megold.", "algoritmus"], ["Utasítások egymás után, sorban végrehajtva.", "szekvencia"], ["Utasítások ismételt végrehajtása.", "ciklus"], ["Egy feltételtől függően más-más utasítás fut le.", "elágazás"], ["Névvel ellátott tároló, amelyben egy érték van, és ez az érték változhat.", "változó"], ["Az x = x + 1 utasítás: kiszámoljuk a jobb oldalt, és az eredményt eltároljuk a bal oldali változóban.", "értékadás"]],
+        [["ciklus i = 1-től 10-ig … ciklus vége", "számlálós ciklus"], ["amíg x < 100 … ciklus vége (a feltételt a ciklusmag előtt nézi)", "elöltesztelő ciklus"], ["A ciklusmag egyszer biztosan lefut, a feltételt csak a végén nézi.", "hátultesztelő ciklus"], ["amíg x > 0: x = x + 1 (és x pozitív számról indul)", "végtelen ciklus"], ["ha x > 0 akkor … különben … elágazás vége", "kétirányú elágazás"]]
+      ][l - 1];
+      const it = pick(P), others = shuffle(P.filter(x => x[1] !== it[1])).slice(0, 3);
+      const opts = shuffle([{ l: it[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
+      return { q: (l === 3 ? "Mi ez? " : l === 2 ? "Melyik fogalom ez? " : "") + esc(it[0]), kind: "choice", options: opts, answer: it[1], sol: "<p>" + esc(it[0]) + " → <b>" + it[1] + "</b>. Nézd meg a diákat.</p>",
+        check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + it[1] + "." }) };
+    } }
+  ];
+  K.practice($("#practice"), { id: "algoritmus", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["Előre", "egy mezőt lép, amerre néz"], ["Balra / Jobbra", "helyben fordul 90 fokot (a robot szemszögéből)"], ["Ismételd háromszor: [ … ]", "számlálós ciklus: a ciklusmag háromszor fut"], ["ha … akkor … különben", "elágazás: a feltételtől függ, melyik ág fut"], ["amíg feltétel … ciklus vége", "elöltesztelő ciklus: amíg igaz, ismétel"], ["x = x + 1", "értékadás: x új értéke a régi plusz 1"], ["ki: x", "kiírás"], ["mod / div", "osztási maradék / egész rész: 17 mod 5 = 2, 17 div 5 = 3"]];
+  $("#cheat").innerHTML = "<tr><th>Utasítás</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='text-align:left;font-weight:700'>" + esc(r[0]) + "</td><td style='text-align:left'>" + esc(r[1]) + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
