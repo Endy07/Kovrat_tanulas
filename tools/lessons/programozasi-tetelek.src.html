@@ -1,0 +1,385 @@
+<!--@HEAD-->
+<title>Programozási tételek</title>
+<style>
+.bars{display:flex;align-items:flex-end;gap:5px;height:170px;padding:6px 2px 0;border-bottom:1.5px solid #3A4656}
+.bar{flex:1;min-width:0;background:#3E5D8A;border-radius:6px 6px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-family:var(--mono);font-size:.78rem;font-weight:700;padding-top:3px;transition:height .25s,background .2s}
+.bar.cmp{background:var(--led);color:#2A1A00}
+.bar.sw{background:#E0574A}
+.bar.done{background:#2E8B57}
+.bar.lo{opacity:.3}
+.ctr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ctr select{font-size:.95rem}
+.hmsg{font-family:var(--mono);font-size:.9rem;color:#FFB01F;min-height:2.6em}
+.glog{font-family:var(--mono);font-size:.85rem;color:var(--panel-muted);white-space:pre-wrap;max-height:150px;overflow-y:auto}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.pair .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+pre.code,.code,code,.prompt pre{font-variant-ligatures:none}
+.cells{display:flex;flex-wrap:wrap;gap:4px}
+.cell{min-width:2.3em;text-align:center;border:1.5px solid #3A4656;border-radius:8px;padding:4px 6px;font-family:var(--mono);font-weight:700}
+.cell small{display:block;font-size:.65rem;font-weight:400;color:#8C99AA}
+.cell.cmp{border-color:#FFB01F;background:#4a3a12;color:#FFB01F}
+.cell.sw{border-color:#F2796C;background:#3A1C19;color:#F2796C}
+.cell.done{border-color:#52C584;color:#52C584}
+.cell.lo{opacity:.3}
+.prompt .cells .cell{border-color:var(--line)}
+.prompt .cell small{color:var(--muted)}
+.slide .eq{white-space:normal}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · algoritmusok</span>
+  <h1>Programozási tételek: keresés és rendezés</h1>
+  <p class="lead">Összegzés, megszámlálás, maximum, keresés, rendezés: ugyanaz a néhány minta tér vissza szinte minden programban. Nézd meg, hogyan rendez a gép, lépésről lépésre!</p>
+  <div class="panel">
+    <span class="eyebrow">Rendezés lépésenként: a sárga kettőt hasonlítja össze, a piros csere, a zöld már a helyén van</span>
+    <div class="ctr">
+      <select id="alg" aria-label="Algoritmus"><option value="bub">Buborékrendezés</option><option value="sel">Kiválasztásos rendezés</option></select>
+      <button class="btn" id="hstep">Lépés ▶</button><button class="btn" id="hplay">▶ Lejátszás</button><button class="btn" id="hnew">↻ Új lista</button>
+    </div>
+    <div class="bars" id="bars" aria-hidden="true"></div>
+    <div class="hmsg" id="hmsg" aria-live="polite"></div>
+    <div class="readout">
+      <div><div class="eyebrow">Összehasonlítás</div><div class="big led" id="hcmp">0</div></div>
+      <div><div class="eyebrow">Csere</div><div class="big" id="hsw">0</div></div>
+      <div class="expr" id="hexpr"></div>
+    </div>
+    <span class="eyebrow">Bináris keresés: gondoltam egy számra 1 és 100 között</span>
+    <form class="row" id="gform" autocomplete="off"><input type="text" id="gin" inputmode="numeric" placeholder="Tipped" aria-label="Tipped"><button class="btn" type="submit">Tipp</button><button class="btn" type="button" id="ghalf">Mutasd a felezést</button><button class="btn" type="button" id="gnew">↻ Új szám</button></form>
+    <div class="glog" id="glog" aria-live="polite"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: a tételek</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="bub" aria-selected="true">Buborékrendezés</button>
+    <button class="tab" data-m="bin" aria-selected="false">Bináris keresés</button>
+    <button class="tab" data-m="max" aria-selected="false">Maximum keresése</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A listát számokkal, vesszővel elválasztva írd (például 3, 1, 4). A pszeudokódban az index 1-től indul, a Pythonban 0-tól. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Csere segédváltozóval</span><pre class="code">seged = a
+a = b
+b = seged</pre><span>Pythonban röviden: <code>a, b = b, a</code></span></div>
+    <div class="trick"><span class="t">Lépésszámok</span><span>Lineáris keresés: legfeljebb N összehasonlítás. Bináris keresés: kb. log₂N (1000 elemnél 10, 1 millió elemnél 20). Buborék- és kiválasztásos rendezés: N · (N − 1) : 2 összehasonlítás.</span></div>
+    <div class="trick"><span class="t">Maximum kezdőértéke</span><span>Mindig a lista első eleme, nem 0! Ha minden szám negatív, a 0 hibás eredményt ad.</span></div>
+    <div class="trick"><span class="t">Bináris keresés feltétele</span><span>Csak <b>rendezett</b> listán működik.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<pre[\s\S]*?<\/pre>/g, ""], [/\s:\s/g, " osztva "], [/≤/g, " kisebb vagy egyenlő, mint "]);
+
+  /* ---------- Algoritmusok (0 alapú indexekkel; a kiírás 1 alapú) ---------- */
+  function bubbleSteps(a){
+    const L = a.slice(), n = L.length, S = []; let cmp = 0, sw = 0;
+    for (let p = 1; p < n; p++){
+      for (let j = 0; j < n - p; j++){
+        cmp++; const big = L[j] > L[j + 1];
+        S.push({ L: L.slice(), a: j, b: j + 1, t: "cmp", cmp, sw, done: n - p + 1, msg: "Összehasonlítjuk: " + L[j] + " és " + L[j + 1] + ". " + (big ? "A bal oldali nagyobb, cserélni kell." : "Jó sorrendben vannak, nincs csere.") });
+        if (big){ [L[j], L[j + 1]] = [L[j + 1], L[j]]; sw++; S.push({ L: L.slice(), a: j, b: j + 1, t: "sw", cmp, sw, done: n - p + 1, msg: "Csere: most " + L[j] + " áll elöl, " + L[j + 1] + " utána." }); }
+      }
+      S.push({ L: L.slice(), a: -1, b: -1, t: "pass", cmp, sw, done: n - p, msg: p + ". menet vége: a legnagyobb még rendezetlen elem (" + L[n - p] + ") felbuborékolt a helyére." });
+    }
+    S.push({ L: L.slice(), a: -1, b: -1, t: "end", cmp, sw, done: 0, msg: "Kész, a lista rendezett." });
+    return S;
+  }
+  function selectionSteps(a){
+    const L = a.slice(), n = L.length, S = []; let cmp = 0, sw = 0;
+    for (let i = 0; i < n - 1; i++){
+      let m = i;
+      for (let j = i + 1; j < n; j++){
+        cmp++; const sm = L[j] < L[m];
+        S.push({ L: L.slice(), a: m, b: j, t: "cmp", cmp, sw, lo: i, msg: "Az eddigi legkisebb: " + L[m] + ". Összevetjük ezzel: " + L[j] + ". " + (sm ? "Ez kisebb, ez lesz az új legkisebb." : "Ez nem kisebb.") });
+        if (sm) m = j;
+      }
+      if (m !== i){ [L[i], L[m]] = [L[m], L[i]]; sw++; S.push({ L: L.slice(), a: i, b: m, t: "sw", cmp, sw, lo: i, msg: "A legkisebb (" + L[i] + ") a rendezetlen rész elejére kerül: csere." }); }
+      S.push({ L: L.slice(), a: -1, b: -1, t: "pass", cmp, sw, lo: i + 1, msg: (i + 1) + ". menet vége: az első " + (i + 1) + " elem a helyén van." });
+    }
+    S.push({ L: L.slice(), a: -1, b: -1, t: "end", cmp, sw, lo: n, msg: "Kész, a lista rendezett." });
+    return S;
+  }
+  const bubblePasses = (a, k) => { const L = a.slice(), n = L.length; for (let p = 1; p <= k; p++) for (let j = 0; j < n - p; j++) if (L[j] > L[j + 1]) [L[j], L[j + 1]] = [L[j + 1], L[j]]; return L; };
+  const selPasses = (a, k) => { const L = a.slice(), n = L.length; for (let i = 0; i < k; i++){ let m = i; for (let j = i + 1; j < n; j++) if (L[j] < L[m]) m = j; [L[i], L[m]] = [L[m], L[i]]; } return L; };
+  const swapsTotal = a => { let s = 0; for (let i = 0; i < a.length; i++) for (let j = i + 1; j < a.length; j++) if (a[i] > a[j]) s++; return s; };
+  const swapsPass1 = a => { const L = a.slice(); let s = 0; for (let j = 0; j < L.length - 1; j++) if (L[j] > L[j + 1]){ [L[j], L[j + 1]] = [L[j + 1], L[j]]; s++; } return s; };
+  function binSteps(L, x){ let lo = 0, hi = L.length - 1; const S = []; while (lo <= hi){ const k = Math.floor((lo + hi) / 2); S.push({ lo, hi, k, v: L[k] }); if (L[k] === x) break; if (L[k] < x) lo = k + 1; else hi = k - 1; } return S; }
+  const distinct = (n, a, b) => shuffle(Array.from({ length: b - a + 1 }, (_, i) => a + i)).slice(0, n);
+  const sortedDistinct = (n, a, b) => distinct(n, a, b).sort((p, q) => p - q);
+
+  /* ---------- Hero: rendezés-vizualizáló ---------- */
+  const H = { L: [], S: [], k: -1, timer: null };
+  function hNew(){ H.L = distinct(rnd(8, 12), 3, 30); hLoad(); }
+  function hLoad(){ clearInterval(H.timer); H.timer = null; $("#hplay").textContent = "▶ Lejátszás"; H.S = ($("#alg").value === "bub" ? bubbleSteps : selectionSteps)(H.L); H.k = -1; hDraw(); }
+  function hDraw(){
+    const s = H.k < 0 ? { L: H.L, a: -1, b: -1, t: "", cmp: 0, sw: 0, done: H.L.length + 1, lo: 0, msg: "Nyomd meg a „Lépés” gombot, vagy játszd le." } : H.S[H.k];
+    const mx = Math.max(...s.L), bub = $("#alg").value === "bub", n = s.L.length;
+    $("#bars").innerHTML = s.L.map((v, i) => {
+      let c = "";
+      if (i === s.a || i === s.b) c = s.t === "sw" ? "sw" : "cmp";
+      else if (s.t === "end" || (bub ? i >= s.done : i < s.lo)) c = "done";
+      return '<div class="bar ' + c + '" style="height:' + Math.round(14 + v / mx * 86) + '%">' + v + "</div>";
+    }).join("");
+    $("#hmsg").textContent = s.msg; $("#hcmp").textContent = s.cmp; $("#hsw").textContent = s.sw;
+    $("#hexpr").textContent = "Elemek száma: " + n + ". A teljes rendezés összehasonlításainak száma: " + n + " · " + (n - 1) + " : 2 = " + n * (n - 1) / 2 + ".";
+  }
+  function hStep(){ if (H.k < H.S.length - 1){ H.k++; hDraw(); } else { clearInterval(H.timer); H.timer = null; $("#hplay").textContent = "▶ Lejátszás"; } }
+  $("#hstep").addEventListener("click", hStep);
+  $("#hplay").addEventListener("click", () => {
+    if (H.timer){ clearInterval(H.timer); H.timer = null; $("#hplay").textContent = "▶ Lejátszás"; return; }
+    if (H.k >= H.S.length - 1) H.k = -1;
+    H.timer = setInterval(hStep, 450); $("#hplay").textContent = "⏸ Szünet";
+  });
+  $("#hnew").addEventListener("click", hNew);
+  $("#alg").addEventListener("change", hLoad);
+  hNew();
+
+  /* ---------- Hero: gondoltam egy számra ---------- */
+  const G = { x: 0, n: 0, lo: 1, hi: 100, done: false, log: "" };
+  function gNew(){ G.x = rnd(1, 100); G.n = 0; G.lo = 1; G.hi = 100; G.done = false; G.log = "Gondoltam egy számra 1 és 100 között. Tippelj! Felezéssel legfeljebb 7 tipp elég, mert 2 a hetediken 128, ami több, mint 100."; $("#glog").textContent = G.log; }
+  function gTry(v){
+    if (G.done) return;
+    v = Number(v); if (!Number.isInteger(v) || v < 1 || v > 100){ $("#glog").textContent = G.log + "\nEgy egész számot írj 1 és 100 között."; return; }
+    G.n++;
+    if (v === G.x){ G.done = true; G.log += "\n" + G.n + ". tipp: " + v + " → Eltaláltad! " + G.n + " tipp kellett."; }
+    else if (v < G.x){ G.lo = Math.max(G.lo, v + 1); G.log += "\n" + G.n + ". tipp: " + v + " → a szám nagyobb. Maradt: " + G.lo + " és " + G.hi + " között."; }
+    else { G.hi = Math.min(G.hi, v - 1); G.log += "\n" + G.n + ". tipp: " + v + " → a szám kisebb. Maradt: " + G.lo + " és " + G.hi + " között."; }
+    $("#glog").textContent = G.log; $("#glog").scrollTop = 1e6;
+  }
+  $("#gform").addEventListener("submit", e => { e.preventDefault(); gTry($("#gin").value); $("#gin").value = ""; });
+  $("#ghalf").addEventListener("click", () => { let g = 0; while (!G.done && g++ < 10) gTry(Math.floor((G.lo + G.hi) / 2)); });
+  $("#gnew").addEventListener("click", gNew);
+  gNew();
+
+  /* ---------- Levezetések ---------- */
+  const cellsHtml = (L, mark) => '<div class="cells">' + L.map((v, i) => '<span class="cell ' + (mark(i) || "") + '">' + v + "<small>" + (i + 1) + ".</small></span>").join("") + "</div>";
+  function bubFrames(a){
+    const S = bubbleSteps(a), n = a.length;
+    const F = [{ cap: "Buborékrendezés. A lista: " + a.join(", ") + ". Mindig két szomszédos elemet hasonlítunk össze, és ha a bal oldali a nagyobb, kicseréljük őket. Egy menet végére a legnagyobb a lista végére kerül.", html: cellsHtml(a, () => "") }];
+    S.forEach(s => F.push({ cap: s.msg + (s.t === "pass" || s.t === "end" ? " Eddig " + s.cmp + " összehasonlítás és " + s.sw + " csere." : ""), html: cellsHtml(s.L, i => i === s.a || i === s.b ? (s.t === "sw" ? "sw" : "cmp") : s.t === "end" || i >= s.done ? "done" : "") }));
+    return F;
+  }
+  function binFrames(L, x){
+    const S = binSteps(L, x), F = [{ cap: "Bináris keresés. A lista rendezett: " + L.join(", ") + ". Ezt keressük: " + x + ". Mindig a még lehetséges rész közepét nézzük meg, és a felét eldobjuk.", html: cellsHtml(L, () => "") }];
+    S.forEach((s, i) => {
+      const out = s.v === x ? "Megtaláltuk, ez az. Összesen " + (i + 1) + " elemet néztünk meg." : s.v < x ? "Ez kisebb, mint " + x + ", ezért a keresett szám csak tőle jobbra lehet: a bal felét eldobjuk." : "Ez nagyobb, mint " + x + ", ezért a keresett szám csak tőle balra lehet: a jobb felét eldobjuk.";
+      F.push({ cap: "A még lehetséges helyek: " + (s.lo + 1) + "–" + (s.hi + 1) + ". A közepe: (" + (s.lo + 1) + " + " + (s.hi + 1) + ") div 2 = " + (s.k + 1) + ". Az ott álló elem: " + s.v + ". " + out, html: cellsHtml(L, j => j === s.k ? "cmp" : j < s.lo || j > s.hi ? "lo" : "") });
+    });
+    const last = S[S.length - 1];
+    if (last.v !== x) F.push({ cap: "Nem maradt lehetséges elem: a keresett szám nincs a listában. Összesen " + S.length + " elemet néztünk meg. A lineáris keresés akár az összes elemet megnézte volna (" + L.length + " darab).", html: cellsHtml(L, () => "lo") });
+    return F;
+  }
+  function maxFrames(L){
+    const tb = (i, m, hl) => '<div class="ptwrap"><table class="pt"><tr><th>i</th><th>L[i]</th><th>max</th></tr><tr><td>' + i + "</td><td>" + L[i - 1] + '</td><td class="' + (hl ? "hl" : "") + '">' + m + "</td></tr></table></div>";
+    let m = L[0];
+    const F = [{ cap: "Keressük a legnagyobb elemet ebben a listában: " + L.join(", ") + ". A max kezdőértéke a lista első eleme: " + m + ". Nem 0, mert lehet, hogy minden szám negatív!", html: cellsHtml(L, j => j === 0 ? "cmp" : "") + tb(1, m, true) }];
+    for (let i = 2; i <= L.length; i++){
+      const v = L[i - 1], nw = v > m; if (nw) m = v;
+      F.push({ cap: "i = " + i + ": az elem " + v + ". Nagyobb, mint a mostani max? " + (nw ? "Igen, a max mostantól " + m + "." : "Nem, a max marad " + m + "."), html: cellsHtml(L, j => j === i - 1 ? "cmp" : "") + tb(i, m, nw) });
+    }
+    F.push({ cap: "A ciklus végére értünk. A legnagyobb elem: " + m + ". Ehhez " + (L.length - 1) + " összehasonlítás kellett.", html: cellsHtml(L, j => L[j] === m ? "done" : "") + '<p class="big led" style="margin-top:10px">max = ' + m + "</p>" });
+    return F;
+  }
+  const MET = { bub: "Buborékrendezés", bin: "Bináris keresés", max: "Maximum keresése" };
+  const MF = { bub: () => bubFrames([5, 1, 4, 2, 8]), bin: () => binFrames([3, 7, 12, 18, 25, 31, 40, 46, 52, 60, 71], 46), max: () => maxFrames([-4, 7, -1, 12, 3, 9]) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "bub" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+  const code = s => '<pre class="code">' + esc(s) + "</pre>";
+  const pair = (ps, py) => "<div class='pair'><div><div class='lbl'>Pszeudokód</div>" + code(ps) + "</div><div><div class='lbl'>Python</div>" + code(py) + "</div></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi az a programozási tétel?", h:
+      "<p>A <b>programozási tétel</b> egy bevált minta, amely rengeteg feladatban visszatér. Ha felismered, melyik kell, a program fele már kész.</p>" +
+      "<ul><li>Az adatok egy <b>listában</b> (tömbben) vannak: L, az elemek száma N.</li><li>Az elemre az <b>indexével</b> hivatkozunk: L[i]. A pszeudokódban az index <b>1-től</b> indul, a Pythonban <b>0-tól</b>: a Pythonban L[0] az első elem.</li></ul>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Kérdés</th><th>Tétel</th></tr><tr><td style='text-align:left'>mennyi összesen?</td><td>összegzés</td></tr><tr><td style='text-align:left'>hány darab ilyen?</td><td>megszámlálás</td></tr><tr><td style='text-align:left'>melyik a legnagyobb?</td><td>maximumkiválasztás</td></tr><tr><td style='text-align:left'>van-e ilyen?</td><td>eldöntés</td></tr><tr><td style='text-align:left'>hányadik az első ilyen (tudjuk, hogy van)?</td><td>kiválasztás</td></tr><tr><td style='text-align:left'>van-e, és ha igen, hányadik?</td><td>lineáris keresés</td></tr><tr><td style='text-align:left'>melyek az ilyenek?</td><td>kiválogatás</td></tr></table></div>" },
+    { k: "Összegzés", t: "Összegzés és átlag", h:
+      pair("s = 0\nciklus i = 1-től N-ig\n  s = s + L[i]\nciklus vége\nki: s", "s = 0\nfor i in range(len(L)):\n    s = s + L[i]\nprint(s)") +
+      "<p>Az <b>s</b> a gyűjtő változó, kezdetben 0. Az <b>átlag</b> = s : N (Pythonban <code>s / len(L)</code>).</p>" },
+    { k: "Megszámlálás", t: "Megszámlálás", h:
+      pair("db = 0\nciklus i = 1-től N-ig\n  ha L[i] páros akkor\n    db = db + 1\n  elágazás vége\nciklus vége\nki: db", "db = 0\nfor i in range(len(L)):\n    if L[i] % 2 == 0:\n        db = db + 1\nprint(db)") +
+      "<p>Ugyanaz, mint az összegzés, csak nem az elemet adjuk hozzá, hanem <b>1-et</b>, és csak akkor, ha a feltétel igaz.</p>" },
+    { k: "Maximum", t: "Maximum- és minimumkiválasztás", h:
+      pair("max = L[1]\nciklus i = 2-től N-ig\n  ha L[i] > max akkor\n    max = L[i]\n  elágazás vége\nciklus vége\nki: max", "m = L[0]\nfor i in range(1, len(L)):\n    if L[i] > m:\n        m = L[i]\nprint(m)") +
+      "<div class='note'><b>A kezdőérték az első elem</b>, nem 0. Minimumnál a feltétel: L[i] &lt; min. Ha a helye kell, az indexét is jegyezd meg.</div>" + playBtn("max"), init: playInit },
+    { k: "Eldöntés", t: "Eldöntés, kiválasztás, lineáris keresés", h:
+      "<p>Mindhárom <b>amíg</b>-ciklussal megy, mert ha megvan, amit keresünk, nem kell tovább nézni.</p>" +
+      pair("i = 1\namíg i ≤ N és nem (L[i] < 0)\n  i = i + 1\nciklus vége\nha i ≤ N akkor\n  ki: \"van\"\nkülönben\n  ki: \"nincs\"\nelágazás vége", "i = 0\nwhile i < len(L) and not (L[i] < 0):\n    i = i + 1\nif i < len(L):\n    print(\"van\")\nelse:\n    print(\"nincs\")") +
+      "<ul><li><b>Eldöntés</b>: van-e negatív? (a fenti program)</li><li><b>Kiválasztás</b>: tudjuk, hogy van, hányadik az első? Ekkor az i ≤ N feltétel elhagyható, a végén ki: i.</li><li><b>Lineáris keresés</b>: a kettő együtt: van-e, és ha igen, hányadik.</li></ul>" },
+    { k: "Kiválogatás", t: "Kiválogatás", h:
+      pair("db = 0\nciklus i = 1-től N-ig\n  ha L[i] > 10 akkor\n    db = db + 1\n    E[db] = L[i]\n  elágazás vége\nciklus vége", "E = []\nfor i in range(len(L)):\n    if L[i] > 10:\n        E.append(L[i])\nprint(E)") +
+      "<p>Az eredmény egy új lista (E), benne a feltételnek megfelelő elemek, az eredeti sorrendben. Ha egy sem felel meg, üres lista.</p>" },
+    { k: "Csere", t: "Csere és buborékrendezés", h:
+      "<p>Két változó cseréjéhez <b>segédváltozó</b> kell, különben az egyik érték elveszik: seged = a, a = b, b = seged.</p>" +
+      pair("ciklus p = 1-től N − 1-ig\n  ciklus j = 1-től N − p-ig\n    ha L[j] > L[j+1] akkor\n      seged = L[j]\n      L[j] = L[j+1]\n      L[j+1] = seged\n    elágazás vége\n  ciklus vége\nciklus vége", "n = len(L)\nfor p in range(1, n):\n    for j in range(n - p):\n        if L[j] > L[j + 1]:\n            L[j], L[j + 1] = L[j + 1], L[j]") +
+      "<p>Egy <b>menet</b>: végigmegyünk a szomszédos párokon. Minden menet végén a legnagyobb rendezetlen elem a helyére „buborékol”.</p>" + playBtn("bub"), init: playInit },
+    { k: "Kiválasztásos", t: "Kiválasztásos rendezés", h:
+      "<p>Megkeressük a legkisebbet, és az első helyre tesszük (cserével). Utána a maradékból a legkisebbet a második helyre, és így tovább.</p>" +
+      pair("ciklus i = 1-től N − 1-ig\n  min = i\n  ciklus j = i + 1-től N-ig\n    ha L[j] < L[min] akkor\n      min = j\n    elágazás vége\n  ciklus vége\n  csere: L[i] és L[min]\nciklus vége", "n = len(L)\nfor i in range(n - 1):\n    m = i\n    for j in range(i + 1, n):\n        if L[j] < L[m]:\n            m = j\n    L[i], L[m] = L[m], L[i]") +
+      "<p class='eq'>összehasonlítások száma: N · (N − 1) : 2 &nbsp;(10 elemnél 45, 1000 elemnél 499 500)</p><p>Próbáld ki fent: válaszd a kiválasztásos rendezést!</p>" },
+    { k: "Bináris keresés", t: "Bináris keresés: felezés", h:
+      "<p>Ha a lista <b>rendezett</b>, nem kell minden elemet megnézni. Megnézzük a középsőt: ha a keresett nagyobb, a bal felét eldobjuk, ha kisebb, a jobb felét. Minden lépés felezi a lehetőségeket.</p>" +
+      code("bal = 1\njobb = N\ntalalt = hamis\namíg bal ≤ jobb és nem talalt\n  k = (bal + jobb) div 2\n  ha L[k] = x akkor\n    talalt = igaz\n  különben ha L[k] < x akkor\n    bal = k + 1\n  különben\n    jobb = k − 1\n  elágazás vége\nciklus vége") +
+      "<p>Hány lépés? Ahányszor felezni lehet: 1000 elemnél legfeljebb 10, mert 2<sup>10</sup> = 1024. Egymillió elemnél 20. A lineáris keresés ehhez képest akár egymilliót lép!</p>" + playBtn("bin"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Indexhatár.</b> A buboréknál L[j+1]-et is nézzük, ezért j csak N − p-ig mehet. Pythonban az utolsó index len(L) − 1.</div>" +
+      "<div class='mistake'><b>A maximum kezdőértéke 0.</b> Ha minden szám negatív, rossz eredményt ad. Az első elemmel kezdj.</div>" +
+      "<div class='mistake'><b>Bináris keresés rendezetlen listán.</b> Rossz felet dob el, és nem találja meg, ami pedig benne van.</div>" +
+      "<div class='mistake'><b>Csere segédváltozó nélkül.</b> L[j] = L[j+1], aztán L[j+1] = L[j]: mindkét helyen ugyanaz lesz.</div>" +
+      "<div class='mistake'><b>A gyűjtő a cikluson belül nullázódik.</b> Az s = 0 vagy db = 0 a ciklus <b>elé</b> kell.</div>" },
+    { k: "Trükkök", t: "Hasznos tudnivalók", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Python beépítve</span><span><code>sum(L)</code>, <code>len(L)</code>, <code>max(L)</code>, <code>min(L)</code>, <code>sorted(L)</code>, <code>x in L</code>. A dolgozatban viszont gyakran a tételt kell megírnod!</span></div>" +
+      "<div class='trick'><span class='t'>Felismerés</span><span>„összesen” → összegzés · „hány” → megszámlálás · „legnagyobb” → maximum · „van-e” → eldöntés · „melyek” → kiválogatás.</span></div>" +
+      "<div class='trick'><span class='t'>Gyors buborék</span><span>Ha egy menetben nem volt csere, a lista már rendezett: abba lehet hagyni.</span></div>" +
+      "<div class='trick'><span class='t'>Felezés fejben</span><span>A „gondoltam egy számra” játékban mindig a maradék rész közepét tippeld.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const nums = v => String(v).replace(/−/g, "-").split(/[^\d-]+/).filter(x => /\d/.test(x)).map(Number);
+  const listCheck = (ans, hint) => v => { const g = nums(v); if (!g.length && !ans.length && /üres|nincs|\[\s*\]/i.test(String(v))) return { ok: true, msg: "Helyes!" }; if (g.join(",") === ans.join(",")) return { ok: true, msg: "Helyes!" }; if (g.length !== ans.length) return { ok: false, msg: "Nem jó: " + ans.length + " számot vártam, te " + g.length + " számot írtál. " + hint }; return { ok: false, msg: "Nem jó. " + hint }; };
+  const intCheck = (ans, hint) => v => { const s = String(v).trim().replace(/\s+/g, ""); return /^-?\d+$/.test(s.replace("−", "-")) && Number(s.replace("−", "-")) === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: hint }; };
+  const wordCheck = (ans, hint) => v => String(v).trim().replace(/^["']|["']$/g, "").toLowerCase() === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: hint };
+  const show = L => "<span class='num'>L = [" + L.join(", ") + "]</span>";
+  const T1 = ["összegzés", "megszámlálás", "maximumkiválasztás", "eldöntés"], T2 = T1.concat(["kiválasztás", "lineáris keresés", "kiválogatás"]), T3 = T2.concat(["rendezés", "bináris keresés"]);
+  const SC = [
+    [["Mennyi pénzt költöttél összesen a héten? (megvannak a napi kiadások)", "összegzés"], ["Hány ötöst kaptál ebben a félévben?", "megszámlálás"], ["Mennyi volt a hét legmagasabb hőmérséklete?", "maximumkiválasztás"], ["Volt-e a héten fagyos nap (0 fok alatt)?", "eldöntés"], ["Mennyi a jegyeid átlaga?", "összegzés"], ["Hány diák magasabb 170 cm-nél?", "megszámlálás"], ["Mennyi a legalacsonyabb pontszám a dolgozatban?", "maximumkiválasztás"], ["Van-e az osztályban, aki már 16 éves?", "eldöntés"]],
+    [["Biztosan van egyes a jegyeid között. Hányadik jegy az első egyes?", "kiválasztás"], ["Szerepel-e a névsorban Kovrat, és ha igen, hányadik?", "lineáris keresés"], ["Írd ki az összes 1000 Ft alatti terméket.", "kiválogatás"], ["Gyűjtsd ki egy új listába a páros számokat.", "kiválogatás"], ["Tudjuk, hogy volt esős nap. Hányadik napon esett először?", "kiválasztás"], ["Benne van-e a 42 a listában, és ha igen, hol?", "lineáris keresés"], ["Hány nap volt 30 fok fölött?", "megszámlálás"], ["Mennyi a kosár végösszege?", "összegzés"]],
+    [["Állítsd a játékosokat pontszám szerint sorba.", "rendezés"], ["Egy egymillió nevet tartalmazó, ábécérendbe szedett listában keresel egy nevet, a lehető leggyorsabban.", "bináris keresés"], ["A szótárban a közepén nyitod ki, aztán mindig a megfelelő felét nézed tovább.", "bináris keresés"], ["Rakd növekvő sorrendbe a dolgozatpontokat, hogy megtaláld a mediánt.", "rendezés"], ["Melyik a legdrágább termék a boltban?", "maximumkiválasztás"], ["Listázd ki azokat a diákokat, akiknek hiányzásuk van.", "kiválogatás"], ["Van-e a jelszavak között olyan, ami rövidebb 8 karakternél?", "eldöntés"]]
+  ];
+  const BUGS = [
+    [["Összegezd a lista elemeit!", ["s = 0", "ciklus i = 1-től N-ig", "  s = s + 1", "ciklus vége", "ki: s"], 3, "A 3. sorban nem az elemet (L[i]), hanem 1-et ad hozzá: ez megszámlálás lenne. Helyesen: s = s + L[i]."],
+     ["Összegezd a lista elemeit!", ["s = 1", "ciklus i = 1-től N-ig", "  s = s + L[i]", "ciklus vége", "ki: s"], 1, "Az összeg kezdőértéke 0, nem 1. Különben eggyel több lesz az eredmény."],
+     ["Számold meg a páros elemeket!", ["db = 0", "ciklus i = 1-től N-ig", "  ha L[i] páros akkor", "    db = db + L[i]", "  elágazás vége", "ciklus vége", "ki: db"], 4, "Megszámláláskor 1-et adunk hozzá, nem az elemet: db = db + 1."],
+     ["Számold meg a páros elemeket!", ["ciklus i = 1-től N-ig", "  db = 0", "  ha L[i] páros akkor", "    db = db + 1", "  elágazás vége", "ciklus vége", "ki: db"], 2, "A db = 0 a cikluson belül minden lépésben lenulláz. A ciklus elé kell."]],
+    [["Keresd meg a legnagyobb elemet! (A lista negatív számokat is tartalmazhat.)", ["max = 0", "ciklus i = 1-től N-ig", "  ha L[i] > max akkor", "    max = L[i]", "  elágazás vége", "ciklus vége", "ki: max"], 1, "A kezdőérték 0: ha minden elem negatív, 0 lesz az eredmény. Helyesen: max = L[1]."],
+     ["Keresd meg a legnagyobb elemet!", ["max = L[1]", "ciklus i = 2-től N-ig", "  ha L[i] < max akkor", "    max = L[i]", "  elágazás vége", "ciklus vége", "ki: max"], 3, "A < jel a legkisebbet keresi. A maximumhoz > kell."],
+     ["Összegezd a lista összes elemét!", ["s = 0", "ciklus i = 1-től N − 1-ig", "  s = s + L[i]", "ciklus vége", "ki: s"], 2, "A ciklus csak N − 1-ig megy, az utolsó elem kimarad. N-ig kell."],
+     ["Döntsd el, van-e negatív elem!", ["i = 1", "amíg i ≤ N és nem (L[i] < 0)", "  i = i + 1", "ciklus vége", "ha i < N akkor", "  ki: \"van\"", "különben", "  ki: \"nincs\"", "elágazás vége"], 5, "Ha éppen az utolsó elem negatív, i = N, és az i < N hamis. Helyesen: i ≤ N."]],
+    [["Rendezd növekvő sorrendbe a listát buborékrendezéssel!", ["ciklus p = 1-től N − 1-ig", "  ciklus j = 1-től N − p + 1-ig", "    ha L[j] > L[j+1] akkor", "      seged = L[j]", "      L[j] = L[j+1]", "      L[j+1] = seged", "    elágazás vége", "  ciklus vége", "ciklus vége"], 2, "Az első menetben j = N is lesz, és akkor L[N+1] nem létezik: túlindexelés. N − p-ig kell."],
+     ["Rendezd növekvő sorrendbe a listát buborékrendezéssel!", ["ciklus p = 1-től N − 1-ig", "  ciklus j = 1-től N − p-ig", "    ha L[j] > L[j+1] akkor", "      seged = L[j]", "      L[j] = L[j+1]", "      L[j+1] = L[j]", "    elágazás vége", "  ciklus vége", "ciklus vége"], 6, "A 6. sorban L[j] már az új érték, így mindkét helyre ugyanaz kerül. Helyesen: L[j+1] = seged."],
+     ["Rendezd növekvő sorrendbe a listát buborékrendezéssel!", ["ciklus p = 1-től N − 1-ig", "  ciklus j = 1-től N − p-ig", "    ha L[j] < L[j+1] akkor", "      seged = L[j]", "      L[j] = L[j+1]", "      L[j+1] = seged", "    elágazás vége", "  ciklus vége", "ciklus vége"], 3, "A < jellel csökkenő sorrend lesz. Növekvőhöz akkor cserélünk, ha L[j] > L[j+1]."],
+     ["Bináris kereséssel keresd meg az x-et a rendezett listában!", ["bal = 1", "jobb = N", "talalt = hamis", "amíg bal ≤ jobb és nem talalt", "  k = (bal + jobb) div 2", "  ha L[k] = x akkor", "    talalt = igaz", "  különben ha L[k] < x akkor", "    bal = k", "  különben", "    jobb = k − 1", "  elágazás vége", "ciklus vége"], 9, "A bal = k esetén a k elem bent marad, és a ciklus beragadhat (végtelen ciklus). Helyesen: bal = k + 1."],
+     ["Bináris kereséssel keresd meg az x-et a rendezett listában!", ["bal = 1", "jobb = N", "talalt = hamis", "amíg bal < jobb és nem talalt", "  k = (bal + jobb) div 2", "  ha L[k] = x akkor", "    talalt = igaz", "  különben ha L[k] < x akkor", "    bal = k + 1", "  különben", "    jobb = k − 1", "  elágazás vége", "ciklus vége"], 4, "Ha már csak egy elem maradt (bal = jobb), a ciklus nem nézi meg. Helyesen: bal ≤ jobb."]]
+  ];
+  const numbered = lines => "<pre class='code'>" + lines.map((l, i) => String(i + 1).padStart(2) + "  " + esc(l)).join("\n") + "</pre>";
+  const types = [
+    { id: "melyik", name: "Melyik tétel?", gen(l){
+      const pool = [SC[0], SC[0].concat(SC[1]), SC[0].concat(SC[1], SC[2])][l - 1], names = [T1, T2, T3][l - 1], q = pick(l === 1 ? SC[0] : l === 2 ? SC[1] : SC[2]);
+      return choice("Melyik tétel kell ehhez? " + q[0], q[1], shuffle(names.filter(x => x !== q[1])).slice(0, 3), "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg az első dia táblázatát.</p>", "Nem ez. Mit kérdez a feladat: mennyi összesen, hány darab, melyik a legnagyobb, van-e, hányadik, melyek?");
+    } },
+    { id: "menet", name: "Rendezés menetei", gen(l){
+      const n = [5, 6, 7][l - 1], a = distinct(n, 1, 40), sel = l === 3 && Math.random() < 0.5, k = l === 1 ? 1 : 2, r = sel ? selPasses(a, k) : bubblePasses(a, k);
+      const nm = sel ? "kiválasztásos rendezés" : "buborékrendezés";
+      return { q: "Mi lesz a lista a <b>" + nm + "</b> " + (k === 1 ? "első menete" : "második menete") + " után (növekvő sorrendbe rendezünk)? " + show(a), kind: "input", ph: "pl. 3, 1, 4", answer: r.join(", "),
+        frames: sel ? null : bubFrames(a), title: "Buborékrendezés",
+        sol: "<p>" + (sel ? "Menetenként a rendezetlen rész legkisebb eleme kerül a rész elejére (cserével)." : "Menetenként végigmegyünk a szomszédos párokon, és ha a bal nagyobb, cserélünk.") + " " + Array.from({ length: k }, (_, i) => (i + 1) + ". menet után: " + (sel ? selPasses(a, i + 1) : bubblePasses(a, i + 1)).join(", ")).join("; ") + ".</p>",
+        check: listCheck(r, sel ? "Menetenként a legkisebb a rendezetlen rész elejére kerül." : "Hasonlítsd össze a szomszédokat balról jobbra, és cserélj, ha a bal nagyobb.") };
+    } },
+    { id: "szamol", name: "Hány lépés?", gen(l){
+      const k = rnd(0, 1);
+      if (l === 1){ const n = rnd(5, 8), a = distinct(n, 1, 30);
+        if (k === 0) return { q: "Hány összehasonlítás történik a buborékrendezés <b>első menetében</b>? " + show(a), kind: "input", mode: "numeric", answer: n - 1, sol: "<p>Az első menetben minden szomszédos párt összehasonlítunk: " + n + " elemnél " + (n - 1) + " pár van.</p>", check: intCheck(n - 1, "Nem jó. Hány szomszédos pár van egy " + n + " elemű listában?") };
+        const s = swapsPass1(a);
+        return { q: "Hány csere történik a buborékrendezés <b>első menetében</b>? " + show(a), kind: "input", mode: "numeric", answer: s, frames: bubFrames(a), title: "Buborékrendezés", sol: "<p>Az első menet után: " + bubblePasses(a, 1).join(", ") + ". Közben " + s + " csere volt.</p>", check: intCheck(s, "Nem jó. Lépj végig a párokon, és számold a cseréket (a csere után a nagyobb elem viszi tovább).") };
+      }
+      if (l === 2){ const n = rnd(5, 6), a = distinct(n, 1, 30);
+        if (k === 0){ const s = swapsTotal(a); return { q: "Hány csere történik a <b>teljes</b> buborékrendezés alatt? " + show(a), kind: "input", mode: "numeric", answer: s, frames: bubFrames(a), title: "Buborékrendezés", sol: "<p>Minden csere egy rossz sorrendű párt javít meg. A rossz sorrendű párok (bal nagyobb, mint jobb) száma: " + s + ".</p>", check: intCheck(s, "Nem jó. Játszd le a rendezést, vagy számold meg azokat a párokat, ahol a bal oldali nagyobb.") }; }
+        const m = rnd(5, 9); return { q: "Hány összehasonlítás történik összesen, ha egy " + m + " elemű listát rendezünk buborékrendezéssel (a menetek nem állnak le korábban)?", kind: "input", mode: "numeric", answer: m * (m - 1) / 2, sol: "<p>(" + (m - 1) + ") + (" + (m - 2) + ") + … + 1 = " + m + " · " + (m - 1) + " : 2 = " + m * (m - 1) / 2 + ".</p>", check: intCheck(m * (m - 1) / 2, "Nem jó. Az első menetben N − 1, aztán eggyel kevesebb, … végül 1: összesen N · (N − 1) : 2.") };
+      }
+      const N = pick([100, 1000, 1000000, 500, 2000, 64, 128]), w = rnd(0, 2);
+      if (w === 0){ const b = Math.floor(Math.log2(N)) + 1; return { q: "Egy " + N + " elemű <b>rendezett</b> listában bináris kereséssel keresel. Legfeljebb hány elemet kell megnézned?", kind: "input", mode: "numeric", answer: b, sol: "<p>Minden lépés felezi a lehetőségeket. Annyi lépés kell, ahány kettes hatvány „befér”: 2<sup>" + (b - 1) + "</sup> = " + Math.pow(2, b - 1) + " ≤ " + N + " &lt; 2<sup>" + b + "</sup>, ezért " + b + " lépés.</p>", check: intCheck(b, "Nem jó. Hányszor lehet felezni, amíg egy elem marad? Keresd a 2 hatványait.") }; }
+      if (w === 1) return { q: "Egy " + N + " elemű listában lineáris kereséssel keresel. Legfeljebb hány elemet kell megnézned?", kind: "input", mode: "numeric", answer: N, sol: "<p>Legrosszabb esetben (a keresett az utolsó, vagy nincs benne) minden elemet megnézünk: " + N + ".</p>", check: intCheck(N, "Nem jó. Legrosszabb esetben minden elemet meg kell nézni.") };
+      const M = pick([10, 20, 50, 100, 1000]); return { q: "Hány összehasonlítást végez a kiválasztásos rendezés egy " + M + " elemű listán?", kind: "input", mode: "numeric", answer: M * (M - 1) / 2, sol: "<p>N · (N − 1) : 2 = " + M + " · " + (M - 1) + " : 2 = " + M * (M - 1) / 2 + ".</p>", check: intCheck(M * (M - 1) / 2, "Nem jó. N · (N − 1) : 2.") };
+    } },
+    { id: "bin", name: "Bináris keresés", gen(l){
+      const n = [7, rnd(8, 11), rnd(12, 15)][l - 1], L = sortedDistinct(n, 1, 99);
+      let x; if (l === 3 && Math.random() < 0.4){ do { x = rnd(1, 99); } while (L.includes(x)); } else x = pick(L);
+      const S = binSteps(L, x), seen = S.map(s => s.v);
+      if (l === 1) return { q: "Bináris kereséssel keressük ezt: <b>" + x + "</b>. Melyik elemet nézi meg <b>először</b>? " + show(L), kind: "input", mode: "numeric", answer: seen[0], frames: binFrames(L, x), title: "Bináris keresés",
+        sol: "<p>Az első vizsgált a középső: (1 + " + n + ") div 2 = " + (S[0].k + 1) + ". elem, ez " + seen[0] + ".</p>", check: intCheck(seen[0], "Nem jó. A középső elemet nézi: (1 + N) div 2. helyen.") };
+      return { q: "Bináris kereséssel keressük ezt: <b>" + x + "</b>. Mely elemeket nézi meg, sorban? " + show(L), kind: "input", ph: "pl. 40, 18, 25", answer: seen.join(", "), frames: binFrames(L, x), title: "Bináris keresés",
+        sol: "<p>" + S.map((s, i) => (i + 1) + ". lépés: lehetséges helyek " + (s.lo + 1) + "–" + (s.hi + 1) + ", a közép helye " + (s.k + 1) + ", ott áll: " + s.v).join("; ") + "." + (seen[seen.length - 1] === x ? "" : " A szám nincs a listában.") + "</p>",
+        check: listCheck(seen, "A középső: (bal + jobb) div 2. Ha az ott álló kisebb a keresettnél, jobbra folytasd, ha nagyobb, balra.") };
+    } },
+    { id: "kiir", name: "Mit ír ki?", gen(l){
+      const L = Array.from({ length: rnd(5, 7) }, () => rnd(l === 1 ? 1 : -9, 20)), N = L.length;
+      if (l === 1){
+        if (Math.random() < 0.5){ const s = L.reduce((p, q) => p + q, 0); return { q: "Mit ír ki a program? " + show(L) + code("s = 0\nciklus i = 1-től N-ig\n  s = s + L[i]\nciklus vége\nki: s"), kind: "input", mode: "numeric", answer: s, sol: "<p>Összegzés: " + L.join(" + ") + " = " + s + ".</p>", check: intCheck(s, "Nem jó. Az összes elemet add össze.") }; }
+        const c = pick([["páros", x => x % 2 === 0, "L[i] mod 2 = 0"], ["10-nél nagyobb", x => x > 10, "L[i] > 10"], ["5-nél kisebb", x => x < 5, "L[i] < 5"]]), d = L.filter(c[1]).length;
+        return { q: "Mit ír ki a program? " + show(L) + code("db = 0\nciklus i = 1-től N-ig\n  ha " + c[2] + " akkor\n    db = db + 1\n  elágazás vége\nciklus vége\nki: db"), kind: "input", mode: "numeric", answer: d, sol: "<p>Megszámlálás: a feltételnek megfelelő elemek: " + (L.filter(c[1]).join(", ") || "egy sincs") + ". Darabszám: " + d + ".</p>", check: intCheck(d, "Nem jó. Számold meg, hány elemre igaz a feltétel.") };
+      }
+      if (l === 2){
+        const w = rnd(0, 2);
+        if (w === 0){ const isMax = Math.random() < 0.5, v = isMax ? Math.max(...L) : Math.min(...L); return { q: "Mit ír ki a program? " + show(L) + code("m = L[1]\nciklus i = 2-től N-ig\n  ha L[i] " + (isMax ? ">" : "<") + " m akkor\n    m = L[i]\n  elágazás vége\nciklus vége\nki: m"), kind: "input", mode: "numeric", answer: v, frames: isMax ? maxFrames(L) : null, title: "Maximum keresése", sol: "<p>" + (isMax ? "Maximumkiválasztás: a legnagyobb elem " : "Minimumkiválasztás: a legkisebb elem ") + v + ".</p>", check: intCheck(v, "Nem jó. Figyeld a relációjelet: > a legnagyobbat, < a legkisebbet keresi.") }; }
+        if (w === 1){ const M = [...L]; let g = 0; while (M.filter(x => x === Math.max(...M)).length > 1 && g++ < 20) M[M.indexOf(Math.max(...M))] -= 1; const mi = M.indexOf(Math.max(...M)) + 1;
+          return { q: "Mit ír ki a program? (Az index 1-től számít.) " + show(M) + code("mh = 1\nciklus i = 2-től N-ig\n  ha L[i] > L[mh] akkor\n    mh = i\n  elágazás vége\nciklus vége\nki: mh"), kind: "input", mode: "numeric", answer: mi, sol: "<p>Ez a maximum <b>helyét</b> (indexét) keresi. A legnagyobb elem " + Math.max(...M) + ", a helye: " + mi + ".</p>", check: intCheck(mi, "Nem jó. A program a legnagyobb elem helyét (indexét) írja ki, nem az értékét.") }; }
+        const neg = L.some(x => x < 0), ans = neg ? "van" : "nincs";
+        return { q: "Mit ír ki a program? " + show(L) + code("i = 1\namíg i ≤ N és nem (L[i] < 0)\n  i = i + 1\nciklus vége\nha i ≤ N akkor\n  ki: \"van\"\nkülönben\n  ki: \"nincs\"\nelágazás vége"), kind: "input", answer: ans, sol: "<p>Eldöntés: van-e negatív elem? " + (neg ? "Igen, például " + L.find(x => x < 0) + "." : "Nincs.") + "</p>", check: wordCheck(ans, "Nem jó. A program azt dönti el, van-e negatív szám a listában. Írd: van vagy nincs.") };
+      }
+      const w = rnd(0, 2);
+      if (w === 0){ const t = rnd(3, 15); let M = L; if (!M.some(x => x > t)) M = L.concat([t + rnd(1, 5)]); const i0 = M.findIndex(x => x > t);
+        return { q: "Mit ír ki ez a Python-program? (Pythonban az index 0-tól indul.)" + code("L = [" + M.join(", ") + "]\ni = 0\nwhile not (L[i] > " + t + "):\n    i = i + 1\nprint(i)"), kind: "input", mode: "numeric", answer: i0, sol: "<p>Kiválasztás: az első elem, amely nagyobb, mint " + t + ": " + M[i0] + ". Pythonban a helye " + i0 + " (0-tól számolva).</p>", check: intCheck(i0, "Nem jó. Keresd az első elemet, amelyre a feltétel igaz, és ne felejtsd: Pythonban az első index 0.") }; }
+      if (w === 1){ const x = Math.random() < 0.6 ? pick(L) : 21 + rnd(0, 5), i0 = L.indexOf(x);
+        return { q: "Mit ír ki ez a Python-program?" + code("L = [" + L.join(", ") + "]\nx = " + x + "\nhely = -1\nfor i in range(len(L)):\n    if L[i] == x and hely == -1:\n        hely = i\nprint(hely)"), kind: "input", mode: "numeric", answer: i0, sol: "<p>Lineáris keresés: " + (i0 >= 0 ? "az x első helye (0-tól számolva): " + i0 + "." : "az x nincs a listában, ezért marad -1.") + "</p>", check: intCheck(i0, "Nem jó. Keresd meg az első előfordulást (0-tól számolva); ha nincs benne, -1 marad.") }; }
+      let M; do { M = Array.from({ length: rnd(4, 6) }, () => rnd(1, 20)); } while (M.reduce((p, q) => p + q, 0) % M.length === 0);
+      const s = M.reduce((p, q) => p + q, 0), a = Math.floor(s / M.length);
+      return { q: "Mit ír ki ez a Python-program? (A // egész osztás.)" + code("L = [" + M.join(", ") + "]\ns = 0\nfor x in L:\n    s = s + x\nprint(s // len(L))"), kind: "input", mode: "numeric", answer: a, sol: "<p>Összeg: " + s + ", darabszám: " + M.length + ". " + s + " // " + M.length + " = " + a + " (az átlag egész része).</p>", check: intCheck(a, "Nem jó. Add össze az elemeket, és oszd el egészosztással a darabszámmal.") };
+    } },
+    { id: "valog", name: "Kiválogatás", gen(l){
+      let L, c, r, g = 0;
+      do {
+        L = Array.from({ length: rnd(6, 8) }, () => rnd(l === 1 ? 1 : -9, 30));
+        c = pick(l === 1 ? [["páros", x => x % 2 === 0], ["10-nél nagyobb", x => x > 10]] : l === 2 ? [["negatív", x => x < 0], ["3-mal osztható", x => x % 3 === 0], ["páratlan", x => Math.abs(x) % 2 === 1]] : [["páros és 10-nél nagyobb", x => x % 2 === 0 && x > 10], ["negatív vagy 20-nál nagyobb", x => x < 0 || x > 20], ["5 és 15 közé eső (a határokat is beleértve)", x => x >= 5 && x <= 15]]);
+        r = L.filter(c[1]);
+      } while (!r.length && g++ < 50);
+      if (l === 3 && Math.random() < 0.5){ const idx = L.map((x, i) => c[1](x) ? i + 1 : 0).filter(Boolean);
+        return { q: "Válogasd ki a feltételnek megfelelő elemek <b>helyét</b> (indexét, 1-től számolva). Feltétel: <b>" + c[0] + "</b>. " + show(L), kind: "input", ph: "pl. 2, 5", answer: idx.join(", "), sol: "<p>A megfelelő elemek: " + r.join(", ") + ", a helyük: " + idx.join(", ") + ".</p>", check: listCheck(idx, "Az elemek helyét írd, nem az értéküket, az eredeti sorrendben.") }; }
+      return { q: "Válogasd ki az elemeket, amelyekre igaz: <b>" + c[0] + "</b>. " + show(L), kind: "input", ph: "pl. 12, 4, 30", answer: r.join(", "), sol: "<p>Balról jobbra megyünk, és ami megfelel, az eredeti sorrendben bekerül: " + r.join(", ") + ".</p>", check: listCheck(r, "Az eredeti sorrendben írd a feltételnek megfelelő elemeket.") };
+    } },
+    { id: "hiba", name: "Hibakeresés", gen(l){
+      const b = pick(BUGS[l - 1]);
+      return { q: "Feladat: " + b[0] + " Hányadik sor hibás?" + numbered(b[1]), kind: "input", mode: "numeric", ph: "sorszám", answer: b[2], sol: "<p>" + b[3] + "</p>", check: intCheck(b[2], "Nem ez. Kövesd végig a programot egy kis listán, és nézd meg, hol tér el a helyes tételtől.") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "tetelek", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["összegzés", "s = 0, s = s + L[i]"], ["megszámlálás", "db = 0, ha feltétel: db = db + 1"], ["maximumkiválasztás", "max = L[1], ha L[i] > max: max = L[i]"], ["eldöntés", "amíg i ≤ N és nem feltétel: i = i + 1"], ["kiválasztás", "amíg nem feltétel: i = i + 1, ki: i"], ["lineáris keresés", "eldöntés + a hely"], ["kiválogatás", "ha feltétel: E-be kerül"], ["buborékrendezés", "szomszédok cseréje, menetenként"], ["bináris keresés", "rendezett listán, felezve"]];
+  $("#cheat").innerHTML = "<tr><th>Tétel</th><th>A lényege</th></tr>" + rows.map(r => "<tr><td style='text-align:left'>" + r[0] + "</td><td style='text-align:left;font-family:var(--mono)'>" + esc(r[1]) + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
