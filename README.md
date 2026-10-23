@@ -39,6 +39,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Elektronika alapjai](elektronika-alapjai.html) | Feszültség, áram, ellenállás, Ohm-törvény, teljesítmény, villanyszámla, soros és párhuzamos kapcsolás, színkód, LED előtét-ellenállása; áramkör csúszkákkal és biztosítékkal |
 | [Virtualizáció és felhő](virtualizacio-felho.html) | Virtuális gép, hipervizor, pillanatkép, konténer, IaaS/PaaS/SaaS, felhő vagy saját szerver, 3-2-1 mentés, jelszóerősség, kétlépcsős azonosítás; VM-építő és jelszómérő |
 | [Mesterséges intelligencia alapjai](mesterseges-intelligencia.html) | Szabály vagy tanulás, tanítóadat, k-NN, mesterséges neuron és logikai kapuk, perceptron-tanulás, nyelvi modellek, hallucináció, torzítás, felelős használat; tanítható alma–körte sík |
+| [Ethernet, kapcsoló és IPv6](ethernet-ipv6.html) | Ethernet-keret, MAC-cím, a kapcsoló tanulása és elárasztása, ARP, VLAN, IPv6 rövidítése és kibontása, címtípusok; tanuló kapcsoló négy géppel; az IPv6-feladatokat a Python ipaddress modulja igazolta |
 | [Hálózatok alapjai](halozatok-alapjai.html) | IP-cím kettesben, maszk és prefix, hálózati és szórási cím, egy hálózatban vannak-e (ÉS a maszkkal), eszközök, DHCP, DNS, NAT, portok, letöltési idő, a dolgok internete |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)

@@ -1,0 +1,322 @@
+<!--@HEAD-->
+<title>Ethernet és IPv6</title>
+<style>
+.sw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end}
+.pc{border:1.5px solid #3A4656;border-radius:10px;padding:6px;text-align:center;font-size:.8rem;display:flex;flex-direction:column;gap:2px;transition:background .2s,border-color .2s}
+.pc b{font-family:var(--display);font-size:1.1rem}
+.pc span{font-family:var(--mono);font-size:.62rem;color:#8C99AA;overflow-wrap:anywhere}
+.pc.src{border-color:#72A6F2;background:#1E2E47}
+.pc.got{border-color:#FFB01F;background:#4a3a12}
+.pc.got b{color:#FFB01F}
+.pc.skip{opacity:.45}
+.swbox{grid-column:1/-1;border:2px solid #72A6F2;border-radius:10px;padding:8px;text-align:center;font-family:var(--mono);font-size:.85rem;color:#DCE3EC}
+.swbox .port{display:inline-block;border:1.5px solid #3A4656;border-radius:6px;padding:1px 8px;margin:2px}
+.swbox .port.on{border-color:#FFB01F;color:#FFB01F;font-weight:700}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:.9rem}
+.ctl select{font-size:.95rem}
+.mtab td,.mtab th{font-size:.82rem}
+.msg{font-family:var(--mono);font-size:.88rem;color:#FFB01F;overflow-wrap:anywhere}
+.v6{font-family:var(--mono);overflow-wrap:anywhere;font-size:clamp(.8rem,3.4vw,1.05rem)}
+.v6 .z{color:#F2796C}.v6 .k{color:#52C584;font-weight:700}
+.slide .eq{white-space:normal}
+.prompt .num{overflow-wrap:anywhere}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Hálózatok · 10. évfolyam előzetes</span>
+  <h1>Ethernet, kapcsoló és IPv6</h1>
+  <p class="lead">A kapcsoló (switch) tanul: megjegyzi, melyik MAC-cím melyik portján van. Küldj kereteket a gépek között, és figyeld, hogyan telik meg a MAC-tábla, és mikor áraszt el mindenkit.</p>
+  <div class="panel">
+    <span class="eyebrow">Egy kapcsoló, négy gép: a sárga gép kapja meg a keretet</span>
+    <div class="sw" id="sw"></div>
+    <div class="ctl">
+      <label>Feladó <select id="from"></select></label>
+      <label>Címzett <select id="to"></select></label>
+      <button class="btn" id="send">Küldés ▶</button>
+      <button class="btn" id="reset">↺ Táblatörlés</button>
+    </div>
+    <div class="msg" id="smsg" aria-live="polite"></div>
+    <div><div class="eyebrow">A kapcsoló MAC-táblája</div><div class="ptwrap"><table class="pt mtab" id="mtab"></table></div></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="sw" aria-selected="true">A kapcsoló tanul</button>
+    <button class="tab" data-m="v6" aria-selected="false">IPv6-cím rövidítése</button>
+    <button class="tab" data-m="arp" aria-selected="false">ARP: IP-címből MAC-cím</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A portokat számmal, vesszővel elválasztva írd (például 2, 3). Az IPv6-címet kisbetűvel is, nagybetűvel is írhatod. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A kapcsoló két szabálya</span><span><b>Tanul:</b> a feladó MAC-címét beírja a táblába, azzal a porttal, ahonnan jött. <b>Továbbít:</b> ha a címzett a táblában van, csak arra a portra küld; ha nincs (vagy szórás), minden más portra (elárasztás).</span></div>
+    <div class="trick"><span class="t">IPv6 rövidítés</span><span>1. Minden csoport elejéről a nullák elhagyhatók. 2. A leghosszabb, legalább két csupa-nulla csoportból álló sorozat helyére <b>::</b> kerül, de csak egyszer.</span></div>
+    <div class="trick"><span class="t">Méretek</span><span class="mono">MAC: 48 bit = 12 hexa jegy · IPv4: 32 bit · IPv6: 128 bit = 32 hexa jegy</span></div>
+    <div class="trick"><span class="t">Különleges IPv6-címek</span><span class="mono">::1 saját gép · fe80::/10 link-local · 2000::/3 globális · fc00::/7 egyedi helyi · ff00::/8 csoportos</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/\b[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}\b/g, "MAC-cím"], [/::/g, " kettős kettőspont "]);
+
+  /* ---------- Kapcsoló-szimuláció ---------- */
+  const PCS = [["A", "00:1A:2B:3C:4D:01"], ["B", "00:1A:2B:3C:4D:02"], ["C", "00:1A:2B:3C:4D:03"], ["D", "00:1A:2B:3C:4D:04"]];
+  const BC = "FF:FF:FF:FF:FF:FF";
+  // egy keret feldolgozása: tanulás + továbbítás; visszaadja a kimenő portokat és hogy elárasztott-e
+  function swFrame(table, nports, inPort, srcMac, dstMac){
+    const learned = !(srcMac in table) || table[srcMac] !== inPort;
+    table[srcMac] = inPort;
+    let out, flood = false;
+    if (dstMac !== BC && dstMac in table) out = table[dstMac] === inPort ? [] : [table[dstMac]];
+    else { flood = true; out = []; for (let p = 1; p <= nports; p++) if (p !== inPort) out.push(p); }
+    return { out, flood, learned };
+  }
+  const S = { table: {}, last: null };
+  function swRender(){
+    const L = S.last;
+    $("#sw").innerHTML = PCS.map((p, i) => '<div class="pc ' + (L ? (L.from === i ? "src" : L.out.includes(i + 1) ? "got" : "skip") : "") + '"><b>' + p[0] + "</b><span>" + p[1] + "</span><span>port: " + (i + 1) + "</span></div>").join("") +
+      '<div class="swbox">kapcsoló · ' + PCS.map((p, i) => '<span class="port ' + (L && (L.out.includes(i + 1) || L.from === i) ? "on" : "") + '">' + (i + 1) + "</span>").join("") + "</div>";
+    const ks = Object.keys(S.table);
+    $("#mtab").innerHTML = "<tr><th>MAC-cím</th><th>port</th></tr>" + (ks.length ? ks.map(k => "<tr><td>" + k + "</td><td>" + S.table[k] + "</td></tr>").join("") : '<tr><td colspan="2">üres: még nem tanult semmit</td></tr>');
+  }
+  $("#from").innerHTML = PCS.map((p, i) => '<option value="' + i + '">' + p[0] + "</option>").join("");
+  $("#to").innerHTML = PCS.map((p, i) => '<option value="' + i + '">' + p[0] + "</option>").join("") + '<option value="bc">mindenki (szórás)</option>';
+  $("#to").value = "1";
+  $("#send").addEventListener("click", () => {
+    const f = +$("#from").value, tv = $("#to").value, dst = tv === "bc" ? BC : PCS[+tv][1];
+    if (tv !== "bc" && +tv === f){ $("#smsg").textContent = "Magának nem küld a gép. Válassz másik címzettet."; return; }
+    const r = swFrame(S.table, 4, f + 1, PCS[f][1], dst);
+    S.last = { from: f, out: r.out };
+    $("#smsg").textContent = (r.learned ? "Tanult: " + PCS[f][0] + " a " + (f + 1) + ". porton van. " : "A feladó már a táblában volt. ") +
+      (tv === "bc" ? "Szórás (FF:FF:FF:FF:FF:FF): minden más portra küldi." : r.flood ? "A címzett még nincs a táblában: elárasztás, minden más portra küldi (" + r.out.join(", ") + ")." : "A címzett a táblában van: csak a " + r.out[0] + ". portra küldi.");
+    swRender();
+  });
+  $("#reset").addEventListener("click", () => { S.table = {}; S.last = null; $("#smsg").textContent = "A tábla üres. Az első keretnél a kapcsoló még semmit nem tud."; swRender(); });
+  swRender();
+
+  /* ---------- IPv6 ---------- */
+  const hx = n => n.toString(16);
+  function expand(s){
+    s = String(s).trim().toLowerCase();
+    if (!/^[0-9a-f:]+$/.test(s) || (s.match(/::/g) || []).length > 1 || /:::/.test(s)) return null;
+    let parts;
+    if (s.includes("::")){ const [a, b] = s.split("::"); const A = a ? a.split(":") : [], B = b ? b.split(":") : []; if (A.length + B.length > 7) return null; parts = A.concat(Array(8 - A.length - B.length).fill("0"), B); }
+    else parts = s.split(":");
+    if (parts.length !== 8 || parts.some(p => !/^[0-9a-f]{1,4}$/.test(p))) return null;
+    return parts.map(p => p.padStart(4, "0"));
+  }
+  function compress(full){
+    const g = full.map(p => p.replace(/^0+(?=.)/, ""));
+    let best = -1, bl = 0;
+    for (let i = 0; i < 8;){ if (g[i] === "0"){ let j = i; while (j < 8 && g[j] === "0") j++; if (j - i > bl){ best = i; bl = j - i; } i = j; } else i++; }
+    if (bl < 2) return g.join(":");
+    return g.slice(0, best).join(":") + "::" + g.slice(best + bl).join(":");
+  }
+  const grp = () => { const v = rnd(1, 0xffff); return hx(v).padStart(4, "0"); };
+  function genFull(l){
+    const g = Array.from({ length: 8 }, () => { let v; do { v = rnd(1, 0xffff); } while (false); return hx(pick([v, v >> 4, v >> 8, v >> 12]) || 1).padStart(4, "0"); });
+    g[0] = pick(["2001", "2a00", "fe80", "fd12", "2001"]); if (g[0] === "2001") g[1] = pick(["0db8", g[1]]);
+    if (l === 2){ const len = rnd(2, 5), st = rnd(1, 8 - len); for (let i = st; i < st + len; i++) g[i] = "0000"; }
+    if (l === 3){ let a, b, la, lb; do { la = rnd(2, 3); lb = rnd(1, 3); a = rnd(1, 3); b = a + la + rnd(1, 2); } while (b + lb > 8); for (let i = a; i < a + la; i++) g[i] = "0000"; for (let i = b; i < b + lb; i++) g[i] = "0000"; }
+    return g;
+  }
+  const v6Html = full => '<div class="v6">' + full.map(p => { const m = /^(0*)(.*)$/.exec(p); const lead = p === "0000" ? "000" : m[1], rest = p === "0000" ? "0" : m[2]; return '<span class="z">' + lead + '</span><span class="k">' + rest + "</span>"; }).join(":") + "</div>";
+  const TYPES6 = [["::1", "saját gép (loopback)"], ["::", "nem meghatározott cím"], ["fe80::1a2b:3cff:fe4d:5e6f", "link-local (csak a helyi hálózaton)"], ["fe80::2", "link-local (csak a helyi hálózaton)"], ["2001:db8:85a3::8a2e:370:7334", "globális (interneten is elérhető)"], ["2a00:1450:4001:81b::200e", "globális (interneten is elérhető)"], ["fd12:3456:789a::1", "egyedi helyi (privát)"], ["fc00::42", "egyedi helyi (privát)"], ["ff02::1", "csoportos (multicast)"], ["ff02::2", "csoportos (multicast)"]];
+  const T6 = ["saját gép (loopback)", "nem meghatározott cím", "link-local (csak a helyi hálózaton)", "globális (interneten is elérhető)", "egyedi helyi (privát)", "csoportos (multicast)"];
+
+  /* ---------- Levezetések ---------- */
+  function swFrames(){
+    const tbl = {}, F = [], steps = [[0, 1], [1, 0], [2, "bc"], [0, 2], [3, 0]];
+    const draw = (last, msg) => '<div class="sw">' + PCS.map((p, i) => '<div class="pc ' + (last ? (last.from === i ? "src" : last.out.includes(i + 1) ? "got" : "skip") : "") + '"><b>' + p[0] + "</b><span>port " + (i + 1) + "</span></div>").join("") + "</div>" +
+      '<div class="ptwrap" style="margin-top:8px"><table class="pt"><tr><th>MAC-cím</th><th>port</th></tr>' + (Object.keys(tbl).length ? Object.keys(tbl).map(k => "<tr><td>…" + k.slice(-5) + " (" + PCS.find(p => p[1] === k)[0] + ")</td><td>" + tbl[k] + "</td></tr>").join("") : '<tr><td colspan="2">üres</td></tr>') + "</table></div>";
+    F.push({ cap: "Egy kapcsoló négy géppel. Bekapcsoláskor a MAC-táblája üres: még nem tudja, ki melyik portján van.", html: draw(null) });
+    steps.forEach(([f, t]) => {
+      const dst = t === "bc" ? BC : PCS[t][1], known = t !== "bc" && dst in tbl, r = swFrame(tbl, 4, f + 1, PCS[f][1], dst);
+      F.push({ cap: PCS[f][0] + " küld " + (t === "bc" ? "szórásos keretet (mindenkinek)" : "keretet ennek: " + PCS[t][0]) + ". Tanulás: a feladó a " + (f + 1) + ". porton van, ez bekerül a táblába. " + (t === "bc" ? "A szórást minden más port megkapja." : known ? "A címzett a táblában van, ezért csak a " + r.out[0] + ". portra megy." : "A címzettet még nem ismeri, ezért elárasztja: minden más portra elküldi."), html: draw({ from: f, out: r.out }) });
+    });
+    F.push({ cap: "Ahogy a gépek beszélnek, a tábla megtelik, és egyre kevesebb az elárasztás. A régi bejegyzések pár perc után törlődnek, ha a gép nem jelentkezik.", html: draw(null) });
+    return F;
+  }
+  function v6Frames(full){
+    const F = [], g0 = full.map(p => p.replace(/^0+(?=.)/, "")), c = compress(full);
+    F.push({ cap: "Egy IPv6-cím 128 bit: 8 csoport, mindegyikben 4 tizenhatos jegy, kettősponttal elválasztva. Ez hosszú, ezért rövidítjük.", html: v6Html(full) });
+    F.push({ cap: "Első szabály: minden csoport elején a nullák elhagyhatók (piros). A csoport végén lévő nullát nem szabad elhagyni! Egy csupa-nulla csoportból egyetlen 0 marad.", html: v6Html(full) + '<p class="v6" style="margin-top:8px">' + g0.join(":") + "</p>" });
+    F.push({ cap: c.includes("::") ? "Második szabály: a leghosszabb, legalább két csoportnyi csupa-nulla sorozat helyére kettős kettőspont kerül. Ezt csak egyszer szabad, különben nem tudnánk, hány nulla hiányzik." : "Itt nincs legalább két egymás utáni csupa-nulla csoport, ezért kettős kettőspontot nem használunk.", html: '<p class="v6">' + g0.join(":") + '</p><p class="big led v6" style="margin-top:8px">' + c + "</p>" });
+    F.push({ cap: "A rövid alak: " + c + ". Visszafelé: annyi nulla csoportot írunk a kettős kettőspont helyére, hogy 8 csoport legyen.", html: '<p class="big led v6">' + c + "</p>" });
+    return F;
+  }
+  function arpFrames(){
+    const box = (on, msg) => '<div class="sw">' + PCS.map((p, i) => '<div class="pc ' + (on.includes(i) ? "got" : "") + '"><b>' + p[0] + "</b><span>192.168.1." + (10 + i) + "</span></div>").join("") + "</div>" + (msg ? '<p class="msg" style="margin-top:8px">' + esc(msg) + "</p>" : "");
+    return [
+      { cap: "A gép a címzett IP-címét tudja (például a DNS-től), de a kerethez MAC-cím kell. Ezt az ARP deríti ki.", html: box([0], "A tudja: C címe 192.168.1.12. De mi a MAC-címe?") },
+      { cap: "A szórásos kérdést küld mindenkinek: kié a 192.168.1.12? A kapcsoló minden portra továbbítja.", html: box([1, 2, 3], "ARP-kérés (szórás): kié a 192.168.1.12?") },
+      { cap: "Csak az a gép válaszol, akié a cím: C, közvetlenül A-nak, a saját MAC-címével.", html: box([0], "ARP-válasz: a 192.168.1.12 az enyém, a MAC-címem 00:1A:2B:3C:4D:03") },
+      { cap: "A elmenti a párost az ARP-táblájába (Windowson: arp -a), és most már elküldheti a keretet C MAC-címére. Az IPv6 ugyanezt a szomszédfelderítéssel (NDP) csinálja.", html: box([0, 2], "ARP-tábla: 192.168.1.12 → 00:1A:2B:3C:4D:03") }
+    ];
+  }
+  const MET = { sw: "A kapcsoló tanul", v6: "IPv6-cím rövidítése", arp: "ARP: IP-címből MAC-cím" };
+  const MF = { sw: swFrames, v6: () => v6Frames(["2001", "0db8", "0000", "0000", "0000", "ff00", "0042", "8329"]), arp: arpFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "sw" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Ethernet: a helyi hálózat nyelve", h:
+      "<p>A kábeles helyi hálózatok szinte mind <b>Ethernetet</b> használnak (a Wi-Fi nagyon hasonló). Az adat <b>keretekben</b> (frame) utazik. Egy keret részei:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>cél-MAC</th><th>forrás-MAC</th><th>típus</th><th>adat</th><th>FCS</th></tr><tr><td>6 bájt</td><td>6 bájt</td><td>2 bájt</td><td>46–1500 bájt</td><td>4 bájt</td></tr></table></div>" +
+      "<p>Az <b>FCS</b> ellenőrzőösszeg: ha az átvitel közben egy bit megsérül, a fogadó észreveszi és eldobja a keretet (mint a paritásbit, csak erősebb).</p>" },
+    { k: "MAC-cím", t: "A MAC-cím", h:
+      "<p class='eq'>3C:52:82:1A:9F:04</p><ul><li>48 bit = 6 bájt = 12 tizenhatos jegy.</li><li>Az első 3 bájt a <b>gyártó</b> azonosítója (OUI), a többi a gyártón belüli sorszám.</li><li><b>FF:FF:FF:FF:FF:FF</b> a szórási cím: minden gép megkapja.</li><li>Ha az első bájt páratlan (például 01:00:5E…), csoportos (multicast) cím.</li></ul>" +
+      "<div class='note'><b>MAC vagy IP?</b> A MAC a helyi hálózaton belül szállít, a router minden lépésnél új keretbe teszi a csomagot. Az IP-cím végig ugyanaz marad.</div>" },
+    { k: "Kapcsoló", t: "Hogyan dolgozik a kapcsoló (switch)?", h:
+      "<ol><li><b>Tanul:</b> megnézi a beérkező keret <b>forrás</b>-MAC-címét, és beírja a MAC-táblájába azzal a porttal, ahonnan jött.</li><li><b>Továbbít:</b> megnézi a <b>cél</b>-MAC-címet. Ha a táblában van, csak arra a portra küldi.</li><li><b>Eláraszt:</b> ha a cél még ismeretlen, vagy szórásos keret, minden más portra elküldi (arra nem, ahonnan jött).</li></ol>" +
+      "<p>Próbáld ki fent: az első kereteknél sok az elárasztás, aztán egyre kevesebb.</p>" + playBtn("sw"), init: playInit },
+    { k: "Hub és switch", t: "Hub, switch, router", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Eszköz</th><th>Mit néz?</th><th>Hová küld?</th></tr><tr><td>hub (elavult)</td><td style='text-align:left'>semmit</td><td style='text-align:left'>mindig mindenkinek</td></tr><tr><td>switch</td><td style='text-align:left'>MAC-cím</td><td style='text-align:left'>csak a címzett portjára</td></tr><tr><td>router</td><td style='text-align:left'>IP-cím</td><td style='text-align:left'>másik hálózatba</td></tr></table></div>" +
+      "<p>A szórást a switch mindenkinek továbbadja, a router viszont nem: a router határolja a <b>szórási tartományt</b>.</p>" },
+    { k: "ARP", t: "ARP: IP-címből MAC-cím", h:
+      "<p>A gép tudja a címzett IP-címét, de a kerethez MAC-cím kell. Az <b>ARP</b> szórással megkérdezi: „kié ez az IP-cím?”, és a gazdája válaszol a MAC-címével. A választ a gép egy ideig megjegyzi (ARP-tábla, Windowson: <code>arp -a</code>).</p>" +
+      "<p>Ha a címzett más hálózatban van, a gép nem őt, hanem az alapértelmezett átjáró (a router) MAC-címét kérdezi meg.</p>" + playBtn("arp"), init: playInit },
+    { k: "VLAN", t: "VLAN: több hálózat egy kapcsolón", h:
+      "<p>A <b>VLAN</b> (virtuális LAN) egy fizikai kapcsolót több külön hálózatra oszt. Például az iskolában: tanári VLAN, diák VLAN, kamera VLAN, ugyanazokon a kapcsolókon.</p>" +
+      "<ul><li>A különböző VLAN-ok gépei nem látják egymás szórását.</li><li>Közöttük csak router (vagy 3. rétegbeli kapcsoló) visz át, ahol szabályozható a forgalom.</li><li>Biztonság: a diákgépek nem érik el a tanári gépeket.</li></ul>" },
+    { k: "IPv6", t: "Miért kell IPv6?", h:
+      "<p>Az IPv4 32 bites: kb. 4,3 milliárd cím. Ez kevés: több eszköz van, mint ember. Az <b>IPv6</b> 128 bites: 2<sup>128</sup> ≈ 3,4 · 10<sup>38</sup> cím, a Föld minden homokszemére jutna milliárdnyi.</p>" +
+      "<p class='eq'>2001:0db8:0000:0000:0000:ff00:0042:8329</p>" +
+      "<p>8 csoport, csoportonként 4 tizenhatos jegy (16 bit), kettősponttal elválasztva. Általában az első 64 bit a hálózat (/64), a második 64 bit a gép.</p>" },
+    { k: "Rövidítés", t: "IPv6-cím rövidítése", h:
+      "<ol><li><b>Vezető nullák elhagyása:</b> 0db8 → db8, 0042 → 42, 0000 → 0. A csoport végén lévő nullát nem!</li><li><b>Kettős kettőspont:</b> a leghosszabb, legalább két csupa-nulla csoport helyére <b>::</b> kerül, de egy címben <b>csak egyszer</b>. Egyetlen nulla csoportot nem rövidítünk így.</li></ol>" +
+      "<p class='eq'>2001:0db8:0000:0000:0000:ff00:0042:8329 → 2001:db8::ff00:42:8329</p>" + playBtn("v6"), init: playInit },
+    { k: "Címtípusok", t: "Különleges IPv6-címek", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Cím</th><th>Jelentése</th></tr><tr><td>::1</td><td style='text-align:left'>saját gép (mint a 127.0.0.1)</td></tr><tr><td>::</td><td style='text-align:left'>nem meghatározott (még nincs cím)</td></tr><tr><td>fe80::…</td><td style='text-align:left'>link-local: minden gép magától kap, csak a helyi hálózaton él</td></tr><tr><td>2000::/3 (2… vagy 3…)</td><td style='text-align:left'>globális: az interneten is elérhető</td></tr><tr><td>fc00::/7 (fc… vagy fd…)</td><td style='text-align:left'>egyedi helyi: privát, mint a 192.168…</td></tr><tr><td>ff00::/8 (ff…)</td><td style='text-align:left'>csoportos (multicast); szórás nincs is IPv6-ban</td></tr></table></div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Két :: egy címben.</b> A 2001::1::5 hibás: nem tudni, melyik helyén hány nulla csoport van.</div>" +
+      "<div class='mistake'><b>A csoport végéről elhagyott nulla.</b> A 0db0 rövidítése db0, nem db.</div>" +
+      "<div class='mistake'><b>A kapcsoló a cél-MAC-ot tanulja.</b> Nem: mindig a <b>forrás</b>-MAC-ot, mert csak azt tudja, honnan jött a keret.</div>" +
+      "<div class='mistake'><b>Elárasztáskor a feladónak is visszaküldi.</b> Nem: arra a portra nem, ahonnan jött.</div>" +
+      "<div class='mistake'><b>A switch összeköti a hálózatokat.</b> A hálózatok közötti átjárás a router dolga.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Elárasztás portjai</span><span>Minden port, kivéve azt, ahonnan jött: 4 portnál 3, 6 portnál 5.</span></div>" +
+      "<div class='trick'><span class='t'>Hány nulla hiányzik?</span><span>Számold meg a látható csoportokat; a :: helyére 8 mínusz ennyi nulla csoport kerül.</span></div>" +
+      "<div class='trick'><span class='t'>Gyártó a MAC-ból</span><span>Az első 6 jegy (3 bájt) a gyártó: interneten kereshető (OUI-lista).</span></div>" +
+      "<div class='trick'><span class='t'>Parancsok</span><span><code>ipconfig /all</code>: a MAC-cím (fizikai cím) és az IPv6-címek; <code>arp -a</code>: az ARP-tábla.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const NAMES = "ABCDEF".split("");
+  const macOf = i => "00:1A:2B:3C:4D:0" + (i + 1);
+  const portsCheck = (ans, flood, inPort) => v => {
+    const got = (String(v).match(/\d+/g) || []).map(Number).sort((a, b) => a - b).join(", ");
+    if (got === ans.join(", ")) return { ok: true, msg: "Helyes!" };
+    if (flood && got.split(", ").map(Number).includes(inPort)) return { ok: false, msg: "Arra a portra nem küldi vissza, ahonnan jött." };
+    if (!flood && ans.length === 1 && got.split(", ").length > 1) return { ok: false, msg: "A címzett a táblában van: csak az ő portjára megy, nincs elárasztás." };
+    return { ok: false, msg: flood ? "A címzett nincs a táblában (vagy szórás): minden más portra elárasztja." : "Nézd meg a táblában, melyik porton van a címzett." };
+  };
+  const types = [
+    { id: "port", name: "Melyik portra megy?", gen(l){
+      const n = l === 3 ? 6 : 4, devs = shuffle(Array.from({ length: n }, (_, i) => i)).map((d, i) => ({ name: NAMES[i], mac: macOf(i), port: i + 1 }));
+      const table = {}, known = shuffle(devs).slice(0, l === 1 ? n - 1 : rnd(1, n - 2));
+      known.forEach(d => table[d.mac] = d.port);
+      const src = pick(devs); let dst, bc = false;
+      if (l === 1) dst = pick(devs.filter(d => d !== src && d.mac in table));
+      else if (Math.random() < 0.25){ bc = true; } else dst = pick(devs.filter(d => d !== src));
+      const tcopy = Object.assign({}, table), r = swFrame(tcopy, n, src.port, src.mac, bc ? BC : dst.mac);
+      const tbl = "<div class='ptwrap'><table class='pt'><tr><th>gép</th><th>MAC-cím</th><th>port</th></tr>" + devs.map(d => "<tr><td>" + d.name + "</td><td>" + d.mac + "</td><td>" + d.port + "</td></tr>").join("") + "</table></div>";
+      const mt = "<div class='ptwrap'><table class='pt'><tr><th>MAC-tábla</th><th>port</th></tr>" + (Object.keys(table).length ? Object.keys(table).map(k => "<tr><td>" + k + "</td><td>" + table[k] + "</td></tr>").join("") : "<tr><td colspan='2'>üres</td></tr>") + "</table></div>";
+      return { q: "Egy " + n + " portos kapcsoló. A gépek:" + tbl + "A kapcsoló MAC-táblája most:" + mt + src.name + " küld " + (bc ? "szórásos keretet (cél: FF:FF:FF:FF:FF:FF)." : "keretet ennek a gépnek: " + dst.name + ".") + " Melyik portokon megy ki a keret?", kind: "input", ph: "pl. 2, 3", answer: r.out.join(", "),
+        sol: "<p>" + (bc ? "Szórás: minden más portra." : r.flood ? dst.name + " MAC-címe nincs a táblában: elárasztás, minden más portra." : dst.name + " a táblában van: csak a " + r.out[0] + ". portra.") + " A feladó portjára (" + src.port + ") nem küldi vissza.</p>", check: portsCheck(r.out, r.flood, src.port) };
+    } },
+    { id: "tanul", name: "Mit tanul a kapcsoló?", gen(l){
+      const n = 4, k = l === 1 ? 2 : l === 2 ? 3 : 5, table = {}, lines = [];
+      let lastOut = null, lastFlood = false, lastIn = 0;
+      for (let i = 0; i < k; i++){ const s = rnd(0, n - 1); let d; const bc = l > 1 && Math.random() < 0.2; do { d = rnd(0, n - 1); } while (d === s); const r = swFrame(table, n, s + 1, macOf(s), bc ? BC : macOf(d)); lines.push(NAMES[s] + " → " + (bc ? "mindenki (szórás)" : NAMES[d])); lastOut = r.out; lastFlood = r.flood; lastIn = s + 1; }
+      const cnt = Object.keys(table).length;
+      if (l < 3 || Math.random() < 0.5)
+        return { q: "Négy gép: A az 1., B a 2., C a 3., D a 4. porton. A kapcsoló táblája üres, aztán sorban ezek a keretek mennek:" + '<pre class="code">' + lines.join("\n") + "</pre>Hány bejegyzés van a végén a MAC-táblában?", kind: "input", mode: "numeric", answer: cnt,
+          sol: "<p>A kapcsoló csak a <b>feladókat</b> tanulja meg. Különböző feladók: " + Object.keys(table).map(m => NAMES[+m.slice(-1) - 1]).join(", ") + ". Ez " + cnt + " bejegyzés.</p>",
+          check: v => { const s = String(v).trim(); return /^\d+$/.test(s) && +s === cnt ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Csak a feladók kerülnek a táblába (a címzettek nem), és mindegyik csak egyszer." }; } };
+      return { q: "Négy gép: A az 1., B a 2., C a 3., D a 4. porton. A kapcsoló táblája üres, aztán sorban ezek a keretek mennek:" + '<pre class="code">' + lines.join("\n") + "</pre>Az <b>utolsó</b> keret melyik portokon megy ki?", kind: "input", ph: "pl. 2, 3", answer: lastOut.join(", "),
+        sol: "<p>Kövesd a táblát keretről keretre: a feladók kerülnek bele. Az utolsó keretnél a címzett " + (lastFlood ? "nincs a táblában (vagy szórás), ezért elárasztás." : "már a táblában van, ezért csak egy port.") + "</p>", check: portsCheck(lastOut, lastFlood, lastIn) };
+    } },
+    { id: "rovid", name: "IPv6 rövidítése", gen(l){
+      const full = genFull(l), c = compress(full);
+      return { q: "Írd fel a legrövidebb alakban:<div class='v6' style='margin-top:6px'><span class='num'>" + full.join(":") + "</span></div>", kind: "input", ph: "pl. 2001:db8::1", answer: c, frames: v6Frames(full), title: "IPv6-cím rövidítése",
+        sol: "<p>Vezető nullák el, majd a leghosszabb (legalább két csoportos) nullasorozat helyére egyszer ::.</p>",
+        check: v => { const s = String(v).trim().toLowerCase(); if (s === c) return { ok: true, msg: "Helyes!" }; if ((s.match(/::/g) || []).length > 1) return { ok: false, msg: "Csak egyszer szerepelhet :: egy címben." }; const e = expand(s); if (!e) return { ok: false, msg: "Ez nem érvényes IPv6-cím. Figyelj: a csoport végén lévő nullát nem szabad elhagyni." }; if (e.join(":") !== full.join(":")) return { ok: false, msg: "Ez másik cím lett. Talán egy csoport végéről hagytál el nullát, vagy rossz helyre tetted a ::-t." }; return { ok: false, msg: "Ez ugyanaz a cím, de nem a legrövidebb (szabványos) alak: minden vezető nullát hagyj el, és a leghosszabb nullasorozatot cseréld ::-ra." }; } };
+    } },
+    { id: "kibont", name: "IPv6 kibontása", gen(l){
+      const full = genFull(Math.max(2, l)), c = compress(full);
+      return { q: "Írd fel teljes alakban (8 csoport, csoportonként 4 jegy):<div class='v6' style='margin-top:6px'><span class='num'>" + c + "</span></div>", kind: "input", ph: "8 × 4 jegy", answer: full.join(":"),
+        sol: "<p>Látható csoportok: " + c.split(/::|:/).filter(Boolean).length + ". A :: helyére " + (8 - c.split(/::|:/).filter(Boolean).length) + " nulla csoport kerül, és minden csoportot 4 jegyre egészítünk ki elölről nullákkal.</p>",
+        check: v => { const s = String(v).trim().toLowerCase(); if (s === full.join(":")) return { ok: true, msg: "Helyes!" }; const e = expand(s); if (e && e.join(":") === full.join(":")) return { ok: false, msg: "Ugyanaz a cím, de a teljes alak kell: 8 csoport, mindegyik 4 jeggyel." }; return { ok: false, msg: "Nem jó. Számold meg, hány csoport látszik, és a :: helyére annyi 0000-t írj, hogy 8 legyen." }; } };
+    } },
+    { id: "mac", name: "MAC-cím", gen(l){
+      const rb = () => hx(rnd(0, 255)).padStart(2, "0").toUpperCase();
+      if (l === 3){ const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 127) * 2).padStart(2, "0").toUpperCase(); const mac = m.join(":"), oui = m.slice(0, 3).join(":");
+        return { q: "Melyik része azonosítja a gyártót ebben a MAC-címben? Írd be! <span class='num'>" + mac + "</span>", kind: "input", ph: "pl. 3C:52:82", answer: oui, sol: "<p>Az első 3 bájt (6 tizenhatos jegy) a gyártó azonosítója (OUI): " + oui + ".</p>",
+          check: v => { const s = String(v).trim().toUpperCase().replace(/-/g, ":"); return s === oui || s.replace(/:/g, "") === oui.replace(/:/g, "") ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első három bájt kell (az első 6 jegy)." }; } };
+      }
+      const k = l === 1 ? pick(["b", "u", "u"]) : pick(["b", "u", "m"]);
+      let mac;
+      if (k === "b") mac = BC;
+      else if (k === "m") mac = pick(["01:00:5E", "33:33:00", "01:80:C2"]) + ":" + rb() + ":" + rb() + ":" + rb();
+      else { const m = [rb(), rb(), rb(), rb(), rb(), rb()]; m[0] = hx(rnd(0, 127) * 2).padStart(2, "0").toUpperCase(); mac = m.join(":"); }
+      const good = { b: "szórás (mindenki)", u: "egyedi (egy gép)", m: "csoportos (multicast)" }[k];
+      const others = (l === 1 ? ["szórás (mindenki)", "egyedi (egy gép)"] : ["szórás (mindenki)", "egyedi (egy gép)", "csoportos (multicast)"]).filter(x => x !== good);
+      return choice("Milyen címzettet jelöl ez a MAC-cím? <span class='num'>" + mac + "</span>", good, others, "<p>FF:FF:FF:FF:FF:FF a szórás. Ha az első bájt páratlan, csoportos (multicast). Ha páros, egyetlen gép (egyedi).</p>", "Nem jó. Nézd meg: csupa F? Az első bájt páros vagy páratlan?");
+    } },
+    { id: "tipus6", name: "IPv6-címtípus", gen(l){
+      const pool = l === 1 ? TYPES6.filter(t => /loopback|link-local|globális/.test(t[1])) : TYPES6, q = pick(pool), opts = (l === 1 ? T6.filter(t => /loopback|link-local|globális/.test(t)) : T6).filter(x => x !== q[1]);
+      return choice("Milyen típusú ez az IPv6-cím? <span class='num'>" + q[0] + "</span>", q[1], shuffle(opts).slice(0, 3), "<p>::1 saját gép, :: nem meghatározott, fe80 link-local, 2… vagy 3… globális, fc vagy fd egyedi helyi, ff csoportos.</p>", "Nem jó. Nézd meg a cím elejét: fe80, 2…, fd, ff?");
+    } },
+    { id: "fog", name: "Fogalmak", gen(l){
+      const P = [
+        [["A helyi hálózat gépeit köti össze, MAC-cím alapján továbbít.", "switch"], ["Elavult eszköz: minden beérkező jelet minden portra továbbad.", "hub"], ["Hálózatok között továbbít, IP-cím alapján.", "router"], ["A hálózati kártya 48 bites gyári azonosítója.", "MAC-cím"], ["A keretek ellenőrzőösszege, ezzel derül ki, ha megsérült.", "FCS"]],
+        [["A kapcsoló táblája: melyik MAC-cím melyik portján van.", "MAC-tábla"], ["Ha a cél ismeretlen, a kapcsoló minden más portra elküldi a keretet.", "elárasztás"], ["IP-címhez tartozó MAC-címet kérdez meg szórással.", "ARP"], ["Egy fizikai kapcsolót több külön logikai hálózatra oszt.", "VLAN"], ["Azon gépek köre, akik megkapják egymás szórásos kereteit.", "szórási tartomány"]],
+        [["IPv6-ban a helyi szomszédok felderítése (az ARP megfelelője).", "NDP"], ["Minden IPv6-gép magától kap ilyet, csak a helyi hálózaton érvényes.", "link-local cím"], ["Az IPv6-cím első 64 bitje általában ez.", "hálózati előtag (/64)"], ["A MAC-cím első 3 bájtja, a gyártót azonosítja.", "OUI"], ["Az IPv6 saját gépet jelentő címe.", "::1"]]
+      ][l - 1], q = pick(P), o = shuffle(P.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Mire illik ez a leírás? " + q[0], q[1], o, "<p>" + q[0] + " → <b>" + esc(q[1]) + "</b>.</p>", "Nem ez. Nézd meg a diákat.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "ethernet", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["MAC-cím", "48 bit, 6 bájt, 12 hexa jegy; első 3 bájt: gyártó"], ["FF:FF:FF:FF:FF:FF", "szórás (mindenki)"], ["switch", "tanul (forrás-MAC) és továbbít (cél-MAC)"], ["elárasztás", "ismeretlen cél vagy szórás: minden más port"], ["ARP", "IP-cím → MAC-cím"], ["VLAN", "egy kapcsoló, több hálózat"], ["IPv6", "128 bit, 8 × 4 hexa jegy"], ["::", "egyszer, a leghosszabb nullasorozat helyén"]];
+  $("#cheat").innerHTML = "<tr><th>Fogalom</th><th>Röviden</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
