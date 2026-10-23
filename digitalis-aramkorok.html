@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -207,7 +207,7 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Informatikai alapok · digitális technika</span>
   <h1>Digitális áramkörök: kapuktól az összeadóig</h1>
-  <p class="lead">A logikai kapuk nem csak papíron léteznek: tranzisztorokból épülnek, és összekötve számolni tudnak. Kattints a kapcsolókra (sárga = 1), és nézd, merre folyik az 1-es jel.</p>
+  <p class="lead">A logikai kapuk nemcsak papíron léteznek, hanem tranzisztorokból épülnek, és összekötve számolni tudnak. Kattints a kapcsolókra (sárga = 1), és nézd, merre folyik az 1-es jel.</p>
   <div class="panel">
     <span class="eyebrow">Áramkör-szimulátor: kattints a kapcsolókra</span>
     <div class="tabs" id="hm">
@@ -895,7 +895,7 @@ const K = (function(){
     F.push({ cap: "Adjuk össze: " + bits(A, 4) + " + " + bits(B, 4) + ", tízesben " + A + " + " + B + ". Jobbról balra haladunk, ahogy írásban is: minden oszlop egy teljes összeadó.", html: tbl(-1) });
     for (let k = 0; k < 4; k++){
       const a = (A >> k) & 1, b = (B >> k) & 1, c = r.C[k], t = a + b + c;
-      F.push({ cap: "Jobbról számolva " + (k + 1) + ". oszlop: " + a + " + " + b + (k ? " + " + c + " (átvitel)" : "") + " = " + t + ", kettesben " + bits(t, 2) + ". Leírjuk: " + r.S[k] + ", tovább visszük: " + r.C[k + 1] + ".", html: tbl(k) });
+      F.push({ cap: "Jobbról számolva " + (k + 1) + ". oszlop: " + a + " + " + b + (k ? " + " + c + " (átvitel)" : "") + " = " + t + ", kettesben " + bits(t, 2) + ". Leírjuk: " + r.S[k] + ", továbbvisszük: " + r.C[k + 1] + ".", html: tbl(k) });
     }
     F.push({ cap: r.C[4] ? "A bal szélső átvitel 1: az eredmény nem fér el 4 biten, ez a túlcsordulás. " + A + " + " + B + " = " + (A + B) + ", ami nagyobb, mint 15. A 4 LED csak " + num4(r.S) + " értéket mutat." : "Az eredmény: " + r.S.slice().reverse().join("") + ", tízesben " + (A + B) + ". Elfér 4 biten, nincs túlcsordulás.", html: tbl(4) + '<p class="big led" style="margin-top:8px">' + (r.C[4] ? "1" : "") + r.S.slice().reverse().join("") + "</p>" });
     return F;
@@ -938,7 +938,7 @@ const K = (function(){
   /* ---------- Diák ---------- */
   const slides = [
     { k: "Alap", t: "Az 1 és a 0 a valóságban", h:
-      "<p>A számítógépben az 1 és a 0 <b>feszültség</b>: például 5 V (vagy 3,3 V) jelenti az 1-et, 0 V a 0-t. A kapuk <b>tranzisztorokból</b> épülnek: ezek apró, árammal vezérelt kapcsolók.</p>" +
+      "<p>A számítógépben az 1 és a 0 <b>feszültség</b>: például 5 V (vagy 3,3 V) jelenti az 1-et, 0 V a 0-t. A kapuk <b>tranzisztorokból</b> épülnek: ezek apró, elektromosan vezérelt kapcsolók.</p>" +
       "<ul><li>Két kapcsoló <b>sorba</b> kötve, mellettük egy LED: csak akkor világít, ha mindkettő be van kapcsolva. Ez az <b>ÉS</b>.</li><li>Két kapcsoló <b>párhuzamosan</b>: elég az egyik. Ez a <b>VAGY</b>.</li></ul>" +
       "<div class='note'><b>Ismétlés:</b> a NEM, ÉS, VAGY és KIZÁRÓ VAGY igazságtábláját a logikai műveletek leckében tanultad. Itt összekötjük őket. A soros és párhuzamos kapcsolás az elektronika leckéből ismerős.</div>" },
     { k: "Rajzjelek", t: "A kapuk rajzjele", h:
@@ -948,7 +948,7 @@ const K = (function(){
     { k: "NAND, NOR", t: "NAND és NOR: tagadott ÉS és VAGY", h:
       "<p>A <b>NAND</b> (NEM-ÉS) az ÉS kimenetét fordítja meg, a <b>NOR</b> (NEM-VAGY) a VAGY-ét.</p>" +
       "<div class='ptwrap'><table class='pt'><tr><th>A</th><th>B</th><th>ÉS</th><th>NAND</th><th>VAGY</th><th>NOR</th></tr><tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr></table></div>" +
-      "<p>Miért fontosak? Tranzisztorokból a NAND és a NOR a legolcsóbb, és a gyárak ezekből építenek mindent.</p>" },
+      "<p>Miért fontosak? Tranzisztorokból a NAND és a NOR építhető meg a legkevesebb alkatrészből, ezért a chipekben nagyon sok van belőlük.</p>" },
     { k: "Univerzális", t: "NAND-ból minden kapu", h:
       "<ul><li><b>NEM:</b> A NAND A. Ha mindkét bemenetre ugyanaz megy, a NAND megfordítja.</li><li><b>ÉS:</b> (A NAND B) NAND (A NAND B), vagyis egy NAND, utána egy NEM.</li><li><b>VAGY:</b> (A NAND A) NAND (B NAND B), vagyis mindkét bemenetet megfordítjuk, aztán NAND.</li></ul>" +
       "<p>Ezért mondjuk, hogy a NAND <b>univerzális</b> kapu: csak NAND-okból bármilyen áramkör, akár egy egész processzor is megépíthető. (A NOR-ra ugyanez igaz.)</p>" +
@@ -964,18 +964,18 @@ const K = (function(){
       "<p>Írásbeli összeadásnál minden oszlopban három számot adunk össze: a két jegyet és a jobbról jövő átvitelt. Ezt csinálja a <b>teljes összeadó</b>: két félösszeadó és egy VAGY kapu.</p>" +
       "<ul><li><b>összeg</b> = 1, ha páratlan sok bemenet 1,</li><li><b>átvitel</b> = 1, ha legalább két bemenet 1.</li></ul>" + playBtn("full"), init: playInit },
     { k: "4 bit", t: "Összeadó láncba kötve", h:
-      "<p>Négy teljes összeadót egymás mellé teszünk: mindegyik átvitele a tőle balra lévő bemenetére megy. Ez a <b>4 bites összeadó</b>: két 0 és 15 közötti számot ad össze.</p>" +
+      "<p>Négy teljes összeadót egymás mellé teszünk: mindegyik átvitel-kimenete a tőle balra lévő összeadó átvitel-bemenetére megy. Ez a <b>4 bites összeadó</b>: két 0 és 15 közötti számot ad össze.</p>" +
       "<p class='eq'>0111 + 0101 = 1100 (7 + 5 = 12)</p>" +
       "<p>Ha az eredmény 15-nél nagyobb, a bal szélső átvitel 1 lesz: ez a <b>túlcsordulás</b>. A processzor ezt egy jelzőbitben jegyzi meg.</p>" +
       "<div class='note'><b>Így számol a gép:</b> a processzor ALU-ja (lásd a számítógép felépítése leckét) ilyen összeadókból áll, csak 64 bit szélesen.</div>" + playBtn("four"), init: playInit },
     { k: "Választó", t: "Multiplexer: a váltó", h:
       "<p>A <b>multiplexer</b> egy választó: két adatbemenete (A és B) és egy választó bemenete (S) van. Ha S = 0, az A jut a kimenetre, ha S = 1, a B. Olyan, mint a vasúti váltó.</p>" +
       "<p class='eq'>Ki = (A ÉS NEM S) VAGY (B ÉS S)</p>" +
-      "<p>A processzor így választja ki, melyik regiszterből vegye az adatot, vagy hogy az összeadó vagy a kivonó eredménye menjen tovább. A programozásban ez a <code>ha S akkor B különben A</code>.</p>" },
+      "<p>A processzor így választja ki, melyik regiszterből vegye az adatot, vagy hogy az összeadó vagy a kivonó eredménye menjen tovább. A programozásban ez a „<code>ha S, akkor B, különben A</code>”.</p>" },
     { k: "Tárolás", t: "Hogyan jegyez meg a gép egy bitet?", h:
       "<p>Két NOR kaput keresztbe kötünk: mindegyik kimenete a másik bemenetére megy. Ez az <b>SR-tároló</b>.</p>" +
       "<ul><li><b>S</b> (set) = 1: a kimenet 1 lesz.</li><li><b>R</b> (reset) = 1: a kimenet 0 lesz.</li><li>Ha mindkettő 0: a kimenet <b>marad</b>, ami volt. A gép megjegyzett egy bitet!</li></ul>" +
-      "<p>Az órajellel vezérelt változata a <b>flip-flop</b>. Ilyenekből állnak a processzor regiszterei, és hasonló elven (kondenzátorral) a RAM is: milliárdnyi megjegyzett bit.</p>" },
+      "<p>Az órajellel vezérelt változata a <b>flip-flop</b>. Ilyenekből állnak a processzor regiszterei. A RAM (DRAM) másképp, apró kondenzátorokban tárolja a biteket: abban milliárdnyi megjegyzett bit van.</p>" },
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='mistake'><b>KIZÁRÓ VAGY és VAGY összekeverése.</b> Ha mindkét bemenet 1: VAGY = 1, KIZÁRÓ VAGY = 0.</div>" +
       "<div class='mistake'><b>A NAND nem „NEM A, aztán ÉS”.</b> Előbb ÉS, utána tagadás: 0 NAND 0 = 1.</div>" +
@@ -1017,7 +1017,7 @@ const K = (function(){
       const C = [["A NAND A", "NEM", { op: "NAND", a: { v: "A" }, b: { v: "A" } }], ["(A NAND B) NAND (A NAND B)", "ÉS", null], ["(A NAND A) NAND (B NAND B)", "VAGY", null], ["A NOR A", "NEM", null], ["(A NOR B) NOR (A NOR B)", "VAGY", null], ["(A NOR A) NOR (B NOR B)", "ÉS", null]];
       const c = pick(C);
       return choice("Melyik kaput valósítja meg ez a kapcsolás? <pre class='code'>" + c[0] + "</pre>", c[1], ["NEM", "ÉS", "VAGY", "KIZÁRÓ VAGY"].filter(x => x !== c[1]),
-        "<p>Írd fel az igazságtáblát mind a négy (A, B) párra, és hasonlítsd össze a kapukéval. " + esc(c[0]) + " = " + c[1] + ".</p>", "Nem jó. Próbáld ki mind a négy bemenetpárt (00, 01, 10, 11).");
+        "<p>Írd fel az igazságtáblát minden bemenet-kombinációra, és hasonlítsd össze a kapukéval. " + esc(c[0]) + " = " + c[1] + ".</p>", "Nem jó. Próbáld ki az összes bemenet-kombinációt (A és B: 00, 01, 10, 11).");
     } },
     { id: "add", name: "Félösszeadó, teljes összeadó", gen(l){
       if (l === 3){
@@ -1037,8 +1037,8 @@ const K = (function(){
       else if (l === 2){ do { A = rnd(1, 15); B = rnd(1, 15); } while (!(A & B) || A + B > 15); }
       else { do { A = rnd(3, 15); B = rnd(3, 15); } while (A + B < 12); }
       const r = fourCalc(A, B), over = r.C[4], s4 = r.S.slice().reverse().join(""), ans = l === 3 ? (over ? "1" : "0") + s4 : s4;
-      return { q: "Mit mutat a 4 bites összeadó? <span class='num'>" + bits(A, 4) + " + " + bits(B, 4) + "</span>" + (l === 3 ? "<br>Írd az 5 bites eredményt: elöl a túlcsordulás-bit, utána a 4 LED." : "<br>Írd a 4 bites eredményt."), kind: "input", mode: "numeric", ph: l === 3 ? "5 bit" : "4 bit", answer: ans, frames: fourFrames(A, B), title: "4 bites összeadás",
-        sol: "<p>Tízesben: " + A + " + " + B + " = " + (A + B) + ". Kettesben, oszloponként jobbról, az átvitellel: " + (over ? "1" : "") + s4 + "." + (over ? " A túlcsordulás-bit 1, mert az eredmény 15-nél nagyobb." : "") + "</p>",
+      return { q: "Mit mutat a 4 bites összeadó? <span class='num'>" + bits(A, 4) + " + " + bits(B, 4) + "</span>" + (l === 3 ? "<br>Írd az 5 bites eredményt: elöl a túlcsordulás-bit, utána a 4 LED értéke." : "<br>Írd a 4 bites eredményt."), kind: "input", mode: "numeric", ph: l === 3 ? "5 bit" : "4 bit", answer: ans, frames: fourFrames(A, B), title: "4 bites összeadás",
+        sol: "<p>Tízesben: " + A + " + " + B + " = " + (A + B) + ". Kettesben, oszloponként jobbról, az átvitellel: " + (over ? "1" : l === 3 ? "0" : "") + s4 + "." + (over ? " A túlcsordulás-bit 1, mert az eredmény 15-nél nagyobb." : l === 3 ? " A túlcsordulás-bit 0, mert az eredmény elfér 4 biten." : "") + "</p>",
         check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^[01]+$/.test(s)) return { ok: false, msg: "Csak 0 és 1 jegyeket írj." }; if (s === ans) return { ok: true, msg: "Helyes!" }; if (parseInt(s, 2) === A + B && l < 3) return { ok: false, msg: "Az érték jó, de pontosan 4 bitet írj." }; if (l === 3 && s === s4) return { ok: false, msg: "A túlcsordulás-bitet is írd elé (5 bit)." }; return { ok: false, msg: "Nem jó. Jobbról balra add össze, és ne felejtsd el az átvitelt." }; } };
     } },
     { id: "melyik", name: "Melyik kapu ez?", gen(l){
@@ -1056,14 +1056,14 @@ const K = (function(){
     } },
     { id: "sorok", name: "Igazságtábla sorai", gen(l){
       if (l < 3){ const n = l === 1 ? rnd(1, 3) : rnd(4, 8), r = Math.pow(2, n);
-        return { q: "Hány sora van egy <span class='num'>" + n + "</span> bemenetű áramkör igazságtáblájának?", kind: "input", mode: "numeric", answer: r, sol: "<p>Minden bemenet 0 vagy 1 lehet: 2 · 2 · … = 2<sup>" + n + "</sup> = " + r + " sor.</p>",
+        return { q: "Hány sora van egy <span class='num'>" + n + "</span> bemenetű áramkör igazságtáblájának?", kind: "input", mode: "numeric", answer: r, sol: "<p>Minden bemenet 0 vagy 1 lehet, és minden új bemenet megduplázza a sorok számát: 2<sup>" + n + "</sup> = " + r + " sor.</p>",
           check: v => { const x = String(v).trim(); return x === String(r) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: x === String(2 * n) ? "Nem 2 · n, hanem 2 a hatványon n: minden új bemenet megduplázza a sorokat." : "Nem jó. 2 a bemenetek számának hatványán." }; } };
       }
       const n = rnd(2, 5), g = pick(["ÉS", "VAGY", "NAND", "NOR", "KIZÁRÓ VAGY"]), N = Math.pow(2, n);
       const r = { "ÉS": 1, "VAGY": N - 1, "NAND": N - 1, "NOR": 1, "KIZÁRÓ VAGY": N / 2 }[g];
       const why = { "ÉS": "csak akkor 1, ha minden bemenet 1: ez egyetlen sor.", "VAGY": "csak a csupa-0 sorban 0, minden más sorban 1: " + N + " − 1.", "NAND": "csak a csupa-1 sorban 0: " + N + " − 1.", "NOR": "csak a csupa-0 sorban 1: egyetlen sor.", "KIZÁRÓ VAGY": "páratlan sok 1-es a sorok felében van: " + N + " : 2." }[g];
       return { q: "Egy <span class='num'>" + n + "</span> bemenetű " + g + " kapu igazságtáblájában hány sorban 1 a kimenet?" + (g === "KIZÁRÓ VAGY" ? " (Több bemenetnél: 1, ha páratlan sok bemenet 1.)" : ""), kind: "input", mode: "numeric", answer: r,
-        sol: "<p>Összesen 2<sup>" + n + "</sup> = " + N + " sor. A " + g + " " + why + "</p>", check: v => { const x = String(v).trim(); return x === String(r) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Előbb számold ki a sorok számát (2 a hatványon n), aztán gondold végig, hányban 1 a kimenet." }; } };
+        sol: "<p>Összesen 2<sup>" + n + "</sup> = " + N + " sor. " + (g === "ÉS" ? "Az " : "A ") + g + " " + why + "</p>", check: v => { const x = String(v).trim(); return x === String(r) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Előbb számold ki a sorok számát (2 a hatványon n), aztán gondold végig, hányban 1 a kimenet." }; } };
     } },
     { id: "rajz", name: "Rajz és kifejezés", gen(l){
       let t; const vars = l === 1 ? ["A", "B"] : ["A", "B", "C"], ops = l === 3 ? GATE2 : ["ÉS", "VAGY", "KIZÁRÓ VAGY"];

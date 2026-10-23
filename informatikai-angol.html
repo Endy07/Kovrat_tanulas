@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -778,7 +778,7 @@ const K = (function(){
     os: { name: "Operációs rendszer", lvl: 1, w: [
       ["operating system", "operációs rendszer"], ["file", "fájl"], ["folder/directory", "mappa"], ["desktop", "asztal"], ["window", "ablak"],
       ["taskbar", "tálca"], ["settings", "beállítások"], ["user", "felhasználó", "júzer"], ["password", "jelszó"], ["install", "telepít"],
-      ["update", "frissítés", "apdét"], ["restart/reboot", "újraindítás"], ["shut down", "leállítás"], ["log in/sign in", "bejelentkezés"], ["log out/sign out", "kijelentkezés"],
+      ["update", "frissítés", "apdét"], ["restart/reboot", "újraindítás"], ["shut down/shutdown", "leállítás"], ["log in/sign in/login", "bejelentkezés"], ["log out/sign out/logout", "kijelentkezés"],
       ["account", "fiók"], ["permission", "jogosultság"], ["drive", "meghajtó"], ["path", "elérési út"], ["file extension/extension", "kiterjesztés"],
       ["shortcut", "parancsikon"], ["recycle bin/trash", "lomtár"], ["clipboard", "vágólap"], ["notification", "értesítés"], ["administrator/admin", "rendszergazda"]
     ] },
@@ -787,12 +787,12 @@ const K = (function(){
       ["value", "érték"], ["string", "szöveg (karakterlánc)"], ["integer", "egész szám", "intedzser"], ["array", "tömb"], ["parameter", "paraméter"],
       ["return value", "visszatérési érték"], ["bug", "programhiba", "bag"], ["debugger", "hibakereső program", "díbagger"], ["error", "hiba"], ["warning", "figyelmeztetés"],
       ["output", "kimenet"], ["input", "bemenet"], ["source code", "forráskód"], ["comment", "megjegyzés"], ["syntax", "szintaxis (nyelvtan)"],
-      ["indentation", "behúzás"], ["compile", "lefordít"], ["library", "programkönyvtár"], ["object", "objektum"], ["class", "osztály"],
+      ["indentation", "behúzás"], ["compile", "lefordít (programot)"], ["library", "programkönyvtár"], ["object", "objektum"], ["class", "osztály"],
       ["boolean", "logikai érték"], ["assignment", "értékadás"], ["infinite loop", "végtelen ciklus"], ["exception", "kivétel"], ["run/execute", "futtat"]
     ] },
     web: { name: "Web", lvl: 2, w: [
       ["website", "webhely"], ["browser", "böngésző", "brauzer"], ["link", "hivatkozás"], ["heading", "címsor"], ["paragraph", "bekezdés"],
-      ["image", "kép", "imidzs"], ["table", "táblázat"], ["form", "űrlap"], ["button", "gomb"], ["header", "fejléc"],
+      ["image/picture", "kép", "imidzs"], ["table", "táblázat"], ["form", "űrlap"], ["button", "gomb"], ["header", "fejléc"],
       ["footer", "lábléc"], ["background", "háttér"], ["font", "betűtípus"], ["border", "szegély"], ["margin", "külső margó"],
       ["padding", "belső margó"], ["width", "szélesség", "vidsz"], ["height", "magasság", "hájt"], ["layout", "elrendezés"], ["stylesheet", "stíluslap"],
       ["selector", "kijelölő (szelektor)"], ["server", "kiszolgáló (szerver)"], ["request", "kérés"], ["response", "válasz"], ["attribute", "tulajdonság (attribútum)"]
@@ -801,19 +801,19 @@ const K = (function(){
       ["repository/repo", "tároló (repó)"], ["commit", "mentett változat (commit)"], ["branch", "ág"], ["merge", "összefésülés"], ["clone", "klónozás (lemásolás)"],
       ["push", "feltöltés a távoli tárolóba"], ["pull", "letöltés és beolvasztás"], ["staging area", "előkészítő terület"], ["working tree", "munkamappa"], ["conflict", "ütközés"],
       ["history", "előzmények"], ["change", "változtatás"], ["version", "változat (verzió)"], ["remote", "távoli tároló"], ["fork", "saját másolat (elágaztatás)"],
-      ["pull request", "beolvasztási kérés"], ["ignore", "figyelmen kívül hagy"], ["diff", "eltérés"], ["log", "napló"], ["main branch", "fő ág"]
+      ["pull request", "beolvasztási kérés"], ["ignore", "figyelmen kívül hagy"], ["diff/difference", "eltérés"], ["log", "napló"], ["main branch", "fő ág"]
     ] },
     net: { name: "Hálózat", lvl: 3, w: [
       ["network", "hálózat"], ["router", "útválasztó", "rauter"], ["switch", "kapcsoló"], ["IP address", "IP-cím"], ["subnet mask", "alhálózati maszk"],
-      ["gateway", "átjáró", "gétvéj"], ["wireless", "vezeték nélküli"], ["bandwidth", "sávszélesség"], ["speed", "sebesség"], ["packet", "csomag"],
+      ["gateway", "átjáró", "gétvéj"], ["wireless", "vezeték nélküli"], ["bandwidth", "sávszélesség"], ["speed", "sebesség"], ["packet", "adatcsomag"],
       ["protocol", "protokoll"], ["domain name", "domainnév"], ["access point", "hozzáférési pont"], ["connection", "kapcsolat"], ["latency", "késleltetés"],
-      ["host", "gazdagép"], ["client", "kliens (ügyfélgép)"], ["address", "cím"], ["internet service provider", "internetszolgáltató"], ["signal", "jel"],
+      ["host", "gazdagép"], ["client", "kliens (ügyfélgép)"], ["address", "cím"], ["internet service provider", "internetszolgáltató"], ["signal", "jel (hálózati jel)"],
       ["traffic", "forgalom"], ["upload", "feltöltés"], ["download", "letöltés", "daunlód"], ["cache", "gyorsítótár", "kes"], ["port number", "portszám"]
     ] },
     sec: { name: "Biztonság", lvl: 3, w: [
       ["security", "biztonság"], ["firewall", "tűzfal"], ["virus", "vírus", "vájrusz"], ["malware", "kártevő program"], ["ransomware", "zsarolóvírus"],
       ["spyware", "kémprogram"], ["phishing", "adathalászat", "fising"], ["encryption", "titkosítás"], ["decryption", "visszafejtés"], ["key", "kulcs"],
-      ["threat", "fenyegetés", "szret"], ["attack", "támadás"], ["vulnerability", "sebezhetőség"], ["patch", "javítócsomag"], ["two-factor authentication/2fa", "kétlépcsős azonosítás"],
+      ["threat", "fenyegetés", "szret"], ["attack", "támadás"], ["vulnerability", "sebezhetőség"], ["patch", "javítócsomag"], ["two-factor authentication/2FA","kétlépcsős azonosítás"],
       ["authentication", "hitelesítés"], ["privacy", "magánszféra (adatvédelem)", "prájveszi"], ["backup", "biztonsági mentés"], ["scam", "csalás"], ["trusted", "megbízható"],
       ["suspicious", "gyanús", "szaszpisösz"], ["leak", "kiszivárgás"], ["antivirus", "víruskereső"], ["certificate", "tanúsítvány"], ["username", "felhasználónév"]
     ] }
@@ -893,7 +893,7 @@ const K = (function(){
     ["Your branch is ahead of 'origin/main' by 1 commit.", "Az ágad egy committal előrébb jár a GitHubon lévőnél: egy commitod még nincs feltöltve.", "Egy commitod még nincs feltöltve (git push kell)."],
     ["Changes not staged for commit:", "Módosítások, amelyeket még nem készítettél elő a commitra.", "Még nem előkészített módosítások:"],
     ["modified: index.html", "Módosítva: ez a fájl.", "módosítva: index.html"],
-    ["Untracked files:", "Követetlen fájlok: új fájlok, amelyekről a Git még nem tud.", "Követetlen (új) fájlok:"],
+    ["Untracked files:", "Nem követett fájlok: új fájlok, amelyeket a Git még nem figyel.", "Nem követett (új) fájlok:"],
     ['no changes added to commit (use "git add")', "Semmi nincs még előkészítve. A zárójel tanácsot ad: használd a git add parancsot.", "Nincs előkészítve semmi (használd: git add)."]
   ];
   const lines = (L, k) => '<pre class="code" style="white-space:pre-wrap">' + L.map((p, i) => i === k ? "<b style='color:var(--led)'>" + esc(p[0]) + "</b>" : esc(p[0])).join("\n") + "</pre>";
@@ -926,7 +926,7 @@ const K = (function(){
       "<div class='note'><b>Jó hír:</b> nem kell folyékonyan beszélned. Pár száz szakszó és néhány minta elég ahhoz, hogy megértsd a hibaüzeneteket. Fent a szókártyákkal gyakorolhatod őket.</div>" },
     { k: "Hardver", t: "A gép részei", h: tbl(["angol", "magyar"], [["motherboard", "alaplap"], ["processor (CPU)", "processzor"], ["memory (RAM)", "memória"], ["hard drive", "merevlemez"], ["power supply", "tápegység"], ["graphics card", "videokártya"], ["keyboard", "billentyűzet"], ["storage", "tárhely"]]) },
     { k: "Programozás", t: "A kód szavai", h: tbl(["angol", "magyar"], [["variable", "változó"], ["function", "függvény"], ["loop", "ciklus"], ["condition", "feltétel"], ["string", "szöveg (karakterlánc)"], ["integer", "egész szám"], ["bug", "programhiba"], ["indentation", "behúzás"], ["comment", "megjegyzés"]]) +
-      "<p>A kulcsszavak is angol szavak: <code>for</code> = minden … -ra, <code>else</code> = különben, <code>def</code> = define (definiál), <code>True</code> / <code>False</code> = igaz / hamis.</p>" },
+      "<p>A kulcsszavak is angol szavak: <code>for</code> = minden …-ra/-re (például minden elemre), <code>else</code> = különben, <code>def</code> = define (definiál), <code>True</code> / <code>False</code> = igaz / hamis.</p>" },
     { k: "Hibaüzenet", t: "Hogyan olvass el egy hibaüzenetet?", h:
       "<pre class='code' style='white-space:pre-wrap'>Traceback (most recent call last):\n  File \"jatek.py\", line 5, in &lt;module&gt;\n    print(\"Pont: \" + pont)\nTypeError: can only concatenate str (not \"int\") to str</pre>" +
       "<ol><li><b>Alulról olvasd!</b> Az utolsó sor a lényeg: a hiba fajtája (<code>TypeError</code>) és a magyarázat.</li><li>A <code>line 5</code> megmondja, melyik sorban van.</li><li>A <code>Traceback (most recent call last)</code> azt jelenti: a hívások listája, a legutóbbi van alul.</li></ol>" + playBtn("err"), init: playInit },
@@ -934,7 +934,7 @@ const K = (function(){
     { k: "Web", t: "HTTP-állapotkódok", h: tbl(["kód", "jelentése"], [["200 OK", "minden rendben"], ["301 Moved Permanently", "az oldal végleg máshová költözött"], ["404 Not Found", "nincs ilyen oldal"], ["403 Forbidden", "nincs jogod megnézni"], ["500 Internal Server Error", "a szerveren történt hiba"], ["503 Service Unavailable", "a szolgáltatás most nem érhető el"]]) +
       "<p>Szabály: a <b>4</b>-gyel kezdődő kódnál a kérés a hibás (rossz cím, nincs jogod), az <b>5</b>-tel kezdődőnél a szerver.</p>" },
     { k: "Menük", t: "Menük és parancsok", h: tbl(["angol", "magyar"], [["Save as", "mentés másként"], ["Undo / Redo", "visszavonás / újra"], ["Copy / Cut / Paste", "másolás / kivágás / beillesztés"], ["Settings", "beállítások"], ["Run / Debug", "futtatás / hibakeresés"], ["Commit / Push / Pull", "mentés a tárolóba / feltöltés / letöltés"], ["Pull request", "beolvasztási kérés"], ["Deploy", "élesítés (kitelepítés a szerverre)"]]) + playBtn("git"), init: playInit },
-    { k: "Rövidítések", t: "Rövidítések feloldva", h: tbl(["rövidítés", "angolul → magyarul"], [["CPU", "Central Processing Unit → központi feldolgozóegység"], ["RAM", "Random Access Memory → közvetlen elérésű memória"], ["URL", "Uniform Resource Locator → webcím"], ["HTTP", "Hypertext Transfer Protocol → hiperszöveg-átviteli protokoll"], ["DNS", "Domain Name System → tartománynévrendszer"], ["GUI / CLI", "grafikus / parancssoros felület"], ["IDE", "Integrated Development Environment → fejlesztőkörnyezet"], ["API", "Application Programming Interface → programozási felület"]]) },
+    { k: "Rövidítések", t: "Rövidítések feloldva", h: tbl(["rövidítés", "angolul → magyarul"], [["CPU", "Central Processing Unit → központi feldolgozóegység"], ["RAM", "Random Access Memory → közvetlen elérésű memória"], ["URL", "Uniform Resource Locator → webcím"], ["HTTP", "Hypertext Transfer Protocol → hiperszöveg-átviteli protokoll"], ["DNS", "Domain Name System → tartománynévrendszer"], ["GUI / CLI", "grafikus / parancssoros felület"], ["IDE", "Integrated Development Environment → integrált fejlesztőkörnyezet"], ["API", "Application Programming Interface → alkalmazásprogramozási felület"]]) },
     { k: "Kiejtés", t: "Hogyan mondjuk? (közelítő)", h:
       "<p>A magyaros átírás csak <b>közelítő</b>, de segít, hogy ne olvasd betű szerint.</p>" +
       tbl(["szó", "kiejtés kb."], [["cache", "kes"], ["router", "rauter (amerikai), rúter (brit)"], ["width / height", "vidsz / hájt"], ["queue", "kjú"], ["debug", "díbag"], ["data", "déta vagy dáta"], ["null", "nal"], ["char", "kár vagy csár"], ["JSON", "dzsészon"]]) },
@@ -951,7 +951,7 @@ const K = (function(){
       "<div class='two-col'><div class='trick'><span class='t'>Keress rá</span><span>Másold be a hibaüzenet utolsó sorát a keresőbe, a saját változóneveid nélkül.</span></div>" +
       "<div class='trick'><span class='t'>Fordító okosan</span><span>Mondatot fordíts, ne egy szót. A kódot és a parancsokat hagyd ki belőle.</span></div>" +
       "<div class='trick'><span class='t'>Állítsd angolra</span><span>Ha a fejlesztőeszköz angol, a hibaüzenetre is angolul találsz választ.</span></div>" +
-      "<div class='trick'><span class='t'>Napi öt szó</span><span>A fenti szókártyákkal naponta pár percet: a „még nem tudom” kártyák hamarabb visszajönnek.</span></div></div>" }
+      "<div class='trick'><span class='t'>Napi öt szó</span><span>Gyakorolj a fenti szókártyákkal naponta pár percet: a „még nem tudom” kártyák hamarabb visszajönnek.</span></div></div>" }
   ];
   K.deck($("#deck"), slides);
 
@@ -962,7 +962,7 @@ const K = (function(){
   };
   const others3 = (good, list) => shuffle(Array.from(new Set(list.filter(x => x !== good)))).slice(0, 3);
   // jelentésben átfedő párok: ezek nem lehetnek egymás rossz válaszai (két jó opció lenne)
-  const CLASH = [["bug", "error"], ["drive", "hard drive"], ["drive", "storage"], ["diff", "change"], ["log", "history"], ["fork", "clone"], ["virus", "malware"], ["leak", "privacy"], ["screen", "touchscreen"], ["upload", "download"]];
+  const CLASH = [["bug", "error"], ["drive", "hard drive"], ["drive", "storage"], ["diff", "change"], ["log", "history"], ["fork", "clone"], ["virus", "malware"], ["leak", "privacy"], ["screen", "touchscreen"], ["upload", "download"], ["computer", "laptop"], ["value", "return value"], ["commit", "version"], ["remote", "repository"], ["branch", "main branch"], ["address", "IP address"]];
   const clash = (a, b) => CLASH.some(p => (p[0] === first(a) && p[1] === first(b)) || (p[1] === first(a) && p[0] === first(b)));
   const normEn = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const ERR = [
@@ -973,7 +973,7 @@ const K = (function(){
   const ABBR = [["CPU", "Central Processing Unit", "központi feldolgozóegység (processzor)"], ["RAM", "Random Access Memory", "közvetlen elérésű memória"], ["SSD", "Solid State Drive", "szilárdtest-meghajtó"], ["USB", "Universal Serial Bus", "univerzális soros busz"], ["GPU", "Graphics Processing Unit", "grafikus processzor"], ["OS", "Operating System", "operációs rendszer"], ["GUI", "Graphical User Interface", "grafikus felhasználói felület"], ["CLI", "Command Line Interface", "parancssoros felület"], ["IDE", "Integrated Development Environment", "integrált fejlesztőkörnyezet"], ["API", "Application Programming Interface", "alkalmazásprogramozási felület"], ["URL", "Uniform Resource Locator", "webcím"], ["HTTP", "Hypertext Transfer Protocol", "hiperszöveg-átviteli protokoll"], ["HTML", "HyperText Markup Language", "hiperszöveges jelölőnyelv"], ["CSS", "Cascading Style Sheets", "lépcsőzetes stíluslapok"], ["DNS", "Domain Name System", "tartománynévrendszer"], ["IP", "Internet Protocol", "internetprotokoll"], ["LAN", "Local Area Network", "helyi hálózat"], ["WAN", "Wide Area Network", "nagy kiterjedésű hálózat"], ["PDF", "Portable Document Format", "hordozható dokumentumformátum"], ["VPN", "Virtual Private Network", "virtuális magánhálózat"], ["ISP", "Internet Service Provider", "internetszolgáltató"], ["BIOS", "Basic Input/Output System", "alapvető be- és kimeneti rendszer"]];
   const MENU = [
     [["Save as", "Mentés másként (új néven vagy helyre)"], ["Undo", "Az utolsó művelet visszavonása"], ["Redo", "A visszavont művelet újra elvégzése"], ["Copy", "Másolás a vágólapra"], ["Cut", "Kivágás a vágólapra"], ["Paste", "Beillesztés a vágólapról"], ["Select all", "Az összes kijelölése"], ["Find", "Keresés a szövegben"], ["Replace", "Egy szöveg cseréje egy másikra"], ["Print", "Nyomtatás"], ["Settings", "A beállítások megnyitása"], ["Open", "Egy meglévő fájl megnyitása"]],
-    [["Run", "A program elindítása"], ["Debug", "A program futtatása lépésenként, hibakereséshez"], ["Build", "A futtatható program előállítása a forráskódból"], ["Commit", "A változtatások mentése a helyi tárolóba"], ["Push", "A helyi commitok feltöltése a távoli tárolóba"], ["Pull", "A távoli változtatások letöltése és beolvasztása"], ["Clone", "Egy távoli tároló lemásolása a gépedre"], ["Merge", "Két ág összefésülése"], ["New branch", "Új ág létrehozása"], ["Pull request", "Kérés, hogy olvasszák be a változtatásaidat"], ["Deploy", "A program kitelepítése a szerverre (élesítés)"], ["Fork", "Saját másolat készítése valaki más tárolójáról"]],
+    [["Run", "A program elindítása"], ["Debug", "A program futtatása lépésenként, hibakereséshez"], ["Build", "A futtatható program előállítása a forráskódból"], ["Commit", "A változtatások mentése a helyi tárolóba"], ["Push", "A helyi commitok feltöltése a távoli tárolóba"], ["Pull", "A távoli változtatások letöltése és beolvasztása"], ["Clone", "Egy távoli tároló lemásolása a gépedre"], ["Merge", "Két ág összefésülése"], ["New branch", "Új ág létrehozása"], ["Pull request", "Kérés, hogy olvasszák be a változtatásaidat"], ["Deploy", "A program kitelepítése a szerverre (élesítés)"], ["Fork", "Saját másolat készítése valaki más tárolójáról a GitHubon"]],
     [["Log out", "Kijelentkezés"], ["Shut down", "A gép kikapcsolása"], ["Restart", "A gép újraindítása"], ["Sync", "Az adatok összehangolása több eszköz között"], ["Upload", "Fájl küldése a gépedről egy szerverre"], ["Download", "Fájl letöltése a gépedre"], ["Share", "Megosztás másokkal"], ["Uninstall", "Egy program eltávolítása"], ["Refresh", "Az oldal újratöltése"], ["Sign up", "Új fiók létrehozása (regisztráció)"], ["Forgot password?", "Új jelszó kérése, ha elfelejtetted"], ["Archive", "Áthelyezés az archívumba (eltesz, de nem töröl)"]]
   ];
   const SENT = [
@@ -1004,7 +1004,7 @@ const K = (function(){
         check: v => { const s = normEn(v); if (s === normEn(a[1])) return { ok: true, msg: "Helyes!" }; const want = normEn(a[1]).split(" "), got = s.split(" "); return { ok: false, msg: got.length === want.length ? "Majdnem: a szavak száma stimmel, nézd meg a betűzést." : "Nem jó. A rövidítés betűi a szavak kezdőbetűi: " + a[0].split("").join(", ") + "." }; } };
       return { q: "Mi a rövidítése? <span class='num en'>" + esc(a[1]) + "</span>", kind: "input", ph: "rövidítés", answer: a[0],
         sol: "<p>A szavak kezdőbetűi: <b>" + a[0] + "</b> (magyarul: " + esc(a[2]) + ").</p>",
-        check: v => String(v).trim().toUpperCase().replace(/\s+/g, "") === a[0] ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Vedd a nagy kezdőbetűket." } };
+        check: v => String(v).trim().toUpperCase().replace(/\s+/g, "") === a[0] ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Vedd a szavak kezdőbetűit" + (a[0] === "HTTP" ? " (a Hypertext két betűt ad: H és T)." : a[0] === "BIOS" ? " (az Input/Output két szó: I és O)." : ".") } };
     } },
     { id: "mondat", name: "Hiányzó szó", gen(l){
       const s = pick(SENT[l - 1]);

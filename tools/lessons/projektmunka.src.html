@@ -83,6 +83,11 @@
     for (let i = n - 1; i >= 0; i--){ const succ = T.map((t, j) => t.dep.includes(i) ? j : -1).filter(j => j >= 0); LF[i] = succ.length ? Math.min(...succ.map(j => LS[j])) : end; LS[i] = LF[i] - T[i].dur; }
     return { ES, EF, LS, LF, end, slack: ES.map((e, i) => LS[i] - e), crit: ES.map((e, i) => LS[i] === e) };
   }
+  // a kritikus feladatok: ha egyetlen láncot alkotnak, nyíllal; ha több egyforma hosszú ág is kritikus, vesszővel
+  function critTxt(T, S, f){
+    const ix = T.map((t, i) => i).filter(i => S.crit[i]), nm = i => f ? f(T[i].nm) : T[i].nm;
+    return ix.every((v, j) => j === 0 || T[v].dep.includes(ix[j - 1])) ? ix.map(nm).join(" → ") : ix.map(nm).join(", ") + " (több ág is kritikus)";
+  }
   const BASE = () => [
     { nm: "Ötletelés", dur: 2, dep: [] }, { nm: "Tervezés", dur: 3, dep: [0] }, { nm: "Képek gyűjtése", dur: 2, dep: [1] }, { nm: "HTML", dur: 4, dep: [1] },
     { nm: "CSS", dur: 3, dep: [3] }, { nm: "Szövegek", dur: 2, dep: [1] }, { nm: "Tesztelés", dur: 2, dep: [2, 4, 5] }, { nm: "Bemutató", dur: 1, dep: [6] }
@@ -98,7 +103,7 @@
     const S = schedule(H.T);
     $("#gantt").innerHTML = ganttHtml(H.T, S, H.sel);
     $("#total").textContent = S.end + " nap";
-    $("#crit").innerHTML = "Kritikus út: <b>" + H.T.filter((t, i) => S.crit[i]).map(t => esc(t.nm)).join(" → ") + "</b>. " +
+    $("#crit").innerHTML = "Kritikus út: <b>" + critTxt(H.T, S, esc) + "</b>. " +
       (S.slack[H.sel] ? "A kijelölt feladatnak (" + esc(H.T[H.sel].nm) + ") van tartaléka: " + S.slack[H.sel] + " nap csúszhat, a projekt nem késik." : "A kijelölt feladat (" + esc(H.T[H.sel].nm) + ") a kritikus úton van: ha egy napot késik, az egész projekt egy napot késik.");
   }
   $("#tsel").innerHTML = H.T.map((t, i) => '<option value="' + i + '">' + esc(t.nm) + "</option>").join(""); $("#tsel").value = "3";
@@ -115,22 +120,23 @@
     const S = schedule(T), F = [], shown = new Set();
     F.push({ cap: "A feladatok, a hosszuk napban, és hogy mi kell előtte. Kiszámoljuk, mikor kezdődhet legkorábban mindegyik, és mikor végez.", html: tblT(T, S, -1, [["kezdés", i => null], ["vége", i => null]]) });
     T.forEach((t, i) => { shown.add(i);
-      const why = t.dep.length ? "Előtte kész kell legyen: " + t.dep.map(d => T[d].nm + " (vége: " + S.EF[d] + ")").join(", ") + ". A legkésőbbi: " + S.ES[i] + "." : "Nincs előfeltétele, ezért rögtön kezdődhet: 0.";
+      const why = t.dep.length ? "Előfeltételek: " + t.dep.map(d => T[d].nm + " (vége: " + S.EF[d] + ")").join(", ") + "." + (t.dep.length > 1 ? " Ezek közül a legkésőbbi vég: " + S.ES[i] + ", ekkor kezdődhet." : " Ekkor kezdődhet: " + S.ES[i] + ".") :"Nincs előfeltétele, ezért rögtön kezdődhet: 0.";
       F.push({ cap: t.nm + ". " + why + " Vége: " + S.ES[i] + " + " + t.dur + " = " + S.EF[i] + ".", html: tblT(T, S, i, [["kezdés", j => shown.has(j) ? S.ES[j] : null], ["vége", j => shown.has(j) ? S.EF[j] : null]]) });
     });
-    F.push({ cap: "A projekt akkor van kész, amikor az utolsó feladat is: " + S.end + " nap. Ez akkor is így van, ha a feladatok összege több, mert sok minden mehet párhuzamosan.", html: ganttHtml(T, S, -1) });
+    const sum = T.reduce((p, t) => p + t.dur, 0);
+    F.push({ cap: "A projekt akkor van kész, amikor az utolsó feladat is: " + S.end + " nap." + (sum > S.end ? " A feladatok hosszának összege " + sum + " nap, de sok minden mehet párhuzamosan, ezért ennyi idő elég." : ""), html: ganttHtml(T, S, -1) });
     return F;
   }
   function critFrames(T){
     const S = schedule(T), F = [];
     F.push({ cap: "A projekt " + S.end + " nap. Most visszafelé számolunk: legkésőbb mikor kell kezdeni egy feladatot, hogy a projekt ne késsen?", html: ganttHtml(T, S, -1) });
     for (let i = T.length - 1; i >= 0; i--){ const succ = T.map((t, j) => t.dep.includes(i) ? j : -1).filter(j => j >= 0);
-      F.push({ cap: T[i].nm + ": " + (succ.length ? "a rákövetkezők (" + succ.map(j => T[j].nm).join(", ") + ") legkésőbb ekkor kezdődhetnek: " + succ.map(j => S.LS[j]).join(", ") + ". A legkorábbi ezek közül: " + S.LF[i] + "." : "nincs rákövetkező, a projekt végéig, " + S.end + " napig kész kell lennie.") + " Legkésőbbi kezdés: " + S.LF[i] + " − " + T[i].dur + " = " + S.LS[i] + ". Tartalék: " + S.LS[i] + " − " + S.ES[i] + " = " + S.slack[i] + " nap.",
+      F.push({ cap: T[i].nm + ": " + (succ.length > 1 ? "a rákövetkezők (" + succ.map(j => T[j].nm).join(", ") + ") legkésőbb ekkor kezdődhetnek: " + succ.map(j => S.LS[j]).join(", ") + ". A legkorábbi ezek közül: " + S.LF[i] + "." : succ.length ? "a rákövetkező (" + T[succ[0]].nm + ") legkésőbb ekkor kezdődhet: " + S.LF[i] + "." :"nincs rákövetkező, ezért a projekt végére (" + S.end + ") kell elkészülnie.") + " Legkésőbbi kezdés: " + S.LF[i] + " − " + T[i].dur + " = " + S.LS[i] + ". Tartalék: " + S.LS[i] + " − " + S.ES[i] + " = " + S.slack[i] + " nap.",
         html: tblT(T, S, i, [["legkorábban", j => S.ES[j]], ["legkésőbb", j => j >= i ? S.LS[j] : null], ["tartalék", j => j >= i ? S.slack[j] : null]]) }); }
-    F.push({ cap: "Ahol a tartalék 0, az a kritikus út: " + T.filter((t, i) => S.crit[i]).map(t => t.nm).join(" → ") + ". Ezekre kell a legjobban figyelni. A többi feladat ennyit csúszhat a tartaléka szerint.", html: ganttHtml(T, S, -1) });
+    F.push({ cap: "Ahol a tartalék 0, az a kritikus út: " + critTxt(T, S) + ". Ezekre kell a legjobban figyelni. A többi feladat legfeljebb a tartalékával csúszhat.", html: ganttHtml(T, S, -1) });
     return F;
   }
-  const MXQ = [["Holnap beadandó a projekt, és a bemutató még nincs kész.", 0], ["Gyakorolni a jövő heti prezentációt.", 1], ["Egy osztálytárs kér, hogy most rögtön keress neki egy képet, ami nem sürgős a projektnek.", 2], ["Céltalanul görgetni a közösségi médiát munka közben.", 3]];
+  const MXQ = [["Holnap beadandó a projekt, és a bemutató még nincs kész.", 0], ["Gyakorolni a jövő heti prezentációt.", 1], ["Egy osztálytárs megkér, hogy most rögtön keress neki egy képet, ami a projekthez nem kell.", 2], ["Céltalanul görgetni a közösségi médiát munka közben.", 3]];
   const QN = ["Fontos és sürgős: most csináld", "Fontos, nem sürgős: tervezd be", "Sürgős, nem fontos: add át, vagy röviden intézd", "Nem fontos, nem sürgős: hagyd el"];
   function mxFrames(){
     const box = k => '<div class="mx">' + QN.map((q, i) => "<div" + (i === k ? ' style="border-color:#FFB01F;color:#FFB01F"' : "") + "><b>" + q.split(":")[0] + "</b>" + q.split(":")[1] + "</div>").join("") + "</div>";
@@ -174,7 +180,7 @@
       "<p>Eszközök: GitHub Projects, Trello, Teams Tervező (Planner). A Git-leckében tanult ágak és pull requestek is ide tartoznak.</p>" },
     { k: "Csapat", t: "Szerepek a csapatban", h:
       "<ul><li><b>Projektvezető</b>: összefogja, figyeli a határidőket.</li><li><b>Fejlesztők</b>: HTML, CSS, JavaScript.</li><li><b>Tervező</b>: kinézet, színek, képek.</li><li><b>Tesztelő</b>: kipróbálja, hibát keres (telefonon is!).</li><li><b>Bemutató felelőse</b>: prezentáció.</li></ul>" +
-      "<p>Mindenkinek legyen világos a feladata és a határideje. Az ismerd meg a saját erősségeidet: ki szeret tervezni, ki kódolni, ki beszélni?</p>" +
+      "<p>Mindenkinek legyen világos a feladata és a határideje. Ismerd meg a saját erősségeidet: ki szeret tervezni, ki kódolni, ki beszélni?</p>" +
       "<div class='note'><b>Együttműködés, nem versengés:</b> a csapat közösen sikeres. Az információ menjen körbe: amit tudsz, oszd meg.</div>" },
     { k: "Konfliktus", t: "Konfliktuskezelés", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Mód</th><th>Mit jelent?</th></tr><tr><td>versengő</td><td style='text-align:left'>az én megoldásom nyerjen</td></tr><tr><td>alkalmazkodó</td><td style='text-align:left'>legyen, ahogy a másik akarja</td></tr><tr><td>elkerülő</td><td style='text-align:left'>nem foglalkozom vele, hátha elmúlik</td></tr><tr><td>kompromisszumkereső</td><td style='text-align:left'>mindketten engedünk valamennyit</td></tr><tr><td>együttműködő</td><td style='text-align:left'>közösen keresünk olyan megoldást, ami mindkettőnknek jó</td></tr></table></div>" +
@@ -220,14 +226,15 @@
     }
     return T;
   }
-  const projTbl = T => "<div class='ptwrap'><table class='pt'><tr><th>Feladat</th><th>Hossza (nap)</th><th>Előtte kész kell legyen</th></tr>" + T.map(t => "<tr><td style='text-align:left'>" + esc(t.nm) + "</td><td>" + t.dur + "</td><td style='text-align:left'>" + (t.dep.map(d => esc(T[d].nm)).join(", ") || "–") + "</td></tr>").join("") + "</table></div>";
+  const projTbl = T => "<div class='ptwrap'><table class='pt'><tr><th>Feladat</th><th>Hossza (nap)</th><th>Előfeltétel (előtte kész)</th></tr>" + T.map(t => "<tr><td style='text-align:left'>" + esc(t.nm) + "</td><td>" + t.dur + "</td><td style='text-align:left'>" + (t.dep.map(d => esc(T[d].nm)).join(", ") || "–") + "</td></tr>").join("") + "</table></div>";
   const numChk = (ans, hint, extra) => v => { const s = String(v).replace(/\s+/g, "").replace(/nap$/, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj (napban)." }; if (+s === ans) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(+s)) || hint }; };
-  const SMART = [["„Jobb leszek programozásból.”", "nem mérhető és nincs határideje"], ["„Holnapra megírom az egész webáruházat egyedül.”", "nem elérhető (irreális)"], ["„Valamikor elkészítjük a kirándulós oldalt.”", "nincs határideje"], ["„Péntekig megtanulom a teljes kínai nyelvet.”", "nem elérhető (irreális)"], ["„Csinálunk valami oldalt.”", "nem specifikus (nem tudni, mit)"]];
+  // a 3. elem: azok a gombok, amelyek erre a célra részben szintén igazak lennének, ezért nem tesszük ki őket
+  const SMART = [["„Jobb leszek programozásból.”", "nem mérhető és nincs határideje", ["nincs határideje", "nem specifikus (nem tudni, mit)"]], ["„Holnapra megírom az egész webáruházat egyedül.”", "nem elérhető (irreális)"], ["„Valamikor elkészítjük a kirándulós oldalt.”", "nincs határideje", ["nem mérhető és nincs határideje"]], ["„Péntekig megtanulom a teljes kínai nyelvet.”", "nem elérhető (irreális)"], ["„Csinálunk valami oldalt.”", "nem specifikus (nem tudni, mit)", ["nincs határideje", "nem mérhető és nincs határideje"]]];
   const SMOPT = ["nem specifikus (nem tudni, mit)", "nem mérhető és nincs határideje", "nem elérhető (irreális)", "nincs határideje"];
   const MXP = [["Holnap reggel lejár a beadási határidő, és még nincs kész a projekt.", 0], ["A szerver leállt a bemutató előtt egy órával.", 0], ["Átnézni a jövő heti dolgozat anyagát.", 1], ["Megtanulni a Gitet, hogy a következő projekt könnyebb legyen.", 1], ["Elkészíteni a projekt tervét a két hét múlva induló munkához.", 1], ["Egy ismerős most azonnal választ vár egy nem fontos üzenetre.", 2], ["Valaki megkér, hogy azonnal formázz meg neki egy dokumentumot, ami a te munkádhoz nem kell.", 2], ["Videókat nézni munka helyett.", 3], ["Harmadszor is átrendezni az asztali ikonokat.", 3]];
-  const KON = [["Peti kijelenti: „Az én dizájnom lesz, a többi nem érdekel.”", "versengő"], ["Anna inkább ráhagyja a többiekre, pedig neki jobb ötlete volt.", "alkalmazkodó"], ["Bence nem jön el az egyeztetésre, hátha a vita magától megoldódik.", "elkerülő"], ["Megegyeznek: a színeket Dóri választja, a menüt Máté tervezi.", "kompromisszumkereső"], ["Leülnek, és olyan megoldást keresnek, ami mindkét ötlet előnyeit megtartja.", "együttműködő"]];
+  const KON = [["Peti kijelenti: „Az én dizájnom lesz, a többi nem érdekel.”", "versengő"], ["Anna inkább ráhagyja a többiekre, pedig neki jobb ötlete volt.", "alkalmazkodó"], ["Bence nem jön el az egyeztetésre, hátha a vita magától megoldódik.", "elkerülő"], ["Dóri sötét, Máté világos hátteret akar. Végül egy középszürkében egyeznek meg: mindketten engednek valamennyit.", "kompromisszumkereső"], ["Leülnek, és olyan megoldást keresnek, ami mindkét ötlet előnyeit megtartja.", "együttműködő"]];
   const KONO = ["versengő", "alkalmazkodó", "elkerülő", "kompromisszumkereső", "együttműködő"];
-  const FOGP = [["Teendő, Folyamatban, Kész oszlopokból álló tábla.", "Kanban-tábla"], ["Rövid, 1–4 hetes munkaszakasz a Scrumban.", "sprint"], ["A leghosszabb, egymásra épülő feladatlánc a projektben.", "kritikus út"], ["Ennyit csúszhat egy feladat úgy, hogy a projekt nem késik.", "tartalékidő"], ["Időtengelyen sávokkal ábrázolt ütemterv.", "Gantt-diagram"], ["Minden ötlet jöhet, értékelés nélkül gyűjtjük őket.", "ötletbörze (brainstorming)"], ["Az a pont, ahol a munka megakad, mert minden ezen múlik.", "szűk keresztmetszet"]];
+  const FOGP = [["Teendő, Folyamatban, Kész oszlopokból álló tábla.", "Kanban-tábla"], ["Rövid, 1–4 hetes munkaszakasz a Scrumban.", "sprint"], ["A leghosszabb, egymásra épülő feladatlánc a projektben.", "kritikus út"], ["Ennyit csúszhat egy feladat úgy, hogy a projekt nem késik.", "tartalékidő"], ["Időtengelyen sávokkal ábrázolt ütemterv.", "Gantt-diagram"], ["Minden ötlet jöhet, értékelés nélkül gyűjtjük őket.", "ötletgyűjtés (brainstorming)"], ["Az a pont, ahol a munka megakad, mert minden ezen múlik.", "szűk keresztmetszet"]];
   const types = [
     { id: "hossz", name: "Hány nap a projekt?", gen(l){
       const T = genProj(l), S = schedule(T), sum = T.reduce((p, t) => p + t.dur, 0);
@@ -238,7 +245,7 @@
     { id: "kezd", name: "Mikor kezdhet?", gen(l){
       const T = genProj(Math.max(2, l)), S = schedule(T), i = rnd(1, T.length - 1);
       return { q: "Legkorábban hány nap elteltével kezdődhet ez a feladat: <b>" + esc(T[i].nm) + "</b>?" + projTbl(T), kind: "input", mode: "numeric", answer: S.ES[i], frames: esFrames(T), title: "Ütemezés",
-        sol: "<p>Előtte kész kell legyen: " + T[i].dep.map(d => esc(T[d].nm) + " (vége: " + S.EF[d] + ")").join(", ") + ". A legkésőbbi befejezés: " + S.ES[i] + ".</p>",
+        sol: "<p>Előfeltételek: " + T[i].dep.map(d => esc(T[d].nm) + " (vége: " + S.EF[d] + ")").join(", ") + ". A legkésőbbi befejezés: " + S.ES[i] + ".</p>",
         check: numChk(S.ES[i], "Nem jó. Nézd meg az előfeltételeit: mindegyiknek késznek kell lennie, tehát a legkésőbb végző dönt.", x => T[i].dep.some(d => S.EF[d] === x) && x < S.ES[i] ? "Ez csak az egyik előfeltétel vége. Mindegyiknek késznek kell lennie: a legkésőbbi dönt." : "") };
     } },
     { id: "tartalek", name: "Kritikus út, tartalék", gen(l){
@@ -246,7 +253,7 @@
       if (l < 3){
         const crit = T.map((t, i) => i).filter(i => S.crit[i] && T[i].dep.length && T.some(u => u.dep.includes(i))), non = T.map((t, i) => i).filter(i => !S.crit[i]);
         const c = pick(crit.length ? crit : T.map((t, i) => i).filter(i => S.crit[i]));
-        return choice("Melyik feladat késése csúsztatná az egész projektet?" + projTbl(T), T[c].nm, non.map(i => T[i].nm).slice(0, 3), "<p>A kritikus út (tartalék nélkül): " + T.filter((t, i) => S.crit[i]).map(t => esc(t.nm)).join(" → ") + ".</p>", "Nem ez: ennek van tartaléka, csúszhat egy kicsit. A leghosszabb láncon lévő feladat késése csúsztatja a projektet.", critFrames(T), "Kritikus út és tartalék");
+        return choice("Melyik feladat késése csúsztatná az egész projektet?" + projTbl(T), T[c].nm, non.map(i => T[i].nm).slice(0, 3), "<p>A kritikus út (tartalék nélkül): " + critTxt(T, S, esc) + ".</p>", "Nem ez: ennek van tartaléka, csúszhat egy kicsit. A leghosszabb láncon lévő feladat késése csúsztatja a projektet.", critFrames(T), "Kritikus út és tartalék");
       }
       let i = pick(T.map((t, j) => j).filter(j => !S.crit[j])); if (i == null) i = rnd(1, T.length - 2);
       return { q: "Hány nap tartaléka van ennek a feladatnak: <b>" + esc(T[i].nm) + "</b>? (Ennyit csúszhat úgy, hogy a projekt nem késik.)" + projTbl(T), kind: "input", mode: "numeric", answer: S.slack[i], frames: critFrames(T), title: "Kritikus út és tartalék",
@@ -259,22 +266,22 @@
     } },
     { id: "konf", name: "Konfliktuskezelés", gen(l){
       const q = pick(KON);
-      return choice("Melyik konfliktuskezelési mód ez? " + q[0], q[1], KONO.filter(x => x !== q[1]).slice(0, l === 1 ? 2 : 4), "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a konfliktuskezelés diáját.");
+      return choice("Melyik konfliktuskezelési mód ez? " + q[0], q[1], shuffle(KONO.filter(x => x !== q[1])).slice(0, l === 1 ? 2 : 4), "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a konfliktuskezelés diáját.");
     } },
     { id: "smart", name: "SMART cél, fogalmak", gen(l){
       if (l === 3 || Math.random() < 0.5){ const q = pick(FOGP), o = shuffle(FOGP.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
         return choice("Mire illik ez a leírás? " + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat."); }
       const q = pick(SMART);
-      return choice("Mi a baj ezzel a céllal? " + q[0], q[1], SMOPT.filter(x => x !== q[1]), "<p>A SMART cél specifikus, mérhető, elérhető, releváns és határidős. Itt: <b>" + q[1] + "</b>.</p>", "Nem ez a fő baja. Nézd végig a SMART betűit.");
+      return choice("Mi a baj ezzel a céllal? " + q[0], q[1], SMOPT.filter(x => x !== q[1] && !(q[2] || []).includes(x)), "<p>A SMART cél specifikus, mérhető, elérhető, releváns és határidős. Itt: <b>" + q[1] + "</b>.</p>", "Nem ez a fő baja. Nézd végig a SMART betűit.");
     } },
     { id: "prez", name: "Prezentáció ideje", gen(l){
       if (l === 1){ const m = pick([5, 6, 8, 10, 12, 15]), d = pick([4, 5, 6, 8, 10, 12].filter(x => (m * 60) % x === 0)), s = m * 60 / d;
         return { q: "Egy " + m + " perces előadáshoz " + d + " diát készítesz, egyenletesen beosztva. Hány másodperc jut egy diára?", kind: "input", mode: "numeric", answer: s, sol: "<p>" + m + " perc = " + m * 60 + " másodperc. " + m * 60 + " : " + d + " = " + s + " másodperc diánként.</p>", check: numChk(s, "Nem jó. Előbb váltsd át másodpercre (· 60), aztán oszd el a diák számával.", x => x === Math.round(m / d) ? "Váltsd át előbb másodpercre!" : "") }; }
       if (l === 2){ const m = pick([10, 12, 15, 20]), q = pick([2, 3, 5]), p = pick([1, 1.5, 2]), d = Math.floor((m - q) / p);
-        return { q: "Az előadásod " + m + " perces, ebből " + q + " perc a kérdésekre kell. Egy diára átlagosan " + String(p).replace(".", ",") + " percet szánsz. Legfeljebb hány dia fér bele?", kind: "input", mode: "numeric", answer: d, sol: "<p>Előadásra marad: " + m + " − " + q + " = " + (m - q) + " perc. " + (m - q) + " : " + String(p).replace(".", ",") + " = " + String(Math.round((m - q) / p * 100) / 100).replace(".", ",") + ", lefelé kerekítve " + d + " dia.</p>", check: numChk(d, "Nem jó. Vond le a kérdések idejét, oszd el a diánkénti idővel, és kerekíts lefelé.", x => x === Math.floor(m / p) ? "A kérdések idejét előbb vond le!" : "") }; }
+        return { q: "Az előadásod " + m + " perces, ebből " + q + " perc a kérdésekre kell. Egy diára átlagosan " + String(p).replace(".", ",") + " percet szánsz. Legfeljebb hány dia fér bele?", kind: "input", mode: "numeric", answer: d, sol: "<p>Előadásra marad: " + m + " − " + q + " = " + (m - q) + " perc. " + (m - q) + " : " + String(p).replace(".", ",") + " = " + String(Math.round((m - q) / p * 100) / 100).replace(".", ",") + ((m - q) / p === d ? ", tehát " : ", lefelé kerekítve ") + d + " dia.</p>", check: numChk(d, "Nem jó. Vond le a kérdések idejét, oszd el a diánkénti idővel, és kerekíts lefelé.", x => x === Math.floor(m / p) ? "A kérdések idejét előbb vond le!" : "") }; }
       const n = rnd(3, 5), each = pick([2, 3, 4]), sw = pick([20, 30, 40]), qa = pick([3, 4, 5]), tot = n * each * 60 + (n - 1) * sw + qa * 60, mins = Math.ceil(tot / 60);
       return { q: "A csapat " + n + " tagja egymás után beszél, mindenki " + each + " percet. Két beszélő között " + sw + " másodperc kell az átadásra, a végén " + qa + " perc a kérdésekre. Hány perc kell összesen? (Felfelé kerekíts egész percre.)", kind: "input", mode: "numeric", answer: mins,
-        sol: "<p>Beszéd: " + n + " · " + each + " = " + n * each + " perc. Átadás: " + (n - 1) + " · " + sw + " = " + (n - 1) * sw + " másodperc (az utolsó után nincs). Kérdések: " + qa + " perc. Összesen " + tot + " másodperc, felfelé kerekítve " + mins + " perc.</p>",
+        sol: "<p>Beszéd: " + n + " · " + each + " = " + n * each + " perc. Átadás: " + (n - 1) + " · " + sw + " = " + (n - 1) * sw + " másodperc (az utolsó után nincs). Kérdések: " + qa + " perc. Összesen " + n * each * 60 + " + " + (n - 1) * sw + " + " + qa * 60 + " = " + tot + " másodperc, felfelé kerekítve " + mins + " perc.</p>",
         check: numChk(mins, "Nem jó. Az átadásból eggyel kevesebb van, mint ahány beszélő; mindent válts másodpercre, add össze, és kerekíts felfelé.", x => x === Math.ceil((n * each * 60 + n * sw + qa * 60) / 60) && x !== mins ? "Az utolsó beszélő után nincs átadás: eggyel kevesebb átadás van." : "") };
     } }
   ];

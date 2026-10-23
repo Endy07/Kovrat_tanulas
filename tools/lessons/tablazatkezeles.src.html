@@ -472,7 +472,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
   function kiertFrames(){
     const d = Object.assign({}, DEMO), hl = ["B2", "C2", "E2"];
     return [
-      { cap: "A D2 cellába ezt írjuk: =B2*C2*(1-$E$2). A füzet ára szorozva a darabszámmal, és levonjuk a 10 százalék kedvezményt.", html: mini(d, { q: "D2" }) + fx("=B2*C2*(1-$E$2)") },
+      { cap: "A D2 cellába ezt írjuk: =B2*C2*(1-$E$2). A füzet ára szorozva a darabszámmal, és levonjuk a 10 százalékos kedvezményt.", html: mini(d, { q: "D2" }) + fx("=B2*C2*(1-$E$2)") },
       { cap: "Először kikeressük a hivatkozott cellákat: B2 = 350, C2 = 4, E2 = 0,1.", html: mini(d, { q: "D2", hl }) + fx("=B2*C2*(1-$E$2)") },
       { cap: "Behelyettesítve: 350 · 4 · (1 − 0,1).", html: mini(d, { q: "D2", hl }) + fx("=350*4*(1-0,1)") },
       { cap: "A zárójel az első: 1 − 0,1 = 0,9.", html: mini(d, { q: "D2", hl }) + fx("=350*4*0,9") },
@@ -518,10 +518,10 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
     { k: "Alap", t: "Cella, oszlop, sor, tartomány", h:
       "<p>A táblázat <b>cellákból</b> áll. Az oszlopokat betűk (A, B, C…), a sorokat számok (1, 2, 3…) jelölik. A cella neve a kettő együtt: <b>B3</b> a B oszlop 3. sora. Ez a <b>cellahivatkozás</b>.</p>" +
       "<p>A <b>tartomány</b> egy téglalap alakú cellacsoport: <b>B2:B6</b> a B oszlop 2–6. sora, <b>A1:C4</b> egy 3 × 4-es téglalap (12 cella).</p>" +
-      "<div class='note'><b>Hasonlat:</b> olyan, mint a torpedó játék: „B3” megmondja, melyik mezőről beszélünk.</div>" },
+      "<div class='note'><b>Hasonlat:</b> olyan, mint a torpedójáték: „B3” megmondja, melyik mezőről beszélünk.</div>" },
     { k: "Képlet", t: "A képlet = jellel kezdődik", h:
       "<p>Ha a cella tartalma <b>=</b> jellel kezdődik, az <b>képlet</b>: a program kiszámolja, és az eredményt mutatja. A képletben számok helyett <b>hivatkozásokat</b> használunk, így ha az adat változik, az eredmény magától frissül.</p>" +
-      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Művelet</th><th>Példa</th></tr><tr><td>+ −</td><td>összeadás, kivonás</td><td>=B2+C2</td></tr><tr><td>* /</td><td>szorzás, osztás</td><td>=B2*C2</td></tr><tr><td>^</td><td>hatványozás</td><td>=A1^2</td></tr><tr><td>%</td><td>százalék</td><td>=B2*20%</td></tr><tr><td>&amp;</td><td>szövegek összefűzése</td><td>=A2&amp;\" \"&amp;B2</td></tr></table></div>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Művelet</th><th>Példa</th></tr><tr><td>+ -</td><td>összeadás, kivonás</td><td>=B2+C2</td></tr><tr><td>* /</td><td>szorzás, osztás</td><td>=B2*C2</td></tr><tr><td>^</td><td>hatványozás</td><td>=A1^2</td></tr><tr><td>%</td><td>százalék</td><td>=B2*20%</td></tr><tr><td>&amp;</td><td>szövegek összefűzése</td><td>=A2&amp;\" \"&amp;B2</td></tr></table></div>" +
       "<p>Műveleti sorrend, mint a matekban: zárójel → hatvány → szorzás, osztás → összeadás, kivonás. =2+3*4 eredménye 14, nem 20.</p>" + playBtn("kiert"), init: playInit },
     { k: "Függvények", t: "A leggyakoribb függvények", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Magyar</th><th>Angol</th><th>Mit ad?</th></tr><tr><td>SZUM</td><td>SUM</td><td style='text-align:left'>összeg</td></tr><tr><td>ÁTLAG</td><td>AVERAGE</td><td style='text-align:left'>átlag</td></tr><tr><td>MIN, MAX</td><td>MIN, MAX</td><td style='text-align:left'>legkisebb, legnagyobb</td></tr><tr><td>DARAB</td><td>COUNT</td><td style='text-align:left'>hány cellában van szám</td></tr><tr><td>KEREKÍTÉS</td><td>ROUND</td><td style='text-align:left'>kerekítés adott tizedesre</td></tr></table></div>" +
@@ -547,13 +547,13 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       "<li><b>SZUMHA</b> (SUMIF): csak azokat a számokat adja össze, amelyeknél a feltétel teljesül. =SZUMHA(A2:A20;\"alma\";B2:B20) → az almaeladások összege.</li></ul>" +
       "<p>A feltétel idézőjelben van, ha összehasonlító jel is tartozik hozzá: \">=50\", \"&lt;&gt;0\".</p>" },
     { k: "Százalék", t: "Százalékszámítás táblázatban", h:
-      "<ul><li>Hány százalék? rész : egész. =B2/B7, és a cella formátuma <b>százalék</b> (0,25 → 25%).</li><li>A 30 százaléka: =B2*30% vagy =B2*0,3.</li><li>Növelés 27%-kal (ÁFA): =B2*(1+27%) vagy =B2*1,27.</li><li>Csökkentés 10%-kal: =B2*(1-10%) vagy =B2*0,9.</li></ul>" +
+      "<ul><li>Hány százalék? rész : egész. =B2/B7, és a cella formátuma <b>százalék</b> (0,25 → 25%).</li><li>A B2-ben lévő érték 30 százaléka: =B2*30% vagy =B2*0,3.</li><li>Növelés 27%-kal (ÁFA): =B2*(1+27%) vagy =B2*1,27.</li><li>Csökkentés 10%-kal: =B2*(1-10%) vagy =B2*0,9.</li></ul>" +
       "<div class='note'><b>A formátum nem változtat az értéken.</b> A 0,25 és a 25% ugyanaz a szám, csak másképp mutatjuk. Ugyanígy a kerekített formátum csak megjeleníti a kevesebb tizedest; a KEREKÍTÉS függvény ténylegesen kerekít.</div>" },
     { k: "Adatok", t: "Rendezés, szűrés, diagram", h:
       "<ul><li><b>Rendezés</b>: az egész táblázatot jelöld ki (fejléccel), különben a sorok szétcsúsznak: a nevek mellé más pontszám kerül.</li><li><b>Szűrés</b>: csak a feltételnek megfelelő sorok látszanak (például csak a 9.B). A többi nincs törölve, csak el van rejtve.</li></ul>" +
       "<div class='ptwrap'><table class='pt'><tr><th>Diagram</th><th>Mire jó?</th></tr><tr><td>oszlop</td><td style='text-align:left'>összehasonlítás (melyik osztály gyűjtött többet)</td></tr><tr><td>kör</td><td style='text-align:left'>egy egész részei (a zsebpénz mire megy el)</td></tr><tr><td>vonal</td><td style='text-align:left'>változás az időben (hőmérséklet hónaponként)</td></tr><tr><td>pont (XY)</td><td style='text-align:left'>két mennyiség kapcsolata (tanulási idő és pontszám)</td></tr></table></div>" },
     { k: "Hibaüzenetek", t: "Mit jelent a # jel?", h:
-      "<div class='ptwrap'><table class='pt'><tr><th>Magyarul</th><th>Angolul</th><th>Oka</th></tr><tr><td>#ZÉRÓOSZTÓ!</td><td>#DIV/0!</td><td style='text-align:left'>nullával vagy üres cellával osztasz</td></tr><tr><td>#NÉV?</td><td>#NAME?</td><td style='text-align:left'>elírt függvénynév, vagy idézőjel nélküli szöveg</td></tr><tr><td>#HIV!</td><td>#REF!</td><td style='text-align:left'>a hivatkozott cella nem létezik (törölted, vagy kicsúszott a táblából)</td></tr><tr><td>#ÉRTÉK!</td><td>#VALUE!</td><td style='text-align:left'>szöveggel számolsz, rossz az argumentum</td></tr><tr><td>####</td><td>####</td><td style='text-align:left'>nem hiba: keskeny az oszlop, szélesítsd</td></tr></table></div>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Magyarul</th><th>Angolul</th><th>Oka</th></tr><tr><td>#ZÉRÓOSZTÓ!</td><td>#DIV/0!</td><td style='text-align:left'>nullával vagy üres cellával osztasz</td></tr><tr><td>#NÉV?</td><td>#NAME?</td><td style='text-align:left'>elírt függvénynév, vagy idézőjel nélküli szöveg</td></tr><tr><td>#HIV!</td><td>#REF!</td><td style='text-align:left'>a hivatkozott cella nem létezik (törölted, vagy kicsúszott a munkalapról)</td></tr><tr><td>#ÉRTÉK!</td><td>#VALUE!</td><td style='text-align:left'>szöveggel számolsz, rossz az argumentum</td></tr><tr><td>####</td><td>####</td><td style='text-align:left'>nem hiba: keskeny az oszlop, szélesítsd</td></tr></table></div>" +
       "<p><b>Körkörös hivatkozás</b>: ha a képlet önmagára hivatkozik (például A5-ben =SZUM(A1:A5)), a program figyelmeztet. A fenti táblázatban ezt #KÖR! jelzi.</p>" },
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='mistake'><b>Kimarad az = jel.</b> B2*C2 csak szöveg, nem számol semmit.</div>" +
@@ -591,7 +591,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       return { q: "Mi jelenik meg a cellában, ha ezt a képletet írod bele? <div class='fx'>" + esc(f) + "</div>" + mini(d) + "<span class='hint'>Ha nem egész, két tizedesre kerekítve írd.</span>", kind: "input", mode: "decimal", answer: ans,
         frames: evalFrames(f, d), title: "Egy képlet kiszámolása",
         sol: "<p>A hivatkozott cellák: " + refsIn(f).map(n => n + " = " + (SH.sheet(d).show(n) || "üres")).join(", ") + ".</p><p>Behelyettesítve: <code>" + esc(subst(f, d)) + "</code> → " + SH.fmt(r2(val)) + ".</p>" +
-          (/DARAB|COUNT/.test(f) && !/SZUM|SUM/.test(f) ? "<p>A DARAB csak a számot tartalmazó cellákat számolja, a szöveget és az üreset nem.</p>" : ""),
+          (/\b(DARAB|COUNT)\(/.test(f) && !/SZUM|SUM/.test(f) ? "<p>A DARAB csak a számot tartalmazó cellákat számolja, a szöveget és az üreset nem.</p>" : ""),
         check: x => { const y = num(x); if (isNaN(y)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(y - val) <= 0.0051) return { ok: true, msg: "Helyes!" };
           if (f === "=A1+B2*2" && Math.abs(y - (+d.A1 + +d.B2) * 2) < 1e-9) return { ok: false, msg: "A szorzás előbb jön, mint az összeadás." };
           return { ok: false, msg: "Nem jó. Keresd ki a cellák értékét, helyettesítsd be, és számolj a műveleti sorrend szerint." }; } };
@@ -611,7 +611,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       const m = /^([A-Z]+)(\d+)$/.exec(from), to = SH.colS(SH.colN(m[1]) + dc) + (+m[2] + dr), ans = SH.shift(src, dr, dc);
       const dir = (dr ? dr + " sorral lejjebb" : "") + (dr && dc ? " és " : "") + (dc ? dc + " oszloppal jobbra" : "");
       return { q: ArtC(from) + " " + from + " cellában ez a képlet áll: <div class='fx'>" + esc(src) + "</div>Átmásolod " + artC(to) + " " + to + " cellába (" + dir + "). Mi lesz ott a képlet?", kind: "input", ph: "=…", answer: ans,
-        sol: "<p>Elmozdulás: " + dir + ". A $ nélküli sorszámokhoz hozzáadunk ennyit: " + dr + ", a $ nélküli oszlopbetűket ennyivel léptetjük jobbra: " + dc + ". Ami előtt $ áll, az nem változik.</p><p><code>" + esc(src) + "</code> → <code>" + esc(ans) + "</code></p>",
+        sol: "<p>Elmozdulás: " + dir + ". A $ nélküli sorszámok ennyivel nőnek: " + dr + "; a $ nélküli oszlopbetűk ennyit lépnek jobbra: " + dc + ". Ami előtt $ áll, az nem változik.</p><p><code>" + esc(src) + "</code> → <code>" + esc(ans) + "</code></p>",
         check: v => { const s = normF(v); if (s[0] !== "=") return { ok: false, msg: "A képlet = jellel kezdődik." }; if (s === normF(ans)) return { ok: true, msg: "Helyes!" };
           if (s === normF(src)) return { ok: false, msg: "Másoláskor a relatív hivatkozások elmozdulnak, nem maradnak ugyanazok." };
           if (/\$/.test(src) && s === normF(SH.shift(src.replace(/\$/g, ""), dr, dc))) return { ok: false, msg: "A $ jellel rögzített részt nem szabad elmozdítani." };
@@ -638,7 +638,8 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       const t = pick(T), sets = [t[4](), t[4](), t[4]()];
       const res = (f, d) => SH.run(f, d), same = (a, b) => a.v !== undefined && b.v !== undefined && (typeof a.v === "number" && typeof b.v === "number" ? Math.abs(a.v - b.v) < 1e-9 : SH.show(a.v).toLowerCase() === SH.show(b.v).toLowerCase());
       return { q: "Írj képletet " + artC(t[1]) + " " + t[1] + " cellába, amely " + t[2] + mini(sets[0], { q: t[1] }), kind: "input", ph: "=…", answer: t[3],
-        sol: "<p>Egy lehetséges képlet: <code>" + esc(t[3]) + "</code>. Angolul: <code>" + esc(t[3].replace(/SZUMHA/g, "SUMIF").replace(/SZUM/g, "SUM").replace(/ÁTLAG/g, "AVERAGE").replace(/DARABTELI/g, "COUNTIF").replace(/DARAB/g, "COUNT").replace(/KEREKÍTÉS/g, "ROUND").replace(/HA\(/g, "IF(").replace(/;/g, ",")) + "</code>.</p>",
+        sol: (() => { const enF = t[3].replace(/SZUMHA/g, "SUMIF").replace(/SZUM/g, "SUM").replace(/ÁTLAG/g, "AVERAGE").replace(/DARABTELI/g, "COUNTIF").replace(/DARAB/g, "COUNT").replace(/KEREKÍTÉS/g, "ROUND").replace(/HA\(/g, "IF(").replace(/;/g, ",");
+          return "<p>Egy lehetséges képlet: <code>" + esc(t[3]) + "</code>." + (enF !== t[3] ? " Angolul: <code>" + esc(enF) + "</code>." : "") + "</p>"; })(),
         check: v => {
           const s = String(v).trim();
           if (!s) return { ok: false, msg: "Írj be egy képletet." };
@@ -658,7 +659,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
         [2, "Feltételtől függően az egyik vagy a másik értéket adja (például „megfelelt” vagy „nem felelt meg”).", "HA (IF)"], [2, "Adott számú tizedesjegyre kerekít.", "KEREKÍTÉS (ROUND)"],
         [2, "Mennyi volt a hónap legmelegebb napjának hőmérséklete?", "MAX"], [2, "Mennyi pénzt gyűjtött össze az osztály összesen?", "SZUM (SUM)"],
         [3, "Megszámolja, hány cella felel meg egy feltételnek (például hány ötös jegy van).", "DARABTELI (COUNTIF)"], [3, "Csak azoknak a soroknak a számait adja össze, ahol a feltétel teljesül (például csak az alma eladásai).", "SZUMHA (SUMIF)"],
-        [3, "Az átlagot egy tizedesjegyre szeretnéd kerekíteni.", "KEREKÍTÉS (ROUND)"],[3, "Hányan kaptak legalább 4-est?", "DARABTELI (COUNTIF)"], [3, "Mennyi a 9.B osztály tanulóinak összes pontja egy közös táblázatban?", "SZUMHA (SUMIF)"]
+        [3, "Az átlag már megvan, és egy tizedesjegyre szeretnéd kerekíteni.", "KEREKÍTÉS (ROUND)"],[3, "Hányan kaptak legalább 4-est?", "DARABTELI (COUNTIF)"], [3, "Egy több osztályt tartalmazó táblázatban mennyi csak a 9.B tanulóinak összes pontja?", "SZUMHA (SUMIF)"]
       ];
       const own = P.filter(x => x[0] === l), q = pick(own), labels = Array.from(new Set(P.filter(x => x[0] <= Math.max(l, 2)).map(x => x[2]))).filter(x => x !== q[2]);
       return choice("Melyik függvény kell ehhez? " + q[1], q[2], shuffle(labels).slice(0, 3), "<p>" + q[1] + " → <b>" + q[2] + "</b>. Nézd meg a puskát.</p>", "Nem ez. A helyes: " + q[2] + ".");
@@ -668,7 +669,8 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       if (l === 1){
         const th = pick([40, 50, 60]), op = pick([">=", ">", "<"]), tx = pick([["megfelelt", "nem felelt meg"], ["igen", "nem"], ["jó", "gyenge"]]);
         d = { B1: "Pont", B2: String(pick([th, th - 1, th + 1, rnd(0, 100)])) };
-        f = "=HA(B2" + op + th + ';"' + tx[0] + '";"' + tx[1] + '")';
+        const tt = op === "<" ? [tx[1], tx[0]] : tx;   // „kisebb, mint” feltételnél a rosszabb eredmény az igaz ág
+        f = "=HA(B2" + op + th + ';"' + tt[0] + '";"' + tt[1] + '")';
       } else if (l === 2){
         const k = rnd(0, 2);
         if (k === 0){ d = { B1: "Ár", B2: String(pick([rnd(5, 20) * 10, 100, 110])) }; f = "=HA(B2>100;B2*0,9;B2)"; }
@@ -682,7 +684,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       const cond = /HA\(([^;]+);/.exec(f)[1];
       const cv = SH.run("=" + cond, d).v;
       return { q: "Mi jelenik meg a cellában? <div class='fx'>" + esc(f) + "</div>" + mini(d), kind: "input", mode: isNum ? "decimal" : "text", answer: ans, frames: evalFrames(f, d), title: "A HA függvény",
-        sol: "<p>A (legkülső) feltétel: <code>" + esc(cond) + "</code> → behelyettesítve <code>" + esc(subst("=" + cond, d).slice(1)) + "</code>, ez " + (cv ? "igaz" : "hamis") + ", ezért " + (cv ? "a második" : "a harmadik") + " rész számít." + (/HA\(.*HA\(/.test(f) && !cv ? " Ez egy újabb HA: ugyanígy folytasd." : "") + " Eredmény: " + esc(ans) + ".</p>" + (/="alma"/.test(f) ? "<p>A szöveg-összehasonlítás nem érzékeny a kis- és nagybetűre: „Alma” = „alma”.</p>" : ""),
+        sol: "<p>" + (/HA\(.*HA\(/.test(f) ? "A legkülső feltétel" : "A feltétel") + ": <code>" + esc(cond) + "</code> → behelyettesítve <code>" + esc(subst("=" + cond, d).slice(1)) + "</code>, ez " + (cv ? "igaz" : "hamis") + ", ezért " + (cv ? "a második" : "a harmadik") + " rész számít." + (/HA\(.*HA\(/.test(f) && !cv ? " Ez egy újabb HA: ugyanígy folytasd." : "") + " Eredmény: " + esc(ans) + ".</p>" + (/="alma"/.test(f) ? "<p>A szöveg-összehasonlítás nem érzékeny a kis- és nagybetűre: „Alma” = „alma”.</p>" : ""),
         check: x => { const s = String(x).trim().replace(/^["„”']+|["„”']+$/g, "");
           if (isNum){ const y = num(s); return !isNaN(y) && Math.abs(y - v) < 1e-9 ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Döntsd el, igaz-e a feltétel, és aszerint számolj a második vagy a harmadik résszel." }; }
           return s.toLowerCase() === ans.toLowerCase() ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Ha a feltétel igaz, a második rész jelenik meg, ha hamis, a harmadik." }; } };
@@ -697,7 +699,7 @@ table.mini td.q{color:var(--accent);font-weight:700;text-align:center}
       ].filter(s => l > 1 || s[1] !== "val");
       if (l < 3){ const s = pick(S), pool = Object.keys(C).filter(k => (l > 1 || k !== "val") && k !== s[1]).map(k => C[k]);
         return choice("Milyen hibaüzenetet kapsz? " + s[0], C[s[1]], shuffle(pool).slice(0, 3), "<p>" + s[0] + " → <b>" + C[s[1]] + "</b>.</p>", "Nem ez. Nézd meg a hibaüzenetek diáját."); }
-      const R = { div: "Nullával vagy üres cellával osztasz.", name: "Elírt függvénynév, vagy idézőjel nélküli szöveg.", ref: "A hivatkozott cella nem létezik (törölted, vagy kicsúszott a táblából).", wide: "Nem hiba: az oszlop túl keskeny a számhoz.", val: "Szöveggel próbálsz számolni." };
+      const R = { div: "Nullával vagy üres cellával osztasz.", name: "Elírt függvénynév, vagy idézőjel nélküli szöveg.", ref: "A hivatkozott cella nem létezik (törölted, vagy kicsúszott a munkalapról).", wide: "Nem hiba: az oszlop túl keskeny a számhoz.", val: "Szöveggel próbálsz számolni." };
       const k = pick(Object.keys(R)), pool = Object.keys(R).filter(x => x !== k).map(x => R[x]);
       return choice("Mi okozza ezt? <span class='num'>" + C[k] + "</span>", R[k], shuffle(pool).slice(0, 3), "<p>" + C[k] + ": " + R[k] + "</p>", "Nem ez. Nézd meg a hibaüzenetek diáját.");
     } },

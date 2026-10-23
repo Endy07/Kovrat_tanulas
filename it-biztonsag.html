@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -197,7 +197,7 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Informatikai alapok · biztonság</span>
   <h1>IT-biztonság alapjai</h1>
-  <p class="lead">A legtöbb támadás nem a gépet, hanem téged céloz: egy link, egy üzenet, egy jelszó. Tanuld meg kiolvasni egy link valódi címét, és megismered a kártevőket, a titkosítást és az ellenőrzőjegyeket.</p>
+  <p class="lead">A legtöbb támadás nem a gépet, hanem téged céloz: egy link, egy üzenet, egy jelszó. Tanuld meg kiolvasni egy link valódi címét, és ismerd meg a kártevőket, a titkosítást és az ellenőrzőjegyeket.</p>
   <div class="panel">
     <span class="eyebrow">Linkvizsgáló: hová visz valójában?</span>
     <input type="text" class="urlin" id="url" value="https://www.otpbank.hu.ugyfel-ellenorzes.com/belepes" aria-label="Link" autocomplete="off" spellcheck="false" autocapitalize="off">
@@ -243,11 +243,11 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
   <span class="eyebrow">4. rész</span><h2>Puska</h2>
   <div class="ptwrap"><table class="pt" id="cheat"></table></div>
   <div class="two-col">
-    <div class="trick"><span class="t">Link olvasása</span><span>A domain a <b>://</b> után kezdődik és az <b>első /</b> jelig tart. Ebből a <b>jobb szélső két tag</b> a valódi cím. Ami a @ előtt van, azt a böngésző eldobja.</span></div>
+    <div class="trick"><span class="t">Link olvasása</span><span>A gép neve a <b>://</b> után kezdődik, és az <b>első /</b> jelig tart. Ebből a <b>jobb szélső két tag</b> a valódi domain. Ami a @ előtt van, azt a böngésző eldobja.</span></div>
     <div class="trick"><span class="t">Lakat ≠ megbízható</span><span>A https csak azt jelenti, hogy titkosított a kapcsolat. A csaló oldalnak is lehet lakatja!</span></div>
     <div class="trick"><span class="t">XOR</span><span class="mono">0⊕0=0 · 0⊕1=1 · 1⊕0=1 · 1⊕1=0</span><span>Ugyanazzal a kulccsal még egyszer XOR-olva visszakapod az eredetit.</span></div>
     <div class="trick"><span class="t">Erős jelszó</span><span>Hosszú (12+), egyedi minden oldalon, jelszókezelőben tárolva, mellé kétlépcsős azonosítás.</span></div>
-    <div class="trick"><span class="t">Paritásbit (páros)</span><span>Annyi 1-es kerül a végére, hogy az 1-esek száma páros legyen. Egy elrontott bitet észrevesz.</span></div>
+    <div class="trick"><span class="t">Paritásbit (páros)</span><span>Egy bit (0 vagy 1) kerül a végére, hogy az 1-esek száma páros legyen. Egy elrontott bitet észrevesz.</span></div>
     <div class="trick"><span class="t">Gyanús üzenet</span><span>Sürget, fenyeget, nyereményt ígér, jelszót vagy kártyaszámot kér? Ne kattints: nyisd meg magad a hivatalos oldalt.</span></div>
   </div>
 </section>
@@ -776,6 +776,7 @@ const K = (function(){
   const SUF2 = ["co.uk", "com.au", "gov.hu", "org.hu", "co.hu", "com.br"];
   const LOOK = /[0-9](?=[a-z])|[a-z](?=[0-9])|rn/;
   const BRANDS = [["otpbank.hu", "OTP Bank"], ["posta.hu", "Magyar Posta"], ["netflix.com", "Netflix"], ["paypal.com", "PayPal"], ["google.com", "Google"], ["microsoft.com", "Microsoft"], ["instagram.com", "Instagram"], ["roblox.com", "Roblox"], ["steampowered.com", "Steam"], ["kreta.hu", "KRÉTA"]];
+  const withArt = name => (/^[AEIOUÁÉÍÓÖŐÚÜŰ]/i.test(name) ? "az " : "a ") + name; // márkanév elé névelő (az OTP Bank, a Netflix)
   const EVIL = ["ugyfel-ellenorzes.com", "account-verify.net", "biztonsagi-frissites.info", "csomag-kezbesites.net", "secure-login.xyz", "nyeremeny-sorsolas.com", "fiok-zarolas.online"];
   function parse(s){
     s = String(s).trim();
@@ -801,7 +802,7 @@ const K = (function(){
     if (inSub && !brand) F.push(["w", "Egy ismert név (" + inSub[1] + ") szerepel a címben, de nem a valódi domainben: ez álcázás."]);
     if (!brand && !p.ip && LOOK.test(p.dom.split(".")[0])) F.push(["w", "Gyanús betű-szám keverék a domainben (például 1 az l helyett, 0 az o helyett)."]);
     if (!brand && /-/.test(p.dom)) F.push(["w", "Kötőjeles, hosszú domain („ellenorzes”, „login”, „verify”): tipikus csalás."]);
-    if (brand) F.push(["g", "A valódi domain " + brand[1] + " hivatalos címe."]);
+    if (brand) F.push(["g", "A valódi domain " + withArt(brand[1]) + " hivatalos címe."]);
     if (p.proto === "https" && !F.some(f => f[0] === "w")) F.push(["g", "Titkosított kapcsolat (https). Ez magában még nem bizonyít semmit, de jó jel."]);
     return { F, bad: F.some(f => f[0] === "w"), brand };
   }
@@ -824,15 +825,15 @@ const K = (function(){
   const look = d => { const [n, ...r] = d.split("."); const opts = []; if (/o/.test(n)) opts.push(n.replace("o", "0")); if (/l/.test(n)) opts.push(n.replace("l", "1")); if (/i/.test(n)) opts.push(n.replace("i", "1")); if (/m/.test(n)) opts.push(n.replace("m", "rn")); return opts.length ? pick(opts) + "." + r.join(".") : n + "-hu." + r.join("."); };
   function genUrl(l){
     const b = pick(BRANDS), path = pick(["/belepes", "/login", "/fiok/adatok", "/fizetes", "/csomag", "/jelszo-csere"]);
-    const legit = () => ({ u: "https://" + pick(["www.", "", "login.", "help."]) + b[0] + path, real: b[0], ok: true, why: "A valódi domain " + b[0] + ": ez " + b[1] + " hivatalos címe." });
+    const legit = () => ({ u: "https://" + pick(["www.", "", "login.", "help."]) + b[0] + path, real: b[0], ok: true, why: "A valódi domain " + b[0] + ": ez " + withArt(b[1]) + " hivatalos címe." });
     const fakes = [
       () => { const e = pick(EVIL); return { u: "https://www." + b[0] + "." + e + path, real: e, why: "A márkanév csak aldomain: a valódi domain " + e + "." }; },
-      () => { const d = b[0].split(".")[0] + pick(["-belepes", "-login", "-ugyfel", "-secure"]) + "." + pick(["com", "net", "info", "hu"]); return { u: "https://" + d + path, real: d, why: "Ez nem " + b[1] + " domainje: a kötőjeles kiegészítés egy teljesen más cím." }; },
+      () => { const d = b[0].split(".")[0] + pick(["-belepes", "-login", "-ugyfel", "-secure"]) + "." + pick(["com", "net", "info", "hu"]); return { u: "https://" + d + path, real: d, why: "Ez nem " + withArt(b[1]) + " domainje: a kötőjeles kiegészítés egy teljesen más cím." }; },
       () => ({ u: "http://" + rnd(11, 223) + "." + rnd(0, 255) + "." + rnd(0, 255) + "." + rnd(1, 254) + "/" + b[0].split(".")[0] + path, real: null, why: "Név helyett IP-cím, ráadásul titkosítás nélkül." })
     ];
     const fakes2 = [
       () => { const d = look(b[0]); return { u: "https://www." + d + path, real: d, why: "Hasonló betű: " + d + ", nem " + b[0] + "." }; },
-      () => { const d = b[0].split(".")[0] + "." + pick(["co", "net", "info", "online"]); return { u: "https://" + d + path, real: d, why: "Más végződés: " + d + ", nem " + b[0] + "." }; }
+      () => { const d = b[0].split(".")[0] + "." + pick(["site", "shop", "info", "online"]); /* a .net, .co változat némelyike valóban a márkáé (pl. microsoft.net) */ return { u: "https://" + d + path, real: d, why: "Más végződés: " + d + ", nem " + b[0] + "." }; }
     ];
     const fakes3 = [
       () => { const e = pick(EVIL); return { u: "https://" + b[0] + "@" + e + path, real: e, why: "A @ előtti részt a böngésző eldobja: valójában " + e + " nyílik meg." }; },
@@ -908,7 +909,7 @@ const K = (function(){
     { k: "Kártevők", t: "Kártevő programok", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Név</th><th>Mit csinál?</th></tr>" +
       "<tr><td>vírus</td><td style='text-align:left'>más fájlokba épül be, azokkal terjed, ha elindítod őket</td></tr><tr><td>féreg</td><td style='text-align:left'>magától terjed a hálózaton, nem kell elindítani</td></tr>" +
-      "<tr><td>trójai</td><td style='text-align:left'>hasznos programnak álcázza magát (például „ingyenes” játék), közben kaput nyit</td></tr><tr><td>zsarolóvírus</td><td style='text-align:left'>titkosítja a fájljaidat, és pénzt kér a visszafejtésért</td></tr>" +
+      "<tr><td>trójai</td><td style='text-align:left'>hasznos programnak álcázza magát (például „ingyenes” játék), közben hátsó kaput nyit a támadónak</td></tr><tr><td>zsarolóvírus</td><td style='text-align:left'>titkosítja a fájljaidat, és pénzt kér a visszafejtésért</td></tr>" +
       "<tr><td>kémprogram</td><td style='text-align:left'>titokban figyel: billentyűleütés, jelszó, képernyő</td></tr><tr><td>reklámprogram</td><td style='text-align:left'>kéretlen reklámokat dob fel</td></tr><tr><td>botnet</td><td style='text-align:left'>sok fertőzött gép, amelyet a támadó távolról irányít</td></tr></table></div>" +
       "<p>Védekezés: csak hivatalos helyről telepíts, frissíts, legyen víruskereső, és legyen <b>mentésed</b> (a zsarolóvírus ellen ez a legjobb).</p>" },
     { k: "Támadások", t: "Gyakori támadások", h:
@@ -918,7 +919,7 @@ const K = (function(){
       "<p>A https mindkettőt használja: az aszimmetrikus titkosítással biztonságosan megegyeznek egy közös kulcsban, aztán a gyors szimmetrikus titkosítással beszélnek.</p>" +
       "<p class='eq'>01000001 ⊕ 00101101 = 01101100</p>" + playBtn("xor"), init: playInit },
     { k: "Ellenőrzés", t: "Paritásbit, ellenőrzőjegy, hash", h:
-      "<ul><li><b>Paritásbit</b>: az adat végére egy bit kerül, hogy az 1-esek száma páros legyen. Ha átvitel közben egy bit megfordul, észrevesszük.</li><li><b>Ellenőrzőjegy</b>: a bankkártyaszám utolsó jegye a többiből jön (Luhn-algoritmus). Egy elírt jegyet azonnal kiszűr.</li><li><b>Hash</b> (ujjlenyomat): egy fájlból vagy jelszóból rövid, fix hosszú kód. A legkisebb változás is teljesen más hash-t ad, és visszafelé nem számolható. Az oldalak a jelszavadat nem tárolják, csak a hash-ét.</li></ul>" + playBtn("luhn"), init: playInit },
+      "<ul><li><b>Paritásbit</b>: az adat végére egy bit kerül, hogy az 1-esek száma páros legyen. Ha átvitel közben egy bit megfordul, észrevesszük.</li><li><b>Ellenőrzőjegy</b>: a bankkártyaszám utolsó jegye a többiből jön (Luhn-algoritmus). Egy elírt jegyet azonnal kiszűr.</li><li><b>Hash</b> (ujjlenyomat): egy fájlból vagy jelszóból rövid, fix hosszú kód. A legkisebb változás is teljesen más hash-t ad, és visszafelé nem számolható. A jól megírt oldalak a jelszavadat nem tárolják, csak a hash-ét.</li></ul>" + playBtn("luhn"), init: playInit },
     { k: "Jelszó", t: "Jelszó és kétlépcsős azonosítás", h:
       "<ul><li><b>Hossz</b> a legfontosabb: egy 4 szavas mondatjelszó („LilaCiceraNyolcVonat”) erősebb, mint a „P@ssw0rd1”.</li><li><b>Mindenhol más</b>: a jelszókezelő megjegyzi helyetted.</li><li><b>Kétlépcsős azonosítás</b>: a jelszó mellé egy második bizonyíték is kell (kód a telefonon, hitelesítő app). Ha a jelszavad kiszivárog, a fiókod még így is védett.</li><li>A kódot, ami SMS-ben jön, <b>soha</b> ne mondd meg senkinek, aki felhív vagy üzen.</li></ul>" },
     { k: "Adatvédelem", t: "Digitális lábnyom és adatvédelem", h:
@@ -944,18 +945,18 @@ const K = (function(){
     return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
   };
   const MAL = [
-    [["Más fájlokba épül be, és azokkal terjed, ha elindítod őket.", "vírus"], ["Magától terjed a hálózaton, nem kell elindítani.", "féreg"], ["Hasznos programnak, például ingyenes játéknak álcázza magát.", "trójai"], ["Titkosítja a fájljaidat, és pénzt kér a visszafejtésért.", "zsarolóvírus"], ["Titokban figyeli, mit gépelsz, és elküldi a jelszavaidat.", "kémprogram"], ["Kéretlen reklámokat dob fel a böngészőben.", "reklámprogram"]],
-    [["Üzenetben egy bank nevében hamis oldalra csalnak, hogy megadd a jelszavad.", "adathalászat"], ["Telefonon „rendszergazdának” adja ki magát, és elkéri a kódodat.", "pszichológiai manipuláció"], ["Sok ezer gép egyszerre bombáz egy szervert, amíg le nem áll.", "túlterheléses támadás (DDoS)"], ["Egy program sorban kipróbálja az összes lehetséges jelszót.", "nyers erős támadás"], ["A nyilvános Wi-Fin valaki a forgalmad közé áll, és olvassa.", "közbeékelődés"], ["Sok fertőzött gép, amelyet a támadó távolról irányít.", "botnet"]],
+    [["Más fájlokba épül be, és azokkal terjed, ha elindítod őket.", "vírus"], ["Magától terjed a hálózaton, nem kell elindítani.", "féreg"], ["Hasznos programnak, például ingyenes játéknak álcázza magát.", "trójai"], ["Titkosítja a fájljaidat, és pénzt kér a visszafejtésért.", "zsarolóvírus"], ["Titokban figyeli, mit gépelsz, és elküldi a jelszavaidat.", "kémprogram"], ["Kéretlen reklámokat dob fel a böngészőben.", "reklámprogram"], ["Sok fertőzött gép, amelyet a támadó távolról irányít.", "botnet"]],
+    [["Üzenetben egy bank nevében hamis oldalra csalnak, hogy megadd a jelszavad.", "adathalászat"], ["Telefonon „rendszergazdának” adja ki magát, és elkéri a kódodat.", "pszichológiai manipuláció"], ["Egy szervert egyszerre rengeteg kéréssel bombáznak, amíg le nem áll.", "túlterheléses támadás (DDoS)"], ["Egy program sorban kipróbálja az összes lehetséges jelszót.", "nyers erejű támadás"], ["A nyilvános Wi-Fin valaki a forgalmad közé áll, és olvassa.", "közbeékelődés"]],
     [["Szabályok szerint engedi vagy tiltja a hálózati forgalmat a gép és az internet között.", "tűzfal"], ["A jelszó mellé egy második bizonyítékot (kódot a telefonon) is kér.", "kétlépcsős azonosítás"], ["Minden oldalhoz külön, erős jelszót generál és megjegyez.", "jelszókezelő"], ["Az ismert biztonsági réseket befoltozza a programokban.", "frissítés"], ["Ha zsarolóvírus titkosítja a fájljaidat, ebből visszaállíthatod őket.", "biztonsági mentés"], ["Úgy alakítja át az adatot, hogy kulcs nélkül olvashatatlan legyen.", "titkosítás"], ["Felismeri és eltávolítja az ismert kártevőket.", "víruskereső"]]
   ];
   const SIT = [
     ["SMS jön: „A csomagod vámkezelésre vár, fizess 590 Ft-ot ezen a linken.” Nem vársz csomagot.", "Nem kattintok, törlöm és jelentem.", ["Kifizetem, mert csak 590 Ft.", "Rákattintok, hogy megnézzem, mi az.", "Visszaírok, hogy kitől jött."]],
     ["Egy „Roblox-moderátor” azt írja, hogy ingyen Robuxot kapsz, ha megadod a jelszavad.", "Nem adom meg: jelszót senki nem kérhet. Jelentem a fiókot.", ["Megadom, mert moderátor.", "Csak a jelszó felét adom meg.", "Megadom, aztán gyorsan megváltoztatom."]],
     ["Valaki felhív, hogy a bankodtól van, és felolvastatja veled az SMS-ben kapott kódot.", "Leteszem, és a bank hivatalos számát én hívom fel.", ["Felolvasom, mert a banktól van.", "Csak az első három jegyét mondom meg.", "Megkérdezem a nevét, aztán felolvasom."]],
-    ["A kávézó nyílt Wi-Fi-jén be akarsz lépni a bankodba.", "Megvárom, amíg otthon vagy mobilneten leszek.", ["Belépek, mert https van.", "Belépek, de utána törlöm az előzményeket.", "Belépek, mert a jelszavam erős."]],
+    ["A kávézó nyílt Wi-Fi-jén be akarsz lépni a bankodba.", "Megvárom, amíg otthon vagy mobilneten leszek.", ["Belépek, mert a Wi-Fi neve a kávézóé.", "Belépek, de utána törlöm az előzményeket.", "Belépek, mert a jelszavam erős."]],
     ["Egy weboldal szerint „vírusos a géped, töltsd le azonnal ezt a programot”.", "Bezárom az oldalt, nem töltök le semmit.", ["Letöltöm, mert sürgős.", "Felhívom a kiírt telefonszámot.", "Letöltöm, de nem indítom el."]],
     ["Kiderül, hogy egy oldalról, ahol regisztráltál, ellopták a jelszavakat.", "Ott és mindenhol, ahol ugyanez volt, új jelszót állítok be, és bekapcsolom a kétlépcsős azonosítást.", ["Nem csinálok semmit, úgysem engem néznek.", "Csak ott cserélem le, ahonnan ellopták.", "Törlöm a böngésző előzményeit."]],
-    ["Egy osztálytársad kéri, hogy add kölcsön a KRÉTA-jelszavadat, mert az övé nem működik.", "Nem adom oda: a jelszó csak az enyém. Segítek neki jelszót visszaállítani.", ["Odaadom, mert barátom.", "Odaadom, aztán holnap lecserélem.", "Odaírom egy papírra, hogy ne hallja más."]],
+    ["Egy osztálytársad kéri, hogy add kölcsön a KRÉTA-jelszavadat, mert az övé nem működik.", "Nem adom oda: a jelszó csak az enyém. Segítek neki visszaállítani a jelszavát.", ["Odaadom, mert barátom.", "Odaadom, aztán holnap lecserélem.", "Odaírom egy papírra, hogy ne hallja más."]],
     ["Egy „nyereményjáték” a lakcímedet, a születési dátumodat és az iskolád nevét kéri.", "Nem adom meg: ezekkel visszaélhetnek, és nyeremény nincs.", ["Megadom, mert nyerhetek.", "Csak a lakcímet adom meg.", "Megadom, de álnéven."]]
   ];
   const types = [
@@ -976,7 +977,8 @@ const K = (function(){
     } },
     { id: "helyzet", name: "Mit tegyél?", gen(l){
       const s = l === 1 ? pick(SIT.slice(0, 4)) : l === 2 ? pick(SIT.slice(2, 7)) : pick(SIT.slice(4));
-      return choice(s[0] + " Mit teszel?", s[1], s[2], "<p>A biztonságos lépés: <b>" + s[1] + "</b> Aki sürget, jelszót vagy kódot kér, az szinte biztosan csaló.</p>", "Nem ez a biztonságos lépés. Ki kérhet tőled jelszót vagy kódot? Senki.");
+      const kod = /jelszavad|kódot|lakcím|fizess/.test(s[0]);
+      return choice(s[0] + " Mit teszel?", s[1], s[2], "<p>A biztonságos lépés: <b>" + s[1] + "</b>" + (kod ? " Aki sürget, jelszót, kódot vagy személyes adatot kér, az szinte biztosan csaló." : "") + "</p>", kod ? "Nem ez a biztonságos lépés. Ki kérhet tőled jelszót vagy kódot? Senki." : "Nem ez a biztonságos lépés. Melyik válasz nem ad esélyt a támadónak?");
     } },
     { id: "xor", name: "XOR-titkosítás", gen(l){
       const n = l === 1 ? 4 : 8, d = bin(rnd(0, Math.pow(2, n) - 1), n), k = bin(rnd(1, Math.pow(2, n) - 1), n), c = xorStr(d, k);

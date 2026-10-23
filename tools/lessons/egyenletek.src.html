@@ -32,7 +32,7 @@
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Matek · 9. évfolyam</span>
   <h1>Egyenletek, egyenlőtlenségek, egyenletrendszerek</h1>
-  <p class="lead">Az egyenlet egy mérleg: amit az egyik serpenyőben teszel, tedd meg a másikban is. Próbáld ki: hagyd egyedül az x-et!</p>
+  <p class="lead">Az egyenlet egy mérleg: amit az egyik serpenyővel teszel, tedd meg a másikkal is. Próbáld ki: hagyd egyedül az x-et!</p>
   <div class="panel">
     <span class="eyebrow">A mérleg mindig egyensúlyban marad · narancs doboz = x, kék korong = 1</span>
     <div class="eqbig" id="sEq" aria-live="polite"></div>
@@ -158,13 +158,13 @@
     const C = B2 - B1;
     if (B1) out.push({ t: line(lin(A, 0), rel, sg(C)), cap: "A számokat a jobb oldalra visszük: " + (B1 > 0 ? "mindkét oldalból kivonjuk ezt: " + B1 : "mindkét oldalhoz hozzáadjuk ezt: " + (-B1)) + "." });
     const x = Q(C, A), rel2 = A < 0 ? FLIP[rel] : rel;
-    if (A !== 1) out.push({ t: line("x", rel2, qstr(x)), cap: "Mindkét oldalt elosztjuk ezzel: " + sg(A) + "." + (rel !== "=" && A < 0 ? " Negatív számmal osztunk, ezért a reláció megfordul!" : "") + (x.d !== 1 ? " Az eredmény tört, egyszerűsítve." : "") });
+    if (A !== 1) out.push({ t: line("x", rel2, qstr(x)), cap: "Mindkét oldalt elosztjuk ezzel: " + sg(A) + "." + (rel !== "=" && A < 0 ? " Negatív számmal osztunk, ezért a reláció megfordul!" : "") + (x.d !== 1 ? " Az eredmény tört: egyszerűsített alakban írjuk fel." : "") });
     return { steps: out, x, rel: rel2, A };
   }
   const lineHtml = (st, k) => st.slice(0, k + 1).map((s, i) => '<span class="line' + (i === k ? " cur" : " dim") + '">' + s.t + "</span>").join("");
   const checkCap = (L, R, x) => "Ellenőrzés: x = " + qstr(x) + " esetén a bal oldal értéke " + qstr(evalS(L, x)) + ", a jobb oldalé " + qstr(evalS(R, x)) + ". Egyenlő, tehát jó a megoldás.";
   function eqFrames(L, R){
-    const S = solve(L, R, "="), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k) }));
+    const S = solve(L, R, "="), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k), eq: k ? s.t : "" }));
     F.push({ cap: checkCap(L, R, S.x), html: lineHtml(S.steps, S.steps.length - 1) + '<p class="big led" style="margin-top:10px">x = ' + qstr(S.x) + " ✓</p>" });
     return F;
   }
@@ -179,7 +179,7 @@
   }
   const interval = (x, rel) => rel === "<" ? "]−∞; " + qstr(x) + "[" : rel === "≤" ? "]−∞; " + qstr(x) + "]" : rel === ">" ? "]" + qstr(x) + "; ∞[" : "[" + qstr(x) + "; ∞[";
   function ineqFrames(L, R, rel){
-    const S = solve(L, R, rel), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k) }));
+    const S = solve(L, R, rel), F = S.steps.map((s, k) => ({ cap: s.cap, html: lineHtml(S.steps, k), eq: k ? s.t : "" }));
     F.push({ cap: "A megoldás: x " + REL[S.rel] + " " + qstr(S.x) + ". A számegyenesen " + (S.rel === "≤" || S.rel === "≥" ? "teli karika: a határ is megoldás." : "üres karika: a határ nem megoldás.") + " Intervallummal: " + interval(S.x, S.rel) + ".",
       html: lineHtml(S.steps, S.steps.length - 1) + numLine(qv(S.x), S.rel) + '<p class="big led">' + interval(S.x, S.rel) + "</p>" });
     return F;
@@ -193,12 +193,13 @@
     const A = same ? f1[0] - f2[0] : f1[0] + f2[0], C = same ? f1[2] - f2[2] : f1[2] + f2[2], x = C / A, y = (c1 - a1 * x) / b1;
     const sys = (p, q, cur) => '<span class="line' + (cur ? " cur" : "") + '">I. ' + eq2(...p) + '</span><span class="line' + (cur ? " cur" : "") + '">II. ' + eq2(...q) + "</span>";
     F.push({ cap: "Az egyenletrendszer: I. " + eq2(a1, b1, c1) + ", II. " + eq2(a2, b2, c2) + ". Az egyenlő együtthatók módszerével oldjuk meg: az y együtthatóját a két egyenletben egyformává tesszük.", html: sys(e1, e2) });
-    if (m1 !== 1 || m2 !== 1) F.push({ cap: "Az I. egyenlet minden tagját megszorozzuk ezzel: " + m1 + ", a II. egyenletét ezzel: " + m2 + ". Így az y együtthatója mindkettőben " + Math.abs(f1[1]) + " lesz, előjeltől eltekintve.", html: sys(f1, f2, true) });
-    F.push({ cap: same ? "Az y együtthatói egyenlők, ezért kivonjuk a II. egyenletet az I.-ből: az y kiesik." : "Az y együtthatói ellentettek, ezért összeadjuk a két egyenletet: az y kiesik.", html: sys(f1, f2) + '<span class="line cur">' + lin(A, 0) + " = " + sg(C) + "</span>" });
+    if (m1 !== 1 || m2 !== 1) F.push({ cap: (m1 !== 1 && m2 !== 1 ? "Az I. egyenlet minden tagját megszorozzuk ezzel: " + m1 + ", a II. egyenletét ezzel: " + m2 : (m1 !== 1 ? "Az I." : "A II.") + " egyenlet minden tagját megszorozzuk ezzel: " + Math.max(m1, m2)) + ". Így az y együtthatója mindkettőben " + Math.abs(f1[1]) + " lesz, előjeltől eltekintve.", html: sys(f1, f2, true), eq: "I. " + eq2(...f1) + ", II. " + eq2(...f2) });
+    F.push({ cap: same ? "Az y együtthatói egyenlők, ezért kivonjuk a II. egyenletet az I.-ből: az y kiesik." : "Az y együtthatói ellentettek, ezért összeadjuk a két egyenletet: az y kiesik.", html: sys(f1, f2) + '<span class="line cur">' + lin(A, 0) + " = " + sg(C) + "</span>", eq: lin(A, 0) + " = " + sg(C) });
     F.push({ cap: "Mindkét oldalt elosztjuk ezzel: " + sg(A) + ". Ebből x = " + sg(x) + ".", html: '<span class="line">' + lin(A, 0) + " = " + sg(C) + '</span><span class="line cur">x = ' + sg(x) + "</span>" });
-    F.push({ cap: "Visszahelyettesítjük az I. egyenletbe: " + a1 + " · " + par(x) + " + " + (b1 === 1 ? "" : par(b1) + " · ") + "y = " + sg(c1) + ". Ebből " + lin(0, a1 * x) + (b1 < 0 ? " − " : " + ") + (Math.abs(b1) === 1 ? "" : Math.abs(b1)) + "y = " + sg(c1) + ", tehát y = " + sg(y) + ".",
+    const tm = (c, v) => (c === 1 ? "" : c === -1 ? "−" : sg(c) + " · ") + v;
+    F.push({ cap: "Visszahelyettesítjük az I. egyenletbe: " + tm(a1, par(x)) + (b1 < 0 ? " − " : " + ") + tm(Math.abs(b1), "y") + " = " + sg(c1) + ". Ebből " + lin(0, a1 * x) + (b1 < 0 ? " − " : " + ") + (Math.abs(b1) === 1 ? "" : Math.abs(b1)) + "y = " + sg(c1) + ", tehát y = " + sg(y) + ".",
       html: '<span class="line">x = ' + sg(x) + '</span><span class="line cur">y = ' + sg(y) + "</span>" });
-    F.push({ cap: "Ellenőrzés a II. egyenletben: " + a2 + " · " + par(x) + " + " + par(b2) + " · " + par(y) + " = " + sg(a2 * x + b2 * y) + ". Egyezik. A megoldás: (" + sg(x) + "; " + sg(y) + ").",
+    F.push({ cap: "Ellenőrzés a II. egyenletben: " + tm(a2, par(x)) + (b2 < 0 ? " − " : " + ") + tm(Math.abs(b2), par(y)) + " = " + sg(a2 * x + b2 * y) + ". Egyezik. A megoldás: (" + sg(x) + "; " + sg(y) + ").",
       html: sys(e1, e2) + '<p class="big led" style="margin-top:10px">(' + sg(x) + "; " + sg(y) + ") ✓</p>" });
     return F;
   }
@@ -364,7 +365,7 @@
   K.deck($("#deck"), slides);
 
   /* ---------- Gyakorlás ---------- */
-  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+  const caps = F => F.map(f => "<p>" + f.cap + (f.eq ? "<br><span class='num'>→ " + f.eq + "</span>" : "") + "</p>").join("");
   const numCheck = (x, hint, extra) => v => { const z = val(v); if (isNaN(z)) return { ok: false, msg: "Egy számot írj (tört: 3/4, tizedes: 0,75)." }; if (Math.abs(z - qv(x)) < 1e-9) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(+z)) || hint }; };
   const relParse = v => {
     const t = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(/<=|=</g, "≤").replace(/>=|=>/g, "≥").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -391,14 +392,14 @@
       const cand = ok ? e.x : pick([qa(e.x, Q(1)), qs(e.x, Q(1)), e.x.n ? Q(-e.x.n, e.x.d) : Q(2)]);
       const lv = evalS(e.L, cand), rv = evalS(e.R, cand), good = qv(lv) === qv(rv);
       const opts = [{ l: "Igen, gyöke", ok: good }, { l: "Nem gyöke", ok: !good }];
-      return { q: "Megoldása-e (gyöke-e) ennek az egyenletnek: <span class='num'>" + side(e.L) + " = " + side(e.R) + "</span> ez a szám: <span class='num'>x = " + qstr(cand) + "</span>?", kind: "choice", options: opts, answer: good ? "Igen, gyöke" : "Nem gyöke",
+      return { q: "Gyöke-e (megoldása-e) az <span class='num'>x = " + qstr(cand) + "</span> ennek az egyenletnek: <span class='num'>" + side(e.L) + " = " + side(e.R) + "</span>?", kind: "choice", options: opts, answer: good ? "Igen, gyöke" : "Nem gyöke",
         sol: "<p>Behelyettesítjük: x = " + qstr(cand) + " esetén a bal oldal " + qstr(lv) + ", a jobb oldal " + qstr(rv) + ". " + (good ? "Egyenlők, tehát gyöke." : "Nem egyenlők, tehát nem gyöke. (A gyök: x = " + qstr(e.x) + ".)") + "</p>",
         check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem jó. Helyettesítsd be a számot mindkét oldalba, és hasonlítsd össze." }) };
     } },
     { id: "ineq", name: "Egyenlőtlenség", gen(l){
       const e = genIneq(l), S = solve(e.L, e.R, e.rel), fr = ineqFrames(e.L, e.R, e.rel), ans = "x " + S.rel + " " + qstr(S.x);
       return { q: "Oldd meg: <span class='num'>" + line(side(e.L), e.rel, side(e.R)) + "</span>", kind: "input", ph: "pl. x < 3", answer: esc(ans), frames: fr, title: "Egyenlőtlenség", sol: caps(fr),
-        check: v => { const p = relParse(v); if (!p || isNaN(p.v)) return { ok: false, msg: "Így írd: x < 3 vagy x >= −2." };
+        check: v => { const p = relParse(v); if (!p || isNaN(p.v)) return { ok: false, msg: "Így írd, például: x < 3 vagy x ≥ −2 (a ≥ helyett >= is jó)." };
           const okv = Math.abs(p.v - qv(S.x)) < 1e-9;
           if (okv && p.rel === S.rel) return { ok: true, msg: "Helyes!" };
           if (okv && p.rel === FLIP[S.rel]) return { ok: false, msg: S.A < 0 ? "A határ jó, de a reláció nem fordult meg: negatív számmal osztottál!" : "A határ jó, de a reláció fordítva áll. Csak negatív számmal osztva fordul." };
@@ -418,18 +419,18 @@
       let q, x, sol;
       const k = rnd(0, 1);
       if (l === 1 && k === 0){ const a = rnd(10, 60), b = rnd(1, a - 1), S = a + b, D = a - b; x = a;
-        q = "Két szám összege " + S + ", különbsége " + D + ". Mennyi a nagyobbik szám?"; sol = "A nagyobbik x, a kisebbik x − " + D + ". x + (x − " + D + ") = " + S + " → 2x = " + (S + D) + " → x = " + a + ". Ellenőrzés: " + a + " + " + b + " = " + S + ", " + a + " − " + b + " = " + D + "."; }
+        q = "Két szám összege " + S + ", különbsége " + D + ". Mennyi a nagyobbik szám?"; sol = "A nagyobbik x, a kisebbik x − " + D + ". x + (x − " + D + ") = " + S + " → 2x − " + D + " = " + S + " → 2x = " + (S + D) + " → x = " + a + ". Ellenőrzés: " + a + " + " + b + " = " + S + ", " + a + " − " + b + " = " + D + "."; }
       else if (l === 1){ const r = rnd(3, 20), d = rnd(2, 15), K2 = 2 * (r + r + d); x = r;
-        q = "Egy téglalap kerülete " + K2 + " cm. A hosszabbik oldala ennyivel hosszabb a rövidebbnél: " + d + " cm. Hány cm a rövidebbik oldal?"; sol = "A rövidebb oldal x, a hosszabb x + " + d + ". 2 · (x + x + " + d + ") = " + K2 + " → 4x + " + 2 * d + " = " + K2 + " → 4x = " + (K2 - 2 * d) + " → x = " + r + "."; }
+        q = "Egy téglalap kerülete " + K2 + " cm. A hosszabbik oldala " + d + " cm-rel hosszabb a rövidebbiknél. Hány cm a rövidebbik oldal?"; sol = "A rövidebb oldal x, a hosszabb x + " + d + ". 2 · (x + x + " + d + ") = " + K2 + " → 4x + " + 2 * d + " = " + K2 + " → 4x = " + (K2 - 2 * d) + " → x = " + r + "."; }
       else if (l === 2 && k === 0){ const m1 = rnd(3, 6), kid = rnd(6, 16), n = kid * (m1 - 2); x = kid;
         q = "Kovrat édesapja most " + TIMES[m1] + " annyi idős, mint Kovrat. " + n + " év múlva már csak kétszer annyi idős lesz. Hány éves most Kovrat?"; sol = "Kovrat most x éves, az apja " + m1 + "x. " + n + " év múlva: " + m1 + "x + " + n + " = 2 · (x + " + n + ") → " + m1 + "x + " + n + " = 2x + " + 2 * n + " → " + (m1 - 2) + "x = " + n + " → x = " + kid + ". Ellenőrzés: most " + kid + " és " + m1 * kid + ", később " + (kid + n) + " és " + (m1 * kid + n) + "."; }
       else if (l === 2){ const v1 = pick([60, 70, 80, 90, 100]), v2 = pick([40, 50, 60, 70]), t = rnd(1, 4), D = (v1 + v2) * t; x = t;
-        q = "Két város távolsága " + D + " km. Egyszerre indul egymással szemben egy autó " + v1 + " km/h és egy busz " + v2 + " km/h sebességgel. Hány óra múlva találkoznak?"; sol = "x óra alatt az autó " + v1 + "x, a busz " + v2 + "x km-t tesz meg, együtt az egész utat: " + v1 + "x + " + v2 + "x = " + D + " → " + (v1 + v2) + "x = " + D + " → x = " + t + "."; }
+        q = "Két város távolsága " + D + " km. A két városból egyszerre indul el egymással szemben egy autó " + v1 + " km/h és egy busz " + v2 + " km/h sebességgel. Hány óra múlva találkoznak?"; sol = "x óra alatt az autó " + v1 + "x, a busz " + v2 + "x km-t tesz meg, együtt az egész utat: " + v1 + "x + " + v2 + "x = " + D + " → " + (v1 + v2) + "x = " + D + " → x = " + t + "."; }
       else if (k === 0){ const A = pick([2500, 3000, 3200]), B = pick([1500, 1800, 2000]), n = rnd(4, 12), dk = rnd(1, n - 1), T = dk * B + (n - dk) * A; x = dk;
         q = "A mozijegy felnőttnek " + A + " Ft, diáknak " + B + " Ft. Egy csoport " + n + " jegyet vett, összesen " + T + " Ft-ért. Hány diákjegyet vettek?"; sol = "Diákjegy: x, felnőttjegy: " + n + " − x. " + B + "x + " + A + " · (" + n + " − x) = " + T + " → " + B + "x + " + A * n + " − " + A + "x = " + T + " → " + sg(B - A) + "x = " + sg(T - A * n) + " → x = " + dk + "."; }
       else { let p1, p2, p, V, xx; do { p1 = pick([10, 20, 30]); p2 = pick([50, 60, 70, 80]); V = pick([10, 20, 30, 40, 60]); p = rnd(p1 + 5, p2 - 5); xx = V * (p2 - p) / (p2 - p1); } while (xx % 1 || p % 5); x = xx;
-        q = "Ennyi liter oldatot akarunk kapni: " + V + ", " + p + "%-osat. Ehhez " + p1 + "%-os és " + p2 + "%-os sóoldatot keverünk. Hány liter " + p1 + "%-os oldat kell?"; const dc = n => String(n / 100).replace(".", ",");
-        sol = "A " + p1 + "%-osból x liter, a másikból " + V + " − x liter. A só mennyisége: " + dc(p1) + "x + " + dc(p2) + " · (" + V + " − x) = " + dc(p) + " · " + V + ". Megoldva: x = " + xx + "."; }
+        q = V + " liter " + p + "%-os sóoldatot akarunk kapni. Ehhez " + p1 + "%-os és " + p2 + "%-os sóoldatot keverünk össze. Hány liter " + p1 + "%-os oldat kell?"; const dc = n => String(n / 100).replace(".", ",");
+        sol = "A " + p1 + "%-osból x liter, a másikból " + V + " − x liter. A só mennyisége: " + dc(p1) + "x + " + dc(p2) + " · (" + V + " − x) = " + dc(p) + " · " + V + " → " + dc(p1) + "x + " + dc(p2 * V) + " − " + dc(p2) + "x = " + dc(p * V) + " → −" + dc(p2 - p1) + "x = −" + dc((p2 - p) * V) + " → x = " + xx + "."; }
       return { q, kind: "input", mode: "numeric", answer: x, sol: "<p>" + sol + "</p>", check: numCheck(Q(x), "Nem jó. Jelöld x-szel, amit keresel, írd fel az egyenletet, és ellenőrizd a szöveg alapján.") };
     } },
     { id: "hiba", name: "Melyik lépés hibás?", gen(l){

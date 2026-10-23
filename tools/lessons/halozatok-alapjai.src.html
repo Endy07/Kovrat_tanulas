@@ -238,13 +238,13 @@
     { k: "Kábel és rádió", t: "Átviteli közeg és topológia", h:
       "<ul><li><b>UTP-kábel</b> (csavart érpár, RJ45 csatlakozó): a legtöbb asztali gép és switch között.</li><li><b>Optikai kábel</b>: fénnyel visz adatot, nagyon gyors, nagy távolságra is.</li><li><b>Wi-Fi</b>: rádióhullám, 2,4 GHz (messzebb ér) vagy 5 GHz (gyorsabb).</li></ul>" +
       "<p>A <b>topológia</b> azt mondja meg, hogyan vannak összekötve a gépek: <b>csillag</b> (mindenki egy switchhez, ez a leggyakoribb), <b>busz</b> (egy közös vezeték), <b>gyűrű</b>, <b>háló</b> (mesh: sok kapcsolat, ha egy kiesik, van másik út).</p>" +
-      "<div class='note'><b>Sebesség:</b> bit per másodpercben mérjük: 100 Mbit/s = százmillió bit másodpercenként. Egy bájt 8 bit, ezért 100 Mbit/s kb. 12,5 MB másodpercenként.</div>" },
+      "<div class='note'><b>Sebesség:</b> bit per másodpercben mérjük, például 100 Mbit/s = százmillió bit másodpercenként. Egy bájt 8 bit, ezért 100 Mbit/s kb. 12,5 MB másodpercenként.</div>" },
     { k: "IP-cím", t: "Az IPv4-cím: négy oktett", h:
       "<p>Minden gépnek van <b>IP-címe</b>, például <b>192.168.1.10</b>. Négy szám, mindegyik egy <b>oktett</b> (8 bit), ezért 0 és 255 között van. Az egész cím 32 bit.</p>" +
       "<p class='eq'>192.168.1.10 = 11000000.10101000.00000001.00001010</p>" +
       "<p>Az átváltás ugyanaz, mint a kettes számrendszer leckében: hatványtáblázat (128, 64, 32, 16, 8, 4, 2, 1), hányszor fér bele, kivonás.</p>" +
       "<div class='mistake'><b>Nem lehet</b> 256 vagy nagyobb egy oktett: a 192.168.1.300 hibás cím. Négynél több vagy kevesebb szám sem lehet.</div>" +
-      "<p>Az <b>IPv6</b> 128 bites, tizenhatos számrendszerben írjuk (például 2001:db8::1), mert az IPv4-címek elfogytak.</p>" },
+      "<p>Az IPv4-címek elfogytak, ezért jött az <b>IPv6</b>: 128 bites, tizenhatos számrendszerben írjuk (például 2001:db8::1).</p>" },
     { k: "Maszk", t: "Melyik rész a hálózat, melyik a gép?", h:
       "<p>Az <b>alhálózati maszk</b> megmondja, a cím elejéből hány bit jelöli a hálózatot. A többi bit a gépet jelöli.</p>" +
       "<div class='ptwrap'><table class='pt'><tr><th>Prefix</th><th>Maszk</th><th>Gépek száma</th></tr><tr><td>/8</td><td>255.0.0.0</td><td>16 777 214</td></tr><tr><td>/16</td><td>255.255.0.0</td><td>65 534</td></tr><tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr><tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr></table></div>" +
@@ -357,12 +357,12 @@
         let p = 30; while (hosts(p) < N) p--;
         return { q: "Egy hálózatban <span class='num'>" + N + "</span> gépnek kell cím. Melyik a legnagyobb prefix (a legkisebb hálózat), amelyik még elég?", kind: "input", ph: "pl. /26", answer: "/" + p,
           sol: "<p>Keresd meg azt a legkisebb gépbitszámot, amelyre 2<sup>gépbit</sup> − 2 legalább " + N + ". Ez " + (32 - p) + " bit: 2<sup>" + (32 - p) + "</sup> − 2 = " + hosts(p) + ". " + (p < 30 ? "Eggyel kevesebb bittel csak " + hosts(p + 1) + " gép férne el. " : "") + "A prefix 32 − " + (32 - p) + " = " + p + ".</p>",
-          check: v => { const s = cleanPre(v); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy prefixet írj, például /26." }; const q = +s; if (q === p) return { ok: true, msg: "Helyes!" }; if (q > p) return { ok: false, msg: "Kevés: /" + q + " esetén csak " + (q <= 30 ? hosts(q) : 0) + " gép fér el." }; return { ok: false, msg: "Elég lenne, de nagyobb a kelleténél. A legkisebb elég hálózatot keressük." }; } };
+          check: v => { const s = cleanPre(v); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy prefixet írj, például /26." }; const q = +s; if (q === p) return { ok: true, msg: "Helyes!" }; if (q > 32) return { ok: false, msg: "A prefix legfeljebb /32 lehet (a cím 32 bites)." }; if (q > p) return { ok: false, msg: "Kevés: /" + q + " esetén csak " + (q <= 30 ? hosts(q) : 0) + " gép fér el." }; return { ok: false, msg: "Elég lenne, de nagyobb a kelleténél. A legkisebb elég hálózatot keressük." }; } };
       }
       const p = l === 1 ? pick([24, 25, 26, 27, 28]) : rnd(16, 30);
       return { q: "Hány gép kaphat címet egy <span class='num'>/" + p + "</span> hálózatban?", kind: "input", mode: "numeric", answer: hosts(p),
         sol: "<p>A gép részének hossza 32 − " + p + " = " + (32 - p) + " bit. 2<sup>" + (32 - p) + "</sup> = " + (hosts(p) + 2) + " cím, ebből 2 foglalt (hálózati és szórási cím): " + (hosts(p) + 2) + " − 2 = " + hosts(p) + ".</p>",
-        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; if (+s === hosts(p)) return { ok: true, msg: "Helyes!" }; if (+s === hosts(p) + 2) return { ok: false, msg: "Majdnem! Ennyi cím van, de kettő foglalt: a hálózati és a szórási cím." }; return { ok: false, msg: "Nem jó. Gépbitek: 32 − " + p + ". Utána 2 a gépbitek számáig emelve, mínusz 2." }; } };
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; if (+s === hosts(p)) return { ok: true, msg: "Helyes!" }; if (+s === hosts(p) + 2) return { ok: false, msg: "Majdnem! Ennyi cím van, de kettő foglalt: a hálózati és a szórási cím." }; return { ok: false, msg: "Nem jó. Gépbitek: 32 − " + p + ". A 2 hatványa, ahol a kitevő a gépbitek száma, utána mínusz 2." }; } };
     } },
     { id: "net", name: "Hálózati cím", gen(l){
       const p = l === 1 ? pick([8, 16, 24]) : l === 2 ? pick([16, 24]) : rnd(25, 30), bc = l >= 2 && Math.random() < 0.5;
@@ -393,7 +393,7 @@
       }
       if (l === 2){ const g = rnd(1, 8); v = pick([50, 100, 200, 300, 500, 1000]); t = Math.round(g * 1024 * 8 / v);
         return { q: "Egy <span class='num'>" + g + " GB</span> méretű játékot töltesz le <span class='num'>" + v + " Mbit/s</span> sebességgel. Hány másodperc alatt jön le? Kerekíts egészre. (1 GB = 1024 MB)", kind: "input", mode: "numeric", answer: t,
-          sol: "<p>" + g + " GB = " + g * 1024 + " MB = " + g * 1024 * 8 + " Mbit. Idő: " + g * 1024 * 8 + " : " + v + " ≈ " + t + " másodperc (kb. " + Math.round(t / 60) + " perc).</p>",
+          sol: "<p>" + g + " GB = " + g * 1024 + " MB = " + g * 1024 * 8 + " Mbit. Idő: " + g * 1024 * 8 + " : " + v + " ≈ " + t + " másodperc" + (t >= 90 ? " (kb. " + Math.round(t / 60) + " perc)" : "") + ".</p>",
           check: x => { const s = String(x).replace(/\s+/g, "").replace(",", "."); if (Math.round(+s) === t && /^\d+(\.\d+)?$/.test(s)) return { ok: true, msg: "Helyes!" }; if (Math.round(+s) === Math.round(t / 8)) return { ok: false, msg: "Kimaradt a · 8! A fájl bájtban, a sebesség bitben van." }; return { ok: false, msg: "Nem jó. GB → MB (· 1024), MB → Mbit (· 8), aztán osztás a sebességgel." }; } };
       }
       do { v = pick([16, 40, 80, 100, 200, 400, 800]); t = pick([2, 4, 5, 8, 10, 20]); mb = v * t / 8; } while (mb % 1 && guard++ < 50);

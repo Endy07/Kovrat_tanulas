@@ -89,7 +89,7 @@
     <div class="trick"><span class="t">Órajel</span><span class="mono">1 GHz = 10<sup>9</sup> ciklus/s · 1 ciklus = 1 : f ns (f GHz-ben)</span></div>
     <div class="trick"><span class="t">Másolási idő</span><span class="mono">idő (s) = méret (MB) : sebesség (MB/s) · 1 GB = 1024 MB</span></div>
     <div class="trick"><span class="t">RAID</span><span>RAID 0: összeadódik (a legkisebb lemez × darabszám), gyors, nem biztonságos. RAID 1: tükrözés, a kapacitás egy lemezé.</span></div>
-    <div class="trick"><span class="t">Bootolás</span><span>tápegység → POST → UEFI/BIOS → rendszerbetöltő → operációs rendszer → bejelentkezés</span></div>
+    <div class="trick"><span class="t">Bootolás</span><span>tápegység → UEFI/BIOS: POST → rendszerlemez keresése → rendszerbetöltő → operációs rendszer → bejelentkezés</span></div>
   </div>
 </section>
 
@@ -147,7 +147,7 @@
       else if (op === "STORE"){ st.mem[c] = st.acc; snap("végrehajtás", "Végrehajtás: M[" + c + "] = " + st.acc + ".", [c], []); }
       else if (op === "JMP"){ st.pc = c; snap("végrehajtás", "Végrehajtás: ugrás, PC = " + c + ".", [], ["PC"]); }
       else if (op === "JZ"){ if (st.acc === 0){ st.pc = c; snap("végrehajtás", "Végrehajtás: ACC = 0, ezért ugrunk: PC = " + c + ".", [], ["PC"]); } else snap("végrehajtás", "Végrehajtás: ACC = " + st.acc + ", ez nem 0, ezért nincs ugrás, PC marad " + st.pc + ".", [], []); }
-      else if (op === "HALT"){ st.halted = true; snap("végrehajtás", "Végrehajtás: HALT, a program leáll. Az eredmény: ACC = " + st.acc + ".", [], ["ACC"]); }
+      else if (op === "HALT"){ st.halted = true; snap("végrehajtás", "Végrehajtás: HALT, a program leáll. " + (prog.some(i => i[0] === "STORE" && i[1] === 14) ? "Az eredmény: M[14] = " + st.mem[14] + " (ekkor ACC = " + st.acc + ")." : "Ekkor ACC = " + st.acc + "."), [], ["ACC"]); }
     }
     if (!st.halted) snap("", "A program " + st.n + " utasítás után sem állt le: végtelen ciklus! A játék-processzort itt leállítottuk.", []);
     return { steps, st };
@@ -243,7 +243,7 @@
   const slides = [
     { k: "Alap", t: "Neumann János elvei", h:
       "<p>A mai számítógépek szinte mind Neumann János 1945-ös elvei szerint működnek:</p>" +
-      "<ul><li><b>Kettes számrendszer</b>: minden adat és utasítás 0 és 1.</li><li><b>Tárolt program</b>: a program és az adat <b>ugyanabban a memóriában</b> van. (A fenti játék-processzorban a 0. cellától a program, a 12. cellától az adat.)</li><li><b>Soros végrehajtás</b>: az utasítások egymás után, egyesével futnak.</li><li><b>Részei</b>: központi egység (processzor), memória, be- és kimeneti egységek.</li><li><b>Univerzális</b>: ugyanaz a gép más programmal más feladatot old meg.</li></ul>" },
+      "<ul><li><b>Kettes számrendszer</b>: minden adat és utasítás 0-k és 1-esek sorozata.</li><li><b>Tárolt program</b>: a program és az adat <b>ugyanabban a memóriában</b> van. (A fenti játék-processzorban a 0. cellától a program, a 12. cellától az adat.)</li><li><b>Soros végrehajtás</b>: az utasítások egymás után, egyesével futnak.</li><li><b>Részei</b>: központi egység (processzor), memória, be- és kimeneti egységek.</li><li><b>Univerzális</b>: ugyanaz a gép más programmal más feladatot old meg.</li></ul>" },
     { k: "A gépház", t: "Mi van a gépházban?", h: tb([["Alkatrész", "Feladata"],
       ["alaplap", "erre csatlakozik minden; rajta vannak a buszok és az UEFI"], ["processzor (CPU)", "végrehajtja a program utasításait"], ["RAM", "munkamemória: a futó programok és adataik, kikapcsoláskor törlődik"],
       ["háttértár (SSD, HDD)", "tartósan tárolja a fájlokat és az operációs rendszert"], ["videokártya (GPU)", "kiszámolja a képet, és a monitorra küldi"], ["tápegység", "egyenáramot ad az alkatrészeknek; teljesítménye wattban (W), például 650 W"], ["hűtés", "ventilátor, hűtőborda: a processzor és a GPU hőt termel"]]) },
@@ -256,10 +256,10 @@
       "<p>Ez ismétlődik milliárdszor másodpercenként. Az ugró utasítás (JMP, JZ) a PC-t írja át: így lesz ciklus és elágazás.</p>" +
       "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
       init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "sum"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "sum"))); playTo(MF.sum(), MET.sum); }); } },
-    { k: "Órajel", t: "GHz, magok, szálak", h:
+    { k: "Órajel", t: "GHz és magok", h:
       "<p>Az <b>órajel</b> ütemezi a processzort. Mértékegysége a hertz (Hz): ennyi ciklus másodpercenként. <b>3 GHz</b> = 3 milliárd ciklus másodpercenként, egy ciklus kb. 0,33 nanoszekundum.</p>" +
       "<p class='eq'>1 ciklus ideje (ns) = 1 : f (GHz)</p>" +
-      "<ul><li><b>Mag</b> (core): egy processzorban több teljes végrehajtó egység. 8 mag egyszerre 8 dolgot csinálhat.</li><li>A sebesség nem csak a GHz-en múlik: számít, hány ciklus kell egy utasításhoz, mekkora a gyorsítótár, és hány mag dolgozik.</li></ul>" },
+      "<ul><li><b>Mag</b> (core): a processzor egy teljes végrehajtó egysége; egy processzorban több is van. 8 mag egyszerre 8 dolgot csinálhat.</li><li>A sebesség nem csak a GHz-en múlik: számít, hány ciklus kell egy utasításhoz, mekkora a gyorsítótár, és hány mag dolgozik.</li></ul>" },
     { k: "Memóriák", t: "A memóriahierarchia", h: tb([["Szint", "Méret", "Elérési idő"],
       ["regiszter", "néhány bájt", "kevesebb mint 1 ns"], ["L1 gyorsítótár", "kb. 64 KB / mag", "kb. 1 ns"], ["L2, L3 gyorsítótár", "1–64 MB", "3–15 ns"], ["RAM", "8–64 GB", "kb. 80 ns"], ["SSD", "0,5–4 TB", "kb. 0,1 ms"], ["HDD", "1–20 TB", "kb. 10 ms"]]) +
       "<p>Fentről lefelé: egyre nagyobb, egyre lassabb, és GB-onként egyre olcsóbb. A gyakran használt adat ezért feljebb kerül.</p>" },
@@ -314,10 +314,11 @@
     return { q, kind: "choice", options: opts, answer: good.join(" → "), sol: "<p>" + sol + "</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Gondold végig, mi mire épül." }) };
   }
   const progList = prog => "<ol class='prog' start='0'>" + prog.map((ins, i) => "<li><small>" + i + ":</small>" + ins.join(" ") + "</li>").join("") + "</ol>";
-  const dataList = data => Object.keys(data).map(a => "M[" + a + "] = " + data[a]).join(" · ");
+  const dataList = data => Object.keys(data).map(a => "M[" + a + "] = " + data[a]).join(", ");
+  const CONFL = { "utasításszámláló": ["regiszter"], "regiszter": ["utasításszámláló"] }; // a PC is regiszter: ne legyen két jó gomb
   const types = [
     { id: "alk", name: "Melyik alkatrész?", gen(l){
-      const pool = ALK[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3);
+      const pool = ALK[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1] && !(CONFL[q[1]] || []).includes(x[1]))).slice(0, 3);
       const opts = shuffle([{ l: q[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
       return { q: "Mire illik ez a leírás? " + q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg a diákat.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + q[1] + "." }) };
     } },
@@ -359,7 +360,7 @@
       const f = pick([1, 2, 4]), c = pick([1, 2, 4]), N = pick([400, 800, 1600, 2000, 4000, 8000]), cores = pick([1, 1, 2, 4]), ans = N * c / f / cores;
       return { q: "Egy program <span class='num'>" + N + "</span> utasításból áll, utasításonként átlagosan <span class='num'>" + c + "</span> órajelciklus kell. A processzor órajele <span class='num'>" + f + " GHz</span>" + (cores > 1 ? ", és a munka egyenlően oszlik el <span class='num'>" + cores + "</span> mag között" : "") + ". Hány nanoszekundum alatt fut le?",
         kind: "input", mode: "numeric", answer: ans, frames: cores === 1 ? clockFrames(f, N, c) : null, title: "Órajel: mennyi idő?",
-        sol: "<p>Ciklusok: " + N + " · " + c + " = " + N * c + ". Egy ciklus: 1 : " + f + " = " + hu(1 / f) + " ns. Idő: " + N * c + " : " + f + " = " + hu(N * c / f) + " ns" + (cores > 1 ? ", " + cores + " magon : " + cores + " = " + hu(ans) + " ns" : "") + ".</p>",
+        sol: "<p>Ciklusok: " + N + " · " + c + " = " + N * c + ". Egy ciklus: 1 : " + f + " = " + hu(1 / f) + " ns. Idő: " + N * c + " : " + f + " = " + hu(N * c / f) + " ns" + (cores > 1 ? ". Mivel " + cores + " mag osztozik a munkán: " + hu(N * c / f) + " : " + cores + " = " + hu(ans) + " ns" : "") + ".</p>",
         check: numCheck(ans, "Nem jó. Idő (ns) = utasítások · ciklus/utasítás : f (GHz)" + (cores > 1 ? " : magok száma." : "."), x => cores > 1 && Math.abs(x - N * c / f) < 1e-9 ? "Majdnem: a magok száma még kimaradt." : null) };
     } },
     { id: "hier", name: "Memóriahierarchia", gen(l){

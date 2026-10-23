@@ -425,7 +425,7 @@
   const demoFc = () => { const B = [{ t: "start" }, { t: "in", v: "x" }, OP("db = 0", "db", V => { V.db = 0; }), { t: "loop", s: "x < 40?", c: V => V.x < 40, body: [OP("x = x · 2", "x", V => { V.x *= 2; }), OP("db = db + 1", "db", V => { V.db += 1; })] }, { t: "out", s: "Ki: db", f: V => V.db }, { t: "stop" }]; return fcRun(B, 5); };
   const MET = { robot: "Robot lépésenként", valt: "Változók követése", fc: "Folyamatábra bejárása" };
   const MF = {
-    robot: () => robotFrames(DEMO, clone(DEMOP), " Egy négy utasításból álló minta ötször: 5 utasítás helyett 21 lett volna ismétlés nélkül."),
+    robot: () => robotFrames(DEMO, clone(DEMOP), " Egy négy utasításból álló minta ötször: ismétléssel 5 utasítás (az ismétlés és a benne lévő 4), ismétlés nélkül 20 lett volna."),
     valt: () => { const r = demoCode(); return [{ cap: "Ez a program összeadja a számokat 1-től 4-ig. Kövessük a változókat egy táblázatban!", html: r.F[0].html }].concat(r.F, [{ cap: "A kiírt érték: " + r.out + ". Ellenőrzés: 1 + 2 + 3 + 4 = 10.", html: r.F[r.F.length - 1].html }]); },
     fc: () => { const r = demoFc(); return [{ cap: "Folyamatábra: a bemenet x = 5. Hányszor kell duplázni, hogy elérje a 40-et? A nyilak mentén haladunk.", html: r.F[0].html }].concat(r.F); }
   };
@@ -466,7 +466,7 @@
     { k: "Elágazás", t: "Ha … akkor … különben", h:
       "<p>Az <b>elágazás</b> egy feltételtől függően más-más utasítást hajt végre:</p>" +
       "<pre class='code'>ha fal van előtted akkor\n  Jobbra\nkülönben\n  Előre\nelágazás vége</pre>" +
-      "<p>A feltétel mindig <b>igaz vagy hamis</b>. Így a robot olyan pályán is boldogul, amit előre nem ismersz: ezt hívják szenzornak (érzékelőnek) a robotikában.</p>" +
+      "<p>A feltétel mindig <b>igaz vagy hamis</b>. Így a robot olyan pályán is boldogul, amelyet előre nem ismersz. A falat a robot érzékelője (szenzora) veszi észre.</p>" +
       "<div class='note'><b>Három alapszerkezet:</b> szekvencia, elágazás, ciklus. Minden program ezekből épül, a legnagyobb játék is.</div>" },
     { k: "Változó", t: "A változó: dobozka névvel", h:
       "<p>A <b>változó</b> egy névvel ellátott tároló, benne egy érték, ami menet közben változhat. Például: pont, élet, db.</p>" +
@@ -475,7 +475,7 @@
       "<p>A <b>számláló</b> egy változó, amit minden alkalommal 1-gyel növelünk (db = db + 1). Így számoljuk meg, hányszor történt valami.</p>" },
     { k: "Ciklusfajták", t: "Számlálós és feltételes ciklus", h:
       "<ul><li><b>Számlálós ciklus</b>: tudjuk előre, hányszor fut. <code>ciklus i = 1-től 10-ig</code></li><li><b>Elöltesztelő ciklus</b>: amíg a feltétel igaz, ismétel; a feltételt a ciklusmag előtt nézi. <code>amíg x &lt; 100</code></li><li><b>Hátultesztelő ciklus</b>: a ciklusmag egyszer biztosan lefut, a feltételt a végén nézi.</li></ul>" +
-      "<pre class='code'>s = 0\nciklus i = 1-től 4-ig\n  s = s + i\nciklus vége\nki: s</pre>" +
+      "<p>Példa számlálós ciklusra (a lejátszás a változókat is mutatja):</p><pre class='code'>s = 0\nciklus i = 1-től 4-ig\n  s = s + i\nciklus vége\nki: s</pre>" +
       "<div class='mistake'><b>Végtelen ciklus:</b> ha a feltétel sosem lesz hamis (például amíg x &gt; 0, és x csak nő), a program soha nem áll meg.</div>" +
       playBtn("valt"), init: bindPlay },
     { k: "Folyamatábra", t: "Az algoritmus rajzban", h:
@@ -491,7 +491,7 @@
       "<p>A gondolkodás ugyanaz, csak a nyelv más. Ezért érdemes a blokkokkal kezdeni: a szerkezetet tanulod meg, nem a nyelvtant.</p>" },
     { k: "Hibakeresés", t: "Debug: a hiba megkeresése", h:
       "<ol><li><b>Futtasd lépésenként</b>, és figyeld, hol tér el attól, amit vártál.</li><li><b>Kövesd a változókat</b> táblázatban: minden sor után írd fel az értékeket.</li><li><b>Egyszerre egy dolgot változtass</b>, aztán próbáld újra.</li><li><b>Mondd ki hangosan</b>, mit csinál a program (gumikacsa-módszer: elmagyarázod valakinek, akár egy gumikacsának).</li></ol>" +
-      "<div class='note'><b>Miért bug?</b> 1947-ben egy számítógép hibáját egy beszorult moly (angolul bug) okozta. Azóta hívják a programhibát bugnak, a javítást debugnak.</div>" },
+      "<div class='note'><b>Miért bug?</b> A <i>bug</i> angolul bogarat jelent. A mérnökök már korábban is így hívták a hibát, de 1947-ben egy számítógép reléjében valóban egy moly akadt el, és beragasztották a naplóba. Ettől lett híres a szó: a programhiba bug, a hiba megkeresése és kijavítása debug.</div>" },
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='mistake'><b>Balra a saját szemszögedből.</b> A robot a saját orrához képest fordul. Ha lefelé néz, a Balra kelet felé fordítja.</div>" +
       "<div class='mistake'><b>A fordulás nem lépés.</b> A Balra és a Jobbra helyben fordít, utána kell egy Előre.</div>" +
@@ -499,7 +499,7 @@
       "<div class='mistake'><b>Az = mint egyenlet.</b> Az x = x + 1 nem „lehetetlen egyenlet”, hanem: x új értéke a régi plusz 1.</div>" +
       "<div class='mistake'><b>Végtelen ciklus.</b> Ellenőrizd, hogy a ciklusmag közelebb viszi-e a feltételt a hamishoz.</div>" },
     { k: "Trükkök", t: "Hogy gondolkodj?", h:
-      "<div class='two-col'><div class='trick'><span class='t'>Ismétlődő minta</span><span>Keresd a programban az ismétlődő részt: az lesz a ciklusmag, az ismétlések száma a ciklus száma.</span></div>" +
+      "<div class='two-col'><div class='trick'><span class='t'>Ismétlődő minta</span><span>Keresd a programban az ismétlődő részt: az lesz a ciklusmag, az pedig, ahányszor egymás után jön, az ismétlések száma.</span></div>" +
       "<div class='trick'><span class='t'>Hol vagy, merre nézel?</span><span>A robotnál mindig két dolgot jegyezz: a helyét (pl. C3) és az irányát (pl. kelet).</span></div>" +
       "<div class='trick'><span class='t'>Kis lépésekben</span><span>Írj meg egy kis részt, próbáld ki, utána folytasd. Így a hiba mindig a legutóbbi részben van.</span></div>" +
       "<div class='trick'><span class='t'>Rajzold le</span><span>Bonyolult feladatnál rajzolj folyamatábrát vagy táblázatot, mielőtt kódolsz.</span></div></div>" }
@@ -574,7 +574,7 @@
       const t = codeTask(l), ans = t.r.out;
       return { q: "Mit ír ki ez a program?" + t.note + "<pre class='code' style='margin-top:8px;font-size:1rem'>" + esc(t.r.L.map(x => "  ".repeat(x.dep) + x.t).join("\n")) + "</pre>", kind: "input", mode: "numeric", answer: ans,
         sol: "<p>Kövesd a változókat egy táblázatban, soronként. A lejátszás megmutatja minden lépés után az értékeket.</p>", frames: t.r.F, title: "Változók követése",
-        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^-?\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Írd fel a változókat oszlopnak, és minden sor után az új értéket. Figyelj, hányszor fut a ciklus!" }; } };
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^-?\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; return +s === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Írd fel a változókat oszlopnak, és minden sor után az új értéket. Ha van benne ciklus, számold meg, hányszor fut!" }; } };
     } },
     { id: "fc", name: "Folyamatábra", gen(l){
       const t = fcTask(l), ans = t.r.out;
@@ -628,7 +628,8 @@
         [["Lépések véges, egyértelmű sorozata, amely egy feladatot megold.", "algoritmus"], ["Utasítások egymás után, sorban végrehajtva.", "szekvencia"], ["Utasítások ismételt végrehajtása.", "ciklus"], ["Egy feltételtől függően más-más utasítás fut le.", "elágazás"], ["Névvel ellátott tároló, amelyben egy érték van, és ez az érték változhat.", "változó"], ["Az x = x + 1 utasítás: kiszámoljuk a jobb oldalt, és az eredményt eltároljuk a bal oldali változóban.", "értékadás"]],
         [["ciklus i = 1-től 10-ig … ciklus vége", "számlálós ciklus"], ["amíg x < 100 … ciklus vége (a feltételt a ciklusmag előtt nézi)", "elöltesztelő ciklus"], ["A ciklusmag egyszer biztosan lefut, a feltételt csak a végén nézi.", "hátultesztelő ciklus"], ["amíg x > 0: x = x + 1 (és x pozitív számról indul)", "végtelen ciklus"], ["ha x > 0 akkor … különben … elágazás vége", "kétirányú elágazás"]]
       ][l - 1];
-      const it = pick(P), others = shuffle(P.filter(x => x[1] !== it[1])).slice(0, 3);
+      // a végtelen ciklus (amíg …) is elöltesztelő, ezért a kettő ne legyen együtt a gombok között
+      const it = pick(P), others = shuffle(P.filter(x => x[1] !== it[1] && !(it[1] === "végtelen ciklus" && x[1] === "elöltesztelő ciklus"))).slice(0, 3);
       const opts = shuffle([{ l: it[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
       return { q: (l === 3 ? "Mi ez? " : l === 2 ? "Melyik fogalom ez? " : "") + esc(it[0]), kind: "choice", options: opts, answer: it[1], sol: "<p>" + esc(it[0]) + " → <b>" + it[1] + "</b>. Nézd meg a diákat.</p>",
         check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + it[1] + "." }) };

@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -254,7 +254,7 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
     <div class="trick"><span class="t">Zárójel előtt mínusz</span><span class="mono">−(x − 3) = −x + 3</span><span>Minden tag előjele megfordul.</span></div>
     <div class="trick"><span class="t">Két zárójel</span><span class="mono">(a + b)(c + d) = ac + ad + bc + bd</span><span>Minden tagot minden taggal.</span></div>
     <div class="trick"><span class="t">Kiemelés</span><span class="mono">6x² − 9x = 3x(2x − 3)</span><span>A számok LNKO-ja és a közös betű a legkisebb kitevőn. Ellenőrzés: szorozd vissza.</span></div>
-    <div class="trick"><span class="t">Hatványok</span><span class="mono">aⁿ · aᵐ = aⁿ⁺ᵐ · aⁿ : aᵐ = aⁿ⁻ᵐ · (aⁿ)ᵐ = aⁿ·ᵐ · (ab)ⁿ = aⁿbⁿ · a⁰ = 1</span></div>
+    <div class="trick"><span class="t">Hatványok</span><span class="mono">aⁿ · aᵐ = aⁿ⁺ᵐ; aⁿ : aᵐ = aⁿ⁻ᵐ; (aⁿ)ᵐ = aⁿ·ᵐ; (ab)ⁿ = aⁿbⁿ; a⁰ = 1</span></div>
     <div class="trick"><span class="t">Pythonban</span><span class="mono">2*x**2 + 3*x - 5</span><span>A <code>**</code> a hatvány. Vigyázz: <code>-2**2</code> = −4, mert előbb hatványoz; <code>(-2)**2</code> = 4.</span></div>
     <div class="trick"><span class="t">Ellenőrzés</span><span>Helyettesíts be x = 2-t az eredetibe és az eredménybe is: ugyanannyinak kell kijönnie.</span></div>
   </div>
@@ -1019,10 +1019,10 @@ const K = (function(){
     { k: "Alap", t: "Betűk a matekban: változó, együttható, tag", h:
       "<p>Az <b>algebrai kifejezésben</b> számok és betűk (változók) vannak, műveletekkel összekötve. A betű helyére bármilyen szám kerülhet.</p>" +
       "<p class='eq'>3x² − 5x + 2</p>" +
-      "<ul><li><b>Tagok</b>: 3x², −5x és 2 (a + és a − jel választja el őket, a jel a taghoz tartozik).</li><li><b>Együttható</b>: a betű előtti szám: 3, illetve −5. Az x előtt 1 áll, csak nem írjuk ki.</li><li><b>Kitevő</b>: x² = x · x.</li><li>A szorzásjelet a szám és a betű közé nem írjuk ki: 3x = 3 · x.</li></ul>" },
+      "<ul><li><b>Tagok</b>: 3x², −5x és 2 (a + és a − jel választja el őket, a jel a taghoz tartozik).</li><li><b>Együttható</b>: a betű előtti szám, itt 3, illetve −5. Ha a betű előtt nincs szám (például x² + 2), az együttható 1, csak nem írjuk ki.</li><li><b>Kitevő</b>: x² = x · x.</li><li>A szorzásjelet a szám és a betű közé nem írjuk ki: 3x = 3 · x.</li></ul>" },
     { k: "Összevonás", t: "Egynemű tagok összevonása", h:
       "<p><b>Egynemű</b> az a két tag, amelyben ugyanazok a betűk ugyanazon a kitevőn vannak. Csak ezeket lehet összeadni: az együtthatókat adjuk össze, a betűrész marad.</p>" +
-      "<p class='eq'>3x + 5x = 8x · 4x² − x² = 3x² · 2ab + 3ba = 5ab</p>" +
+      "<p class='eq'>3x + 5x = 8x<br>4x² − x² = 3x²<br>2ab + 3ba = 5ab</p>" +
       "<div class='mistake'><b>Nem vonható össze:</b> 3x + 5x² (más a kitevő), 2x + 3y (más a betű), 4x + 7 (az egyikben nincs betű).</div>" +
       "<p>Példa: 2x² + 3x − x² + 5x − 4 = (2 − 1)x² + (3 + 5)x − 4 = x² + 8x − 4.</p>" },
     { k: "Helyettesítés", t: "Helyettesítési érték és a programozás", h:
@@ -1033,9 +1033,9 @@ const K = (function(){
       "<div class='note'><b>Python-csapda:</b> <code>-2**2</code> eredménye −4, mert előbb hatványoz, és csak utána veszi az ellentettjét. Ha a −2-t kell négyzetre emelni: <code>(-2)**2</code> = 4.</div>" },
     { k: "Zárójel", t: "Zárójelfelbontás: figyelj az előjelre!", h:
       "<p>A zárójel előtti szorzóval <b>minden</b> tagot megszorzunk:</p>" +
-      "<p class='eq'>3(x + 4) = 3x + 12 · 2x(3x − 5) = 6x² − 10x</p>" +
+      "<p class='eq'>3(x + 4) = 3x + 12<br>2x(3x − 5) = 6x² − 10x</p>" +
       "<p>Ha a zárójel előtt <b>mínusz</b> áll, minden tag előjele megfordul:</p>" +
-      "<p class='eq'>−(x − 3) = −x + 3 · −2(x − 4) = −2x + 8</p>" + playBtn("zar"), init: playInit },
+      "<p class='eq'>−(x − 3) = −x + 3<br>−2(x − 4) = −2x + 8</p>" + playBtn("zar"), init: playInit },
     { k: "Két zárójel", t: "Két zárójel szorzata", h:
       "<p>Az első zárójel minden tagját megszorozzuk a második zárójel minden tagjával, aztán összevonunk.</p>" +
       "<p class='eq'>(a + b)(c + d) = ac + ad + bc + bd</p>" +
@@ -1061,13 +1061,13 @@ const K = (function(){
       "<tr><td>(a + b)(a − b) = a² − b²</td><td>(x + 4)(x − 4) = x² − 16</td></tr></table></div>" +
       "<p>A fenti területmodellen láthatod, miért igazak. Ismerkedésként a köb is: (a + b)³ = a³ + 3a²b + 3ab² + b³.</p>" + playBtn("nev"), init: playInit },
     { k: "Visszafelé", t: "Szorzattá alakítás nevezetes azonossággal", h:
-      "<ul><li><b>Két négyzet különbsége</b>: x² − 9 = x² − 3² = (x − 3)(x + 3).</li><li><b>Teljes négyzet</b>: ha az első és az utolsó tag négyzet, és a középső tag a kettő szorzatának kétszerese: x² + 10x + 25 = (x + 5)², mert 2 · x · 5 = 10x.</li><li>4x² − 12x + 9 = (2x − 3)², mert 4x² = (2x)², 9 = 3², és 2 · 2x · 3 = 12x.</li></ul>" +
+      "<ul><li><b>Két négyzet különbsége</b>: x² − 9 = x² − 3² = (x − 3)(x + 3).</li><li><b>Teljes négyzet</b>: ha az első és az utolsó tag négyzet, és a középső tag a két négyzetre emelt kifejezés (itt x és 5) szorzatának kétszerese: x² + 10x + 25 = (x + 5)², mert 2 · x · 5 = 10x.</li><li>4x² − 12x + 9 = (2x − 3)², mert 4x² = (2x)², 9 = 3², és 2 · 2x · 3 = 12x. A középső tag negatív, ezért a zárójelben mínusz áll.</li></ul>" +
       "<div class='note'><b>Fejszámolás:</b> 29 · 31 = (30 − 1)(30 + 1) = 900 − 1 = 899. És 31² = (30 + 1)² = 900 + 60 + 1 = 961.</div>" },
     { k: "Törtek", t: "Algebrai törtek egyszerűsítése", h:
       "<p>Egyszerűsíteni csak <b>szorzótényezővel</b> lehet. Ezért előbb alakítsd szorzattá a számlálót és a nevezőt!</p>" +
       "<p class='eq'><span class='frac'><span>x² − 9</span><span>x − 3</span></span> = <span class='frac'><span>(x − 3)(x + 3)</span><span>x − 3</span></span> = x + 3 (ha x ≠ 3)</p>" +
       "<p class='eq'><span class='frac'><span>6x² + 9x</span><span>3x</span></span> = <span class='frac'><span>3x(2x + 3)</span><span>3x</span></span> = 2x + 3 (ha x ≠ 0)</p>" +
-      "<div class='mistake'><b>Tilos:</b> (x + 3) : 3 nem x + 1. A 3 itt nem szorzótényező, hanem egy tag.</div>" +
+      "<div class='mistake'><b>Tilos:</b> (x + 3) : 3 nem x + 1. A számlálóban a 3 nem szorzótényező, hanem egy tag.</div>" +
       "<p>A nevező nem lehet 0, ezért írjuk oda, melyik x nem megengedett.</p>" },
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='mistake'><b>(a + b)² = a² + b²?</b> Nem! Kimarad a 2ab. (3 + 4)² = 49, de 9 + 16 = 25.</div>" +
@@ -1078,17 +1078,17 @@ const K = (function(){
     { k: "Trükkök", t: "Gyorsan és biztosan", h:
       "<div class='two-col'><div class='trick'><span class='t'>Ellenőrzés helyettesítéssel</span><span>Írj be x = 2-t az eredetibe és a kapott alakba is. Ha más jön ki, hibáztál.</span></div>" +
       "<div class='trick'><span class='t'>Kiemelés után</span><span>Szorozd vissza fejben. A zárójelben ne maradjon közös osztó.</span></div>" +
-      "<div class='trick'><span class='t'>Középső tag</span><span>(x ± k)² középső tagja mindig 2k · x, az utolsó k², és az mindig pozitív.</span></div>" +
+      "<div class='trick'><span class='t'>Középső tag</span><span>(x ± k)² középső tagja ±2kx (az előjel a zárójelből jön), az utolsó k², és az mindig pozitív.</span></div>" +
       "<div class='trick'><span class='t'>Négyzetszámok</span><span>Tanuld meg 20-ig: 121, 144, 169, 196, 225, 256, 289, 324, 361, 400. Szorzattá alakításnál felismered őket.</span></div></div>" }
   ];
   K.deck($("#deck"), slides);
 
   /* ---------- Gyakorlás ---------- */
-  const choice = (q, good, bads, sol) => {
+  const choice = (q, good, bads, sol, hint) => {
     const L = [good]; bads.forEach(b => { if (!L.includes(b)) L.push(b); });
     let g = 0; while (L.length < 4 && g++ < 20){ const e = good + " + " + (L.length + 1); if (!L.includes(e)) L.push(e); }
     const opts = shuffle(L.slice(0, 4).map((l, i) => ({ l, ok: i === 0 })));
-    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. Ellenőrizd behelyettesítéssel, például x = 2 értékkel." }) };
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : hint || "Nem ez. Ellenőrizd behelyettesítéssel, például x = 2 értékkel." }) };
   };
   const frac = (a, b) => "<span class='frac'><span>" + a + "</span><span>" + b + "</span></span>";
   const supH = n => "<sup>" + n + "</sup>";
@@ -1096,17 +1096,17 @@ const K = (function(){
     { id: "helyet", name: "Helyettesítés", gen(l){
       if (l === 1){ const m = rnd(2, 9), b = nz(-9, 15), x = rnd(1, 9), e = fmtT([X(m, 1), X(b, 0)]), y = m * x + b;
         return { q: "Mennyi a kifejezés értéke, ha x = <span class='num'>" + x + "</span>? <span class='num'>" + e + "</span>", kind: "input", mode: "decimal", answer: numS(y),
-          sol: "<p>x helyére " + x + " kerül: " + m + " · " + x + (b < 0 ? " − " + -b : " + " + b) + " = " + m * x + (b < 0 ? " − " + -b : " + " + b) + " = " + numS(y) + ".</p>", check: numCheck(y, "Nem jó. Előbb szorozz, aztán add hozzá a számot.") }; }
+          sol: "<p>x helyére " + x + " kerül: " + m + " · " + x + (b < 0 ? " − " + -b : " + " + b) + " = " + m * x + (b < 0 ? " − " + -b : " + " + b) + " = " + numS(y) + ".</p>", check: numCheck(y, b < 0 ? "Nem jó. Előbb szorozz, aztán vond ki a számot." : "Nem jó. Előbb szorozz, aztán add hozzá a számot.") }; }
       if (l === 2){ const a = nz(-3, 3), b = rnd(-9, 9), c = rnd(-9, 9), x = Math.random() < 0.7 ? -rnd(1, 5) : rnd(1, 5), e = poly([c, b, a]), y = a * x * x + b * x + c, xs = x < 0 ? "(" + numS(x) + ")" : numS(x);
         return { q: "Mennyi a kifejezés értéke, ha x = <span class='num'>" + numS(x) + "</span>? <span class='num'>" + e + "</span>", kind: "input", mode: "decimal", answer: numS(y),
           sol: "<p>" + xs + "² = " + x * x + ". Behelyettesítve: " + numS(a) + " · " + x * x + (b ? (b < 0 ? " − " : " + ") + Math.abs(b) + " · " + xs : "") + (c ? (c < 0 ? " − " : " + ") + Math.abs(c) : "") + " = " + numS(y) + ".</p>",
-          check: numCheck(y, "Nem jó. A negatív számot zárójelben helyettesítsd be: a négyzete pozitív.", z => x < 0 && Math.abs(z - (-a * x * x + b * x + c)) < 1e-9 ? "A negatív szám négyzete pozitív: " + xs + "² = " + x * x + "." : "") }; }
+          check: numCheck(y, x < 0 ? "Nem jó. A negatív számot zárójelben helyettesítsd be: a négyzete pozitív." : "Nem jó. Előbb a hatvány, aztán a szorzások, végül az összeadás és a kivonás.", z => x < 0 && Math.abs(z - (-a * x * x + b * x + c)) < 1e-9 ? "A negatív szám négyzete pozitív: " + xs + "² = " + x * x + "." : "") }; }
       if (Math.random() < 0.5){
         const A = nz(-5, 5), B = nz(-5, 5), tpl = pick([[T(1, { a: 2 }), T(-2, { a: 1, b: 1 }), T(1, { b: 2 })], [T(3, { a: 1 }), T(-2, { b: 1 }), T(1, { a: 1, b: 1 })], [T(2, { a: 2 }), T(-1, { b: 2 }), T(4, {})]]), y = evalT(tpl, { a: A, b: B });
         return { q: "Mennyi a kifejezés értéke, ha a = <span class='num'>" + numS(A) + "</span> és b = <span class='num'>" + numS(B) + "</span>? <span class='num'>" + fmtT(tpl) + "</span>", kind: "input", mode: "decimal", answer: numS(y),
-          sol: "<p>A negatív számokat zárójelben helyettesítsd be. Tagonként: " + tpl.map(t => numS(t.c) + " · " + Object.keys(t.v).map(k => "(" + numS(k === "a" ? A : B) + ")" + (t.v[k] > 1 ? "²" : "")).join(" · ") + " = " + numS(evalT([t], { a: A, b: B }))).join("; ") + ". Összesen: " + numS(y) + ".</p>", check: numCheck(y, "Nem jó. Tagonként számolj, a negatív számokat zárójelbe téve.") };
+          sol: "<p>A negatív számokat zárójelben helyettesítjük be. Tagonként: " + tpl.map(t => !Object.keys(t.v).length ? numS(t.c) : numS(t.c) + " · " + Object.keys(t.v).map(k => { const w = k === "a" ? A : B; return (w < 0 ? "(" + numS(w) + ")" : numS(w)) + (t.v[k] > 1 ? "²" : ""); }).join(" · ") + " = " + numS(evalT([t], { a: A, b: B }))).join("; ") + ". Összesen: " + numS(y) + ".</p>", check: numCheck(y, "Nem jó. Tagonként számolj, a negatív számokat zárójelbe téve.") };
       }
-      const a = nz(-3, 4), b = rnd(-9, 9), c = rnd(-9, 9), x = nz(-5, 5), y = a * x * x + b * x + c;
+      const a = nz(-3, 4), b = nz(-9, 9), c = nz(-9, 9), x = nz(-5, 5), y = a * x * x + b * x + c;
       const code = "x = " + x + "\nprint(" + a + "*x**2" + (b < 0 ? " - " + -b : " + " + b) + "*x" + (c < 0 ? " - " + -c : " + " + c) + ")";
       return { q: "Mit ír ki ez a Python-program?<pre class='code'>" + esc(code) + "</pre>", kind: "input", mode: "decimal", answer: numS(y),
         sol: "<p>A <code>**</code> a hatvány. x = " + numS(x) + ": " + numS(a) + " · " + x * x + (b < 0 ? " − " : " + ") + Math.abs(b) + " · " + (x < 0 ? "(" + numS(x) + ")" : numS(x)) + (c < 0 ? " − " : " + ") + Math.abs(c) + " = " + numS(y) + ".</p>", check: numCheck(y, "Nem jó. Előbb a hatvány, aztán a szorzások, végül az összeadás.") };
@@ -1120,7 +1120,7 @@ const K = (function(){
       } while ((simplify(ts).length < (l === 3 ? 3 : 2) || simplify(ts).length === ts.length || ts.some(t => !t.c)) && g++ < 100);
       const res = simplify(ts);
       return { q: "Vond össze az egynemű tagokat: <span class='num'>" + fmtT(ts) + "</span>", kind: "input", ph: l === 3 ? "pl. 2a + 3ab" : "pl. 3x^2 + 2x - 5", answer: fmtT(res),
-        sol: "<p>Csoportosítva: " + res.map(r => { const sm = ts.filter(t => monS(t.v) === monS(r.v)); return "(" + sm.map(t => numS(t.c)).join(" + ").replace(/\+ −/g, "− ") + ")" + (monS(r.v) || "") + " = " + fmtT([r]); }).join("; ") + ".</p>",
+        sol: "<p>Csoportosítva: " + res.map(r => { const sm = ts.filter(t => monS(t.v) === monS(r.v)); if (sm.length === 1) return fmtT([r]) + " marad (nincs párja)"; return "(" + sm.map(t => numS(t.c)).join(" + ").replace(/\+ −/g, "− ") + ")" + (monS(r.v) || "") + " = " + fmtT([r]); }).join("; ") + ".</p>",
         check: polyCheck(ts, vars, "exp") };
     } },
     { id: "zar", name: "Zárójelfelbontás", gen(l){
@@ -1131,7 +1131,7 @@ const K = (function(){
       if (l === 1){ let c = pick([-1, -1, nz(-9, 9)]); if (c === 1) c = -1; const p = pick([1, 1, 2, 3]), q = nz(-9, 9), inner = [X(p, 1), X(q, 0)], ts = inner.map(t => mulT(X(c, 0), t));
         const cs = c === -1 ? "−" : c === 1 ? "" : numS(c);
         return { q: "Bontsd fel a zárójelet: <span class='num'>" + cs + "(" + fmtT(inner) + ")</span>", kind: "input", ph: "pl. -3x + 12", answer: fmtT(ts),
-          sol: "<p>Minden tagot megszorzunk ezzel: " + numS(c) + ". " + inner.map((t, i) => numS(c) + " · " + par(t) + " = " + fmtT([ts[i]])).join(", ") + "." + (c < 0 ? " Negatív szorzónál minden előjel megfordul." : "") + "</p>",
+          sol: "<p>A zárójel előtti szorzó: " + numS(c) + (c === -1 ? " (a magában álló mínusz −1-et jelent)" : "") + ". Minden tagot megszorzunk vele: " + inner.map((t, i) => numS(c) + " · " + par(t) + " = " + fmtT([ts[i]])).join(", ") + "." + (c < 0 ? " Negatív szorzónál minden előjel megfordul." : "") + "</p>",
           check: polyCheck(ts, ["x"], "exp") }; }
       if (Math.random() < 0.5){ const m = pick([1, 2, 3, -2, -1]), p = rnd(1, 4), q = nz(-9, 9), out = X(m, 1), inner = [X(p, 1), X(q, 0)], ts = inner.map(t => mulT(out, t));
         return { q: "Bontsd fel a zárójelet: <span class='num'>" + fmtT([out]) + "(" + fmtT(inner) + ")</span>", kind: "input", ph: "pl. 6x^2 - 10x", answer: fmtT(ts),
@@ -1160,14 +1160,14 @@ const K = (function(){
         const ts = kind === "sq" ? [X(p * p, 2), X(2 * p * s * k, 1), X(k * k, 0)] : [X(p * p, 2), X(-k * k, 0)];
         return { q: "Fejtsd ki a nevezetes azonossággal: <span class='num'>" + (kind === "sq" ? "(" + f1 + ")²" : "(" + f1 + ")(" + f2 + ")") + "</span>", kind: "input", ph: "pl. x^2 + 6x + 9", answer: fmtT(ts),
           frames: kind === "sq" ? binFrames(p, s * k, p, s * k, true) : binFrames(p, s * k, p, -s * k), title: "Nevezetes azonosság",
-          sol: kind === "sq" ? "<p>(a " + (s > 0 ? "+" : "−") + " b)² = a² " + (s > 0 ? "+" : "−") + " 2ab + b², itt a = " + fmtT([X(p, 1)]) + ", b = " + k + ": " + fmtT([X(p * p, 2)]) + (s > 0 ? " + " : " − ") + "2 · " + fmtT([X(p, 1)]) + " · " + k + " + " + k * k + ".</p>" : "<p>(a + b)(a − b) = a² − b², itt a = " + fmtT([X(p, 1)]) + ", b = " + k + ".</p>",
+          sol: kind === "sq" ? "<p>(a " + (s > 0 ? "+" : "−") + " b)² = a² " + (s > 0 ? "+" : "−") + " 2ab + b², itt a = " + fmtT([X(p, 1)]) + ", b = " + k + ": " + fmtT([X(p * p, 2)]) + (s > 0 ? " + " : " − ") + "2 · " + fmtT([X(p, 1)]) + " · " + k + " + " + k * k + ".</p>" : "<p>(a + b)(a − b) = a² − b², itt a = " + fmtT([X(p, 1)]) + ", b = " + k + ": " + fmtT([X(p * p, 2)]) + " − " + k * k + ".</p>",
           check: v => { const r = polyCheck(ts, ["x"], "exp")(v); if (!r.ok && kind === "sq"){ const n = parseExpr(v); if (n && sameValue(n, env => p * p * env.x * env.x + k * k, ["x"])) return { ok: false, msg: "Kimaradt a középső tag (2ab)! (a + b)² nem egyenlő a² + b²-tel." }; } return r; } };
       }
       const p = pick([1, 1, 2, 3]), k = rnd(1, 9), kind = pick(["pm", "sq", "sq"]), s = pick([1, -1]);
       const ts = kind === "pm" ? [X(p * p, 2), X(-k * k, 0)] : [X(p * p, 2), X(2 * p * s * k, 1), X(k * k, 0)];
       const ans = kind === "pm" ? "(" + fmtT([X(p, 1), X(-k, 0)]) + ")(" + fmtT([X(p, 1), X(k, 0)]) + ")" : "(" + fmtT([X(p, 1), X(s * k, 0)]) + ")²";
       return { q: "Alakítsd szorzattá nevezetes azonossággal: <span class='num'>" + fmtT(ts) + "</span>", kind: "input", ph: "pl. (x - 3)(x + 3)", answer: ans,
-        sol: kind === "pm" ? "<p>Két négyzet különbsége: " + fmtT([X(p * p, 2)]) + " = (" + fmtT([X(p, 1)]) + ")², " + k * k + " = " + k + "². a² − b² = (a − b)(a + b).</p>" : "<p>Teljes négyzet: " + fmtT([X(p * p, 2)]) + " = (" + fmtT([X(p, 1)]) + ")², " + k * k + " = " + k + "², és a középső tag 2 · " + fmtT([X(p, 1)]) + " · " + k + " = " + fmtT([X(2 * p * k, 1)]) + ".</p>",
+        sol: kind === "pm" ? "<p>Két négyzet különbsége: " + (p > 1 ? fmtT([X(p * p, 2)]) + " = (" + fmtT([X(p, 1)]) + ")², " : "x², ") + k * k + " = " + k + "². a² − b² = (a − b)(a + b).</p>" : "<p>Teljes négyzet: " + (p > 1 ? fmtT([X(p * p, 2)]) + " = (" + fmtT([X(p, 1)]) + ")², " : "x², ") + k * k + " = " + k + "², és a középső tag " + (s < 0 ? "−" : "") + "2 · " + fmtT([X(p, 1)]) + " · " + k + " = " + fmtT([X(2 * p * s * k, 1)]) + (s < 0 ? ". A középső tag negatív, ezért (a − b)² alakú." : ".") + "</p>",
         check: polyCheck(ts, ["x"], "prod") };
     } },
     { id: "hatv", name: "Hatványozás", gen(l){
@@ -1187,7 +1187,7 @@ const K = (function(){
       const k = rnd(2, 9), s = pick([1, -1]);
       if (l === 1){
         if (Math.random() < 0.6){ const e = "(" + fmtT([X(1, 1), X(s * k, 0)]) + ")²";
-          return choice("Melyik egyenlő ezzel? <span class='num'>" + e + "</span>", poly([k * k, 2 * s * k, 1]), [poly([k * k, 0, 1]), poly([k * k, s * k, 1]), poly([k * k, 2 * s * k, 2])], "<p>(a ± b)² = a² ± 2ab + b²: a középső tag 2 · x · " + k + ", az utolsó " + k + "² = " + k * k + ".</p>"); }
+          return choice("Melyik egyenlő ezzel? <span class='num'>" + e + "</span>", poly([k * k, 2 * s * k, 1]), [poly([k * k, 0, 1]), poly([k * k, s * k, 1]), poly([k * k, 2 * s * k, 2])], "<p>(a ± b)² = a² ± 2ab + b²: a középső tag " + (s < 0 ? "−" : "") + "2 · x · " + k + " = " + fmtT([X(2 * s * k, 1)]) + ", az utolsó " + k + "² = " + k * k + ".</p>"); }
         const e = "−(" + fmtT([X(1, 1), X(s * k, 0)]) + ")";
         return choice("Melyik egyenlő ezzel? <span class='num'>" + e + "</span>", poly([-s * k, -1]), [poly([s * k, -1]), poly([-s * k, 1]), poly([s * k, 1])], "<p>A zárójel előtti mínusz minden tag előjelét megfordítja.</p>");
       }
@@ -1198,9 +1198,9 @@ const K = (function(){
       const r = Math.random();
       if (r < 0.4) return choice("Mivel egyenlő ez a tört (ha a nevező nem 0)? " + frac(poly([-k * k, 0, 1]), poly([-k, 1])), poly([k, 1]), [poly([-k, 1]), poly([-k, 0, 1]), poly([k * k, 1])], "<p>A számláló két négyzet különbsége: (x − " + k + ")(x + " + k + "). Az (x − " + k + ") tényezővel egyszerűsítünk: x + " + k + ".</p>");
       if (r < 0.75){ const p = rnd(2, 5), q = rnd(2, 4); let rr; do { rr = rnd(1, 7); } while (gcd(p, rr) !== 1);
-        return choice("Mivel egyenlő ez a tört (ha x nem 0)? " + frac(poly([0, rr * q, p * q]), q + "x"), poly([rr, p]), [poly([rr * q, p * q]), poly([0, rr, p]), poly([rr * q, p])], "<p>A számlálóból kiemeljük ezt: " + q + "x. A zárójelben " + poly([rr, p]) + " marad, és ezzel a tényezővel egyszerűsítünk: " + q + "x.</p>"); }
+        return choice("Mivel egyenlő ez a tört (ha x ≠ 0)? " + frac(poly([0, rr * q, p * q]), q + "x"), poly([rr, p]), [poly([rr * q, p * q]), poly([0, rr, p]), poly([rr * q, p])], "<p>A számlálóból kiemelünk: " + q + "x(" + poly([rr, p]) + "). A számlálóban és a nevezőben is ott van a " + q + "x szorzótényező, ezzel egyszerűsítünk, és " + poly([rr, p]) + " marad.</p>"); }
       const m = rnd(2, 5), n = rnd(2, 4), ex = [m + n, m * n + 1, m * n - 1, m * n + 2, m + n + 1].filter((e, i, A) => e !== m * n && e > 0 && A.indexOf(e) === i).slice(0, 3);
-      return choice("Melyik egyenlő ezzel? <span class='num'>(a" + sup(m) + ")" + sup(n) + "</span>", "a" + sup(m * n), ex.map(e => "a" + sup(e)), "<p>Hatvány hatványozásánál a kitevőket szorozzuk: " + m + " · " + n + " = " + m * n + ".</p>");
+      return choice("Melyik egyenlő ezzel? <span class='num'>(a" + sup(m) + ")" + sup(n) + "</span>", "a" + sup(m * n), ex.map(e => "a" + sup(e)), "<p>Hatvány hatványozásánál a kitevőket szorozzuk: " + m + " · " + n + " = " + m * n + ".</p>", "Nem ez. Hatvány hatványozásánál a kitevőket szorozzuk, nem összeadjuk.");
     } }
   ];
   K.practice($("#practice"), { id: "algebra", types, play: playTo });

@@ -90,7 +90,7 @@
   const PROGS = [
     { src: ["osszeg = 0", "for i in range(1, 5):", "    osszeg = osszeg + i", "print(osszeg)"], trace(){ const T = [], v = {}; v.osszeg = 0; T.push([1, { ...v }, "", "Az osszeg változó 0 értéket kap."]); for (let i = 1; i < 5; i++){ v.i = i; T.push([2, { ...v }, "", "A ciklus következő értéke: i = " + i + "."]); v.osszeg += i; T.push([3, { ...v }, "", "osszeg = " + (v.osszeg - i) + " + " + i + " = " + v.osszeg + "."]); } T.push([2, { ...v }, "", "A range(1, 5) elfogyott (az 5 már nincs benne), a ciklus véget ér."]); T.push([4, { ...v }, "10", "Kiírja az összeget: 10."]); return T; } },
     { src: ["szam = 7", "if szam % 2 == 0:", '    print("páros")', "else:", '    print("páratlan")'], trace(){ return [[1, { szam: 7 }, "", "A szam értéke 7."], [2, { szam: 7 }, "", "7 % 2 = 1, ez nem 0, tehát a feltétel hamis (False)."], [4, { szam: 7 }, "", "Hamis feltételnél az else ága jön."], [5, { szam: 7 }, "páratlan", "Kiírja: páratlan."]]; } },
-    { src: ["x = 1", "lepes = 0", "while x < 20:", "    x = x * 2", "    lepes += 1", "print(x, lepes)"], trace(){ const T = [], v = { x: 1 }; T.push([1, { ...v }, "", "x = 1."]); v.lepes = 0; T.push([2, { ...v }, "", "lepes = 0."]); while (v.x < 20){ T.push([3, { ...v }, "", v.x + " < 20 igaz, belépünk a ciklusba."]); v.x *= 2; T.push([4, { ...v }, "", "x a duplájára nő: " + v.x + "."]); v.lepes++; T.push([5, { ...v }, "", "A lepes eggyel nő (+= 1): " + v.lepes + "."]); } T.push([3, { ...v }, "", v.x + " < 20 hamis, a ciklus véget ér."]); T.push([6, { ...v }, v.x + " " + v.lepes, "A print vesszővel elválasztott értékeit szóközzel írja ki: " + v.x + " " + v.lepes + "."]); return T; } }
+    { src: ["x = 1", "lepes = 0", "while x < 20:", "    x = x * 2", "    lepes += 1", "print(x, lepes)"], trace(){ const T = [], v = { x: 1 }; T.push([1, { ...v }, "", "x = 1."]); v.lepes = 0; T.push([2, { ...v }, "", "lepes = 0."]); while (v.x < 20){ T.push([3, { ...v }, "", v.x + " < 20 igaz, lefut a ciklusmag."]); v.x *= 2; T.push([4, { ...v }, "", "x a duplájára nő: " + v.x + "."]); v.lepes++; T.push([5, { ...v }, "", "A lepes eggyel nő (+= 1): " + v.lepes + "."]); } T.push([3, { ...v }, "", v.x + " < 20 hamis, a ciklus véget ér."]); T.push([6, { ...v }, v.x + " " + v.lepes, "A print vesszővel elválasztott értékeit szóközzel írja ki: " + v.x + " " + v.lepes + "."]); return T; } }
   ];
   const H = { p: 0, k: 0, T: PROGS[0].trace() };
   function hero(){
@@ -119,7 +119,7 @@
     const q = Math.floor(a / b), r = a % b, f = a / b;
     return [
       { cap: "Háromféle osztás van Pythonban. Nézzük ezt a két számot: " + a + " és " + b + ".", html: code("print(" + a + " / " + b + ")\nprint(" + a + " // " + b + ")\nprint(" + a + " % " + b + ")") },
-      { cap: "A per jel a rendes osztás. Az eredménye mindig tizedes tört (float), akkor is, ha kijön egészre: " + a + " / " + b + " = " + pyFloat(f) + ".", html: '<p class="big">' + a + " / " + b + " = <span class='cur'>" + pyFloat(f) + "</span></p>" },
+      { cap: "A per jel a rendes osztás. Az eredménye mindig tizedes tört (float), akkor is, ha egészre jön ki: " + a + " / " + b + " = " + pyFloat(f) + ".", html: '<p class="big">' + a + " / " + b + " = <span class='cur'>" + pyFloat(f) + "</span></p>" },
       { cap: "A dupla per jel az egész osztás: hányszor van meg benne, lefelé kerekítve. " + a + " // " + b + " = " + q + ".", html: '<p class="big">' + a + " // " + b + " = <span class='cur'>" + q + "</span></p>" },
       { cap: "A százalékjel a maradék. " + a + " = " + q + " · " + b + " + " + r + ", tehát " + a + " % " + b + " = " + r + ".", html: '<p class="big">' + a + " % " + b + " = <span class='cur'>" + r + "</span></p>" }
     ];
@@ -150,29 +150,29 @@
   /* ---------- Diák ---------- */
   const slides = [
     { k: "Alap", t: "Miért Python?", h:
-      "<p>A Python egyszerű, jól olvasható nyelv: a 10.-ben ezt tanulod. Értelmezett nyelv: a gép sorról sorra olvassa és futtatja a programot (a C# és a C fordított nyelv: előbb gépi kódra fordítják).</p>" +
+      "<p>A Python egyszerű, jól olvasható nyelv: a 10.-ben ezt tanulod. Értelmezett nyelv: a gép sorról sorra olvassa és futtatja a programot (a C például fordított nyelv: a programot előbb gépi kódra fordítják, és csak utána fut).</p>" +
       code('print("Szia, világ!")') + "<p>Ennyi az első program. Nincs pontosvessző, nincs kapcsos zárójel: a szerkezetet a <b>behúzás</b> adja.</p>" +
       "<div class='note'><b>Ugyanaz, mint JavaScriptben:</b> változó, if, ciklus, lista. Ha a JS-leckét megcsináltad, a Python ismerős lesz.</div>" },
     { k: "Változók", t: "Változók és típusok", h:
       code('nev = "Kovrat"      # str: szöveg\nkor = 15            # int: egész szám\nmagassag = 1.72     # float: tizedes tört\ntanulo = True       # bool: igaz/hamis') +
       "<ul><li>A változónak nem kell típust írni: a Python az értékből tudja.</li><li>A tizedesjel <b>pont</b>: 1.72, nem 1,72.</li><li>A # utáni rész megjegyzés, a gép nem futtatja.</li><li><code>type(kor)</code> megmondja a típust.</li></ul>" },
-    { k: "Műveletek", t: "Műveletek: + − * / // % **", h:
-      "<div class='ptwrap'><table class='pt'><tr><th>Művelet</th><th>Példa</th><th>Eredmény</th></tr><tr><td>+ − *</td><td>3 + 4 * 2</td><td>11</td></tr><tr><td>/ osztás</td><td>7 / 2</td><td>3.5</td></tr><tr><td>// egész osztás</td><td>7 // 2</td><td>3</td></tr><tr><td>% maradék</td><td>7 % 2</td><td>1</td></tr><tr><td>** hatvány</td><td>2 ** 5</td><td>32</td></tr><tr><td>+ szövegre</td><td>\"ab\" + \"cd\"</td><td>abcd</td></tr><tr><td>* szövegre</td><td>\"ha\" * 3</td><td>hahaha</td></tr></table></div>" +
+    { k: "Műveletek", t: "Műveletek: + - * / // % **", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Művelet</th><th>Példa</th><th>Eredmény</th></tr><tr><td>+ - *</td><td>3 + 4 * 2</td><td>11</td></tr><tr><td>/ osztás</td><td>7 / 2</td><td>3.5</td></tr><tr><td>// egész osztás</td><td>7 // 2</td><td>3</td></tr><tr><td>% maradék</td><td>7 % 2</td><td>1</td></tr><tr><td>** hatvány</td><td>2 ** 5</td><td>32</td></tr><tr><td>+ szövegre</td><td>\"ab\" + \"cd\"</td><td>abcd</td></tr><tr><td>* szövegre</td><td>\"ha\" * 3</td><td>hahaha</td></tr></table></div>" +
       "<p>Vigyázz: <code>6 / 2</code> eredménye <b>3.0</b> (float), nem 3.</p>" + playBtn("oszt"), init: playInit },
     { k: "Bemenet", t: "input és a típusváltás", h:
-      code('nev = input("Hogy hívnak? ")\nkor = int(input("Hány éves vagy? "))\nprint("Szia,", nev)\nprint("Jövőre", kor + 1, "leszel.")') +
+      code('nev = input("Hogy hívnak? ")\nkor = int(input("Hány éves vagy? "))\nprint("Szia,", nev)\nprint("Jövőre", kor + 1, "éves leszel.")') +
       "<ul><li>Az <code>input</code> mindig <b>szöveget</b> ad vissza. Számoláshoz <code>int()</code> vagy <code>float()</code> kell.</li><li><code>\"5\" + \"3\"</code> = 53 (összefűzés), de <code>int(\"5\") + 3</code> = 8.</li><li>A print vesszővel elválasztott értékeit szóközzel írja ki.</li><li>f-string: <code>print(f\"{nev} {kor} éves\")</code> — a kapcsos zárójelbe írt kifejezés értéke kerül a helyére.</li></ul>" },
     { k: "Elágazás", t: "if, elif, else", h:
       code('pont = 73\nif pont >= 85:\n    print("ötös")\nelif pont >= 70:\n    print("négyes")\nelse:\n    print("gyakorolj még")') +
       "<ul><li>A feltétel után <b>kettőspont</b>, alatta <b>behúzás</b>.</li><li>Az elif csak akkor fut, ha a fölötte lévők hamisak: itt a kimenet „négyes”.</li><li>Összehasonlítás: <code>==</code> (egyenlő), <code>!=</code> (nem egyenlő), <code>&lt;</code>, <code>&gt;=</code>… Az egy darab = értékadás!</li><li>Logikai: <code>and</code>, <code>or</code>, <code>not</code>.</li></ul>" },
     { k: "Ciklus", t: "for és range", h:
-      code("for i in range(3):\n    print(i)") + "<p>Kiírja: 0, 1, 2. A <code>range(3)</code> 0-tól 3 előttig megy.</p>" +
+      code("for i in range(3):\n    print(i)") + "<p>Kiírja: 0, 1, 2. A <code>range(3)</code> 0-tól indul, és a 3 előtt megáll: a 3 már nincs benne.</p>" +
       "<div class='ptwrap'><table class='pt'><tr><th>range</th><th>elemei</th></tr><tr><td>range(5)</td><td>0 1 2 3 4</td></tr><tr><td>range(2, 6)</td><td>2 3 4 5</td></tr><tr><td>range(1, 10, 3)</td><td>1 4 7</td></tr><tr><td>range(5, 0, -1)</td><td>5 4 3 2 1</td></tr></table></div>" + playBtn("ciklus"), init: playInit },
     { k: "while", t: "while: amíg igaz", h:
       code("x = 1\nwhile x < 20:\n    x = x * 2\nprint(x)") +
       "<p>Addig ismétli, amíg a feltétel igaz: 1 → 2 → 4 → 8 → 16 → 32, és kiírja: 32.</p>" +
       "<div class='mistake'><b>Végtelen ciklus:</b> ha a feltétel sosem lesz hamis (például elfelejted növelni a változót), a program sosem áll le. Ctrl+C-vel állítható le.</div>" +
-      "<p>A <code>x += 1</code> rövidítés: ugyanaz, mint <code>x = x + 1</code>.</p>" },
+      "<p>Az <code>x += 1</code> rövidítés: ugyanaz, mint <code>x = x + 1</code>.</p>" },
     { k: "Lista", t: "Listák és szövegek indexelése", h:
       code("szamok = [3, 8, 1, 9, 4]\nprint(szamok[0])     # 3\nprint(szamok[-1])    # 4\nprint(szamok[1:3])   # [8, 1]\nprint(len(szamok))   # 5\nszamok.append(7)     # a végére tesz egy elemet") +
       "<p>Az index 0-tól kezdődik! A szövegre ugyanez működik: <code>\"alma\"[0]</code> = a, <code>\"alma\"[-1]</code> = a, <code>\"alma\".upper()</code> = ALMA.</p>" + playBtn("lista"), init: playInit },
@@ -207,11 +207,11 @@
         if (k === 0){ line = "print(" + a + " + " + b + " * 2)"; ans = String(a + b * 2); sol = "Előbb a szorzás: " + b + " * 2 = " + b * 2 + ", aztán az összeadás: " + ans + "."; }
         else if (k === 1){ const w = pick(WORDS), x = pick(WORDS); line = 'print("' + w + '" + "' + x + '")'; ans = w + x; sol = "A + két szöveget összefűz, szóköz nélkül."; }
         else if (k === 2){ line = 'print("' + a + '" + "' + b + '")'; ans = String(a) + String(b); sol = "Ezek idézőjelben vannak, tehát szövegek: a + összefűzi őket, nem összeadja."; }
-        else { const w = pick(["ha", "ho", "la", "na"]), n = rnd(2, 4); line = 'print("' + w + '" * ' + n + ")"; ans = w.repeat(n); sol = "Szöveg szorozva egész számmal: ennyiszer ismétli."; }
+        else { const w = pick(["ha", "ho", "la", "na"]), n = rnd(2, 4); line = 'print("' + w + '" * ' + n + ")"; ans = w.repeat(n); sol = "Szöveg szorozva egész számmal: a szöveg egymás után ismétlődik, a szorzó adja meg, hányszor (itt " + n + ")."; }
       } else if (l === 2){
         const k = rnd(0, 4), a = rnd(7, 60), b = rnd(2, 9);
-        if (k === 0){ line = "print(" + a + " // " + b + ")"; ans = String(Math.floor(a / b)); sol = "Egész osztás: " + a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + "."; }
-        else if (k === 1){ line = "print(" + a + " % " + b + ")"; ans = String(a % b); sol = "Maradék: " + a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + "."; }
+        if (k === 0){ line = "print(" + a + " // " + b + ")"; ans = String(Math.floor(a / b)); sol = "Egész osztás: " + a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + ". A // a hányadost adja: " + ans + "."; }
+        else if (k === 1){ line = "print(" + a + " % " + b + ")"; ans = String(a % b); sol = "Maradék: " + a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + ". A % a maradékot adja: " + ans + "."; }
         else if (k === 2){ const c = b * rnd(2, 9); line = "print(" + c + " / " + b + ")"; ans = pyFloat(c / b); sol = "A / mindig tizedes törtet (float) ad, még ha egészre jön is ki: " + ans + "."; }
         else if (k === 3){ const e = rnd(2, 6), bb = rnd(2, 4); line = "print(" + bb + " ** " + e + ")"; ans = String(Math.pow(bb, e)); sol = "Hatványozás: " + Array(e).fill(bb).join(" · ") + " = " + ans + "."; }
         else { const w = pick(WORDS); line = 'print(len("' + w + '"))'; ans = String(w.length); sol = "A len a betűk számát adja."; }
@@ -233,7 +233,7 @@
         [['int("42")', "int"], ["str(42)", "str"], ['float("2")', "float"], ['input("Szám: ")', "str"], ["5 == 5.0", "bool"], ['"ab" * 2', "str"], ["10 % 3", "int"], ["not True", "bool"]]
       ][l - 1], q = pick(P);
       return choice("Milyen típusú ennek a kifejezésnek az értéke? <code>" + esc(q[0]) + "</code>", q[1], ["int", "float", "str", "bool"].filter(x => x !== q[1]),
-        "<p><code>" + esc(q[0]) + "</code> → <b>" + q[1] + "</b>. " + { int: "Egész szám.", float: "Tizedes tört (a / mindig floatot ad).", str: "Szöveg (az input is mindig szöveget ad).", bool: "Igaz vagy hamis (True / False)." }[q[1]] + "</p>", "Nem jó. int: egész, float: tizedes tört, str: szöveg, bool: True vagy False.");
+        "<p><code>" + esc(q[0]) + "</code> → <b>" + q[1] + "</b>. " + { int: "Egész szám.", float: "Tizedes tört.", str: "Szöveg.", bool: "Logikai érték: True vagy False." }[q[1]] + ({ "7 / 2": " A / mindig floatot ad.", "6 / 3": " A / mindig floatot ad, még ha egészre jön is ki (2.0).", "2.0": " A .0 miatt ez float, nem int.", "1.5 * 2": " Ha a műveletben float van, az eredmény is float (3.0).", "input(\"Szám: \")": " Az input mindig szöveget ad, akkor is, ha számot írnak be.", "5 == 5.0": " Az összehasonlítás eredménye mindig ilyen (itt True).", "3 > 2": " Az összehasonlítás eredménye mindig ilyen (itt True).", "\"ab\" * 2": " Szöveg szorozva egész számmal szöveg marad: \"abab\".", "\"3\" + \"4\"": " Két szöveg összefűzve: \"34\", ez is szöveg, nem szám." }[q[0]] || "") + "</p>", "Nem jó. int: egész, float: tizedes tört, str: szöveg, bool: True vagy False.");
     } },
     { id: "range", name: "range elemei", gen(l){
       let a, b, s, txt;
@@ -275,7 +275,7 @@
       ];
       const b = l === 1 ? pick(B.slice(0, 4)) : l === 2 ? pick(B.slice(2, 7)) : pick(B.slice(4));
       const good = b[1] + ". sor", others = b[0].map((_, i) => (i + 1) + ". sor").filter(x => x !== good);
-      while (others.length < 2) others.push((b[0].length + others.length + 1) + ". sor");
+      if (others.length < 2) others.push("Egyik sor sem hibás");
       return choice("Melyik sorban van a hiba?" + '<pre class="code">' + b[0].map((s, i) => (i + 1) + "  " + esc(s)).join("\n") + "</pre>", good, others.slice(0, 3), "<p>" + esc(b[2]) + "</p>", "Nem ez. Nézd meg a kettőspontokat, a behúzást, az idézőjeleket és a típusokat.");
     } }
   ];

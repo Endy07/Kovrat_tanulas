@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -795,8 +795,8 @@ const K = (function(){
     if (tv !== "bc" && +tv === f){ $("#smsg").textContent = "Magának nem küld a gép. Válassz másik címzettet."; return; }
     const r = swFrame(S.table, 4, f + 1, PCS[f][1], dst);
     S.last = { from: f, out: r.out };
-    $("#smsg").textContent = (r.learned ? "Tanult: " + PCS[f][0] + " a " + (f + 1) + ". porton van. " : "A feladó már a táblában volt. ") +
-      (tv === "bc" ? "Szórás (FF:FF:FF:FF:FF:FF): minden más portra küldi." : r.flood ? "A címzett még nincs a táblában: elárasztás, minden más portra küldi (" + r.out.join(", ") + ")." : "A címzett a táblában van: csak a " + r.out[0] + ". portra küldi.");
+    $("#smsg").textContent = (r.learned ? "Tanult: " + PCS[f][0] + " gép " + K.art(f + 1) + " " + (f + 1) + ". porton van. " : "A feladó már a táblában volt. ") +
+      (tv === "bc" ? "Szórás (FF:FF:FF:FF:FF:FF): minden más portra küldi." : r.flood ? "A címzett még nincs a táblában: elárasztás, minden más portra küldi (" + r.out.join(", ") + ")." : "A címzett a táblában van: csak " + K.art(r.out[0]) + " " + r.out[0] + ". portra küldi.");
     swRender();
   });
   $("#reset").addEventListener("click", () => { S.table = {}; S.last = null; $("#smsg").textContent = "A tábla üres. Az első keretnél a kapcsoló még semmit nem tud."; swRender(); });
@@ -840,7 +840,7 @@ const K = (function(){
     F.push({ cap: "Egy kapcsoló négy géppel. Bekapcsoláskor a MAC-táblája üres: még nem tudja, ki melyik portján van.", html: draw(null) });
     steps.forEach(([f, t]) => {
       const dst = t === "bc" ? BC : PCS[t][1], known = t !== "bc" && dst in tbl, r = swFrame(tbl, 4, f + 1, PCS[f][1], dst);
-      F.push({ cap: PCS[f][0] + " küld " + (t === "bc" ? "szórásos keretet (mindenkinek)" : "keretet ennek: " + PCS[t][0]) + ". Tanulás: a feladó a " + (f + 1) + ". porton van, ez bekerül a táblába. " + (t === "bc" ? "A szórást minden más port megkapja." : known ? "A címzett a táblában van, ezért csak a " + r.out[0] + ". portra megy." : "A címzettet még nem ismeri, ezért elárasztja: minden más portra elküldi."), html: draw({ from: f, out: r.out }) });
+      F.push({ cap: "Feladó: " + PCS[f][0] + ", címzett: " + (t === "bc" ? "mindenki (szórásos keret)" : PCS[t][0]) + ". Tanulás: a feladó " + K.art(f + 1) + " " + (f + 1) + ". porton van, ez bekerül a táblába. " + (t === "bc" ? "A szórást minden más port megkapja." : known ? "A címzett a táblában van, ezért csak " + K.art(r.out[0]) + " " + r.out[0] + ". portra megy." : "A címzettet még nem ismeri, ezért elárasztja: minden más portra elküldi."), html: draw({ from: f, out: r.out }) });
     });
     F.push({ cap: "Ahogy a gépek beszélnek, a tábla megtelik, és egyre kevesebb az elárasztás. A régi bejegyzések pár perc után törlődnek, ha a gép nem jelentkezik.", html: draw(null) });
     return F;
@@ -856,10 +856,10 @@ const K = (function(){
   function arpFrames(){
     const box = (on, msg) => '<div class="sw">' + PCS.map((p, i) => '<div class="pc ' + (on.includes(i) ? "got" : "") + '"><b>' + p[0] + "</b><span>192.168.1." + (10 + i) + "</span></div>").join("") + "</div>" + (msg ? '<p class="msg" style="margin-top:8px">' + esc(msg) + "</p>" : "");
     return [
-      { cap: "A gép a címzett IP-címét tudja (például a DNS-től), de a kerethez MAC-cím kell. Ezt az ARP deríti ki.", html: box([0], "A tudja: C címe 192.168.1.12. De mi a MAC-címe?") },
-      { cap: "A szórásos kérdést küld mindenkinek: kié a 192.168.1.12? A kapcsoló minden portra továbbítja.", html: box([1, 2, 3], "ARP-kérés (szórás): kié a 192.168.1.12?") },
-      { cap: "Csak az a gép válaszol, akié a cím: C, közvetlenül A-nak, a saját MAC-címével.", html: box([0], "ARP-válasz: a 192.168.1.12 az enyém, a MAC-címem 00:1A:2B:3C:4D:03") },
-      { cap: "A elmenti a párost az ARP-táblájába (Windowson: arp -a), és most már elküldheti a keretet C MAC-címére. Az IPv6 ugyanezt a szomszédfelderítéssel (NDP) csinálja.", html: box([0, 2], "ARP-tábla: 192.168.1.12 → 00:1A:2B:3C:4D:03") }
+      { cap: "Az A gép a címzett IP-címét tudja (például a DNS-től), de a kerethez MAC-cím kell. Ezt az ARP deríti ki.", html: box([0], "A tudja: C címe 192.168.1.12. De mi a MAC-címe?") },
+      { cap: "Az A gép szórásos kérdést küld mindenkinek: kié a 192.168.1.12? A kapcsoló minden portra továbbítja.", html: box([1, 2, 3], "ARP-kérés (szórás): kié a 192.168.1.12?") },
+      { cap: "Csak az a gép válaszol, akié a cím: a C gép. Közvetlenül az A gépnek felel, a saját MAC-címével.", html: box([0], "ARP-válasz: a 192.168.1.12 az enyém, a MAC-címem 00:1A:2B:3C:4D:03") },
+      { cap: "Az A gép elmenti a párost az ARP-táblájába (Windowson: arp -a), és most már elküldheti a keretet a C gép MAC-címére. Az IPv6 ugyanezt a szomszédfelderítéssel (NDP) csinálja.", html: box([0, 2], "ARP-tábla: 192.168.1.12 → 00:1A:2B:3C:4D:03") }
     ];
   }
   const MET = { sw: "A kapcsoló tanul", v6: "IPv6-cím rövidítése", arp: "ARP: IP-címből MAC-cím" };
@@ -881,7 +881,7 @@ const K = (function(){
       "<p>Az <b>FCS</b> ellenőrzőösszeg: ha az átvitel közben egy bit megsérül, a fogadó észreveszi és eldobja a keretet (mint a paritásbit, csak erősebb).</p>" },
     { k: "MAC-cím", t: "A MAC-cím", h:
       "<p class='eq'>3C:52:82:1A:9F:04</p><ul><li>48 bit = 6 bájt = 12 tizenhatos jegy.</li><li>Az első 3 bájt a <b>gyártó</b> azonosítója (OUI), a többi a gyártón belüli sorszám.</li><li><b>FF:FF:FF:FF:FF:FF</b> a szórási cím: minden gép megkapja.</li><li>Ha az első bájt páratlan (például 01:00:5E…), csoportos (multicast) cím.</li></ul>" +
-      "<div class='note'><b>MAC vagy IP?</b> A MAC a helyi hálózaton belül szállít, a router minden lépésnél új keretbe teszi a csomagot. Az IP-cím végig ugyanaz marad.</div>" },
+      "<div class='note'><b>MAC vagy IP?</b> A MAC a helyi hálózaton belül szállít, a router minden lépésnél új keretbe teszi a csomagot. Az IP-cím végig ugyanaz marad (kivéve, ha egy router NAT-tal lecseréli).</div>" },
     { k: "Kapcsoló", t: "Hogyan dolgozik a kapcsoló (switch)?", h:
       "<ol><li><b>Tanul:</b> megnézi a beérkező keret <b>forrás</b>-MAC-címét, és beírja a MAC-táblájába azzal a porttal, ahonnan jött.</li><li><b>Továbbít:</b> megnézi a <b>cél</b>-MAC-címet. Ha a táblában van, csak arra a portra küldi.</li><li><b>Eláraszt:</b> ha a cél még ismeretlen, vagy szórásos keret, minden más portra elküldi (arra nem, ahonnan jött).</li></ol>" +
       "<p>Próbáld ki fent: az első kereteknél sok az elárasztás, aztán egyre kevesebb.</p>" + playBtn("sw"), init: playInit },
@@ -942,8 +942,8 @@ const K = (function(){
       const tcopy = Object.assign({}, table), r = swFrame(tcopy, n, src.port, src.mac, bc ? BC : dst.mac);
       const tbl = "<div class='ptwrap'><table class='pt'><tr><th>gép</th><th>MAC-cím</th><th>port</th></tr>" + devs.map(d => "<tr><td>" + d.name + "</td><td>" + d.mac + "</td><td>" + d.port + "</td></tr>").join("") + "</table></div>";
       const mt = "<div class='ptwrap'><table class='pt'><tr><th>MAC-tábla</th><th>port</th></tr>" + (Object.keys(table).length ? Object.keys(table).map(k => "<tr><td>" + k + "</td><td>" + table[k] + "</td></tr>").join("") : "<tr><td colspan='2'>üres</td></tr>") + "</table></div>";
-      return { q: "Egy " + n + " portos kapcsoló. A gépek:" + tbl + "A kapcsoló MAC-táblája most:" + mt + src.name + " küld " + (bc ? "szórásos keretet (cél: FF:FF:FF:FF:FF:FF)." : "keretet ennek a gépnek: " + dst.name + ".") + " Melyik portokon megy ki a keret?", kind: "input", ph: "pl. 2, 3", answer: r.out.join(", "),
-        sol: "<p>" + (bc ? "Szórás: minden más portra." : r.flood ? dst.name + " MAC-címe nincs a táblában: elárasztás, minden más portra." : dst.name + " a táblában van: csak a " + r.out[0] + ". portra.") + " A feladó portjára (" + src.port + ") nem küldi vissza.</p>", check: portsCheck(r.out, r.flood, src.port) };
+      return { q: "Egy " + n + " portos kapcsoló. A gépek:" + tbl + "A kapcsoló MAC-táblája most:" + mt + "Feladó: " + src.name + ", " + (bc ? "szórásos keret (cél: FF:FF:FF:FF:FF:FF)." : "címzett: " + dst.name + ".") + " Melyik portokon megy ki a keret?", kind: "input", ph: "pl. 2, 3", answer: r.out.join(", "),
+        sol: "<p>" + (bc ? "Szórás: minden más portra." : r.flood ? "A címzett (" + dst.name + ") MAC-címe nincs a táblában: elárasztás, minden más portra." : "A címzett (" + dst.name + ") a táblában van: csak " + K.art(r.out[0]) + " " + r.out[0] + ". portra.") + " A feladó portjára (" + src.port + ") nem küldi vissza.</p>", check: portsCheck(r.out, r.flood, src.port) };
     } },
     { id: "tanul", name: "Mit tanul a kapcsoló?", gen(l){
       const n = 4, k = l === 1 ? 2 : l === 2 ? 3 : 5, table = {}, lines = [];

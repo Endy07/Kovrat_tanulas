@@ -118,7 +118,7 @@
 
   /* ---------- Hero: VM-építő ---------- */
   const HOST = { c: 16, r: 64, d: 2048, hr: 4, hd: 100 };
-  const VMS = [{ n: "Windows 11", on: true, c: 4, r: 16, d: 200 }, { n: "Ubuntu szerver", on: true, c: 2, r: 8, d: 100 }, { n: "Teszt-gép", on: false, c: 4, r: 16, d: 300 }];
+  const VMS = [{ n: "Windows 11", on: true, c: 4, r: 16, d: 200 }, { n: "Ubuntu szerver", on: true, c: 2, r: 8, d: 100 }, { n: "Tesztgép", on: false, c: 4, r: 16, d: 300 }];
   $("#vms").innerHTML = VMS.map((v, i) => '<div class="vm" data-i="' + i + '"><h4>' + esc(v.n) + '<input type="checkbox" aria-label="' + esc(v.n) + ' bekapcsolva"' + (v.on ? " checked" : "") + "></h4>" +
     '<label>Mag: <b data-v="c"></b><input type="range" data-k="c" min="1" max="8" value="' + v.c + '" aria-label="Magok"></label>' +
     '<label>RAM: <b data-v="r"></b><input type="range" data-k="r" min="1" max="32" value="' + v.r + '" aria-label="RAM"></label>' +
@@ -139,7 +139,7 @@
     if (rOver || dOver){ st.className = "status bad"; st.textContent = rOver ? "Nem indul el mind: kevés a RAM" : "Nincs elég hely a lemezen"; }
     else if (cOver){ st.className = "status warn"; st.textContent = "Elindul, de lassú lesz: túlfoglalás"; }
     else { st.className = "status ok"; st.textContent = on.length ? "Minden bekapcsolt VM elfér" : "Nincs bekapcsolt VM"; }
-    $("#expl").textContent = "A gazda rendszer is kér " + HOST.hr + " GB RAM-ot és " + HOST.hd + " GB lemezt. A RAM-ot és a lemezt nem lehet „kölcsönadni”: ha elfogy, a VM nem indul. A processzormagokon osztoznak a gépek: több virtuális mag is kiosztható, mint ahány valódi van, csak akkor lassul minden.";
+    $("#expl").textContent = "A gazdagép saját rendszere is kér " + HOST.hr + " GB RAM-ot és " + HOST.hd + " GB lemezt. A RAM-ot és a lemezt nem lehet „kölcsönadni”: ha elfogy, a VM nem indul. A processzormagokon osztoznak a gépek: több virtuális mag is kiosztható, mint ahány valódi van, csak akkor lassul minden.";
   }
   $("#vms").addEventListener("input", hero);
   hero();
@@ -155,8 +155,8 @@
       L.push(r[0] + ": (" + r[1] + " − " + r[2] + ") : " + r[3] + " = " + free + " : " + r[3] + " → " + k);
       F.push({ cap: r[0] + ": a szabad rész " + r[1] + " − " + r[2] + " = " + free + " " + r[4] + ". Ebből " + free + " : " + r[3] + (free % r[3] ? ", lefelé kerekítve " : " = ") + k + " VM-nek jut." + (free % r[3] ? " Fél VM nincs, ezért kerekítünk lefelé." : ""), html: lines(L, L.length - 1) });
     });
-    const mn = Math.min(...res), who = R.filter((r, i) => res[i] === mn).map(r => r[0]).join(" és ");
-    F.push({ cap: "A legkisebb eredmény dönt: " + mn + " VM fér el. A szűk keresztmetszet: " + who + ".", html: lines(L.concat(['<span class="led">Eredmény: ' + mn + " VM</span>"]), L.length) });
+    const mn = Math.min(...res), who = R.filter((r, i) => res[i] === mn).map(r => r[0] === "RAM" ? r[0] : r[0].toLowerCase()).join(" és ");
+    F.push({ cap: R.length > 1 ? "A legkisebb eredmény dönt: " + mn + " VM fér el. A szűk keresztmetszet: " + who + "." : "Eredmény: " + mn + " VM fér el.", html: lines(L.concat(['<span class="led">Eredmény: ' + mn + " VM</span>"]), L.length) });
     return F;
   }
   function pwFrames(k, n, Lspeed){
@@ -193,7 +193,7 @@
       "<p>A <b>virtualizáció</b>: egy valódi (fizikai) gépen több, szoftverrel létrehozott számítógép fut. Mindegyik <b>virtuális gépnek</b> (VM) saját operációs rendszere, saját „merevlemeze” és saját hálózati kártyája van.</p>" +
       "<ul><li><b>Gazda</b> (host): a fizikai gép és az operációs rendszere.</li><li><b>Vendég</b> (guest): a virtuális gépen futó operációs rendszer.</li></ul>" +
       "<div class='note'><b>Hasonlat:</b> egy nagy ház (a fizikai gép), benne külön lakások (a VM-ek). Mindenkinek saját ajtaja és kulcsa van, de a fűtésen és a vízen (processzor, memória) osztoznak.</div>" +
-      "<p>Mire jó? Egy szerveren sok szolgáltatás fut, olcsóbb; kipróbálhatsz egy másik rendszert (Linux a Windows mellett); a szoftvertesztelő tiszta gépen tesztel.</p>" },
+      "<p>Mire jó? Egy szerveren sok szolgáltatás futhat, ez olcsóbb; kipróbálhatsz egy másik rendszert (Linux a Windows mellett); a szoftvertesztelő tiszta gépen tesztel.</p>" },
     { k: "Hipervizor", t: "Ki osztja el az erőforrásokat?", h:
       "<p>A <b>hipervizor</b> az a program, amely létrehozza és futtatja a virtuális gépeket, és elosztja köztük a processzort, a memóriát és a lemezt.</p>" +
       "<div class='ptwrap'><table class='pt'><tr><th>Típus</th><th>Hol fut?</th><th>Példa</th></tr><tr><td>1. típus</td><td style='text-align:left'>közvetlenül a hardveren, alatta nincs másik rendszer</td><td>Hyper-V, VMware ESXi, Proxmox</td></tr><tr><td>2. típus</td><td style='text-align:left'>programként egy meglévő operációs rendszeren</td><td>VirtualBox, VMware Workstation</td></tr></table></div>" +
@@ -249,13 +249,13 @@
       "<p>Ha valaki megszerzi a jelszavadat, a második lépés nélkül akkor sem lép be. A felhőfiókjaidnál (Google, Microsoft, Instagram, Discord) <b>kapcsold be</b>.</p>" +
       "<div class='mistake'><b>Adathalászat:</b> hamis e-mail vagy oldal („Lejárt a fiókod, lépj be itt”), amely a jelszavadat akarja. Mindig nézd meg a címsort, és soha ne add meg a 2FA-kódot senkinek, aki kéri.</div>" },
     { k: "Hibák", t: "Tipikus hibák", h:
-      "<div class='mistake'><b>A gazda igényének elfelejtése.</b> A gazda rendszer is kér RAM-ot és lemezt: előbb ezt vond le.</div>" +
+      "<div class='mistake'><b>A gazda igényének elfelejtése.</b> A gazdagép saját rendszere is kér RAM-ot és lemezt: előbb ezt vond le.</div>" +
       "<div class='mistake'><b>Felfelé kerekítés.</b> Ha 7,5 VM-nek elég a RAM, akkor 7 fér el, nem 8.</div>" +
       "<div class='mistake'><b>Csak egy erőforrás nézése.</b> A legkisebb eredmény dönt: hiába fér el 10 a lemezen, ha a RAM csak 7-nek elég.</div>" +
       "<div class='mistake'><b>Pillanatkép = mentés?</b> Nem: ugyanazon a lemezen van. A szinkronizálás sem mentés.</div>" +
       "<div class='mistake'><b>k · n a k<sup>n</sup> helyett.</b> 8 kisbetűs jelszó: nem 26 · 8 = 208, hanem 26<sup>8</sup> ≈ 2,1 · 10<sup>11</sup> lehetőség.</div>" },
     { k: "Trükkök", t: "Fejben számolás", h:
-      "<div class='two-col'><div class='trick'><span class='t'>Egy karakterrel hosszabb</span><span>A lehetőségek száma a karakterkészlet méretével szorzódik: 26-féle karakternél 26-szor tovább tart feltörni.</span></div>" +
+      "<div class='two-col'><div class='trick'><span class='t'>Egy karakterrel hosszabb</span><span>A lehetőségek száma a karakterkészlet méretével szorzódik: 26 féle karakternél 26-szor annyi ideig tart feltörni.</span></div>" +
       "<div class='trick'><span class='t'>PIN-kód</span><span>4 számjegy: 10<sup>4</sup> = 10 000 lehetőség. Ezért kell a telefonnak a próbálkozások korlátozása.</span></div>" +
       "<div class='trick'><span class='t'>SaaS, PaaS, IaaS</span><span>Kérdezd meg: mit kell nekem telepíteni? Semmit → SaaS. Csak a kódomat → PaaS. Az operációs rendszert is → IaaS.</span></div>" +
       "<div class='trick'><span class='t'>Mentés</span><span>Számold meg: hány példány, hány különböző eszköz, van-e máshol tárolt. 3, 2, 1.</span></div></div>" }
@@ -291,7 +291,10 @@
   ];
   const types = [
     { id: "fog", name: "Fogalmak", gen(l){
-      const pool = FOG[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3);
+      // a szolgáltatási modell (IaaS…) és a felhőtípus (nyilvános…) ne legyen egymás rossz válasza: a bérelt VM nyilvános felhőben is van
+      const SM = ["IaaS", "PaaS", "SaaS"], CT = ["nyilvános felhő", "privát felhő", "hibrid felhő"];
+      const pool = FOG[l - 1], q = pick(pool), clash = SM.includes(q[1]) ? CT : CT.includes(q[1]) ? SM : [];
+      const others = shuffle(pool.filter(x => x[1] !== q[1] && !clash.includes(x[1]))).slice(0, 3);
       return choice("Mire illik ez a leírás? " + q[0], [q[1]].concat(others.map(x => x[1])), q[1], "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. A helyes: " + q[1] + ".");
     } },
     { id: "svc", name: "IaaS, PaaS, SaaS?", gen(l){
@@ -307,7 +310,7 @@
       const ans = Math.min(...R.map(r => Math.floor((r[1] - r[2]) / r[3])));
       const desc = { RAM: r => "RAM: " + r[1] + " GB, a gazda " + r[2] + " GB-ot használ, egy VM " + r[3] + " GB-ot kap.", Lemez: r => "Lemez: " + r[1] + " GB, a gazda rendszere " + r[2] + " GB, egy VM lemeze " + r[3] + " GB.", Mag: r => "Processzor: " + r[1] + " mag, a gazdának " + r[2] + " mag kell, egy VM " + r[3] + " magot kap (túlfoglalás nélkül)." };
       return { q: "Hány egyforma virtuális gép fér el?<ul>" + R.map(r => "<li>" + desc[r[0]](r) + "</li>").join("") + "</ul>", kind: "input", mode: "numeric", answer: ans, frames: vmFrames(R), title: "Hány VM fér el?",
-        sol: "<p>" + R.map(r => r[0] + ": (" + r[1] + " − " + r[2] + ") : " + r[3] + " → " + Math.floor((r[1] - r[2]) / r[3])).join("; ") + ". A legkisebb dönt: " + ans + ".</p>",
+        sol: "<p>" + R.map(r => r[0] + ": (" + r[1] + " − " + r[2] + ") : " + r[3] + " → " + Math.floor((r[1] - r[2]) / r[3])).join("; ") + "." + (R.length > 1 ? " A legkisebb dönt: " + ans + "." : "") + "</p>",
         check: intCheck(ans, "Nem jó. Minden erőforrásra: (összes − gazda) : egy VM, lefelé kerekítve. A legkisebb dönt.", x => {
           if (R.some(r => x === Math.floor(r[1] / r[3]) && x !== ans)) return "Kimaradt a gazda igénye: előbb vond le.";
           if (R.some(r => x === Math.ceil((r[1] - r[2]) / r[3]) && x !== ans)) return "Lefelé kell kerekíteni: fél VM nincs.";
@@ -321,9 +324,9 @@
         if (l === 1){ if (Math.random() < 0.5){ k = 10; n = rnd(3, 6); name = "számjegyből álló PIN-kód"; } else { k = rnd(3, 5); n = rnd(2, 4); name = "kód, amelyben csak az első " + k + " betű (A, B, …) szerepelhet"; } }
         else { const o = pick([[26, rnd(2, 4), "csak kisbetűből álló jelszó"], [36, rnd(2, 3), "kisbetűből és számjegyből álló jelszó"], [2, rnd(8, 16), "bitsorozat (minden helyen 0 vagy 1)"], [10, rnd(6, 8), "számjegyből álló kód"]]); k = o[0]; n = o[1]; name = o[2]; }
         const ans = Math.pow(k, n);
-        return { q: "Hány különböző lehet? Hossz: <span class='num'>" + n + "</span>, típus: " + name + ".", kind: "input", mode: "numeric", answer: ans,
+        return { q: "Hány különböző lehetőség van? Hossz: <span class='num'>" + n + "</span>, típus: " + name + ".", kind: "input", mode: "numeric", answer: ans,
           sol: "<p>Minden helyre " + k + " féle karakter jöhet, " + n + " hely van: " + k + "<sup>" + n + "</sup> = " + sp(ans) + ".</p>",
-          check: intCheck(ans, "Nem jó. Karakterek száma a hossz hatványán: k · k · … (hossznyi tényező).", x => x === k * n ? "Nem szorozni kell, hanem hatványozni: " + k + "<sup>" + n + "</sup>." : x === Math.pow(n, k) ? "Fordítva: az alap a karakterek száma, a kitevő a hossz." : "") };
+          check: intCheck(ans, "Nem jó. A karakterek számát annyiszor szorozd össze önmagával, ahány hely van: k · k · …", x => x === k * n ? "Nem szorozni kell, hanem hatványozni: " + k + "<sup>" + n + "</sup>." : x === Math.pow(n, k) ? "Fordítva: az alap a karakterek száma, a kitevő a hossz." : "") };
       }
       const o = pick([[26, "csak kisbetű"], [36, "kisbetű és számjegy"], [52, "kis- és nagybetű"], [62, "kis- és nagybetű, számjegy"]]), n = rnd(6, 12), L = n * Math.log10(o[0]);
       return { q: "Hány lehetséges jelszó van, ha a hossza <span class='num'>" + n + "</span>, és ezek a karakterek szerepelhetnek: " + o[1] + " (" + o[0] + " féle)? Normálalakban, egy tizedesre (pl. 2,1 · 10^11).", kind: "input", ph: "pl. 2,1 · 10^11", answer: normTxt(L), frames: pwFrames(o[0], n, 10), title: "Jelszóerősség",
@@ -337,7 +340,7 @@
       }
       if (l === 2){ const o = pick([[26, rnd(3, 4)], [10, rnd(5, 7)], [36, 3]]), s = pick([100, 1000]), tot = Math.pow(o[0], o[1]), ans = Math.round(tot / s);
         return { q: "Egy jelszó <span class='num'>" + o[1] + "</span> karakteres, minden helyen <span class='num'>" + o[0] + "</span> féle karakter lehet. Egy program másodpercenként <span class='num'>" + s + "</span> próbát tesz. Legrosszabb esetben hány másodperc? Kerekíts egészre.", kind: "input", mode: "numeric", answer: ans,
-          sol: "<p>Lehetőségek: " + o[0] + "<sup>" + o[1] + "</sup> = " + sp(tot) + ". Idő: " + sp(tot) + " : " + s + " ≈ " + sp(ans) + " másodperc.</p>",
+          sol: "<p>Lehetőségek: " + o[0] + "<sup>" + o[1] + "</sup> = " + sp(tot) + ". Idő: " + sp(tot) + " : " + s + (tot % s ? " ≈ " : " = ") + sp(ans) + " másodperc.</p>",
           check: v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(x - tot / s) <= 0.5) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: Math.abs(x - o[0] * o[1] / s) < 1 ? "Nem szorozni kell, hanem hatványozni." : "Nem jó. Előbb a lehetőségek száma (hatvány), aztán osztás a sebességgel." }; } };
       }
       const k = pick([10, 26, 36, 52, 62]), d = pick([1, 2]), ans = Math.pow(k, d);

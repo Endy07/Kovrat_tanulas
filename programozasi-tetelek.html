@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023045116">
+<meta name="kovrat-version" content="20261023051451">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -205,7 +205,7 @@ pre.code,.code,code,.prompt pre{font-variant-ligatures:none}
   <h1>Programozási tételek: keresés és rendezés</h1>
   <p class="lead">Összegzés, megszámlálás, maximum, keresés, rendezés: ugyanaz a néhány minta tér vissza szinte minden programban. Nézd meg, hogyan rendez a gép, lépésről lépésre!</p>
   <div class="panel">
-    <span class="eyebrow">Rendezés lépésenként: a sárga kettőt hasonlítja össze, a piros csere, a zöld már a helyén van</span>
+    <span class="eyebrow">Rendezés lépésenként: a sárga kettőt hasonlítja össze, a piros kettő helyet cserél, a zöld már a helyén van</span>
     <div class="ctr">
       <select id="alg" aria-label="Algoritmus"><option value="bub">Buborékrendezés</option><option value="sel">Kiválasztásos rendezés</option></select>
       <button class="btn" id="hstep">Lépés ▶</button><button class="btn" id="hplay">▶ Lejátszás</button><button class="btn" id="hnew">↻ Új lista</button>
@@ -924,7 +924,7 @@ const K = (function(){
       pair("db = 0\nciklus i = 1-től N-ig\n  ha L[i] > 10 akkor\n    db = db + 1\n    E[db] = L[i]\n  elágazás vége\nciklus vége", "E = []\nfor i in range(len(L)):\n    if L[i] > 10:\n        E.append(L[i])\nprint(E)") +
       "<p>Az eredmény egy új lista (E), benne a feltételnek megfelelő elemek, az eredeti sorrendben. Ha egy sem felel meg, üres lista.</p>" },
     { k: "Csere", t: "Csere és buborékrendezés", h:
-      "<p>Két változó cseréjéhez <b>segédváltozó</b> kell, különben az egyik érték elveszik: seged = a, a = b, b = seged.</p>" +
+      "<p>Két változó cseréjéhez <b>segédváltozó</b> kell, különben az egyik érték elvész: seged = a, a = b, b = seged.</p>" +
       pair("ciklus p = 1-től N − 1-ig\n  ciklus j = 1-től N − p-ig\n    ha L[j] > L[j+1] akkor\n      seged = L[j]\n      L[j] = L[j+1]\n      L[j+1] = seged\n    elágazás vége\n  ciklus vége\nciklus vége", "n = len(L)\nfor p in range(1, n):\n    for j in range(n - p):\n        if L[j] > L[j + 1]:\n            L[j], L[j + 1] = L[j + 1], L[j]") +
       "<p>Egy <b>menet</b>: végigmegyünk a szomszédos párokon. Minden menet végén a legnagyobb rendezetlen elem a helyére „buborékol”.</p>" + playBtn("bub"), init: playInit },
     { k: "Kiválasztásos", t: "Kiválasztásos rendezés", h:
@@ -938,7 +938,7 @@ const K = (function(){
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='mistake'><b>Indexhatár.</b> A buboréknál L[j+1]-et is nézzük, ezért j csak N − p-ig mehet. Pythonban az utolsó index len(L) − 1.</div>" +
       "<div class='mistake'><b>A maximum kezdőértéke 0.</b> Ha minden szám negatív, rossz eredményt ad. Az első elemmel kezdj.</div>" +
-      "<div class='mistake'><b>Bináris keresés rendezetlen listán.</b> Rossz felet dob el, és nem találja meg, ami pedig benne van.</div>" +
+      "<div class='mistake'><b>Bináris keresés rendezetlen listán.</b> Rossz felet dobhat el, és akkor nem találja meg azt sem, ami benne van.</div>" +
       "<div class='mistake'><b>Csere segédváltozó nélkül.</b> L[j] = L[j+1], aztán L[j+1] = L[j]: mindkét helyen ugyanaz lesz.</div>" +
       "<div class='mistake'><b>A gyűjtő a cikluson belül nullázódik.</b> Az s = 0 vagy db = 0 a ciklus <b>elé</b> kell.</div>" },
     { k: "Trükkök", t: "Hasznos tudnivalók", h:
@@ -963,7 +963,7 @@ const K = (function(){
   const SC = [
     [["Mennyi pénzt költöttél összesen a héten? (megvannak a napi kiadások)", "összegzés"], ["Hány ötöst kaptál ebben a félévben?", "megszámlálás"], ["Mennyi volt a hét legmagasabb hőmérséklete?", "maximumkiválasztás"], ["Volt-e a héten fagyos nap (0 fok alatt)?", "eldöntés"], ["Mennyi a jegyeid átlaga?", "összegzés"], ["Hány diák magasabb 170 cm-nél?", "megszámlálás"], ["Mennyi a legalacsonyabb pontszám a dolgozatban?", "maximumkiválasztás"], ["Van-e az osztályban, aki már 16 éves?", "eldöntés"]],
     [["Biztosan van egyes a jegyeid között. Hányadik jegy az első egyes?", "kiválasztás"], ["Szerepel-e a névsorban Kovrat, és ha igen, hányadik?", "lineáris keresés"], ["Írd ki az összes 1000 Ft alatti terméket.", "kiválogatás"], ["Gyűjtsd ki egy új listába a páros számokat.", "kiválogatás"], ["Tudjuk, hogy volt esős nap. Hányadik napon esett először?", "kiválasztás"], ["Benne van-e a 42 a listában, és ha igen, hol?", "lineáris keresés"], ["Hány nap volt 30 fok fölött?", "megszámlálás"], ["Mennyi a kosár végösszege?", "összegzés"]],
-    [["Állítsd a játékosokat pontszám szerint sorba.", "rendezés"], ["Egy egymillió nevet tartalmazó, ábécérendbe szedett listában keresel egy nevet, a lehető leggyorsabban.", "bináris keresés"], ["A szótárban a közepén nyitod ki, aztán mindig a megfelelő felét nézed tovább.", "bináris keresés"], ["Rakd növekvő sorrendbe a dolgozatpontokat, hogy megtaláld a mediánt.", "rendezés"], ["Melyik a legdrágább termék a boltban?", "maximumkiválasztás"], ["Listázd ki azokat a diákokat, akiknek hiányzásuk van.", "kiválogatás"], ["Van-e a jelszavak között olyan, ami rövidebb 8 karakternél?", "eldöntés"]]
+    [["Állítsd a játékosokat pontszám szerint sorba.", "rendezés"], ["Egy egymillió nevet tartalmazó, ábécérendbe szedett listában keresel egy nevet, a lehető leggyorsabban.", "bináris keresés"], ["A szótárban a közepén nyitod ki, aztán mindig a megfelelő felét nézed tovább.", "bináris keresés"], ["Rakd növekvő sorrendbe a dolgozatpontokat, hogy megtaláld a mediánt.", "rendezés"], ["Melyik a legdrágább termék a boltban?", "maximumkiválasztás"], ["Listázd ki azokat a diákokat, akiknek hiányzásuk van.", "kiválogatás"], ["Van-e a jelszavak között olyan, amely rövidebb 8 karakternél?", "eldöntés"]]
   ];
   const BUGS = [
     [["Összegezd a lista elemeit!", ["s = 0", "ciklus i = 1-től N-ig", "  s = s + 1", "ciklus vége", "ki: s"], 3, "A 3. sorban nem az elemet (L[i]), hanem 1-et ad hozzá: ez megszámlálás lenne. Helyesen: s = s + L[i]."],
@@ -984,7 +984,7 @@ const K = (function(){
   const types = [
     { id: "melyik", name: "Melyik tétel?", gen(l){
       const pool = [SC[0], SC[0].concat(SC[1]), SC[0].concat(SC[1], SC[2])][l - 1], names = [T1, T2, T3][l - 1], q = pick(l === 1 ? SC[0] : l === 2 ? SC[1] : SC[2]);
-      return choice("Melyik tétel kell ehhez? " + q[0], q[1], shuffle(names.filter(x => x !== q[1])).slice(0, 3), "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg az első dia táblázatát.</p>", "Nem ez. Mit kérdez a feladat: mennyi összesen, hány darab, melyik a legnagyobb, van-e, hányadik, melyek?");
+      return choice("Melyik tétel kell ehhez? " + q[0], q[1], shuffle(names.filter(x => x !== q[1])).slice(0, 3), "<p>" + q[0] + " → <b>" + q[1] + "</b>. " + (T2.includes(q[1]) ? "Nézd meg az első dia táblázatát." : "Nézd meg a rendezésről és a bináris keresésről szóló diákat.") + "</p>", "Nem ez. Mit kérdez a feladat: mennyi összesen, hány darab, melyik a legnagyobb, van-e, hányadik, melyek?");
     } },
     { id: "menet", name: "Rendezés menetei", gen(l){
       const n = [5, 6, 7][l - 1], a = distinct(n, 1, 40), sel = l === 3 && Math.random() < 0.5, k = l === 1 ? 1 : 2, r = sel ? selPasses(a, k) : bubblePasses(a, k);
@@ -1015,7 +1015,7 @@ const K = (function(){
       let x; if (l === 3 && Math.random() < 0.4){ do { x = rnd(1, 99); } while (L.includes(x)); } else x = pick(L);
       const S = binSteps(L, x), seen = S.map(s => s.v);
       if (l === 1) return { q: "Bináris kereséssel keressük ezt: <b>" + x + "</b>. Melyik elemet nézi meg <b>először</b>? " + show(L), kind: "input", mode: "numeric", answer: seen[0], frames: binFrames(L, x), title: "Bináris keresés",
-        sol: "<p>Az első vizsgált a középső: (1 + " + n + ") div 2 = " + (S[0].k + 1) + ". elem, ez " + seen[0] + ".</p>", check: intCheck(seen[0], "Nem jó. A középső elemet nézi: (1 + N) div 2. helyen.") };
+        sol: "<p>Az első vizsgált a középső: (1 + " + n + ") div 2 = " + (S[0].k + 1) + ". elem, ez " + seen[0] + ".</p>", check: intCheck(seen[0], "Nem jó. Először a középső elemet nézi meg, a helye: (1 + N) div 2.") };
       return { q: "Bináris kereséssel keressük ezt: <b>" + x + "</b>. Mely elemeket nézi meg, sorban? " + show(L), kind: "input", ph: "pl. 40, 18, 25", answer: seen.join(", "), frames: binFrames(L, x), title: "Bináris keresés",
         sol: "<p>" + S.map((s, i) => (i + 1) + ". lépés: lehetséges helyek " + (s.lo + 1) + "–" + (s.hi + 1) + ", a közép helye " + (s.k + 1) + ", ott áll: " + s.v).join("; ") + "." + (seen[seen.length - 1] === x ? "" : " A szám nincs a listában.") + "</p>",
         check: listCheck(seen, "A középső: (bal + jobb) div 2. Ha az ott álló kisebb a keresettnél, jobbra folytasd, ha nagyobb, balra.") };
@@ -1053,7 +1053,7 @@ const K = (function(){
       } while (!r.length && g++ < 50);
       if (l === 3 && Math.random() < 0.5){ const idx = L.map((x, i) => c[1](x) ? i + 1 : 0).filter(Boolean);
         return { q: "Válogasd ki a feltételnek megfelelő elemek <b>helyét</b> (indexét, 1-től számolva). Feltétel: <b>" + c[0] + "</b>. " + show(L), kind: "input", ph: "pl. 2, 5", answer: idx.join(", "), sol: "<p>A megfelelő elemek: " + r.join(", ") + ", a helyük: " + idx.join(", ") + ".</p>", check: listCheck(idx, "Az elemek helyét írd, nem az értéküket, az eredeti sorrendben.") }; }
-      return { q: "Válogasd ki az elemeket, amelyekre igaz: <b>" + c[0] + "</b>. " + show(L), kind: "input", ph: "pl. 12, 4, 30", answer: r.join(", "), sol: "<p>Balról jobbra megyünk, és ami megfelel, az eredeti sorrendben bekerül: " + r.join(", ") + ".</p>", check: listCheck(r, "Az eredeti sorrendben írd a feltételnek megfelelő elemeket.") };
+      return { q: "Válogasd ki a feltételnek megfelelő elemeket. Feltétel: <b>" + c[0] + "</b>. " + show(L), kind: "input", ph: "pl. 12, 4, 30", answer: r.join(", "), sol: "<p>Balról jobbra megyünk, és ami megfelel, az eredeti sorrendben bekerül: " + r.join(", ") + ".</p>", check: listCheck(r, "Az eredeti sorrendben írd a feltételnek megfelelő elemeket.") };
     } },
     { id: "hiba", name: "Hibakeresés", gen(l){
       const b = pick(BUGS[l - 1]);

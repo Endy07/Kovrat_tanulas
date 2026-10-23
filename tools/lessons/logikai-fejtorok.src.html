@@ -344,7 +344,7 @@
   }
   function pathFrames(R){
     const G = R.G, n = G.P.length, t = L[n - 1];
-    const F = [{ cap: "A legrövidebb utat keressük A és " + t + " között. A pontok fölé írjuk, milyen messze vannak A-tól az eddig ismert legjobb úton. Az A távolsága 0, a többié egyelőre végtelen.", html: svgGraph(G, { dist: [0].concat(Array(n - 1).fill(Infinity)) }) }];
+    const F = [{ cap: "A legrövidebb utat keressük A és " + t + " között. A pontok mellé írjuk, milyen messze vannak A-tól az eddig ismert legjobb úton. Az A távolsága 0, a többié egyelőre végtelen.", html: svgGraph(G, { dist: [0].concat(Array(n - 1).fill(Infinity)) }) }];
     R.D.steps.forEach(s => {
       const c = "A legközelebbi még le nem zárt pont: " + L[s.u] + ", távolsága " + s.dist[s.u] + ". Ezt lezárjuk, ennél rövidebb út már nem lehet." + (s.u === n - 1 ? " Ez a cél!" : s.upd.length ? " Szomszédai: " + s.upd.join("; ") + "." : "");
       F.push({ cap: c, html: svgGraph(G, { dist: s.dist, done: s.done, cur: s.u }) });
@@ -362,7 +362,7 @@
     if (kind === "add" || kind === "mul"){
       const a = rnd(1, kind === "add" ? 9 : 5), k = rnd(3, kind === "add" ? 5 : 4), d = kind === "add" ? rnd(2, 6) : 2;
       P.lines = ["x = " + a, "ISMÉTELD " + k + " ALKALOMMAL:", kind === "add" ? "    x = x + " + d : "    x = x * 2", "KIÍR x"];
-      v.x = a; st(0, v, "Az x értéke " + a + " lesz.");
+      v.x = a; st(0, v, "Az x értéke " + a + ".");
       for (let i = 1; i <= k; i++){ st(1, v, "Ez " + art(i) + " " + i + ". ismétlés."); const o = v.x; v.x = kind === "add" ? o + d : o * 2; st(2, v, "x = " + o + (kind === "add" ? " + " + d : " · 2") + " = " + v.x + "."); }
       ans = v.x; st(3, v, "Kiírjuk az x értékét: " + ans + ".");
     } else if (kind === "seq"){
@@ -445,11 +445,11 @@
         if (kd === "pos"){ const k = at(x); return { t: NAMES[x] + " " + posName(k) + " a sorban.", f: o => o.indexOf(x) === k }; }
         if (kd === "npos"){ const k = pick(people.filter(i => i !== at(x))); return { t: NAMES[x] + " nem " + posName(k) + " a sorban.", f: o => o.indexOf(x) !== k }; }
         const a = at(x) < at(y) ? x : y, b = a === x ? y : x;
-        if (kd === "before") return { t: NAMES[a] + " előbb áll a sorban, mint " + NAMES[b] + ".", f: o => o.indexOf(a) < o.indexOf(b) };
+        if (kd === "before") return { t: NAMES[a] + " előrébb áll a sorban, mint " + NAMES[b] + ".", f: o => o.indexOf(a) < o.indexOf(b) };
         if (kd === "jb"){ const k = at(x); if (k === n - 1) return null; const z = sol[k + 1]; return { t: NAMES[x] + " közvetlenül " + NAMES[z] + " előtt áll.", f: o => o.indexOf(x) + 1 === o.indexOf(z) }; }
         const adj = Math.abs(at(x) - at(y)) === 1;
-        if (kd === "adj" && adj) return { t: NAMES[a] + " és " + NAMES[b] + " egymás mellett áll.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) === 1 };
-        if (kd === "nadj" && !adj) return { t: NAMES[a] + " és " + NAMES[b] + " nem áll egymás mellett.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) !== 1 };
+        if (kd === "adj" && adj) return { t: NAMES[a] + " és " + NAMES[b] + " egymás mellett állnak.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) === 1 };
+        if (kd === "nadj" && !adj) return { t: NAMES[a] + " és " + NAMES[b] + " nem állnak egymás mellett.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) !== 1 };
         return null;
       };
       let cl = [], left = all, guard = 0;
@@ -471,7 +471,7 @@
     { k: "Alap", t: "Mire jó a fejtörés?", h:
       "<p>A programozó nem gépel sokat, hanem <b>gondolkodik</b>: szabályt keres, végiggondolja az összes esetet, és lépésről lépésre halad. Ez az <b>algoritmikus gondolkodás</b>.</p>" +
       "<ul><li><b>Szabály keresése:</b> mi a sorozat következő tagja?</li><li><b>Esetek végignézése:</b> ki hazudik, ki mond igazat?</li><li><b>Számolás okosan:</b> hányféle kód lehet?</li><li><b>Lépésenkénti módszer:</b> melyik a legrövidebb út?</li><li><b>Program követése:</b> mit ír ki a gép?</li></ul>" +
-      "<div class='note'><b>Ezek versenyfeladatok is:</b> a Bebras és a Kenguru verseny feladatai pont ilyenek.</div>" },
+      "<div class='note'><b>Ezek versenyfeladatok is:</b> a Bebras- és a Kenguru-verseny feladatai pont ilyenek.</div>" },
     { k: "Sorozatok", t: "Mi a következő szám?", h:
       "<p>Mindig ugyanabban a sorrendben próbálkozz:</p><ol><li><b>Különbség:</b> 3, 7, 11, 15 → mindig +4 (számtani sorozat).</li><li><b>Hányados:</b> 3, 6, 12, 24 → mindig · 2 (mértani sorozat).</li><li><b>A különbségek különbsége:</b> 1, 4, 9, 16 → +3, +5, +7 → a különbség mindig 2-vel nő (négyzetszámok).</li><li><b>Az előző kettő összege:</b> 1, 1, 2, 3, 5, 8 (Fibonacci).</li><li><b>Két sorozat egymásba fésülve:</b> 1, 20, 3, 18, 5, 16 → a páratlan helyeken +2, a páros helyeken −2.</li></ol>" +
       "<p><button class='btn' data-play='seq'>▶ Nézd meg lejátszva</button></p>",
@@ -479,7 +479,7 @@
     { k: "Logika", t: "Igazmondók és hazugok", h:
       "<p>Az igazmondó <b>mindig</b> igazat mond, a hazug <b>mindig</b> hazudik. Ki kicsoda?</p>" +
       "<div class='say'><b>Anna:</b> „Bence hazug.”</div><div class='say'><b>Bence:</b> „Anna és én egyformák vagyunk.”</div>" +
-      "<p><b>Módszer:</b> sorold fel az összes esetet. Két embernél 4 eset van (igaz-igaz, igaz-hazug, hazug-igaz, hazug-hazug). Minden esetben nézd meg: az igazmondó állítása igaz-e, és a hazugé hamis-e? Ahol ellentmondás van, azt az esetet húzd ki.</p>" +
+      "<p><b>Módszer:</b> sorold fel az összes esetet. Két embernél 4 eset van: mindketten igazmondók; csak Anna igazmondó; csak Bence igazmondó; mindketten hazugok. Minden esetben nézd meg: az igazmondó állítása igaz-e, és a hazugé hamis-e? Ahol ellentmondás van, azt az esetet húzd ki.</p>" +
       "<p>Az „egyformák vagyunk” azt jelenti: vagy mindketten igazmondók, vagy mindketten hazugok.</p>" +
       "<p><button class='btn' data-play='liar'>▶ Nézd meg lejátszva</button></p>",
       init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTab("liar")); } },
@@ -509,7 +509,7 @@
       "<p><b>Farkas, kecske, káposzta:</b> a csónakban csak egy fér el melléd. Az első út: a kecskét viszed át, mert a farkas a káposztát nem eszi meg.</p>" },
     { k: "Hibák", t: "Tipikus gondolkodási hibák", h:
       "<div class='mistake'><b>Kerítésoszlop-hiba.</b> 10 méteren 2 méterenként oszlop: nem 5, hanem 6 oszlop kell (az elején is van egy). Egy rudat 5 darabra vágni viszont csak 4 vágás.</div>" +
-      "<div class='mistake'><b>Elsietett szabály.</b> A 2, 4, … után jöhet 6 (+2) és 8 (· 2) is. Mindig nézz meg legalább 4 tagot, és ellenőrizd a szabályt az összesen.</div>" +
+      "<div class='mistake'><b>Elsietett szabály.</b> A 2, 4, … után jöhet 6 (+2) és 8 (· 2) is. Mindig nézz meg legalább 4 tagot, és ellenőrizd a szabályt mindegyiken.</div>" +
       "<div class='mistake'><b>Kétszer számolt eset.</b> A kézfogásnál Anna–Bence és Bence–Anna ugyanaz. Ha a sorrend nem számít, osztani kell.</div>" +
       "<div class='mistake'><b>Kimaradt eset.</b> Igazmondós feladatnál ne csak egy esetet nézz meg. Mind a 4 (vagy 8) esetet sorold fel.</div>" +
       "<div class='mistake'><b>Régi érték a programban.</b> Az <code>x = y</code> után az x régi értéke elveszett. A csere ezért segédváltozó nélkül nem megy.</div>" },

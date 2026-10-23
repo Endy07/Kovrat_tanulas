@@ -26,7 +26,7 @@
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Informatikai alapok · operációs rendszer</span>
   <h1>Linux parancssor</h1>
-  <p class="lead">A szerverek, a routerek, az Android és a felhő mind Linuxon fut, és a parancssorból irányítjuk őket. Itt egy kis játék-gépen kipróbálhatod: semmit nem tudsz elrontani.</p>
+  <p class="lead">A szerverek, a routerek, az Android és a felhő mind Linuxon futnak, és a parancssorból irányítjuk őket. Itt egy kis játék-gépen kipróbálhatod: semmit nem tudsz elrontani.</p>
   <div class="panel">
     <span class="eyebrow">Gépelj parancsot, vagy kattints egy gombra (help: a parancsok listája)</span>
     <div class="hero-grid">
@@ -68,7 +68,7 @@
   <span class="eyebrow">4. rész</span><h2>Puska</h2>
   <div class="ptwrap"><table class="pt" id="cheat"></table></div>
   <div class="two-col">
-    <div class="trick"><span class="t">Útvonalak</span><span class="mono">/ gyökér · ~ saját mappa · . ez a mappa · .. a szülő</span><span>Ami /-rel kezdődik, az abszolút (a gyökértől), a többi relatív (onnan, ahol állsz).</span></div>
+    <div class="trick"><span class="t">Útvonalak</span><span class="mono">/ gyökér · ~ saját mappa · . ez a mappa · .. a szülő</span><span>Ami perjellel (/) kezdődik, az abszolút (a gyökértől), a többi relatív (onnan, ahol állsz).</span></div>
     <div class="trick"><span class="t">Jogosultság</span><span class="mono">r = 4 · w = 2 · x = 1</span><span>Tulajdonos, csoport, mindenki más: rwxr-xr-x = 755.</span></div>
     <div class="trick"><span class="t">Gyorsítás</span><span>Tab: kiegészíti a nevet · ↑: az előző parancs · Ctrl+C: leállítja a futó parancsot · <code>man ls</code>: súgó.</span></div>
     <div class="trick"><span class="t">Vigyázz!</span><span><code>rm</code> nem kukába töröl, hanem végleg. A <code>sudo</code> rendszergazdaként futtat: csak ha tudod, mit csinálsz.</span></div>
@@ -178,14 +178,14 @@
     ["pwd", "A pwd kiírja, hol állsz: a saját mappádban, a /home/kovrat helyen. A rövid jele a hullámvonal."],
     ["ls", "Az ls kilistázza, mi van itt. A kék nevek mappák, a többi fájl."],
     ["cd iskola", "A cd beléptet egy mappába. Ez relatív út: onnan indul, ahol állsz."],
-    ["ls", "Az iskola mappában két fájl és egy projekt mappa van."],
+    ["ls", "Az iskola mappában két fájl és egy mappa (projekt) van."],
     ["cd ..", "A két pont a szülőmappa: egy szinttel feljebb lépünk, vissza a saját mappába."],
     ["cd /etc", "Ami perjellel kezdődik, az abszolút út: a gyökértől indul, bárhonnan ugyanoda visz."],
     ["pwd", "Most az /etc mappában állunk. Itt a rendszer beállításai vannak."],
     ["cd ~", "A cd hullámvonal (vagy csak cd) mindig hazavisz, a saját mappádba."]
   ]);
   const FILE = () => sessFrames("Fájlműveletek", [
-    ["mkdir mentes", "A mkdir új mappát hoz létre, a neve: mentes."],
+    ["mkdir mentes", "Az mkdir új mappát hoz létre, a neve: mentes."],
     ["cp jegyzet.txt mentes", "A cp másol: honnan, hová. Ha a cél mappa, a fájl ugyanazzal a névvel bekerül."],
     ["ls mentes", "Az ls után mappanevet is írhatsz: most a mentes tartalmát látjuk."],
     ["mv jegyzet.txt teendok.txt", "Az mv áthelyez, vagy ha ugyanabban a mappában maradunk, átnevez."],
@@ -240,9 +240,9 @@
       "<p class='eq'>rwx r-x r-- = 4+2+1, 4+0+1, 4+0+0 = 754</p>" +
       "<p>A <code>chmod 754 fájl</code> így állítja be. Ez kettes számrendszer: rwx = 111 = 7, r-x = 101 = 5.</p>" + playBtn("perm"), init: playInit },
     { k: "Rendszergazda", t: "sudo és csomagkezelés", h:
-      "<p>A <b>root</b> a rendszergazda, mindent megtehet. A <code>sudo</code> egyetlen parancsot futtat root-ként (jelszót kér).</p>" +
-      code("sudo apt update          # a csomaglista frissítése\nsudo apt install git     # program telepítése\nsudo apt upgrade         # minden frissítése") +
-      "<div class='mistake'><b>Óvatosan!</b> Root-ként egy elgépelt törlés az egész rendszert tönkreteheti. Internetről másolt parancsot soha ne futtass sudo-val, ha nem érted.</div>" },
+      "<p>A <b>root</b> a rendszergazda, mindent megtehet. A <code>sudo</code> egyetlen parancsot futtat rootként (jelszót kér).</p>" +
+      code("sudo apt update          # a csomaglista frissítése\nsudo apt install git     # program telepítése\nsudo apt upgrade         # a telepített programok frissítése") +
+      "<div class='mistake'><b>Óvatosan!</b> Rootként egy elgépelt törlés az egész rendszert tönkreteheti. Internetről másolt parancsot soha ne futtass sudo-val, ha nem érted.</div>" },
     { k: "Továbbiak", t: "Hasznos parancsok", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td>man ls</td><td style='text-align:left'>súgó egy parancshoz (q: kilépés)</td></tr><tr><td>nano fájl</td><td style='text-align:left'>egyszerű szövegszerkesztő</td></tr><tr><td>grep szó fájl</td><td style='text-align:left'>keresés a fájlban</td></tr><tr><td>ip a</td><td style='text-align:left'>a gép IP-címei (a hálózatok leckéből)</td></tr><tr><td>ping cím</td><td style='text-align:left'>elérhető-e a gép</td></tr><tr><td>ls | grep txt</td><td style='text-align:left'>a | (cső) az egyik parancs kimenetét a másiknak adja</td></tr></table></div>" },
     { k: "Hibák", t: "Tipikus hibák", h:
@@ -254,7 +254,7 @@
     { k: "Trükkök", t: "Gyorsabban a terminálban", h:
       "<div class='two-col'><div class='trick'><span class='t'>Tab</span><span>Kiegészíti a fájl- és mappaneveket: írd be az elejét, és nyomd meg.</span></div>" +
       "<div class='trick'><span class='t'>↑ és ↓</span><span>Lapozás a korábbi parancsok között.</span></div>" +
-      "<div class='trick'><span class='t'>Ctrl+C</span><span>Leállítja a futó parancsot (például egy végtelen ping-et).</span></div>" +
+      "<div class='trick'><span class='t'>Ctrl+C</span><span>Leállítja a futó parancsot (például egy végtelen pinget).</span></div>" +
       "<div class='trick'><span class='t'>Mielőtt törölsz</span><span><code>pwd</code>, aztán <code>ls</code>: biztos, hogy jó helyen állsz?</span></div></div>" }
   ];
   K.deck($("#deck"), slides);
@@ -342,7 +342,7 @@
       const total = files.length + dirs.length;
       return { q: "A mappában most ennyi van: <code>jegyzet.txt</code>, <code>kep.png</code>" + (l > 1 ? ", <code>regi.txt</code>" : "") + " és az <code>iskola</code> mappa. Ezeket adod ki:" + code(cmds.join("\n")) + "Hány elem (fájl és mappa együtt) lesz a mappában a végén? (Ami egy almappába került, az már nem itt van.)", kind: "input", mode: "numeric", answer: total,
         sol: "<p>A végén: " + files.concat(dirs.map(d => d + "/")).join(", ") + ". Összesen " + total + ".</p>",
-        check: v => { const s = String(v).trim(); return /^\d+$/.test(s) && +s === total ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Kövesd soronként: a touch és a mkdir hozzáad, az rm elvesz, a cp hozzáad, az mv átnevez (ha mappába mozgat, innen eltűnik)." }; } };
+        check: v => { const s = String(v).trim(); return /^\d+$/.test(s) && +s === total ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Kövesd soronként: a touch és az mkdir hozzáad, az rm elvesz, a cp hozzáad, az mv átnevez (ha mappába mozgat, innen eltűnik)." }; } };
     } }
   ];
   K.practice($("#practice"), { id: "linux", types, play: playTo });
