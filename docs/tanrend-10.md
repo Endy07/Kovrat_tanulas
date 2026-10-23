@@ -52,9 +52,13 @@ tanmenete itt sem ismert, ezért a hónapokra bontás ⚠️ becslés. A 10. év
 
 ## Mit építenénk ebből az oldalra (javasolt sorrend)
 
-1. **Python 1: kiírás, változók, típusok, `input`** — böngészőben futó Pythonnal (⚠️ döntés kell: Pyodide CDN-ről, kb. 10 MB
-   letöltés az első megnyitáskor; vagy saját kis Python-részhalmaz-értelmező). A JS-leckében elkészült elszigetelt futtató
-   (`K.jsrun`) mintája szerint, `sandbox="allow-scripts"` iframe-ben.
+> **Döntés (2026-10-23, Endi a pulton át):** a Python-futtató a **Pyodide lesz, CDN-ről, lustán töltve, csak a
+> Python-leckéken** (a többi lecke nem tölti be). Endi szavai: „És a Pyodide legyen a Python-futtató, ha ezt javaslod.
+> De még nem kell a 10-est megépíteni.” A 10.-es leckéket és a futtatót **még nem építjük**.
+
+1. **Python 1: kiírás, változók, típusok, `input`** — böngészőben futó Pythonnal (Pyodide, lásd a döntést fent; kb. 10 MB
+   letöltés az első megnyitáskor). A JS-leckében elkészült elszigetelt futtató (`K.jsrun`) mintája szerint,
+   `sandbox="allow-scripts"` iframe-ben.
 2. **Python 2: elágazás és ciklus** — a 9.-es *Algoritmusok* és *Logikai fejtörők* pszeudokódja Pythonra fordítva.
 3. **Python 3: listák és a programozási tételek** (megszámlálás, összegzés, min/max, kiválogatás, eldöntés, buborékrendezés
    lépésenkénti lejátszóval).
