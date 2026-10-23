@@ -1,0 +1,397 @@
+<!--@HEAD-->
+<title>Geometria</title>
+<style>
+.lab{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;align-items:start}
+.ctl{display:flex;flex-direction:column;gap:10px}
+.ctl label{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.ctl b{color:var(--led)}
+.ctl input[type=range]{width:100%;accent-color:var(--led)}
+.gsv{width:100%;max-width:320px;height:auto;display:block;color:inherit}
+.gsv .g{stroke:currentColor;opacity:.13;stroke-width:.6}
+.gsv .sh{fill:rgba(242,158,12,.28);stroke:#F29E0C;stroke-width:2}
+.gsv .sh2{fill:rgba(242,158,12,.14);stroke:#F29E0C;stroke-width:1.5}
+.gsv .orig{fill:none;stroke:#3FA9F5;stroke-width:1.5;stroke-dasharray:5 4}
+.gsv .hl{stroke:#52C584;stroke-width:2;stroke-dasharray:4 3;fill:none}
+.gsv text{fill:currentColor;font-family:var(--mono);font-size:12px;font-weight:700}
+.fig{width:100%;max-width:280px;height:auto;display:block;margin-top:8px;color:inherit}
+.fig .sh{fill:rgba(242,158,12,.22);stroke:#F29E0C;stroke-width:2}
+.fig .hl{stroke:#3FA9F5;stroke-width:1.6;stroke-dasharray:4 3;fill:none}
+.fig text{fill:currentColor;font-family:var(--mono);font-size:13px;font-weight:700}
+.shapes{display:flex;flex-wrap:wrap;gap:6px}
+.vals{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.92rem}
+.vals b{color:#FFB01F}
+.slide .eq{white-space:normal}
+.pb-stage .fig{max-width:240px}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek · 8–9. évfolyam</span>
+  <h1>Geometria: kerület, terület, térfogat</h1>
+  <p class="lead">Mekkora a szobád, hány liter fér a medencébe, mekkora egy 55 hüvelykes tévé? Állítsd a csúszkákat, és nézd, hogyan nő a terület, ha kétszer akkorára nagyítasz.</p>
+  <div class="panel">
+    <span class="eyebrow">Alakzat-laboratórium (egy kis négyzet = 1 egység)</span>
+    <div class="shapes" id="shapes">
+      <button class="btn" data-s="rect">Téglalap</button><button class="btn" data-s="tri">Derékszögű háromszög</button><button class="btn" data-s="circ">Kör</button><button class="btn" data-s="box">Téglatest</button>
+    </div>
+    <div class="lab">
+      <div id="hsvg"></div>
+      <div class="ctl">
+        <label><span><span id="la">a</span>: <b id="av">4</b></span><input id="a" type="range" min="1" max="8" step="1" value="4" aria-label="a"></label>
+        <label id="lbw"><span>b: <b id="bv">3</b></span><input id="b" type="range" min="1" max="8" step="1" value="3" aria-label="b"></label>
+        <label id="lcw"><span>c (mélység): <b id="cv">2</b></span><input id="c" type="range" min="1" max="4" step="1" value="2" aria-label="c"></label>
+        <label><span>Nagyítás, λ: <b id="lv">2</b></span><input id="l" type="range" min="1" max="3" step="0.5" value="2" aria-label="Nagyítás"></label>
+        <div class="vals" id="vals"></div>
+      </div>
+    </div>
+    <div class="readout"><div class="expr" id="hexpr"></div></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="kor" aria-selected="true">A kör területe</button>
+    <button class="tab" data-m="pit" aria-selected="false">Pitagorasz-tétel</button>
+    <button class="tab" data-m="has" aria-selected="false">Nagyítás és terület</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Csak a számot írd be, a mértékegységet nem kell. A tizedes törtet vesszővel vagy ponttal is írhatod; ha kerekíteni kell, a feladat megmondja. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Váltószámok</span><span class="mono">hossz: 10 · terület: 100 · térfogat: 1000</span><span>mm → cm → dm → m (a km 1000 m). 1 dm³ = 1 liter, 1 cm³ = 1 ml.</span></div>
+    <div class="trick"><span class="t">Pitagorasz</span><span class="mono">a² + b² = c²</span><span>c az átfogó, a derékszöggel szemben, mindig a leghosszabb oldal.</span></div>
+    <div class="trick"><span class="t">Nagyítás λ-val</span><span class="mono">hossz · λ · terület · λ² · térfogat · λ³</span><span>Kétszeres nagyítás: négyszer akkora terület, nyolcszor akkora térfogat.</span></div>
+    <div class="trick"><span class="t">Képernyő</span><span class="mono">16:9 · 1 hüvelyk = 2,54 cm</span><span>Az átló hüvelykben van megadva. 1920 × 1080 = 2 073 600 pixel.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/mm²/g, "négyzetmilliméter"], [/dm²/g, "négyzetdeciméter"], [/cm²/g, "négyzetcentiméter"], [/m²/g, "négyzetméter"], [/cm³/g, "köbcentiméter"], [/dm³/g, "köbdeciméter"], [/m³/g, "köbméter"], [/²/g, " a négyzeten"], [/³/g, " a köbön"], [/π/g, "pí"], [/λ/g, "lambda"], [/√/g, "négyzetgyök "], [/\s:\s/g, " osztva "]);
+
+  /* ---------- Segédek ---------- */
+  const PI = 3.14;
+  const rd = (x, d) => { const p = Math.pow(10, d); return Math.round(x * p + 1e-9) / p; };
+  const clean = x => Number(Number(x).toPrecision(12));
+  const fmt = (x, d) => String(d == null ? clean(x) : rd(x, d)).replace(".", ",");
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", "."); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const numCheck = (ans, tol, hint, extra) => v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj (mértékegység nélkül)." }; if (Math.abs(x - ans) <= tol) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(x)) || hint }; };
+  const near = (x, y) => Math.abs(x - y) <= Math.max(0.006, Math.abs(y) * 1e-9);
+
+  /* ---------- Feladatrajzok ---------- */
+  function fig(kind, p){
+    const M = Math.max.apply(null, p.dims), s = Math.min(26, 190 / M), pad = 34;
+    const T = (x, y, t) => '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="middle">' + t + "</text>";
+    let w = 0, h = 0, body = "";
+    if (kind === "rect"){ w = p.a * s; h = p.b * s; body = '<rect class="sh" x="' + pad + '" y="12" width="' + w + '" height="' + h + '"/>' + T(pad + w / 2, 12 + h + 18, p.la) + T(pad + w + 22, 12 + h / 2 + 4, p.lb); }
+    else if (kind === "tri" || kind === "para"){ const sh = (p.off || 0) * s; w = p.a * s + (kind === "para" ? sh : 0); h = p.m * s;
+      const pts = kind === "tri" ? [[pad, 12 + h], [pad + p.a * s, 12 + h], [pad + sh, 12]] : [[pad, 12 + h], [pad + p.a * s, 12 + h], [pad + p.a * s + sh, 12], [pad + sh, 12]];
+      body = '<polygon class="sh" points="' + pts.map(q => q.join(",")).join(" ") + '"/><line class="hl" x1="' + (pad + sh) + '" y1="12" x2="' + (pad + sh) + '" y2="' + (12 + h) + '"/>' + T(pad + p.a * s / 2, 12 + h + 18, p.la) + T(pad + sh - 16, 12 + h / 2, p.lm); }
+    else if (kind === "trap"){ w = p.a * s; h = p.m * s; const x0 = pad + (p.a - p.c) * s / 2;
+      body = '<polygon class="sh" points="' + [[pad, 12 + h], [pad + w, 12 + h], [x0 + p.c * s, 12], [x0, 12]].map(q => q.join(",")).join(" ") + '"/><line class="hl" x1="' + x0 + '" y1="12" x2="' + x0 + '" y2="' + (12 + h) + '"/>' + T(pad + w / 2, 12 + h + 18, p.la) + T(x0 + p.c * s / 2, 8, p.lc) + T(x0 - 16, 12 + h / 2, p.lm); }
+    else if (kind === "circ"){ const r = Math.min(80, p.r * s); w = 2 * r; h = 2 * r; body = '<circle class="sh" cx="' + (pad + r) + '" cy="' + (12 + r) + '" r="' + r + '"/><line class="hl" x1="' + (pad + r) + '" y1="' + (12 + r) + '" x2="' + (pad + 2 * r) + '" y2="' + (12 + r) + '"/>' + T(pad + 1.5 * r, 12 + r - 6, p.lr); }
+    else if (kind === "tri90"){ w = p.a * s; h = p.b * s;
+      body = '<polygon class="sh" points="' + [[pad, 12 + h], [pad + w, 12 + h], [pad, 12]].map(q => q.join(",")).join(" ") + '"/><rect x="' + pad + '" y="' + (12 + h - 10) + '" width="10" height="10" fill="none" stroke="currentColor"/>' + T(pad + w / 2, 12 + h + 18, p.la) + T(pad - 16, 12 + h / 2, p.lb) + T(pad + w / 2 + 14, 12 + h / 2 - 4, p.lc); }
+    return '<svg class="fig" viewBox="0 -6 ' + (w + pad + 46) + " " + (h + 44) + '" role="img" aria-label="Ábra">' + body + "</svg>";
+  }
+
+  /* ---------- Hero: alakzat-laboratórium ---------- */
+  const H = { s: "rect" };
+  function hero(){
+    const a = +$("#a").value, b = +$("#b").value, c = +$("#c").value, l = +$("#l").value;
+    // a rács a legnagyobb (λ = 3) nagyításhoz igazodik, így a λ csúszkával látszik a növekedés
+    const rr = Math.min(a, 5), ext = H.s === "circ" ? 2 * rr * 3 : H.s === "box" ? Math.max(a, b) * 3 + c * 1.5 : Math.max(a, b) * 3;
+    const N = Math.max(6, Math.ceil(ext) + 1), W = 300, U = W / N;
+    $("#av").textContent = a; $("#bv").textContent = b; $("#cv").textContent = c; $("#lv").textContent = fmt(l);
+    $$("#shapes .btn").forEach(x => x.classList.toggle("primary", x.dataset.s === H.s));
+    $("#la").textContent = H.s === "circ" ? "r (sugár)" : "a"; $("#lbw").hidden = H.s === "circ"; $("#lcw").hidden = H.s !== "box";
+    let g = '<svg class="gsv" viewBox="-2 -2 ' + (W + 4) + " " + (W + 4) + '" role="img" aria-label="Alakzat a rácson">';
+    for (let i = 0; i <= N; i++) g += '<line class="g" x1="' + i * U + '" y1="0" x2="' + i * U + '" y2="' + W + '"/><line class="g" x1="0" y1="' + i * U + '" x2="' + W + '" y2="' + i * U + '"/>';
+    const A = a * l, B = b * l, C = c * l, y0 = W;
+    let v = [], ex = "";
+    if (H.s === "rect"){
+      g += '<rect class="sh" x="0" y="' + (y0 - B * U) + '" width="' + A * U + '" height="' + B * U + '"/>';
+      if (l > 1) g += '<rect class="orig" x="0" y="' + (y0 - b * U) + '" width="' + a * U + '" height="' + b * U + '"/>';
+      v = [["Kerület", "2 · (a + b) = " + fmt(2 * (A + B))], ["Terület", "a · b = " + fmt(A * B)]];
+      ex = "Eredeti terület: " + fmt(a * b) + ", nagyítva: " + fmt(A * B) + ". A hossz λ = " + fmt(l) + " szorzóval nő, a terület λ² = " + fmt(l * l) + " szorzóval.";
+    } else if (H.s === "tri"){
+      g += '<polygon class="sh" points="0,' + y0 + " " + A * U + "," + y0 + " 0," + (y0 - B * U) + '"/>';
+      if (l > 1) g += '<polygon class="orig" points="0,' + y0 + " " + a * U + "," + y0 + " 0," + (y0 - b * U) + '"/>';
+      const cc = Math.sqrt(A * A + B * B);
+      v = [["Átfogó", "√(a² + b²) ≈ " + fmt(cc, 2)], ["Kerület", "a + b + c ≈ " + fmt(A + B + cc, 2)], ["Terület", "a · b : 2 = " + fmt(A * B / 2)]];
+      ex = "Derékszögű háromszög: a terület a téglalap fele. Eredeti terület: " + fmt(a * b / 2) + ", nagyítva: " + fmt(A * B / 2) + " (szorzó: λ² = " + fmt(l * l) + ").";
+    } else if (H.s === "circ"){
+      const r = Math.min(a, 5), R = r * l;
+      g += '<circle class="sh" cx="' + R * U + '" cy="' + (y0 - R * U) + '" r="' + R * U + '"/>';
+      if (l > 1) g += '<circle class="orig" cx="' + r * U + '" cy="' + (y0 - r * U) + '" r="' + r * U + '"/>';
+      v = [["Sugár", fmt(R) + (a > 5 ? " (legfeljebb 5 · λ)" : "")], ["Kerület", "2 · r · π ≈ " + fmt(2 * R * PI, 2)], ["Terület", "r² · π ≈ " + fmt(R * R * PI, 2)]];
+      ex = "π ≈ 3,14. Eredeti terület ≈ " + fmt(r * r * PI, 2) + ", nagyítva ≈ " + fmt(R * R * PI, 2) + " (szorzó: λ² = " + fmt(l * l) + ").";
+    } else {
+      const d = C * 0.5 * U, a0 = A, b0 = B;
+      const x1 = a0 * U, yt = y0 - b0 * U;
+      g += '<polygon class="sh2" points="0,' + yt + " " + d + "," + (yt - d) + " " + (x1 + d) + "," + (yt - d) + " " + x1 + "," + yt + '"/>' +
+        '<polygon class="sh2" points="' + x1 + "," + yt + " " + (x1 + d) + "," + (yt - d) + " " + (x1 + d) + "," + (y0 - d) + " " + x1 + "," + y0 + '"/>' +
+        '<rect class="sh" x="0" y="' + yt + '" width="' + x1 + '" height="' + b0 * U + '"/>';
+      v = [["Felszín", "2 · (ab + bc + ac) = " + fmt(2 * (A * B + B * C + A * C))], ["Térfogat", "a · b · c = " + fmt(A * B * C)]];
+      ex = "Eredeti térfogat: " + fmt(a * b * c) + ", nagyítva: " + fmt(A * B * C) + ". A felszín λ² = " + fmt(l * l) + ", a térfogat λ³ = " + fmt(l * l * l) + " szorzóval nő.";
+    }
+    $("#hsvg").innerHTML = g + "</svg>";
+    $("#vals").innerHTML = v.map(x => "<span>" + x[0] + ": <b>" + x[1] + "</b></span>").join("");
+    $("#hexpr").textContent = ex;
+  }
+  ["#a", "#b", "#c", "#l"].forEach(s => $(s).addEventListener("input", hero));
+  $("#shapes").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (b){ H.s = b.dataset.s; hero(); } });
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  const big = (t, led) => '<p class="big' + (led ? " led" : "") + '" style="margin-top:10px">' + t + "</p>";
+  function korFrames(r, what){
+    const F = [], f = fig("circ", { dims: [r], r, lr: "r = " + fmt(r) });
+    F.push({ cap: "A kör sugara " + fmt(r) + " cm. Keressük a " + (what === "K" ? "kerületét." : "területét.") + " A π értéke körülbelül 3,14.", html: f });
+    if (what === "K"){
+      F.push({ cap: "A kerület képlete: K = 2 · r · π. Az átmérő a sugár kétszerese: " + fmt(2 * r) + " cm.", html: f + big("K = 2 · r · π") });
+      F.push({ cap: "Behelyettesítünk: K = 2 · " + fmt(r) + " · 3,14 = " + fmt(2 * r * PI, 2) + " cm.", html: f + big("K ≈ " + fmt(2 * r * PI, 2) + " cm", true) });
+    } else {
+      F.push({ cap: "A terület képlete: T = r² · π. Először a sugár négyzete: " + fmt(r) + " · " + fmt(r) + " = " + fmt(r * r) + ".", html: f + big("r² = " + fmt(r * r)) });
+      F.push({ cap: "Aztán szorzunk π-vel: " + fmt(r * r) + " · 3,14 = " + fmt(r * r * PI, 2) + " cm². A terület mértékegysége négyzetes.", html: f + big("T ≈ " + fmt(r * r * PI, 2) + " cm²", true) });
+    }
+    return F;
+  }
+  function pitFrames(a, b, c, miss){
+    const F = [], f = fig("tri90", { dims: [a, b], a, b, la: miss === "a" ? "?" : String(a), lb: String(b), lc: miss === "c" ? "?" : String(c) });
+    F.push({ cap: "Derékszögű háromszög. A derékszöget bezáró oldalak a befogók, a derékszöggel szemközti a leghosszabb oldal: az átfogó.", html: f });
+    F.push({ cap: "Pitagorasz-tétel: a befogók négyzetének összege egyenlő az átfogó négyzetével. a² + b² = c².", html: f + big("a² + b² = c²") });
+    if (miss === "c"){
+      F.push({ cap: a + "² + " + b + "² = " + a * a + " + " + b * b + " = " + (a * a + b * b) + ". Ez az átfogó négyzete.", html: f + big("c² = " + (a * a + b * b)) });
+      F.push({ cap: "Az átfogó ennek a négyzetgyöke: √" + (a * a + b * b) + " = " + c + ".", html: f + big("c = " + c, true) });
+    } else {
+      F.push({ cap: "Most az egyik befogó hiányzik. Átrendezve: a² = c² − b² = " + c * c + " − " + b * b + " = " + (c * c - b * b) + ".", html: f + big("a² = " + (c * c - b * b)) });
+      F.push({ cap: "A befogó ennek a négyzetgyöke: √" + (c * c - b * b) + " = " + a + ". Ellenőrzés: a befogó mindig rövidebb az átfogónál.", html: f + big("a = " + a, true) });
+    }
+    return F;
+  }
+  function hasFrames(a, b, l){
+    const F = [], f1 = fig("rect", { dims: [a * l, b * l], a, b, la: a + " cm", lb: b + " cm" }), f2 = fig("rect", { dims: [a * l, b * l], a: a * l, b: b * l, la: fmt(a * l) + " cm", lb: fmt(b * l) + " cm" });
+    F.push({ cap: "Egy téglalap oldalai " + a + " cm és " + b + " cm. A kerülete " + 2 * (a + b) + " cm, a területe " + a * b + " cm². Nagyítsuk λ = " + fmt(l) + " szorzóval!", html: f1 });
+    F.push({ cap: "Nagyításnál minden hossz λ-szorosára nő: az oldalak " + fmt(a * l) + " cm és " + fmt(b * l) + " cm lesznek.", html: f2 });
+    F.push({ cap: "A kerület is hossz: λ szorzóval nő. " + 2 * (a + b) + " · " + fmt(l) + " = " + fmt(2 * (a + b) * l) + " cm.", html: f2 + big("K = " + fmt(2 * (a + b) * l) + " cm") });
+    F.push({ cap: "A terület viszont két hossz szorzata, ezért λ · λ = λ² szorzóval nő: " + a * b + " · " + fmt(l * l) + " = " + fmt(a * b * l * l) + " cm². Térfogatnál három hossz szorzódik: ott λ³ a szorzó.", html: f2 + big("T = " + fmt(a * b * l * l) + " cm²", true) });
+    return F;
+  }
+  const MET = { kor: "A kör területe", pit: "Pitagorasz-tétel", has: "Nagyítás és terület" };
+  const MF = { kor: () => korFrames(5, "T"), pit: () => pitFrames(6, 8, 10, "c"), has: () => hasFrames(2, 3, 3) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "kor" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Kerület és terület", h:
+      "<ul><li>A <b>kerület</b> a körbe futó vonal hossza: ennyi kerítés kell. Mértékegysége hossz (cm, m).</li><li>A <b>terület</b> azt mondja meg, hány egységnégyzet fér bele: ennyi csempe kell. Mértékegysége négyzetes (cm², m²).</li></ul>" +
+      "<p class='eq'>téglalap: K = 2 · (a + b), T = a · b</p><p class='eq'>négyzet: K = 4 · a, T = a²</p>" +
+      "<div class='note'><b>Pixelben:</b> egy 1920 × 1080-as képernyőn 1920 · 1080 = 2 073 600 képpont van. Ez a képernyő „területe” pixelben.</div>" },
+    { k: "Síkidomok", t: "Háromszög, paralelogramma, trapéz", h:
+      "<p>Mindegyiknél kell a <b>magasság</b> (m): az alapra merőleges távolság, nem a ferde oldal!</p>" +
+      "<ul><li><b>Paralelogramma</b>: T = a · m (egy téglalap, amelynek egy darabját átraktuk a másik oldalra).</li><li><b>Háromszög</b>: T = a · m : 2 (egy paralelogramma fele).</li><li><b>Trapéz</b>: T = (a + c) · m : 2, ahol a és c a két párhuzamos oldal.</li></ul>" +
+      fig("trap", { dims: [8, 4], a: 8, c: 4, m: 4, la: "a", lc: "c", lm: "m" }) },
+    { k: "Kör", t: "A kör kerülete és területe", h:
+      "<p>A sugár (r) a középponttól a körvonalig ér; az átmérő (d) ennek kétszerese. A <b>π</b> (pí) egy végtelen tizedes tört, kb. 3,14.</p>" +
+      "<p class='eq'>K = 2 · r · π = d · π</p><p class='eq'>T = r² · π</p>" +
+      "<p>Példa: r = 5 cm → K ≈ 31,4 cm, T ≈ 78,5 cm². A programozásban: <code>math.pi</code> (Python), <code>Math.PI</code> (JavaScript).</p>" + playBtn("kor"), init: playInit },
+    { k: "Mértékegységek", t: "Átváltás: 10, 100, 1000", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Mit váltasz?</th><th>Váltószám</th><th>Példa</th></tr><tr><td>hossz</td><td>10</td><td>1 m = 10 dm = 100 cm = 1000 mm</td></tr><tr><td>terület</td><td>100</td><td>1 m² = 100 dm² = 10 000 cm²</td></tr><tr><td>térfogat</td><td>1000</td><td>1 m³ = 1000 dm³ = 1 000 000 cm³</td></tr></table></div>" +
+      "<p>Miért 100 a terület? Egy 1 m × 1 m-es négyzet oldala 10 dm, tehát 10 · 10 = 100 dm² fér bele.</p>" +
+      "<div class='note'><b>Űrmérték:</b> 1 dm³ = 1 liter, 1 cm³ = 1 ml, 1 m³ = 1000 liter.</div>" +
+      "<p>Nagyobb egységből kisebbe váltva a szám <b>nő</b> (szorzol), kisebből nagyobba <b>csökken</b> (osztasz).</p>" },
+    { k: "Testek", t: "Felszín és térfogat", h:
+      "<ul><li><b>Kocka</b>: A = 6 · a², V = a³.</li><li><b>Téglatest</b>: A = 2 · (ab + bc + ac), V = a · b · c.</li><li><b>Henger</b>: V = r² · π · m (alapterület · magasság), A = 2 · r² · π + 2 · r · π · m (két kör és egy feltekert téglalap).</li></ul>" +
+      "<p>A <b>felszín</b> a test külsejének területe (ennyi csomagolópapír kell), a <b>térfogat</b> az, ami belefér (ennyi víz).</p>" },
+    { k: "Pitagorasz", t: "Pitagorasz-tétel", h:
+      "<p>Derékszögű háromszögben a két befogó (a, b) négyzetösszege egyenlő az átfogó (c) négyzetével:</p><p class='eq'>a² + b² = c²</p>" +
+      "<ul><li>Átfogó: c = √(a² + b²). Befogó: a = √(c² − b²).</li><li>Fordítva is igaz: ha a leghosszabb oldal négyzete egyenlő a másik kettő négyzetösszegével, a háromszög derékszögű.</li></ul>" +
+      "<p>Két pont távolsága a koordináta-rendszerben is ezzel számolható: lásd a <a href='koordinatak-fuggvenyek.html'>koordináták leckét</a>.</p>" + playBtn("pit"), init: playInit },
+    { k: "Hasonlóság", t: "Nagyítás és kicsinyítés", h:
+      "<p>Ha egy alakzatot <b>λ</b> (lambda) arányban nagyítunk, minden hossz λ-szorosára nő. De:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Mennyiség</th><th>Szorzó</th><th>λ = 2</th><th>λ = 3</th></tr><tr><td>hossz, kerület</td><td>λ</td><td>2</td><td>3</td></tr><tr><td>terület, felszín</td><td>λ²</td><td>4</td><td>9</td></tr><tr><td>térfogat</td><td>λ³</td><td>8</td><td>27</td></tr></table></div>" +
+      "<p>Ha λ kisebb 1-nél (például 0,5), kicsinyítés: a terület a negyedére, a térfogat a nyolcadára csökken.</p>" + playBtn("has"), init: playInit },
+    { k: "Képernyő", t: "Képarány és képernyőátló", h:
+      "<p>A <b>képarány</b> a szélesség és a magasság aránya: 1920 × 1080 → mindkettőt elosztva 120-szal 16:9. Régi monitorok: 4:3, irodai: 16:10.</p>" +
+      "<p>A képernyő méretét az <b>átló</b> hosszával adják meg, hüvelykben (1 hüvelyk = 2,54 cm). Egy 16:9-es képernyőn az átló Pitagorasszal: √(16² + 9²) = √337 ≈ 18,36 egység.</p>" +
+      "<p class='eq'>szélesség = átló · 16 : 18,36 · magasság = átló · 9 : 18,36</p>" +
+      "<p>Egy 55 hüvelykes tévé: szélesség ≈ 55 · 16 : 18,36 ≈ 47,9 hüvelyk ≈ 121,8 cm.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Területnél 10-es váltás.</b> 1 m² nem 10 dm², hanem 100 dm². Térfogatnál 1000 a váltószám.</div>" +
+      "<div class='mistake'><b>Ferde oldal a magasság helyett.</b> A háromszög és a paralelogramma területéhez a merőleges magasság kell.</div>" +
+      "<div class='mistake'><b>Elfelejtett osztás 2-vel</b> a háromszögnél és a trapéznál.</div>" +
+      "<div class='mistake'><b>Átmérő a sugár helyett.</b> Ha az átmérő 10, a sugár 5, és T = 25 · π, nem 100 · π.</div>" +
+      "<div class='mistake'><b>Nagyításnál λ-szoros terület.</b> Kétszeres nagyításnál a terület négyszeres, nem kétszeres.</div>" +
+      "<div class='mistake'><b>Lefelé kerekített festékdoboz.</b> Ha 3,2 doboz kell, 4-et kell venni.</div>" },
+    { k: "Trükkök", t: "Gyorsan és biztosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mértékegység-ellenőrzés</span><span>Kerület: cm. Terület: cm². Térfogat: cm³. Ha a végén rossz a kitevő, rossz a képlet.</span></div>" +
+      "<div class='trick'><span class='t'>Pitagoraszi számhármasok</span><span>3, 4, 5 · 5, 12, 13 · 8, 15, 17 · 7, 24, 25 és ezek többszörösei: gyökvonás nélkül megvan.</span></div>" +
+      "<div class='trick'><span class='t'>Literben</span><span>Számolj dm-ben: a dm³ éppen liter. 2 m × 1 m × 0,5 m = 20 dm × 10 dm × 5 dm = 1000 liter.</span></div>" +
+      "<div class='trick'><span class='t'>Becslés</span><span>π ≈ 3: egy 10 cm sugarú kör területe kb. 300 cm². Ha a pontos eredményed nagyon más, valami elcsúszott.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const LEN = [["mm", 0], ["cm", 1], ["dm", 2], ["m", 3], ["km", 6]];
+  const AREA = [["mm²", 0], ["cm²", 2], ["dm²", 4], ["m²", 6]];
+  const VOL = [["ml", 0], ["cm³", 0], ["dm³", 3], ["l", 3], ["m³", 6]];
+  const TRIP = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29]];
+  const RES = [[1280, 720], [1920, 1080], [2560, 1440], [3840, 2160], [1024, 768], [800, 600], [1600, 1200], [1920, 1200], [1440, 900], [1280, 1024], [1680, 1050]];
+  const RATIO = (w, h) => { const g = (x, y) => y ? g(y, x % y) : x, d = g(w, h); return (w / d) + ":" + (h / d); };
+  const RATIO_OK = ["16:9", "4:3", "16:10", "5:4"];
+  const yn = (q, ok, sol, bad, frames, title) => { const opts = [{ l: "Igen", ok }, { l: "Nem", ok: !ok }]; return { q, kind: "choice", options: opts, answer: ok ? "Igen" : "Nem", sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) }; };
+  const types = [
+    { id: "kt", name: "Kerület, terület", gen(l){
+      if (l === 1){
+        const sq = Math.random() < 0.3, a = rnd(2, 15), b = sq ? a : rnd(2, 15), K0 = Math.random() < 0.5, ans = K0 ? 2 * (a + b) : a * b;
+        const q = (sq ? "Egy négyzet oldala " + a + " cm." : "Egy téglalap oldalai " + a + " cm és " + b + " cm.") + " Mennyi a " + (K0 ? "<b>kerülete</b> (cm)?" : "<b>területe</b> (cm²)?") + fig("rect", { dims: [a, b], a, b, la: a + " cm", lb: b + " cm" });
+        return { q, kind: "input", mode: "decimal", answer: ans, sol: "<p>" + (K0 ? "K = 2 · (" + a + " + " + b + ") = " + ans + " cm." : "T = " + a + " · " + b + " = " + ans + " cm².") + "</p>",
+          check: numCheck(ans, 1e-9, "Nem jó. Kerület: 2 · (a + b), terület: a · b.", x => x === (K0 ? a * b : 2 * (a + b)) ? (K0 ? "Ez a terület. A kerület kell: a körbe futó vonal." : "Ez a kerület. A terület kell: a · b.") : x === a + b ? "Ez csak a két oldal összege. A kerülethez mind a négy oldal kell." : "") };
+      }
+      if (l === 2){
+        const k = pick(["tri", "para", "trap"]); let a, m, c = 0, ans;
+        do { a = rnd(3, 14); m = rnd(2, 10); c = rnd(2, 12); } while ((k === "tri" && (a * m) % 2) || (k === "trap" && (c >= a || ((a + c) * m) % 2)));
+        ans = k === "tri" ? a * m / 2 : k === "para" ? a * m : (a + c) * m / 2;
+        const nm = { tri: "háromszög", para: "paralelogramma", trap: "trapéz" }[k], off = k === "trap" ? 0 : rnd(1, Math.max(1, Math.floor(a / 2)));
+        const fr = fig(k, { dims: [a + (k === "para" ? off : 0), m], a, m, c, off, la: "a = " + a, lm: "m = " + m, lc: "c = " + c });
+        const fml = k === "tri" ? "a · m : 2 = " + a + " · " + m + " : 2" : k === "para" ? "a · m = " + a + " · " + m : "(a + c) · m : 2 = (" + a + " + " + c + ") · " + m + " : 2";
+        return { q: "Mennyi a " + nm + " területe (cm²)? Az adatok cm-ben vannak." + fr, kind: "input", mode: "decimal", answer: ans, sol: "<p>T = " + fml + " = " + ans + " cm².</p>",
+          check: numCheck(ans, 1e-9, "Nem jó. Nézd meg a képletet a diákon: a magasság az alapra merőleges.", x => (k === "tri" && x === a * m) || (k === "trap" && x === (a + c) * m) ? "Majdnem! Még el kell osztani 2-vel." : "") };
+      }
+      const r = rnd(1, 15), K0 = Math.random() < 0.5, ans = rd(K0 ? 2 * r * PI : r * r * PI, 2), dia = Math.random() < 0.4;
+      return { q: "Egy kör " + (dia ? "átmérője " + 2 * r : "sugara " + r) + " cm. Mennyi a " + (K0 ? "<b>kerülete</b> (cm)?" : "<b>területe</b> (cm²)?") + " Számolj π = 3,14 értékkel, és kerekíts két tizedesre." + fig("circ", { dims: [r], r, lr: dia ? "d = " + 2 * r : "r = " + r }),
+        kind: "input", mode: "decimal", answer: fmt(ans, 2), frames: korFrames(r, K0 ? "K" : "T"), title: K0 ? "A kör kerülete" : "A kör területe",
+        sol: "<p>" + (dia ? "A sugár az átmérő fele: r = " + r + " cm. " : "") + (K0 ? "K = 2 · r · π = 2 · " + r + " · 3,14 = " + fmt(ans, 2) + " cm." : "T = r² · π = " + r * r + " · 3,14 = " + fmt(ans, 2) + " cm².") + "</p>",
+        check: numCheck(ans, 0.006, "Nem jó. Kerület: 2 · r · π, terület: r² · π.", x => near(x, K0 ? r * r * PI : 2 * r * PI) ? (K0 ? "Ez a terület. A kerület kell." : "Ez a kerület. A terület kell.") : dia && near(x, K0 ? 4 * r * PI : 4 * r * r * PI) ? "Az átmérővel számoltál a sugár helyett. A sugár az átmérő fele." : "") };
+    } },
+    { id: "mert", name: "Mértékegységek", gen(l){
+      const U = l === 1 ? LEN : l === 2 ? AREA : VOL, f0 = l === 1 ? "hossz" : l === 2 ? "terület" : "térfogat", base = l === 1 ? 10 : l === 2 ? 100 : 1000;
+      let A, B, d;
+      do { A = pick(U); B = pick(U); d = A[1] - B[1]; } while (d === 0 || Math.abs(d) > 6);
+      let v;
+      if (d > 0) v = rnd(1, 99) / pick([1, 1, 10]);
+      else v = rnd(1, 99) * Math.pow(10, rnd(Math.max(0, -d - 3), -d));
+      v = clean(v);
+      const ans = clean(v * Math.pow(10, d));
+      const wrong = [];
+      if (l === 2) wrong.push([clean(v * Math.pow(10, d / 2)), "Területnél a váltószám 100 (10 · 10), nem 10."]);
+      if (l === 3 && A[0] !== "ml" && A[0] !== "l" && B[0] !== "ml" && B[0] !== "l") wrong.push([clean(v * Math.pow(10, d * 2 / 3)), "Térfogatnál a váltószám 1000 (10 · 10 · 10)."]);
+      if (l === 3) wrong.push([clean(v * Math.pow(10, d / 3)), "Térfogatnál a váltószám 1000, nem 10."]);
+      wrong.push([clean(v * Math.pow(10, -d)), "Fordított irányba váltottál: nagyobb egységből kisebbe váltva a szám nő, kisebből nagyobba csökken."]);
+      return { q: "Váltsd át (" + f0 + "): <span class='num'>" + fmt(v) + " " + A[0] + " = ? " + B[0] + "</span>", kind: "input", mode: "decimal", answer: fmt(ans),
+        sol: "<p>" + (l === 1 ? "Hossznál a szomszédos egységek között 10 a váltószám (a km és az m között 1000)." : l === 2 ? "Területnél 100 a váltószám: mm² → cm² → dm² → m²." : "Térfogatnál 1000 a váltószám; 1 dm³ = 1 l, 1 cm³ = 1 ml.") + " Itt a szorzó: " + (d > 0 ? fmt(Math.pow(10, d)) : "1 : " + fmt(Math.pow(10, -d))) + ". " + fmt(v) + " " + A[0] + " = " + fmt(ans) + " " + B[0] + ".</p>",
+        check: v2 => { const x = num(v2); if (isNaN(x)) return { ok: false, msg: "Egy számot írj (mértékegység nélkül)." }; if (Math.abs(x - ans) <= Math.abs(ans) * 1e-9 + 1e-12) return { ok: true, msg: "Helyes!" }; const w = wrong.find(z => Math.abs(x - z[0]) <= Math.abs(z[0]) * 1e-9 + 1e-12); return { ok: false, msg: w ? w[1] : "Nem jó. Hány lépés a két egység között, és mekkora egy lépés (" + base + ")?" }; } };
+    } },
+    { id: "test", name: "Felszín, térfogat", gen(l){
+      const V0 = Math.random() < 0.5;
+      if (l === 1){ const a = rnd(2, 12), ans = V0 ? a * a * a : 6 * a * a;
+        return { q: "Egy kocka éle " + a + " cm. Mennyi a " + (V0 ? "<b>térfogata</b> (cm³)?" : "<b>felszíne</b> (cm²)?"), kind: "input", mode: "decimal", answer: ans, sol: "<p>" + (V0 ? "V = a³ = " + a + " · " + a + " · " + a + " = " + ans + " cm³." : "A = 6 · a² = 6 · " + a * a + " = " + ans + " cm².") + "</p>",
+          check: numCheck(ans, 1e-9, "Nem jó. Kocka: V = a³, A = 6 · a².", x => x === (V0 ? 6 * a * a : a * a * a) ? (V0 ? "Ez a felszín. A térfogat kell: a³." : "Ez a térfogat. A felszín kell: 6 · a².") : !V0 && x === a * a ? "Ez csak egy lap területe. A kockának 6 lapja van." : "") };
+      }
+      if (l === 2){ const a = rnd(2, 12), b = rnd(2, 12), c = rnd(2, 12), ans = V0 ? a * b * c : 2 * (a * b + b * c + a * c);
+        return { q: "Egy téglatest élei " + a + " cm, " + b + " cm és " + c + " cm. Mennyi a " + (V0 ? "<b>térfogata</b> (cm³)?" : "<b>felszíne</b> (cm²)?"), kind: "input", mode: "decimal", answer: ans,
+          sol: "<p>" + (V0 ? "V = a · b · c = " + a + " · " + b + " · " + c + " = " + ans + " cm³." : "A = 2 · (ab + bc + ac) = 2 · (" + a * b + " + " + b * c + " + " + a * c + ") = " + ans + " cm².") + "</p>",
+          check: numCheck(ans, 1e-9, "Nem jó. Téglatest: V = a · b · c, A = 2 · (ab + bc + ac).", x => x === (V0 ? 2 * (a * b + b * c + a * c) : a * b * c) ? (V0 ? "Ez a felszín. A térfogat kell." : "Ez a térfogat. A felszín kell.") : !V0 && x === a * b + b * c + a * c ? "Majdnem! Minden lapból kettő van: szorozd meg 2-vel." : "") };
+      }
+      const r = rnd(1, 10), m = rnd(2, 20), ans = rd(V0 ? r * r * PI * m : 2 * r * r * PI + 2 * r * PI * m, 2);
+      return { q: "Egy henger alapkörének sugara " + r + " cm, magassága " + m + " cm. Mennyi a " + (V0 ? "<b>térfogata</b> (cm³)?" : "<b>felszíne</b> (cm²)?") + " Számolj π = 3,14 értékkel, és kerekíts két tizedesre.", kind: "input", mode: "decimal", answer: fmt(ans, 2),
+        sol: "<p>" + (V0 ? "V = r² · π · m = " + r * r + " · 3,14 · " + m + " = " + fmt(ans, 2) + " cm³." : "A = 2 · r² · π + 2 · r · π · m = " + fmt(2 * r * r * PI, 2) + " + " + fmt(2 * r * PI * m, 2) + " = " + fmt(ans, 2) + " cm².") + "</p>",
+        check: numCheck(ans, 0.011, "Nem jó. Henger: V = r² · π · m, A = 2 · r² · π + 2 · r · π · m.", x => !V0 && near(x, 2 * r * PI * m) ? "Ez csak a palást. A két alapkör is kell: 2 · r² · π." : "") };
+    } },
+    { id: "pit", name: "Pitagorasz", gen(l){
+      const t = l === 1 ? pick(TRIP.slice(0, 2)) : pick(TRIP), k = l === 1 ? rnd(1, 4) : rnd(1, 3), sw = Math.random() < 0.5;
+      let a = t[0] * k, b = t[1] * k; const c = t[2] * k; if (sw){ const z = a; a = b; b = z; }
+      if (l === 1) return { q: "Egy derékszögű háromszög befogói " + a + " cm és " + b + " cm. Milyen hosszú az átfogó (cm)?" + fig("tri90", { dims: [a, b], a, b, la: String(a), lb: String(b), lc: "?" }), kind: "input", mode: "decimal", answer: c, frames: pitFrames(a, b, c, "c"), title: "Pitagorasz-tétel",
+        sol: "<p>c = √(" + a + "² + " + b + "²) = √(" + a * a + " + " + b * b + ") = √" + c * c + " = " + c + ".</p>", check: numCheck(c, 1e-9, "Nem jó. c² = a² + b², aztán gyököt vonsz.", x => x === a + b ? "A befogókat nem összeadni kell: négyzetre emeld, add össze, vonj gyököt." : x === c * c ? "Ez a c². Még gyököt kell vonni." : "") };
+      if (l === 2) return { q: "Egy derékszögű háromszög átfogója " + c + " cm, az egyik befogója " + b + " cm. Milyen hosszú a másik befogó (cm)?" + fig("tri90", { dims: [a, b], a, b, la: "?", lb: String(b), lc: String(c) }), kind: "input", mode: "decimal", answer: a, frames: pitFrames(a, b, c, "a"), title: "Pitagorasz-tétel",
+        sol: "<p>a = √(" + c + "² − " + b + "²) = √(" + c * c + " − " + b * b + ") = √" + a * a + " = " + a + ".</p>", check: numCheck(a, 1e-9, "Nem jó. a² = c² − b².", x => near(x, Math.sqrt(c * c + b * b)) ? "Összeadtad a négyzeteket. Befogónál ki kell vonni: c² − b²." : "") };
+      const ok = Math.random() < 0.5, c2 = ok ? c : c + pick([-1, 1]), sides = shuffle([a, b, c2]);
+      return yn("Derékszögű-e az a háromszög, amelynek oldalai " + sides.join(" cm, ") + " cm?", ok, "<p>A leghosszabb oldal " + Math.max(...sides) + ". " + a + "² + " + b + "² = " + (a * a + b * b) + ", " + c2 + "² = " + c2 * c2 + ". " + (ok ? "Egyenlők, tehát derékszögű." : "Nem egyenlők, tehát nem derékszögű.") + "</p>", "Nem jó. A két rövidebb oldal négyzetösszegét hasonlítsd a leghosszabb oldal négyzetéhez.");
+    } },
+    { id: "has", name: "Nagyítás", gen(l){
+      const L = pick([2, 3, 4, 0.5, 1.5, 2.5]);
+      if (l === 1){ const a = rnd(2, 12), b = rnd(2, 12), K0 = 2 * (a + b), ans = clean(K0 * L);
+        return { q: "Egy téglalap oldalai " + a + " cm és " + b + " cm. λ = " + fmt(L) + " arányban " + (L < 1 ? "kicsinyítjük" : "nagyítjuk") + ". Mennyi lesz a kerülete (cm)?", kind: "input", mode: "decimal", answer: fmt(ans),
+          sol: "<p>Az eredeti kerület " + K0 + " cm. A kerület hossz, ezért λ szorzóval változik: " + K0 + " · " + fmt(L) + " = " + fmt(ans) + " cm.</p>", check: numCheck(ans, 1e-9, "Nem jó. Előbb az eredeti kerület: 2 · (a + b), aztán szorozd λ-val.", x => near(x, K0 * L * L) ? "A kerület hossz: csak λ-val szorzódik, nem λ²-tel." : "") };
+      }
+      if (l === 2){ const T = rnd(2, 40), ans = clean(T * L * L);
+        return { q: "Egy alakzat területe " + T + " cm². λ = " + fmt(L) + " arányban " + (L < 1 ? "kicsinyítjük" : "nagyítjuk") + ". Mennyi lesz a területe (cm²)?", kind: "input", mode: "decimal", answer: fmt(ans), frames: hasFrames(2, 3, L), title: "Nagyítás és terület",
+          sol: "<p>A terület λ² szorzóval változik: λ² = " + fmt(L * L) + ". " + T + " · " + fmt(L * L) + " = " + fmt(ans) + " cm².</p>", check: numCheck(ans, 1e-9, "Nem jó. A terület λ²-tel szorzódik.", x => near(x, T * L) ? "A terület nem λ-val, hanem λ²-tel szorzódik (két hossz szorzata)." : "") };
+      }
+      if (Math.random() < 0.5){ const V = rnd(2, 30), ans = clean(V * L * L * L);
+        return { q: "Egy test térfogata " + V + " cm³. λ = " + fmt(L) + " arányban " + (L < 1 ? "kicsinyítjük" : "nagyítjuk") + ". Mennyi lesz a térfogata (cm³)?", kind: "input", mode: "decimal", answer: fmt(ans),
+          sol: "<p>A térfogat λ³ szorzóval változik: λ³ = " + fmt(L * L * L) + ". " + V + " · " + fmt(L * L * L) + " = " + fmt(ans) + " cm³.</p>", check: numCheck(ans, 1e-9, "Nem jó. A térfogat λ³-nel szorzódik.", x => near(x, V * L) || near(x, V * L * L) ? "A térfogat három hossz szorzata: λ³ a szorzó." : "") };
+      }
+      const L2 = pick([2, 3, 4, 5]), T = rnd(2, 20), T2 = T * L2 * L2;
+      return { q: "Nagyítás előtt a terület " + T + " cm², utána " + T2 + " cm². Mekkora volt a nagyítás aránya (λ)?", kind: "input", mode: "decimal", answer: L2,
+        sol: "<p>A terület λ²-szeresre nőtt: " + T2 + " : " + T + " = " + L2 * L2 + " = λ². Ebből λ = √" + L2 * L2 + " = " + L2 + ".</p>", check: numCheck(L2, 1e-9, "Nem jó. Előbb a területek aránya (ez λ²), aztán gyököt vonsz.", x => x === L2 * L2 ? "Ez a λ². Még gyököt kell vonni." : "") };
+    } },
+    { id: "kep", name: "Képernyő", gen(l){
+      if (l === 1){
+        if (Math.random() < 0.5){ const r = pick(RES.slice(0, 4)), ans = r[0] * r[1];
+          return { q: "Hány képpontból (pixelből) áll egy " + r[0] + " × " + r[1] + " felbontású képernyő?", kind: "input", mode: "numeric", answer: ans, sol: "<p>Szélesség · magasság = " + r[0] + " · " + r[1] + " = " + ans + " pixel.</p>", check: numCheck(ans, 0, "Nem jó. Szorozd össze a szélességet és a magasságot.", x => x === 2 * (r[0] + r[1]) ? "Ez a kerület. A pixelek száma terület: szorzás." : "") }; }
+        const w = 16 * rnd(20, 240), h = w / 16 * 9;
+        return { q: "Egy 16:9-es videó szélessége " + w + " pixel. Hány pixel a magassága?", kind: "input", mode: "numeric", answer: h, sol: "<p>Egy egység: " + w + " : 16 = " + w / 16 + ". A magasság 9 egység: " + w / 16 + " · 9 = " + h + ".</p>", check: numCheck(h, 0, "Nem jó. Oszd el a szélességet 16-tal, és szorozd 9-cel.", x => x === w * 16 / 9 ? "Fordítva számoltál: a magasság a kisebb (9 rész)." : "") };
+      }
+      if (l === 2){ const r = pick(RES), red = RATIO(r[0], r[1]), ans = red === "8:5" ? "16:10" : red;
+        return { q: "Mi a képaránya egy " + r[0] + " × " + r[1] + " felbontású képernyőnek?", kind: "choice", options: shuffle(RATIO_OK.map(x => ({ l: x, ok: x === ans }))), answer: ans,
+          sol: "<p>Oszd el mindkettőt a legnagyobb közös osztójukkal: " + r[0] + " : " + r[1] + " = " + red + "." + (red === "8:5" ? " A 8:5 ugyanaz, mint a 16:10 (mindkét tagot kettővel szorozva); a képernyőknél 16:10-nek mondjuk." : "") + "</p>", check: function(v){ return { ok: !!this.options[v.idx].ok, msg: this.options[v.idx].ok ? "Helyes!" : "Nem jó. Egyszerűsítsd a szélesség : magasság arányt." }; } };
+      }
+      const d = pick([15, 17, 24, 27, 32, 40, 43, 50, 55, 65]), W0 = Math.random() < 0.5, diag = Math.sqrt(337), ans = rd(d * (W0 ? 16 : 9) / diag * 2.54, 1);
+      return { q: "Egy 16:9-es képernyő átlója " + d + " hüvelyk. Hány cm a " + (W0 ? "<b>szélessége</b>" : "<b>magassága</b>") + "? (1 hüvelyk = 2,54 cm, √337 ≈ 18,36; kerekíts egy tizedesre.)", kind: "input", mode: "decimal", answer: fmt(ans, 1),
+        sol: "<p>A 16:9-es téglalap átlója √(16² + 9²) = √337 ≈ 18,36 egység. " + (W0 ? "Szélesség" : "Magasság") + " hüvelykben: " + d + " · " + (W0 ? 16 : 9) + " : 18,36 ≈ " + fmt(d * (W0 ? 16 : 9) / diag, 2) + ". Centiméterben: · 2,54 ≈ " + fmt(ans, 1) + " cm.</p>",
+        check: numCheck(ans, 0.15, "Nem jó. Egy egység = átló : 18,36; a szélesség 16 egység, a magasság 9 egység; végül · 2,54.", x => Math.abs(x - d * (W0 ? 16 : 9) / diag) < 0.15 ? "Ez hüvelykben van. Szorozd meg 2,54-dal." : "") };
+    } },
+    { id: "szov", name: "Szöveges feladatok", gen(l){
+      if (l === 1){ const a = rnd(3, 12), b = rnd(2, 6), m = pick([1, 1.5, 2]), ans = clean(a * b * m * 1000);
+        return { q: "Egy téglatest alakú medence " + a + " m hosszú, " + b + " m széles és " + fmt(m) + " m mély. Hány liter víz fér bele?", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>V = " + a + " · " + b + " · " + fmt(m) + " = " + fmt(a * b * m) + " m³. 1 m³ = 1000 liter, tehát " + fmt(ans) + " liter.</p>", check: numCheck(ans, 1e-9, "Nem jó. Térfogat m³-ben, aztán · 1000 (1 m³ = 1000 liter).", x => near(x, a * b * m) ? "Ez m³. Literben kell: · 1000." : near(x, a * b * m * 100) || near(x, a * b * m * 10) ? "1 m³ = 1000 liter (1000 dm³)." : "") };
+      }
+      if (l === 2){ let w, h, ab, per, need, ans;
+        do { w = rnd(3, 9); h = pick([2.5, 3]); ab = rnd(1, 4); per = pick([5, 8, 10, 12]); need = w * h - ab; ans = Math.ceil(need / per - 1e-9); } while (need <= 0);
+        return { q: "Ki akarsz festeni egy " + w + " m széles, " + fmt(h) + " m magas falat. Az ablak " + ab + " m², azt nem festjük. Egy doboz festék " + per + " m² falra elég. Hány dobozt kell venni?", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>Festendő terület: " + w + " · " + fmt(h) + " − " + ab + " = " + fmt(need) + " m². " + fmt(need) + " : " + per + " ≈ " + fmt(need / per, 2) + ", ezt <b>felfelé</b> kerekítjük: " + ans + " doboz.</p>",
+          check: numCheck(ans, 0, "Nem jó. Fal területe mínusz ablak, osztva egy doboz kiadósságával, felfelé kerekítve.", x => x === Math.floor(need / per) && x !== ans ? "Lefelé kerekítettél: a maradék falra is kell festék, ezért felfelé kerekíts." : x === Math.ceil(w * h / per) && x !== ans ? "Az ablakot nem kell lefesteni: vond ki a területét." : "") };
+      }
+      const a = rnd(2, 6), b = rnd(2, 6), c = pick([20, 25, 50]), ans = (a * 100 / c) * (b * 100 / c);
+      return { q: "Egy szoba padlója " + a + " m × " + b + " m. Négyzet alakú csempével burkolod, egy csempe oldala " + c + " cm. Hány csempe kell, ha nincs vágás és hulladék?", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Válts egyforma egységre: " + a + " m = " + a * 100 + " cm, " + b + " m = " + b * 100 + " cm. Egy sorba " + a * 100 + " : " + c + " = " + a * 100 / c + " csempe fér, és " + b * 100 / c + " sor lesz: " + a * 100 / c + " · " + b * 100 / c + " = " + ans + " csempe.</p>",
+        check: numCheck(ans, 0, "Nem jó. Válts cm-re, és nézd meg, egy sorba hány csempe fér, és hány sor lesz.", x => near(x, a * b / (c * c)) || near(x, a * b * 100 / (c * c)) ? "Rossz átváltás: 1 m² = 10 000 cm²." : "") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "geometria", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["téglalap", "2 · (a + b)", "a · b"], ["négyzet", "4 · a", "a²"], ["háromszög", "a + b + c", "a · m : 2"], ["paralelogramma", "2 · (a + b)", "a · m"], ["trapéz", "a + b + c + d", "(a + c) · m : 2"], ["kör", "2 · r · π", "r² · π"], ["kocka", "A = 6 · a²", "V = a³"], ["téglatest", "A = 2 · (ab + bc + ac)", "V = a · b · c"], ["henger", "A = 2r²π + 2rπm", "V = r² · π · m"]];
+  $("#cheat").innerHTML = "<tr><th>Alakzat</th><th>Kerület / felszín</th><th>Terület / térfogat</th></tr>" + rows.map(r => "<tr><td style='text-align:left'>" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
