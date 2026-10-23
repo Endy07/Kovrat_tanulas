@@ -1,0 +1,338 @@
+<!--@HEAD-->
+<title>Hang és videó</title>
+<style>
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ctl label{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.85rem;color:var(--panel-muted)}
+.ctl b{color:var(--led)}
+.ctl input[type=range]{width:100%;accent-color:var(--led)}
+.wave{width:100%;height:auto;display:block}
+.wave .lv{stroke:#3A4656;stroke-width:1}
+.wave .ax{stroke:#5A6676;stroke-width:1.2}
+.wave .sin{stroke:#72A6F2;stroke-width:2;fill:none}
+.wave .stp{stroke:#FFB01F;stroke-width:2.4;fill:none}
+.wave .smp{fill:#FFB01F;stroke:#0A0E13;stroke-width:1}
+.wave text{fill:#8C99AA;font-family:var(--mono);font-size:10px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px}
+.slide .eq{white-space:normal}
+.pb-stage .eqline{display:block;transform-origin:left center}
+.calc{font-family:var(--mono);line-height:1.8;overflow-wrap:anywhere}
+.calc .cur{color:#FFB01F;font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · digitális jelek</span>
+  <h1>Hang és videó digitalizálása</h1>
+  <p class="lead">A hang hullám, a számítógép viszont csak számokat tud tárolni. Mérj bele a hullámba sokszor másodpercenként, és kerekítsd a méréseket: ez a mintavételezés és a kvantálás. Állítsd a csúszkákat!</p>
+  <div class="panel">
+    <span class="eyebrow">Mintavételező: kék az eredeti hang, sárga, amit a gép eltárol</span>
+    <div class="ctl">
+      <label>Mintavételi frekvencia: <b id="fv">16</b> minta / s<input id="f" type="range" min="4" max="40" value="16" aria-label="Mintavételi frekvencia"></label>
+      <label>Bitmélység: <b id="bv">3</b> bit<input id="b" type="range" min="1" max="4" value="3" aria-label="Bitmélység"></label>
+    </div>
+    <svg class="wave" id="wave" viewBox="0 0 400 180" role="img" aria-label="Hullám és minták"></svg>
+    <div class="legend"><span><i style="background:#72A6F2"></i>eredeti (analóg)</span><span><i style="background:#FFB01F"></i>mintákból visszaalakítva (digitális)</span></div>
+    <div class="row"><button class="btn" id="play0">🔊 Eredeti hang</button><button class="btn" id="play1">🔊 Kvantálva, a beállított bittel</button><span class="mono" style="color:var(--panel-muted);font-size:.8rem">(csak kattintásra szól, halkan)</span></div>
+    <div class="readout">
+      <div><div class="eyebrow">Szintek száma</div><div class="big led" id="lv"></div></div>
+      <div><div class="eyebrow">Adat 1 másodpercre</div><div class="big" id="ds"></div></div>
+      <div class="expr" id="hexpr"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="minta" aria-selected="true">Mintavételezés lépései</button>
+    <button class="tab" data-m="hang" aria-selected="false">Hangfájl mérete</button>
+    <button class="tab" data-m="video" aria-selected="false">Videó mérete</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Ezen az oldalon 1 KB = 1024 bájt, 1 MB = 1024 KB, 1 GB = 1024 MB, a hálózati sebességnél és a bitrátánál viszont 1 kbit = 1000 bit (ahogy a szolgáltatók mérik). Tizedes törtet vesszővel vagy ponttal is írhatsz; ahol kerekíteni kell, a feladat kiírja. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Hangfájl mérete (bájt)</span><span class="mono">frekvencia · bitmélység · csatornák · másodperc : 8</span></div>
+    <div class="trick"><span class="t">Videó mérete (bájt)</span><span class="mono">szélesség · magasság · színmélység · képkocka/s · másodperc : 8</span></div>
+    <div class="trick"><span class="t">Szintek száma</span><span class="mono">2<sup>bitmélység</sup></span><span>8 bit: 256, 16 bit: 65 536 szint.</span></div>
+    <div class="trick"><span class="t">Bitráta</span><span class="mono">bit / másodperc</span><span>CD: 44 100 · 16 · 2 = 1 411 200 bit/s ≈ 1411 kbit/s. MP3: 128–320 kbit/s.</span></div>
+    <div class="trick"><span class="t">Nyquist-elv</span><span>A mintavétel legyen legalább kétszer olyan sűrű, mint a legmagasabb hang. Az ember kb. 20 kHz-ig hall, ezért a CD 44,1 kHz.</span></div>
+    <div class="trick"><span class="t">Letöltési idő</span><span class="mono">MB · 8 : Mbit/s = másodperc</span><span>Ugyanúgy, mint a hálózatok leckében.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/\s:\s/g, " osztva "], [/kbit\/s/g, "kilobit per másodperc"], [/Mbit\/s/g, "megabit per másodperc"], [/\bkHz\b/g, "kilohertz"], [/\bHz\b/g, "hertz"], [/\bfps\b/g, "képkocka per másodperc"], [/\bMB\b/g, "megabájt"], [/\bKB\b/g, "kilobájt"], [/\bGB\b/g, "gigabájt"]);
+
+  /* ---------- Segédek ---------- */
+  const fmt = (x, d) => { const r = d == null ? x : Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return String(r).replace(".", ","); };
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(",", "."); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const numCheck = (ans, tol, hint, extra) => v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(x - ans) <= tol) return { ok: true, msg: "Helyes!" }; const m = extra && extra(x); return { ok: false, msg: m || hint }; };
+  const near = (x, y) => Math.abs(x - y) <= Math.max(0.051, Math.abs(y) * 0.002);
+  const caps = F => F.map(f => "<p>" + f.cap + "</p>").join("");
+
+  /* ---------- Hero: mintavételező ---------- */
+  const W = 400, H = 180, X0 = 28, X1 = 392, YM = 90, AMP = 70;
+  const sig = t => Math.sin(2 * Math.PI * 2 * t);                // 2 hullám a kijelzett 1 másodperc alatt
+  const quant = (y, L) => Math.round((y + 1) / 2 * (L - 1)) / (L - 1) * 2 - 1;
+  const px = t => X0 + t * (X1 - X0), py = y => YM - y * AMP;
+  function waveSvg(f, b, opt){
+    opt = opt || {};
+    const L = Math.pow(2, b);
+    let s = "";
+    if (opt.levels !== false) for (let i = 0; i < L; i++){ const y = py(i / (L - 1) * 2 - 1); s += '<line class="lv" x1="' + X0 + '" x2="' + X1 + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/>'; }
+    s += '<line class="ax" x1="' + X0 + '" x2="' + X1 + '" y1="' + YM + '" y2="' + YM + '"/><text x="2" y="' + (YM + 4) + '">0</text><text x="' + (X1 - 22) + '" y="176">1 s</text>';
+    let d = ""; for (let i = 0; i <= 200; i++){ const t = i / 200; d += (i ? "L" : "M") + px(t).toFixed(1) + " " + py(sig(t)).toFixed(1); }
+    s += '<path class="sin" d="' + d + '"/>';
+    const n = f, pts = [];
+    for (let k = 0; k < n; k++){ const t = k / n; pts.push([t, opt.quant === false ? sig(t) : quant(sig(t), L)]); }
+    if (opt.step !== false){ let st = ""; pts.forEach((p, k) => { const t2 = (k + 1) / n; st += (k ? "L" : "M") + px(p[0]).toFixed(1) + " " + py(p[1]).toFixed(1) + "L" + px(t2).toFixed(1) + " " + py(p[1]).toFixed(1); }); s += '<path class="stp" d="' + st + '"/>'; }
+    if (opt.samples !== false) pts.forEach(p => { s += '<circle class="smp" cx="' + px(p[0]).toFixed(1) + '" cy="' + py(p[1]).toFixed(1) + '" r="3.6"/>'; });
+    return s;
+  }
+  function hero(){
+    const f = +$("#f").value, b = +$("#b").value, L = Math.pow(2, b);
+    $("#fv").textContent = f; $("#bv").textContent = b;
+    $("#wave").innerHTML = waveSvg(f, b);
+    $("#lv").textContent = L;
+    $("#ds").textContent = f * b + " bit";
+    $("#hexpr").innerHTML = "Másodpercenként " + f + " minta, mindegyik " + b + " biten (" + L + " szint közül az egyik): " + f + " · " + b + " = " + f * b + " bit. " +
+      (f < 8 ? "A hullám másodpercenként kétszer leng: ennyi mintából alig ismerhető fel. (Nyquist: legalább kétszer annyi minta kell, mint a rezgésszám.)" : b <= 2 ? "Kevés szint: a sárga lépcső durván tér el a kéktől. Ez a kvantálási hiba, zajként hallod." : "Minél több a minta és a szint, annál jobban követi a sárga lépcső a kék hullámot, de annál nagyobb a fájl.") +
+      " A CD-n: 44 100 minta, 16 bit, 2 csatorna.";
+  }
+  ["#f", "#b"].forEach(s => $(s).addEventListener("input", hero));
+  hero();
+  // hangpélda: csak kattintásra, halkan, rövid
+  let actx = null;
+  function beep(bits){
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const sr = actx.sampleRate, n = Math.floor(sr * 0.7), buf = actx.createBuffer(1, n, sr), d = buf.getChannelData(0), L = Math.pow(2, bits || 16);
+      for (let i = 0; i < n; i++){ const y = Math.sin(2 * Math.PI * 440 * i / sr); d[i] = 0.12 * (bits ? quant(y, L) : y) * Math.min(1, i / 800, (n - i) / 800); }
+      const src = actx.createBufferSource(); src.buffer = buf; src.connect(actx.destination); src.start();
+    } catch (e){}
+  }
+  $("#play0").addEventListener("click", () => beep(0));
+  $("#play1").addEventListener("click", () => beep(+$("#b").value));
+
+  /* ---------- Levezetések ---------- */
+  function mintaFrames(f, b){
+    const L = Math.pow(2, b), sv = o => '<svg class="wave" viewBox="0 0 400 180">' + waveSvg(f, b, o) + "</svg>";
+    return [
+      { cap: "A hang a levegő rezgése: folytonos, analóg jel. Itt a kék hullám másodpercenként kétszer leng.", html: sv({ samples: false, step: false, levels: false }) },
+      { cap: "Mintavételezés: egyenlő időközönként megmérjük a hullám magasságát. Most másodpercenként " + f + " mérés: a mintavételi frekvencia " + f + " Hz.", html: sv({ step: false, levels: false, quant: false }) },
+      { cap: "Kvantálás: a mért értéket a legközelebbi megengedett szintre kerekítjük. " + b + " biten " + L + " szint van: minden új bit megduplázza a szintek számát.", html: sv({ step: false }) },
+      { cap: "Minden minta szintjét kettes számrendszerben, " + b + " biten tároljuk. Egy másodperc: " + f + " · " + b + " = " + f * b + " bit.", html: sv({ step: false }) + '<p class="big led" style="margin-top:8px">' + f + " · " + b + " = " + f * b + " bit</p>" },
+      { cap: "Lejátszáskor a gép a mintákból lépcsős jelet készít (sárga), és ezt simítja ki. Minél sűrűbb a minta és több a szint, annál hűbb a hang.", html: sv({}) }
+    ];
+  }
+  function hangFrames(f, b, ch, t){
+    const st = [
+      ["Egy másodperc alatt ennyi minta: " + f + ", a mintavételi frekvencia.", f + " minta"],
+      ["Minden minta " + b + " bit: " + f + " · " + b + " = " + f * b + " bit másodpercenként, csatornánként.", f * b + " bit"],
+      [(ch === 2 ? "Sztereó, tehát 2 csatorna: kétszer annyi. " : "Mono, tehát 1 csatorna. ") + f * b + " · " + ch + " = " + f * b * ch + " bit/s. Ez a bitráta.", f * b * ch + " bit/s"],
+      ["A hang " + t + " másodperces: " + f * b * ch + " · " + t + " = " + f * b * ch * t + " bit.", f * b * ch * t + " bit"],
+      ["Egy bájt 8 bit: " + f * b * ch * t + " : 8 = " + f * b * ch * t / 8 + " bájt.", f * b * ch * t / 8 + " bájt"],
+      ["1 KB = 1024 bájt, 1 MB = 1024 KB: " + fmt(f * b * ch * t / 8 / 1024, 1) + " KB, vagyis kb. " + fmt(f * b * ch * t / 8 / 1048576, 2) + " MB.", fmt(f * b * ch * t / 8 / 1048576, 2) + " MB"]
+    ];
+    const F = [{ cap: "Mekkora egy tömörítetlen hangfájl? Mintavétel: " + f + " Hz, " + b + " bit, " + (ch === 2 ? "sztereó" : "mono") + ", " + t + " másodperc.", html: '<div class="calc">frekvencia · bitmélység · csatornák · idő : 8</div>' }];
+    st.forEach((s, i) => F.push({ cap: s[0], html: '<div class="calc">' + st.slice(0, i + 1).map((x, j) => '<span class="eqline' + (j === i ? " cur" : "") + '">' + x[1] + "</span>").join("") + "</div>" }));
+    return F;
+  }
+  function videoFrames(w, h, c, fps, t){
+    const fr = w * h * c, bps = fr * fps, tot = bps * t / 8;
+    const st = [
+      ["Egy képkocka " + w + " · " + h + " = " + w * h + " pixel.", w * h + " pixel"],
+      ["Minden pixel " + c + " bit (színmélység): " + w * h + " · " + c + " = " + fr + " bit egy képkocka.", fr + " bit / kocka"],
+      ["Másodpercenként " + fps + " képkocka: " + fr + " · " + fps + " = " + bps + " bit/s.", bps + " bit/s"],
+      ["A videó " + t + " másodperces: " + bps + " · " + t + " = " + bps * t + " bit, ez : 8 = " + tot + " bájt.", tot + " bájt"],
+      ["Átváltva: " + fmt(tot / 1048576, 1) + " MB, vagyis " + fmt(tot / 1073741824, 2) + " GB. Tömörítés nélkül ez óriási, ezért kell a kodek (H.264, H.265): a mai videók ennek kb. százada-ezrede.", fmt(tot / 1073741824, 2) + " GB"]
+    ];
+    const F = [{ cap: "Mekkora egy tömörítetlen videó? " + w + " × " + h + " pixel, " + c + " bit színmélység, " + fps + " képkocka másodpercenként, " + t + " másodperc.", html: '<div class="calc">szélesség · magasság · színmélység · képkocka/s · idő : 8</div>' }];
+    st.forEach((s, i) => F.push({ cap: s[0], html: '<div class="calc">' + st.slice(0, i + 1).map((x, j) => '<span class="eqline' + (j === i ? " cur" : "") + '">' + x[1] + "</span>").join("") + "</div>" }));
+    return F;
+  }
+  const MET = { minta: "Mintavételezés lépései", hang: "Hangfájl mérete", video: "Videó mérete" };
+  const MF = { minta: () => mintaFrames(12, 2), hang: () => hangFrames(44100, 16, 2, 10), video: () => videoFrames(1920, 1080, 24, 30, 10) };
+  const pb = K.player($("#pb"));
+  const PB = { m: "minta" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Analóg és digitális", h:
+      "<p>Az <b>analóg</b> jel folytonos: bármilyen értéket felvehet, bármelyik pillanatban (a hang a levegőben, a bakelitlemez barázdája). A <b>digitális</b> jel számok sorozata: csak bizonyos időpontokban és csak bizonyos értékeket tárol.</p>" +
+      "<p>A szöveg és a kép leckében láttad, hogyan lesz a betűből és a pixelből szám. A hangnál és a videónál két kérdés van: <b>milyen sűrűn</b> mérünk (mintavételezés), és <b>milyen pontosan</b> (kvantálás).</p>" +
+      "<div class='note'><b>Az átalakítók:</b> a mikrofon jelét az A/D átalakító (analóg → digitális) alakítja számokká, a hangszóró előtt a D/A átalakító vissza.</div>" },
+    { k: "Mintavétel", t: "Mintavételezés: milyen sűrűn mérünk?", h:
+      "<p>A <b>mintavételi frekvencia</b> megmondja, hány mérés (minta) történik másodpercenként. Mértékegysége a hertz (Hz): 1 Hz = 1 minta másodpercenként, 1 kHz = 1000 Hz.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Hol?</th><th>Mintavétel</th></tr><tr><td>telefon (régi)</td><td>8 000 Hz</td></tr><tr><td>CD</td><td>44 100 Hz</td></tr><tr><td>videó, stúdió</td><td>48 000 Hz</td></tr><tr><td>hi-res zene</td><td>96 000 Hz</td></tr></table></div>" +
+      "<p><b>Nyquist-elv:</b> a mintavétel legyen legalább kétszer olyan sűrű, mint a legmagasabb rögzítendő hang. Az ember kb. 20 000 Hz-ig hall, ezért elég a 44 100 Hz.</p>" + playBtn("minta"), init: playInit },
+    { k: "Kvantálás", t: "Kvantálás és bitmélység", h:
+      "<p>Minden mért értéket a legközelebbi megengedett szintre kerekítünk. A szintek számát a <b>bitmélység</b> adja meg: b biten 2<sup>b</sup> szint.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Bitmélység</th><th>Szintek</th></tr><tr><td>1 bit</td><td>2</td></tr><tr><td>8 bit</td><td>256</td></tr><tr><td>16 bit (CD)</td><td>65 536</td></tr><tr><td>24 bit (stúdió)</td><td>16 777 216</td></tr></table></div>" +
+      "<p>A kerekítés miatti eltérés a <b>kvantálási hiba</b>: halk zajként hallod. Fent a „Kvantálva” gombbal meghallgathatod 1–4 biten.</p>" },
+    { k: "Csatornák", t: "Mono, sztereó, térhatás", h:
+      "<ul><li><b>Mono</b>: 1 csatorna, egy hangsáv.</li><li><b>Sztereó</b>: 2 csatorna (bal és jobb): kétszer annyi adat.</li><li><b>Térhatású</b> (5.1, 7.1): 6 vagy 8 csatorna, moziban, játékban.</li></ul>" +
+      "<p class='eq'>bitráta = mintavételi frekvencia · bitmélység · csatornák</p>" +
+      "<p>CD: 44 100 · 16 · 2 = 1 411 200 bit/s ≈ 1411 kbit/s. Egy perc CD-hang kb. 10 MB.</p>" },
+    { k: "Hang mérete", t: "Mekkora a hangfájl?", h:
+      "<p class='eq'>méret (bájt) = frekvencia · bitmélység · csatornák · másodperc : 8</p>" +
+      "<p>Példa: 10 másodperc CD-minőségben: 44 100 · 16 · 2 · 10 : 8 = 1 764 000 bájt ≈ 1722,7 KB ≈ 1,68 MB.</p>" +
+      "<p>A tömörítetlen hangot a <b>WAV</b> fájl tárolja. Egy 3 perces dal így kb. 30 MB lenne.</p>" + playBtn("hang"), init: playInit },
+    { k: "Tömörítés", t: "Veszteségmentes és veszteséges tömörítés", h:
+      "<ul><li><b>Veszteségmentes</b> (FLAC, ZIP, PNG): kicsomagolva bitre pontosan visszakapod az eredetit. Kb. a felére csökken a méret.</li><li><b>Veszteséges</b> (MP3, AAC, Opus, JPG, H.264): eldobja, amit úgysem hallasz vagy látsz: a nagyon magas hangokat, a hangos hang mellett elvesző halkat. Akár tizedére-huszadára csökken.</li></ul>" +
+      "<p>Az MP3 bitrátája tipikusan 128–320 kbit/s. Egy 3 perces dal 128 kbit/s-mal: 128 000 · 180 : 8 = 2 880 000 bájt ≈ 2,7 MB, a WAV kb. tizede.</p>" +
+      "<div class='mistake'><b>Vigyázz:</b> a veszteséges fájlt nem lehet visszaalakítani. MP3-ból újra MP3-at mentve minden alkalommal romlik a minőség.</div>" },
+    { k: "Videó", t: "A videó: sok kép egymás után", h:
+      "<p>A videó gyorsan váltakozó képkockák sorozata, plusz hang. A <b>képkocka/s</b> (fps): film 24, tévé 25 vagy 30, játék 60 vagy több.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Név</th><th>Felbontás</th></tr><tr><td>HD (720p)</td><td>1280 × 720</td></tr><tr><td>Full HD (1080p)</td><td>1920 × 1080</td></tr><tr><td>4K (UHD)</td><td>3840 × 2160</td></tr></table></div>" +
+      "<p class='eq'>méret (bájt) = szélesség · magasság · színmélység · fps · másodperc : 8</p>" + playBtn("video"), init: playInit },
+    { k: "Kodek", t: "Miért kell a videót tömöríteni?", h:
+      "<p>Egy másodperc tömörítetlen Full HD videó 30 fps-sel: 1920 · 1080 · 24 · 30 : 8 ≈ 178 MB. Egy kétórás film több mint 1 TB lenne!</p>" +
+      "<p>A <b>kodek</b> (kódoló–dekódoló, például H.264, H.265, AV1) két trükköt használ:</p><ul><li>egy képkockán belül, mint a JPG: a hasonló színű területeket egyszerűsíti,</li><li>a képkockák között: csak azt tárolja, ami változott (a háttér általában ugyanaz).</li></ul>" +
+      "<p>Így egy Full HD film 5 Mbit/s körül streamelhető.</p>" },
+    { k: "Streaming", t: "Streaming és sávszélesség", h:
+      "<p>Streamelésnél a videó letöltés közben megy. A gép egy kis részt előre letölt (<b>puffer</b>), hogy egy pillanatnyi lassulás ne akassza meg.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Minőség</th><th>Kb. bitráta</th></tr><tr><td>zene</td><td>0,16 Mbit/s</td></tr><tr><td>HD videó</td><td>3 Mbit/s</td></tr><tr><td>Full HD videó</td><td>5 Mbit/s</td></tr><tr><td>4K videó</td><td>15–25 Mbit/s</td></tr></table></div>" +
+      "<p>Adatforgalom: 5 Mbit/s · 3600 s : 8 = 2250 MB, kb. 2,2 GB egy óra Full HD. Mobilneten ez gyorsan elfogyasztja a keretet!</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Bit és bájt.</b> A képlet bitet ad: a végén oszd 8-cal, ha bájt kell.</div>" +
+      "<div class='mistake'><b>1000 vagy 1024?</b> A fájlméretnél ezen az oldalon 1 KB = 1024 bájt; a bitrátánál és a netsebességnél 1 kbit = 1000 bit. Mindig nézd meg, mit kér a feladat.</div>" +
+      "<div class='mistake'><b>Kimaradt a sztereó.</b> Sztereónál kétszer annyi az adat, mint monónál.</div>" +
+      "<div class='mistake'><b>Kimaradt az idő.</b> A bitráta másodpercre szól: még meg kell szorozni a másodpercek számával (és a perc 60 másodperc!).</div>" +
+      "<div class='mistake'><b>Bitmélység és szintek összekeverése.</b> 16 bit nem 16 szint, hanem 2<sup>16</sup> = 65 536.</div>" },
+    { k: "Trükkök", t: "Fejben számolás", h:
+      "<div class='two-col'><div class='trick'><span class='t'>CD-hang percenként</span><span>176 400 bájt/s · 60 ≈ 10 MB percenként.</span></div>" +
+      "<div class='trick'><span class='t'>MP3 percenként</span><span>128 kbit/s = 16 000 bájt/s, percenként kb. 1 MB.</span></div>" +
+      "<div class='trick'><span class='t'>Mbit/s → MB/s</span><span>Oszd 8-cal: 40 Mbit/s = 5 MB/s.</span></div>" +
+      "<div class='trick'><span class='t'>Hány bit kell?</span><span>Ha N szint kell, keresd a legkisebb b-t, amire 2<sup>b</sup> legalább N: 100 szinthez 7 bit (128).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const FORMATS = [
+    [["MP3", "veszteséges"], ["WAV", "tömörítetlen"], ["FLAC", "veszteségmentes"], ["JPG", "veszteséges"], ["PNG", "veszteségmentes"], ["ZIP", "veszteségmentes"]],
+    [["AAC", "veszteséges"], ["MP4 (H.264)", "veszteséges"], ["BMP", "tömörítetlen"], ["FLAC", "veszteségmentes"], ["Opus", "veszteséges"], ["ZIP", "veszteségmentes"], ["WAV", "tömörítetlen"]],
+    [["H.265 (HEVC)", "veszteséges"], ["ALAC", "veszteségmentes"], ["OGG Vorbis", "veszteséges"], ["7z", "veszteségmentes"], ["GIF (256 színig)", "veszteségmentes"], ["AV1", "veszteséges"], ["WAV", "tömörítetlen"]]
+  ];
+  const FOG = [
+    [["Egy másodperc alatt hány mérés (minta) történik.", "mintavételi frekvencia"], ["Hány biten tároljuk egy minta értékét.", "bitmélység"], ["Folytonos jel, bármilyen értéket felvehet.", "analóg jel"], ["Számok sorozataként tárolt jel.", "digitális jel"], ["Hány képkocka jelenik meg másodpercenként.", "fps"]],
+    [["A mért értéket a legközelebbi megengedett szintre kerekítjük.", "kvantálás"], ["Másodpercenként hány bit adat jön vagy megy.", "bitráta"], ["Két hangsáv, bal és jobb.", "sztereó"], ["Egy kép szélessége és magassága pixelben.", "felbontás"], ["Előre letöltött adat, hogy a lejátszás ne akadjon meg.", "puffer"]],
+    [["A videót tömörítő és visszaalakító program vagy szabvány.", "kodek"], ["A mintavétel legyen legalább kétszer olyan sűrű, mint a legmagasabb hang.", "Nyquist-elv"], ["A kerekítés miatti eltérés, halk zajként hallható.", "kvantálási hiba"], ["A mikrofon jelét számokká alakító egység.", "A/D átalakító"], ["Csak azt tárolja, ami két képkocka között megváltozott.", "képkockák közötti tömörítés"]]
+  ];
+  const types = [
+    { id: "szint", name: "Szintek és bitek", gen(l){
+      if (l === 1){ const b = rnd(1, 8), L = Math.pow(2, b);
+        return { q: "Hány szintet tud megkülönböztetni egy <span class='num'>" + b + "</span> bites kvantálás?", kind: "input", mode: "numeric", answer: L, sol: "<p>b biten 2<sup>b</sup> szint: 2<sup>" + b + "</sup> = " + L + ".</p>", check: numCheck(L, 0, "Nem jó. Kettőt emeld a bitmélységre.", x => x === 2 * b ? "Nem 2 · b, hanem 2 a b-ediken: minden új bit megduplázza a szintek számát." : x === b ? "Ez a bitek száma. A szintek száma 2 a bitmélység-ediken." : "") };
+      }
+      if (l === 2){ const b = pick([4, 6, 8, 10, 12, 16]), L = Math.pow(2, b);
+        return { q: "Egy hangkártya <span class='num'>" + L + "</span> szintet különböztet meg. Hány bites a bitmélysége?", kind: "input", mode: "numeric", answer: b, sol: "<p>Melyik kitevőre ad a 2 ennyit: " + L + "? 2<sup>" + b + "</sup> = " + L + ", tehát " + b + " bit.</p>", check: numCheck(b, 0, "Nem jó. Keresd meg, hányadik hatványa a 2-nek.") };
+      }
+      let N, b; do { N = rnd(5, 3000); b = Math.ceil(Math.log2(N)); } while (Math.pow(2, b) === N || Math.pow(2, b - 1) >= N);
+      return { q: "Egy mérőműszernek legalább <span class='num'>" + N + "</span> különböző szintet kell megkülönböztetnie. Legalább hány bit kell?", kind: "input", mode: "numeric", answer: b, sol: "<p>2<sup>" + (b - 1) + "</sup> = " + Math.pow(2, b - 1) + ", ez még kevés; 2<sup>" + b + "</sup> = " + Math.pow(2, b) + ", ez már elég. Tehát " + b + " bit.</p>", check: numCheck(b, 0, "Nem jó. Keresd a legkisebb b-t, amire 2 a b-ediken legalább ennyi: " + N + ".", x => x === b - 1 ? "Kevés: ennyi bittel (" + (b - 1) + ") csak " + Math.pow(2, b - 1) + " szint van." : "") };
+    } },
+    { id: "hang", name: "Hangfájl mérete", gen(l){
+      let f, b, ch, t, unit, ans, tol, bytes, q;
+      if (l === 1){ f = pick([8000, 11025, 16000, 22050]); b = 8; ch = 1; t = rnd(1, 10); bytes = f * b * ch * t / 8; unit = "bájt"; ans = bytes; tol = 0; }
+      else if (l === 2){ f = pick([22050, 44100, 48000]); b = 16; ch = pick([1, 2]); t = rnd(2, 30); bytes = f * b * ch * t / 8; unit = "KB"; ans = Math.round(bytes / 1024); tol = 0.5; }
+      else { f = pick([44100, 48000]); b = pick([16, 24]); ch = 2; t = rnd(1, 5) * 60; bytes = f * b * ch * t / 8; unit = "MB"; ans = Math.round(bytes / 1048576 * 10) / 10; tol = 0.051; }
+      const tt = t >= 60 ? (t / 60) + " perc" : t + " másodperc";
+      q = "Mekkora egy tömörítetlen hangfelvétel? Mintavétel: <span class='num'>" + f + " Hz</span>, " + b + " bit, " + (ch === 2 ? "sztereó" : "mono") + ", hossza: " + tt + ". Add meg <b>" + unit + "</b> mértékegységben" + (unit === "KB" ? ", egészre kerekítve." : unit === "MB" ? ", egy tizedesre kerekítve." : ".");
+      const fr = hangFrames(f, b, ch, t);
+      return { q, kind: "input", mode: "decimal", answer: unit === "MB" ? fmt(ans, 1) : ans, frames: fr, title: "Hangfájl mérete",
+        sol: "<p>" + f + " · " + b + " · " + ch + " · " + t + " : 8 = " + bytes + " bájt" + (unit === "KB" ? " = " + fmt(bytes / 1024, 2) + " KB ≈ " + ans + " KB" : unit === "MB" ? " = " + fmt(bytes / 1048576, 3) + " MB ≈ " + fmt(ans, 1) + " MB" : "") + ".</p>",
+        check: numCheck(ans, tol, "Nem jó. Frekvencia · bitmélység · csatornák · másodperc, aztán : 8 a bájthoz" + (unit !== "bájt" ? ", és : 1024 minden váltásnál." : "."), x => {
+          const v = unit === "bájt" ? [bytes * 8, "Ez bitben van: oszd 8-cal."] : unit === "KB" ? [bytes / 1000, "1 KB = 1024 bájt, nem 1000."] : [bytes / 1e6, "1 MB = 1024 · 1024 bájt, nem egymillió."];
+          if (near(x, Math.round(v[0] * 10) / 10) || near(x, Math.round(v[0]))) return v[1];
+          if (ch === 2 && (near(x, ans / 2) || x === ans / 2)) return "Sztereó: két csatorna, kétszer annyi adat.";
+          if (unit !== "bájt" && near(x, unit === "KB" ? Math.round(bytes * 8 / 1024) : Math.round(bytes * 8 / 1048576 * 10) / 10)) return "Kimaradt a : 8 (bitből bájt).";
+          if (t >= 60 && near(x, Math.round(bytes / 60 / 1048576 * 10) / 10)) return "A perc 60 másodperc: a percet előbb váltsd másodpercre.";
+          return ""; }) };
+    } },
+    { id: "bitrata", name: "Bitráta", gen(l){
+      if (l < 3){
+        const f = l === 1 ? pick([8000, 16000, 32000]) : pick([8000, 16000, 32000, 48000]), b = l === 1 ? 8 : pick([8, 16, 24]), ch = l === 1 ? 1 : pick([1, 2]), k = f * b * ch / 1000;
+        return { q: "Mekkora a tömörítetlen hang bitrátája kbit/s-ban? Mintavétel: <span class='num'>" + f + " Hz</span>, " + b + " bit, " + (ch === 2 ? "sztereó" : "mono") + ". (1 kbit = 1000 bit)", kind: "input", mode: "numeric", answer: k,
+          sol: "<p>" + f + " · " + b + " · " + ch + " = " + f * b * ch + " bit/s = " + k + " kbit/s.</p>", check: numCheck(k, 0, "Nem jó. Frekvencia · bitmélység · csatornák, aztán : 1000.", x => x === k / 8 ? "Ez kbájt/s lenne: a bitráta bitben mérendő, ne oszd 8-cal." : ch === 2 && x === k / 2 ? "Sztereó: két csatorna." : "") };
+      }
+      const r = pick([96, 128, 160, 192, 256, 320]), m = rnd(2, 6), bytes = r * 1000 * m * 60 / 8, mb = Math.round(bytes / 1048576 * 10) / 10;
+      return { q: "Mekkora egy <span class='num'>" + m + "</span> perces MP3, ha a bitrátája <span class='num'>" + r + " kbit/s</span>? Add meg MB-ban, egy tizedesre kerekítve. (1 kbit = 1000 bit, 1 MB = 1024 · 1024 bájt)", kind: "input", mode: "decimal", answer: fmt(mb, 1),
+        sol: "<p>" + r + " · 1000 · " + m * 60 + " : 8 = " + bytes + " bájt = " + fmt(bytes / 1048576, 3) + " MB ≈ " + fmt(mb, 1) + " MB.</p>",
+        check: numCheck(mb, 0.051, "Nem jó. Bitráta (bit/s) · másodperc : 8 → bájt, aztán : 1024 : 1024.", x => near(x, Math.round(bytes * 8 / 1048576 * 10) / 10) ? "Kimaradt a : 8 (bitből bájt)." : near(x, Math.round(bytes / 60 / 1048576 * 10) / 10) ? "A perc 60 másodperc." : near(x, Math.round(bytes / 1e6 * 10) / 10) ? "1 MB = 1024 · 1024 bájt, nem egymillió." : "") };
+    } },
+    { id: "video", name: "Videó mérete", gen(l){
+      if (l === 1){ const [w, h] = pick([[320, 240], [640, 480], [1024, 768]]), c = pick([8, 16, 24]), bytes = w * h * c / 8, kb = bytes / 1024;
+        return { q: "Mekkora egyetlen tömörítetlen képkocka KB-ban? <span class='num'>" + w + " × " + h + "</span> pixel, " + c + " bit színmélység.", kind: "input", mode: "numeric", answer: kb,
+          sol: "<p>" + w + " · " + h + " · " + c + " : 8 = " + bytes + " bájt, : 1024 = " + kb + " KB.</p>", check: numCheck(kb, 0, "Nem jó. Szélesség · magasság · színmélység : 8, aztán : 1024.", x => x === bytes ? "Ez bájt, oszd 1024-gyel." : x === kb * 8 ? "Kimaradt a : 8." : "") };
+      }
+      if (l === 2){ const [w, h] = pick([[640, 480], [1280, 720]]), c = 24, fps = pick([24, 25, 30]), t = rnd(1, 10), bytes = w * h * c * fps * t / 8, mb = Math.round(bytes / 1048576 * 10) / 10;
+        return { q: "Mekkora egy tömörítetlen videó MB-ban, egy tizedesre kerekítve? <span class='num'>" + w + " × " + h + "</span>, " + c + " bit, " + fps + " képkocka/s, hossza: " + t + " másodperc.", kind: "input", mode: "decimal", answer: fmt(mb, 1), frames: videoFrames(w, h, c, fps, t), title: "Videó mérete",
+          sol: "<p>" + w + " · " + h + " · " + c + " · " + fps + " · " + t + " : 8 = " + bytes + " bájt = " + fmt(bytes / 1048576, 3) + " MB.</p>", check: numCheck(mb, 0.051, "Nem jó. Szélesség · magasság · színmélység · fps · másodperc : 8, aztán : 1024 : 1024.", x => near(x, Math.round(bytes / fps / 1048576 * 10) / 10) ? "Kimaradt a képkocka/s." : near(x, Math.round(bytes / 1e6 * 10) / 10) ? "1 MB = 1024 · 1024 bájt." : "") };
+      }
+      const [w, h, nm] = pick([[1920, 1080, "Full HD"], [3840, 2160, "4K"], [1280, 720, "HD"]]), fps = pick([25, 30, 60]), m = rnd(1, 5), bytes = w * h * 24 * fps * m * 60 / 8, gb = Math.round(bytes / 1073741824 * 10) / 10;
+      return { q: "Hány GB lenne egy <span class='num'>" + m + "</span> perces tömörítetlen " + nm + " videó (" + w + " × " + h + ", 24 bit, " + fps + " képkocka/s)? Egy tizedesre kerekíts. (1 GB = 1024 MB)", kind: "input", mode: "decimal", answer: fmt(gb, 1), frames: videoFrames(w, h, 24, fps, m * 60), title: "Videó mérete",
+        sol: "<p>" + w + " · " + h + " · 24 · " + fps + " · " + m * 60 + " : 8 = " + bytes + " bájt; : 1024 : 1024 : 1024 ≈ " + fmt(gb, 1) + " GB.</p>", check: numCheck(gb, 0.051, "Nem jó. A perc 60 másodperc; a végén háromszor oszd 1024-gyel (bájt → KB → MB → GB).", x => near(x, Math.round(bytes / 60 / 1073741824 * 10) / 10) ? "A perc 60 másodperc." : near(x, Math.round(bytes / 1e9 * 10) / 10) ? "1 GB = 1024 · 1024 · 1024 bájt, nem egymilliárd." : "") };
+    } },
+    { id: "stream", name: "Letöltés, streaming", gen(l){
+      if (l === 1){ let v, t, mb; do { v = pick([8, 16, 40, 80, 100, 200]); t = rnd(2, 30); mb = t * v / 8; } while (mb % 1);
+        return { q: "Mennyi idő alatt jön le egy <span class='num'>" + mb + " MB</span> méretű zenei album <span class='num'>" + v + " Mbit/s</span> sebességgel? (másodpercben)", kind: "input", mode: "numeric", answer: t,
+          sol: "<p>" + mb + " · 8 = " + mb * 8 + " Mbit, ez : " + v + " = " + t + " másodperc.</p>", check: numCheck(t, 0, "Nem jó. Idő = méret (MB) · 8 : sebesség (Mbit/s).", x => near(x, mb / v) ? "Kimaradt a · 8: a fájl bájtban, a sebesség bitben van." : "") };
+      }
+      if (l === 2){ const r = pick([3, 5, 8, 15, 25]), m = pick([10, 20, 30, 45, 60, 90]), mb = r * m * 60 / 8;
+        return { q: "Egy videót <span class='num'>" + r + " Mbit/s</span> bitrátával streamelsz <span class='num'>" + m + "</span> percig. Hány MB adatot fogyaszt? (Itt 1 Mbit = 1 000 000 bit, és 1 MB = 8 Mbit, ahogy a hálózatok leckében.)", kind: "input", mode: "decimal", answer: fmt(mb), sol: "<p>" + r + " Mbit/s · " + m * 60 + " s = " + r * m * 60 + " Mbit, : 8 = " + fmt(mb) + " MB.</p>",
+          check: numCheck(mb, 0.051, "Nem jó. Bitráta · másodperc, aztán : 8.", x => near(x, r * m * 60) ? "Ez megabit: oszd 8-cal." : near(x, r * m / 8) ? "A perc 60 másodperc." : "") };
+      }
+      const g = pick([2, 4, 6, 8, 16, 32]), v = pick([50, 100, 200, 500, 1000]), s = g * 1024 * 8 / v, mins = Math.round(s / 60 * 10) / 10;
+      return { q: "Egy <span class='num'>" + g + " GB</span> méretű 4K film letöltése <span class='num'>" + v + " Mbit/s</span> sebességgel hány percig tart? Egy tizedesre kerekíts. (1 GB = 1024 MB, 1 MB = 8 Mbit)", kind: "input", mode: "decimal", answer: fmt(mins, 1),
+        sol: "<p>" + g + " · 1024 = " + g * 1024 + " MB, · 8 = " + g * 8192 + " Mbit, : " + v + " = " + fmt(s, 2) + " s, : 60 ≈ " + fmt(mins, 1) + " perc.</p>",
+        check: numCheck(mins, 0.051, "Nem jó. GB → MB (· 1024), → Mbit (· 8), : sebesség = másodperc, : 60 = perc.", x => near(x, Math.round(s * 10) / 10) ? "Ez másodperc: oszd 60-nal." : near(x, Math.round(s / 8 / 60 * 10) / 10) ? "Kimaradt a · 8." : "") };
+    } },
+    { id: "format", name: "Formátumok", gen(l){
+      const q = pick(FORMATS[l - 1]);
+      return choice("Milyen ez a formátum? <span class='num'>" + esc(q[0]) + "</span>", q[1], ["veszteséges", "veszteségmentes", "tömörítetlen"].filter(x => x !== q[1]),
+        "<p><b>" + esc(q[0]) + "</b>: " + q[1] + ". Veszteséges: MP3, AAC, Opus, OGG Vorbis, JPG, H.264, H.265, AV1. Veszteségmentes: FLAC, ALAC, PNG, GIF, ZIP, 7z. Tömörítetlen: WAV, BMP.</p>", "Nem jó. Visszakapod-e bitre pontosan az eredetit? Ha igen, veszteségmentes; ha nincs is tömörítve, tömörítetlen.");
+    } },
+    { id: "fog", name: "Fogalmak", gen(l){
+      const pool = FOG[l - 1], q = pick(pool), o = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Mire illik ez a leírás? " + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat és a puskát.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "hangvideo", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["mintavételi frekvencia", "minta / s (Hz); CD: 44 100 Hz"], ["bitmélység", "bit / minta; b bit → 2^b szint"], ["csatornák", "mono 1, sztereó 2"], ["bitráta", "bit / s; CD: kb. 1411 kbit/s, MP3: 128–320 kbit/s"], ["fps", "képkocka / s: 24, 25, 30, 60"], ["felbontás", "HD 1280 × 720, Full HD 1920 × 1080, 4K 3840 × 2160"], ["veszteséges", "MP3, AAC, JPG, H.264"], ["veszteségmentes", "FLAC, PNG, ZIP"], ["tömörítetlen", "WAV, BMP"]];
+  $("#cheat").innerHTML = "<tr><th>Fogalom</th><th>Röviden</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

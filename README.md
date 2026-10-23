@@ -29,6 +29,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Tizenhatos számrendszer](tizenhatos-szamrendszer.html) | Négy lámpa egy jegy, átváltás tízes, kettes és tizenhatos között, színkódok |
 | [Logikai műveletek](logikai-muveletek.html) | NEM, ÉS, VAGY, KIZÁRÓ VAGY, igazságtábla, bitenkénti műveletek, Python-feltételek |
 | [Szöveg és kép kódolása](szoveg-es-kep.html) | ASCII, Unicode, UTF-8, pixelek, színmélység, képméret, tömörítés (RLE), Caesar- és Vigenère-kód |
+| [Hang és videó digitalizálása](hang-es-video.html) | Mintavételezés, kvantálás, bitmélység, mono és sztereó, hangfájl és videó mérete, bitráta, tömörítés, kodek, streaming, Nyquist-elv; mintavételező csúszkákkal |
 | [A számítógép felépítése](szamitogep-felepitese.html) | Neumann-elvek, CPU (vezérlőegység, ALU, regiszterek), gépi ciklus, órajel, memóriahierarchia, háttértárak, csatlakozók, UEFI, bootolás, RAID, perifériák; lépésenként futó játék-processzor |
 | [HTML alapok](html-alapok.html) | Élő szerkesztő, az oldal váza, címsorok, linkek, képek, listák, táblázatok, hibakeresés |
 | [CSS alapok](css-alapok.html) | Szelektorok, színek, dobozmodell, display és position, melyik szabály nyer |
