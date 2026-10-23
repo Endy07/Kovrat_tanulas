@@ -1,0 +1,933 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023035830">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Hálózatok alapjai</title>
+<style>
+.ipin{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ipin label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--panel-muted);font-family:var(--mono)}
+.ipin input[type=text]{width:100%}
+.ipin input[type=range]{width:100%;accent-color:var(--led)}
+.ipin b{color:var(--led)}
+.bitview{display:flex;flex-direction:column;gap:6px}
+.bitrow{font-family:var(--mono);font-size:clamp(.68rem,3.1vw,.95rem);white-space:nowrap;line-height:1.5}
+.bitrow .lb{display:block;font-size:.75rem;color:var(--panel-muted);letter-spacing:.06em}
+.bitrow .n{color:var(--led);font-weight:700}
+.bitrow .h{color:#7E8B9C}
+.bitrow .sep{color:#5A6676}
+.verdict{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,5vw,1.9rem)}
+.verdict.y{color:#52C584}.verdict.nn{color:#F2796C}
+.net{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;font-family:var(--body)}
+.node{border:1.5px solid #3A4656;border-radius:10px;padding:8px 10px;font-size:.85rem;display:flex;flex-direction:column;gap:2px}
+.node b{font-size:.95rem}
+.node span{font-family:var(--mono);font-size:.75rem;color:var(--panel-muted);overflow-wrap:anywhere}
+.node.on{border-color:var(--led);background:#4a3a12}
+.node.on b{color:#FFB01F}
+.msg{margin-top:10px;font-family:var(--mono);font-size:.85rem;color:#FFB01F;overflow-wrap:anywhere}
+.big{font-family:var(--mono);font-size:1.4rem;font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · hálózatok</span>
+  <h1>Hálózatok alapjai</h1>
+  <p class="lead">Hogyan talál egymásra két gép? IP-cím, maszk, router, DNS. Írj be két címet, állítsd a prefixet, és nézd meg, egy hálózatban vannak-e.</p>
+  <div class="panel">
+    <span class="eyebrow">Két gép, egy maszk: egy hálózatban vannak?</span>
+    <div class="ipin">
+      <label>1. gép címe<input id="ipA" type="text" value="192.168.1.10" inputmode="decimal" autocomplete="off" spellcheck="false"></label>
+      <label>2. gép címe<input id="ipB" type="text" value="192.168.1.77" inputmode="decimal" autocomplete="off" spellcheck="false"></label>
+      <label>Prefix: <b id="pv">/24</b><input id="pre" type="range" min="8" max="30" value="24" aria-label="Prefix"></label>
+    </div>
+    <div class="bitview" id="bits"></div>
+    <div class="readout">
+      <div><div class="eyebrow">Eredmény</div><div class="verdict" id="verdict"></div></div>
+      <div><div class="eyebrow">Gépek ebben a hálózatban</div><div class="big led" id="hosts"></div></div>
+      <div class="expr" id="expr"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: hogyan működik a hálózat</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="okt" aria-selected="true">IP-cím kettesben</button>
+    <button class="tab" data-m="same" aria-selected="false">Egy hálózatban?</button>
+    <button class="tab" data-m="dns" aria-selected="false">Mi történik, ha beírsz egy címet?</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. Az IP-címeket pontokkal írd (például 192.168.1.0), a prefixet perjellel vagy anélkül (/26 vagy 26). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Egy oktett helyiértékei</span><span class="mono">128 · 64 · 32 · 16 · 8 · 4 · 2 · 1</span><span>Összegük 255, ezért egy oktett 0 és 255 között van.</span></div>
+    <div class="trick"><span class="t">Gépek száma</span><span class="mono">2<sup>(32 − prefix)</sup> − 2</span><span>A kettőt a hálózati cím (csupa 0) és a szórási cím (csupa 1) viszi el.</span></div>
+    <div class="trick"><span class="t">Privát címek</span><span class="mono">10.0.0.0/8 · 172.16.0.0/12 · 192.168.0.0/16</span><span>Otthon és az iskolában ilyet kapsz. A 127.0.0.1 a saját géped (localhost).</span></div>
+    <div class="trick"><span class="t">Letöltési idő</span><span class="mono">idő (s) = méret (MB) · 8 : sebesség (Mbit/s)</span><span>A szolgáltató bitben adja meg a sebességet, a fájl mérete bájtban van.</span></div>
+    <div class="trick"><span class="t">Portok</span><span class="mono">HTTP 80 · HTTPS 443 · DNS 53 · SSH 22</span><span>A port mondja meg, a gépen melyik program kapja a csomagot.</span></div>
+    <div class="trick"><span class="t">Parancssor (Windows)</span><span class="mono">ipconfig · ping · tracert · nslookup</span><span>Saját cím · elérhető-e · merre megy · mi a név címe.</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, art, Art } = K;
+  // felolvasás: IP-cím pontokkal, bitsorozat jegyenként, prefix, mértékegységek
+  K.tts.rules.push(
+    [/(\d+)\.(\d+)\.(\d+)\.(\d+)/g, "$1 pont $2 pont $3 pont $4"],
+    [/\b([01]{5,})\b/g, m => m.split("").join(" ")],
+    [/\/(\d+)/g, " per $1"], [/Mbit\/s/g, "megabit per másodperc"], [/\bMB\b/g, "megabájt"], [/\bGB\b/g, "gigabájt"],
+    [/\s:\s/g, " osztva "], [/\s&amp;\s|\s&\s/g, " és "]
+  );
+
+  /* ---------- Segédek ---------- */
+  const P8 = [128, 64, 32, 16, 8, 4, 2, 1];
+  const bin8 = n => n.toString(2).padStart(8, "0");
+  const ip = a => a.join(".");
+  const parseIp = s => {
+    const p = String(s).trim().split(".");
+    if (p.length !== 4 || !p.every(x => /^\d{1,3}$/.test(x))) return null;
+    const a = p.map(Number);
+    return a.every(x => x <= 255) ? a : null;
+  };
+  const maskA = p => [0, 1, 2, 3].map(i => 256 - Math.pow(2, 8 - Math.max(0, Math.min(8, p - 8 * i))));
+  const netA = (a, p) => { const m = maskA(p); return a.map((x, i) => x & m[i]); };
+  const bcA = (a, p) => { const m = maskA(p); return a.map((x, i) => (x & m[i]) | (255 - m[i])); };
+  const hosts = p => Math.pow(2, 32 - p) - 2;
+  const cleanIp = v => String(v).replace(/\s+/g, "").replace(/,/g, ".");
+  const cleanPre = v => String(v).replace(/\s+/g, "").replace(/^\//, "");
+  // bitsor színezve: az első p bit a hálózat (n), a többi a gép (h)
+  const bitsHtml = (a, p, label) => {
+    let h = '<div class="bitrow"><span class="lb">' + label + '</span>', k = 0;
+    a.forEach((x, i) => {
+      if (i) h += '<span class="sep">.</span>';
+      bin8(x).split("").forEach(b => { h += '<span class="' + (k < p ? "n" : "h") + '">' + b + "</span>"; k++; });
+    });
+    return h + "</div>";
+  };
+  const privIp = () => pick([() => [192, 168, rnd(0, 20), rnd(1, 254)], () => [10, rnd(0, 255), rnd(0, 255), rnd(1, 254)], () => [172, rnd(16, 31), rnd(0, 255), rnd(1, 254)]])();
+
+  /* ---------- Hero: két gép, egy maszk ---------- */
+  function hero(){
+    const p = Number($("#pre").value); $("#pv").textContent = "/" + p;
+    const A = parseIp($("#ipA").value), B = parseIp($("#ipB").value);
+    $("#ipA").style.borderColor = A ? "" : "var(--bad)"; $("#ipB").style.borderColor = B ? "" : "var(--bad)";
+    const m = maskA(p);
+    $("#hosts").textContent = hosts(p);
+    if (!A || !B){
+      $("#bits").innerHTML = bitsHtml(m, p, "Maszk: " + ip(m));
+      $("#verdict").className = "verdict nn"; $("#verdict").textContent = "Hibás cím";
+      $("#expr").textContent = "Egy IP-cím négy, pontokkal elválasztott szám, mindegyik 0 és 255 között. Például: 192.168.1.10";
+      return;
+    }
+    const nA = netA(A, p), nB = netA(B, p), same = ip(nA) === ip(nB);
+    $("#bits").innerHTML = bitsHtml(A, p, "1. gép: " + ip(A)) + bitsHtml(B, p, "2. gép: " + ip(B)) + bitsHtml(m, p, "Maszk: " + ip(m));
+    $("#verdict").className = "verdict " + (same ? "y" : "nn");
+    $("#verdict").textContent = same ? "Igen, egy hálózat" : "Nem: router kell";
+    $("#expr").innerHTML = "Hálózati cím (cím ÉS maszk) · 1. gép: <b>" + ip(nA) + "/" + p + "</b> · 2. gép: <b>" + ip(nB) + "/" + p + "</b>. " +
+      (same ? "Az első " + p + " bit (sárga) mindkettőnél ugyanaz." : "Az első " + p + " bit (sárga) eltér, ezért a csomag az átjárón (routeren) át megy.");
+  }
+  ["#ipA", "#ipB", "#pre"].forEach(s => $(s).addEventListener("input", hero));
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  const tbl = (d, cur, r) => '<div class="ptwrap"><table class="pt"><tr>' + P8.map((p, i) => "<th" + (i === cur ? ' class="hl"' : "") + ">" + p + "</th>").join("") +
+    "</tr><tr>" + P8.map((p, i) => "<td" + (i === cur ? ' class="hl"' : "") + ">" + (i < d.length ? d[i] : "") + "</td>").join("") + "</tr></table></div>" +
+    (r == null ? "" : '<p style="margin-top:10px">Maradék: <span class="cur">' + r + "</span></p>");
+  // egy oktett átváltása az iskolai módszerrel: hatványtáblázat, hányszor fér bele, kivonás
+  function octSteps(n, F, pre){
+    const d = []; let r = n;
+    F.push({ cap: (pre || "") + "Átváltandó szám: " + n + ". Egy oktett 8 bit, ezért a hatványtáblázat 128-tól 1-ig tart, nyolc hellyel.", html: tbl(d, -1, r) });
+    P8.forEach((p, i) => {
+      if (p <= r){ d.push(1); F.push({ cap: "Belefér " + art(p) + " " + p + " a maradékba (" + r + ")? Igen: 1-et írunk. Maradék: " + r + " − " + p + " = " + (r - p) + ".", html: tbl(d, i, r - p) }); r -= p; }
+      else { d.push(0); F.push({ cap: "Belefér " + art(p) + " " + p + " a maradékba (" + r + ")? Nem: 0-t írunk, a maradék marad: " + r + ".", html: tbl(d, i, r) }); }
+    });
+    const ones = P8.filter((p, i) => d[i] === 1);
+    F.push({ cap: "Kész: " + n + " = " + bin8(n) + ". Próba: összeadjuk azokat a helyiértékeket, ahol 1 áll: " + (ones.length ? ones.join(" + ") : "0") + " = " + n + ".", html: tbl(d, -1) + '<p class="big led" style="margin-top:10px">' + n + " = " + bin8(n) + "</p>" });
+  }
+  function octFrames(a){
+    const F = [{ cap: "Az IP-cím: " + ip(a) + ". Négy oktettből áll, mindegyiket külön váltjuk kettesbe, és pontokkal választjuk el.", html: '<p class="big">' + ip(a) + "</p>" }];
+    a.forEach((x, i) => octSteps(x, F, (i + 1) + ". oktett. "));
+    F.push({ cap: "Az egész cím kettesben: " + a.map(bin8).join(".") + ". Ez 4 · 8 = 32 bit.", html: '<div class="bitrow">' + a.map(bin8).join('<span class="sep">.</span>') + '</div><p class="big led" style="margin-top:10px">' + ip(a) + "</p>" });
+    return F;
+  }
+  function oneOct(n){ const F = []; octSteps(n, F); return F; }
+  // hálózati cím: bitenként ÉS a maszkkal
+  function andFrames(list, p, F){
+    const m = maskA(p);
+    list.forEach(([a, nm]) => {
+      const n = netA(a, p);
+      F.push({ cap: nm + ": " + ip(a) + ". Bitenként ÉS: ahol a maszkban 1 áll, a bit megmarad, ahol 0, ott 0 lesz. A hálózati cím: " + ip(n) + ".",
+        html: bitsHtml(a, p, nm + ": " + ip(a)) + bitsHtml(m, p, "Maszk: " + ip(m)) + bitsHtml(n, p, "ÉS → hálózati cím: " + ip(n)) });
+    });
+  }
+  function maskFrame(p, F){
+    const m = maskA(p);
+    F.push({ cap: "A /" + p + " prefix azt jelenti: az első " + p + " bit a hálózat része, a többi " + (32 - p) + " bit a gépé. A maszk: " + p + " darab 1-es, utána 0-k, tízesben " + ip(m) + ".", html: bitsHtml(m, p, "Maszk: " + ip(m)) });
+  }
+  function sameFrames(A, B, p){
+    const F = [{ cap: "Az 1. gép címe " + ip(A) + ", a 2. gépé " + ip(B) + ", a prefix /" + p + ". Kérdés: egy hálózatban vannak?", html: '<p class="big">' + ip(A) + " · " + ip(B) + " · /" + p + "</p>" }];
+    maskFrame(p, F);
+    andFrames([[A, "1. gép"], [B, "2. gép"]], p, F);
+    const same = ip(netA(A, p)) === ip(netA(B, p));
+    F.push({ cap: same ? "A két hálózati cím ugyanaz (" + ip(netA(A, p)) + "): egy hálózatban vannak, közvetlenül, a switchen át beszélnek." : "A két hálózati cím különbözik (" + ip(netA(A, p)) + " és " + ip(netA(B, p)) + "): más hálózat, a csomag a routeren, vagyis az alapértelmezett átjárón át megy.",
+      html: bitsHtml(netA(A, p), p, "1. gép hálózata: " + ip(netA(A, p))) + bitsHtml(netA(B, p), p, "2. gép hálózata: " + ip(netA(B, p))) + '<p class="big ' + (same ? "led" : "") + '" style="margin-top:10px">' + (same ? "Egy hálózat" : "Két hálózat") + "</p>" });
+    return F;
+  }
+  function netFrames(a, p, bc){
+    const F = [{ cap: "A cím " + ip(a) + "/" + p + ". Keressük a " + (bc ? "szórási (broadcast) címet." : "hálózati címet."), html: '<p class="big">' + ip(a) + "/" + p + "</p>" }];
+    maskFrame(p, F);
+    andFrames([[a, "Cím"]], p, F);
+    if (bc){ const b = bcA(a, p); F.push({ cap: "A szórási cím: a hálózati cím, de a gép részének minden bitje 1 (az utolsó " + (32 - p) + " bit). Eredmény: " + ip(b) + ".", html: bitsHtml(b, p, "Szórási cím: " + ip(b)) + '<p class="big led" style="margin-top:10px">' + ip(b) + "</p>" }); }
+    else F.push({ cap: "A hálózati cím: " + ip(netA(a, p)) + "/" + p + ". Ezt a címet nem kaphatja meg gép, ez a hálózat neve.", html: bitsHtml(netA(a, p), p, "Hálózati cím") + '<p class="big led" style="margin-top:10px">' + ip(netA(a, p)) + "</p>" });
+    return F;
+  }
+  const NODES = [["laptop", "Laptop", "192.168.1.23"], ["router", "Router (átjáró)", "belül 192.168.1.1, kívül 84.2.10.5"], ["dns", "DNS-szerver", "a szolgáltatónál"], ["web", "Webszerver", "www.pelda.hu"]];
+  const netHtml = (on, msg) => '<div class="net">' + NODES.map(n => '<div class="node' + (on.includes(n[0]) ? " on" : "") + '"><b>' + n[1] + "</b><span>" + n[2] + "</span></div>").join("") + "</div>" + (msg ? '<div class="msg">' + esc(msg) + "</div>" : "");
+  function dnsFrames(){
+    const S = [
+      [[], "", "Beírod a böngészőbe: www.pelda.hu. A gépek nevekkel nem tudnak címezni, nekik IP-cím kell. Lássuk, mi történik."],
+      [["laptop", "router"], "DHCP: cím 192.168.1.23, maszk 255.255.255.0, átjáró 192.168.1.1", "Ez már bekapcsoláskor megtörtént: a DHCP-szerver (otthon a router) kiosztotta a laptop címét, a maszkot, az átjárót és a DNS-szerver címét."],
+      [["laptop", "dns"], "Kérdés: mi a www.pelda.hu címe? (DNS, port: 53)", "A laptop megkérdezi a DNS-szervert: mi a www.pelda.hu IP-címe? A DNS olyan, mint a telefonkönyv: névből számot ad."],
+      [["dns", "laptop"], "Válasz: www.pelda.hu = 93.184.216.34", "A DNS válaszol: a webszerver címe 93.184.216.34. A laptop ezt egy ideig megjegyzi, hogy legközelebb ne kelljen kérdeznie."],
+      [["laptop", "router"], "Cél: 93.184.216.34, ez nem a mi hálózatunk", "A maszk szerint ez a cím nem a helyi hálózatban van, ezért a laptop a csomagot az alapértelmezett átjárónak, a routernek küldi."],
+      [["router"], "NAT: feladó 192.168.1.23 helyett 84.2.10.5", "A router kicseréli a feladó privát címét a saját publikus címére. Ez a NAT. A privát cím az interneten nem használható."],
+      [["router", "web"], "TCP-kapcsolat, HTTPS, port: 443", "A csomag routerről routerre jut el a webszerverig. Titkosított HTTPS-kapcsolat épül fel, a port 443."],
+      [["web"], "Kérés: GET / · Válasz: 200 OK + HTML", "A böngésző elkéri az oldalt, a szerver visszaküldi a HTML-t, a CSS-t és a képeket."],
+      [["router", "laptop"], "NAT-tábla: ez a válasz a 192.168.1.23 gépnek szól", "A válasz visszaér a routerhez. A router a NAT-táblából tudja, melyik belső gépnek szól, és továbbadja a laptopnak. Megjelenik az oldal."]
+    ];
+    return S.map(s => ({ cap: s[2], html: netHtml(s[0], s[1]) }));
+  }
+  const MET = { okt: "IP-cím kettesben", same: "Egy hálózatban?", dns: "Mi történik, ha beírsz egy címet?" };
+  const MF = { okt: () => octFrames([192, 168, 10, 5]), same: () => sameFrames([192, 168, 1, 10], [192, 168, 1, 77], 26), dns: dnsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "okt" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a hálózat?", h:
+      "<p>A <b>hálózat</b> összekötött eszközök csoportja, amelyek adatot küldenek egymásnak: számítógép, telefon, nyomtató, okostévé.</p>" +
+      "<ul><li><b>LAN</b> (helyi hálózat): egy lakás, egy iskola hálózata.</li><li><b>WAN</b> (nagy kiterjedésű hálózat): városokat, országokat köt össze.</li><li><b>Internet</b>: a hálózatok hálózata, az egész világot összeköti.</li></ul>" +
+      "<div class='note'><b>Hasonlat:</b> olyan, mint a posta. Minden háznak van címe (IP-cím), a levél (csomag) borítékján rajta a feladó és a címzett, a postahivatalok (routerek) továbbítják.</div>" },
+    { k: "Eszközök", t: "Ki mit csinál a hálózatban?", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Eszköz</th><th>Feladata</th></tr>" +
+      "<tr><td>switch (kapcsoló)</td><td style='text-align:left'>a helyi hálózat gépeit köti össze, a MAC-cím alapján a jó portra küldi az adatot</td></tr>" +
+      "<tr><td>router (útválasztó)</td><td style='text-align:left'>különböző hálózatokat köt össze, IP-cím alapján utat választ</td></tr>" +
+      "<tr><td>access point</td><td style='text-align:left'>Wi-Fi-t ad a helyi hálózathoz</td></tr>" +
+      "<tr><td>modem</td><td style='text-align:left'>a szolgáltató vonalát (kábel, optika, mobil) alakítja át</td></tr>" +
+      "<tr><td>szerver</td><td style='text-align:left'>szolgáltatást ad a többieknek (weboldal, fájl, e-mail)</td></tr></table></div>" +
+      "<p>Az otthoni „router” valójában mindegyik egyben: router, switch, access point, és gyakran modem is.</p>" },
+    { k: "Kábel és rádió", t: "Átviteli közeg és topológia", h:
+      "<ul><li><b>UTP-kábel</b> (csavart érpár, RJ45 csatlakozó): a legtöbb asztali gép és switch között.</li><li><b>Optikai kábel</b>: fénnyel visz adatot, nagyon gyors, nagy távolságra is.</li><li><b>Wi-Fi</b>: rádióhullám, 2,4 GHz (messzebb ér) vagy 5 GHz (gyorsabb).</li></ul>" +
+      "<p>A <b>topológia</b> azt mondja meg, hogyan vannak összekötve a gépek: <b>csillag</b> (mindenki egy switchhez, ez a leggyakoribb), <b>busz</b> (egy közös vezeték), <b>gyűrű</b>, <b>háló</b> (mesh: sok kapcsolat, ha egy kiesik, van másik út).</p>" +
+      "<div class='note'><b>Sebesség:</b> bit per másodpercben mérjük: 100 Mbit/s = százmillió bit másodpercenként. Egy bájt 8 bit, ezért 100 Mbit/s kb. 12,5 MB másodpercenként.</div>" },
+    { k: "IP-cím", t: "Az IPv4-cím: négy oktett", h:
+      "<p>Minden gépnek van <b>IP-címe</b>, például <b>192.168.1.10</b>. Négy szám, mindegyik egy <b>oktett</b> (8 bit), ezért 0 és 255 között van. Az egész cím 32 bit.</p>" +
+      "<p class='eq'>192.168.1.10 = 11000000.10101000.00000001.00001010</p>" +
+      "<p>Az átváltás ugyanaz, mint a kettes számrendszer leckében: hatványtáblázat (128, 64, 32, 16, 8, 4, 2, 1), hányszor fér bele, kivonás.</p>" +
+      "<div class='mistake'><b>Nem lehet</b> 256 vagy nagyobb egy oktett: a 192.168.1.300 hibás cím. Négynél több vagy kevesebb szám sem lehet.</div>" +
+      "<p>Az <b>IPv6</b> 128 bites, tizenhatos számrendszerben írjuk (például 2001:db8::1), mert az IPv4-címek elfogytak.</p>" },
+    { k: "Maszk", t: "Melyik rész a hálózat, melyik a gép?", h:
+      "<p>Az <b>alhálózati maszk</b> megmondja, a cím elejéből hány bit jelöli a hálózatot. A többi bit a gépet jelöli.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Prefix</th><th>Maszk</th><th>Gépek száma</th></tr><tr><td>/8</td><td>255.0.0.0</td><td>16 777 214</td></tr><tr><td>/16</td><td>255.255.0.0</td><td>65 534</td></tr><tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr><tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr></table></div>" +
+      "<p>A <b>/24</b> azt jelenti: az első 24 bit 1-es a maszkban. A 192.168.1.10/24 hálózata a 192.168.1.0, a gép száma benne a 10.</p>" +
+      "<p class='eq'>gépek száma = 2<sup>(32 − prefix)</sup> − 2</p>" +
+      "<p>A −2: a <b>hálózati cím</b> (a gép része csupa 0, például 192.168.1.0) és a <b>szórási cím</b> (csupa 1, például 192.168.1.255) nem adható gépnek.</p>" },
+    { k: "ÉS a maszkkal", t: "Egy hálózatban vannak?", h:
+      "<p>A gép kiszámolja a saját és a címzett <b>hálózati címét</b>: bitenként <b>ÉS</b> műveletet végez a cím és a maszk között (lásd a logikai műveletek leckét).</p>" +
+      "<ul><li>Ha a két hálózati cím <b>ugyanaz</b>: egy hálózat, közvetlenül küldi (a switch viszi át).</li><li>Ha <b>különbözik</b>: az <b>alapértelmezett átjárónak</b> (default gateway, a routernek) küldi, az továbbítja.</li></ul>" +
+      "<p>Példa /26 esetén: 192.168.1.10 → hálózat 192.168.1.0, de 192.168.1.77 → hálózat 192.168.1.64. Más hálózat!</p>" +
+      "<p><button class='btn' data-play='1'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "same"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "same"))); playTo(MF.same(), MET.same); }); } },
+    { k: "Privát és publikus", t: "Miért 192.168 a címed otthon?", h:
+      "<p>Vannak <b>privát címtartományok</b>, amelyek az interneten nem használhatók, csak belső hálózatban. Bárki használhatja őket otthon:</p>" +
+      "<ul><li>10.0.0.0 – 10.255.255.255 (/8)</li><li>172.16.0.0 – 172.31.255.255 (/12)</li><li>192.168.0.0 – 192.168.255.255 (/16)</li></ul>" +
+      "<p>A router a kifelé menő csomagokban a privát címet a saját <b>publikus</b> címére cseréli. Ez a <b>NAT</b> (címfordítás): egy publikus címen az egész család internetezik.</p>" +
+      "<p>A <b>127.0.0.1</b> (localhost) mindig a saját gépedet jelenti. A localhost/Kovrat is így működik a fejlesztőgépen.</p>" },
+    { k: "Szolgáltatások", t: "DHCP, DNS, MAC-cím", h:
+      "<ul><li><b>DHCP</b>: amikor csatlakozol, automatikusan kapsz IP-címet, maszkot, átjárót és DNS-címet. Ezért nem kell kézzel beállítani.</li>" +
+      "<li><b>DNS</b>: a neveket (www.pelda.hu) IP-címre fordítja, mint egy telefonkönyv. Ha a DNS nem működik, a cím számmal még elérhető, névvel nem.</li>" +
+      "<li><b>MAC-cím</b>: a hálózati kártya gyári azonosítója, 48 bit, tizenhatos számrendszerben: például 3C:52:82:1A:9F:04. A switch ez alapján továbbít a helyi hálózatban.</li></ul>" +
+      "<div class='note'><b>Röviden:</b> MAC = a gép „neve” a helyi hálózatban, IP = a „lakcíme” az interneten, DNS = a telefonkönyv.</div>" +
+      "<p><button class='btn' data-play='1'>▶ Mi történik, ha beírsz egy címet?</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => { PB.m = "dns"; $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === "dns"))); playTo(dnsFrames(), MET.dns); }); } },
+    { k: "Rétegek és portok", t: "Ki melyik részért felel?", h:
+      "<p>A hálózati kommunikációt <b>rétegekre</b> bontjuk (TCP/IP-modell). Mindegyik réteg a saját dolgával foglalkozik:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Réteg</th><th>Példa</th></tr><tr><td>alkalmazási</td><td>HTTP, HTTPS, DNS, e-mail</td></tr><tr><td>szállítási</td><td>TCP (megbízható), UDP (gyors)</td></tr><tr><td>hálózati (internet)</td><td>IP-cím, router</td></tr><tr><td>hálózati hozzáférés</td><td>Ethernet, Wi-Fi, MAC-cím, switch</td></tr></table></div>" +
+      "<p>A <b>port</b> mondja meg, a gépen melyik program kapja a csomagot: HTTP 80, HTTPS 443, DNS 53, SSH 22.</p>" +
+      "<p><b>TCP</b>: nyugtáz, újraküldi, ami elveszett (weboldal, fájl). <b>UDP</b>: nem vár nyugtát, gyorsabb (videóhívás, online játék).</p>" },
+    { k: "A dolgok internete", t: "Okoseszközök és parancsok", h:
+      "<p>A <b>dolgok internete</b> (IoT): hálózatra kötött hétköznapi eszközök, például okosizzó, termosztát, kamera, okosóra, szenzorok. Sok kis eszköz, sok IP-cím, és sok biztonsági kockázat: <b>a gyári jelszót mindig cseréld le</b>, és frissítsd a szoftverüket.</p>" +
+      "<p>Hasznos parancsok a Windows parancssorában:</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Parancs</th><th>Mit csinál?</th></tr><tr><td>ipconfig</td><td style='text-align:left'>kiírja a géped IP-címét, maszkját, átjáróját</td></tr><tr><td>ping 8.8.8.8</td><td style='text-align:left'>elérhető-e a gép, mennyi idő alatt jön válasz</td></tr><tr><td>tracert pelda.hu</td><td style='text-align:left'>mely routereken át jut el a csomag</td></tr><tr><td>nslookup pelda.hu</td><td style='text-align:left'>megkérdezi a DNS-től a név címét</td></tr></table></div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Mbit és MB összekeverése.</b> A 100 Mbit/s nem 100 MB másodpercenként, hanem nyolcadannyi: 12,5 MB/s.</div>" +
+      "<div class='mistake'><b>Elfelejtett −2.</b> A /24 hálózatban 256 cím van, de csak 254 gép: a hálózati és a szórási cím foglalt.</div>" +
+      "<div class='mistake'><b>256 egy oktettben.</b> Egy oktett legfeljebb 255 (8 bit).</div>" +
+      "<div class='mistake'><b>Switch és router összekeverése.</b> A switch a helyi hálózaton belül visz, a router hálózatok között.</div>" +
+      "<div class='mistake'><b>„A DNS adja a címemet.”</b> Nem: a saját címedet a DHCP adja. A DNS a neveket fordítja címre.</div>" },
+    { k: "Trükkök", t: "Fejben számolás", h:
+      "<div class='two-col'><div class='trick'><span class='t'>A maszk utolsó oktettje</span><span class='mono'>/25 → 128 · /26 → 192 · /27 → 224 · /28 → 240 · /29 → 248 · /30 → 252</span></div>" +
+      "<div class='trick'><span class='t'>Blokkméret</span><span>256 − a maszk utolsó oktettje. /26: 256 − 192 = 64, a hálózatok 0, 64, 128, 192. A 77 a 64-es blokkban van.</span></div>" +
+      "<div class='trick'><span class='t'>Gépek száma</span><span>/24 → 254 · /25 → 126 · /26 → 62 · /27 → 30 · /28 → 14 · /29 → 6 · /30 → 2</span></div>" +
+      "<div class='trick'><span class='t'>Letöltési idő</span><span>A Mbit/s-ot oszd el 8-cal, így MB/s lesz. 80 Mbit/s = 10 MB/s, egy 50 MB-os fájl 5 másodperc.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const yn = (ok, q, ans, sol, msgBad, frames, title) => {
+    const opts = [{ l: "Igen", ok: ans === "Igen" }, { l: "Nem", ok: ans === "Nem" }];
+    return { q, kind: "choice", options: opts, answer: ans, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : msgBad }) };
+  };
+  const FOG = [
+    [["Több gépet köt össze egy helyi hálózatban, a MAC-cím alapján a jó portra küldi az adatot.", "switch"], ["Különböző hálózatokat köt össze, IP-cím alapján utat választ a csomagoknak.", "router"], ["Vezeték nélküli (Wi-Fi) kapcsolatot ad a helyi hálózathoz.", "access point"], ["Az internetszolgáltató vonalát (kábel, optika) alakítja át a hálózat jelére.", "modem"], ["Szolgáltatást ad a többi gépnek, például weboldalt vagy fájlokat.", "szerver"], ["Egy lakás vagy iskola saját, helyi hálózata.", "LAN"], ["Városokat, országokat összekötő, nagy kiterjedésű hálózat.", "WAN"]],
+    [["A neveket (például www.pelda.hu) IP-címre fordítja.", "DNS"], ["Automatikusan kioszt IP-címet, maszkot és átjárót a csatlakozó gépeknek.", "DHCP"], ["A router a belső, privát címeket a saját publikus címére cseréli.", "NAT"], ["A hálózati kártya gyári, 48 bites azonosítója, tizenhatos számrendszerben írjuk.", "MAC-cím"], ["Annak a routernek a címe, ahová a gép a más hálózatba szánt csomagokat küldi.", "alapértelmezett átjáró"], ["Ezen a címen a gép a hálózat összes gépének egyszerre üzen.", "szórási cím"], ["Megmondja, hogy az IP-cím melyik része a hálózat és melyik a gép.", "alhálózati maszk"]],
+    [["A titkosított weboldalak protokollja, a portja 443.", "HTTPS"], ["A titkosítatlan weboldalak protokollja, a portja 80.", "HTTP"], ["Távoli gép parancssorának biztonságos elérése, a portja 22.", "SSH"], ["Kiírja a géped IP-címét, maszkját és átjáróját.", "ipconfig"], ["Megnézi, elérhető-e egy gép, és mennyi idő alatt jön válasz.", "ping"], ["Kiírja, mely routereken át jut el a csomag a célig.", "tracert"], ["Megkérdezi a DNS-től egy név IP-címét.", "nslookup"], ["Megbízható átvitel: nyugtáz, és újraküldi, ami elveszett.", "TCP"], ["Gyors átvitel nyugtázás nélkül, például videóhíváshoz.", "UDP"]]
+  ];
+  const badIp = l => {
+    const a = privIp();
+    if (l === 1) return pick([() => (a[3] = rnd(256, 999), ip(a)), () => a.slice(0, 3).join("."), () => ip(a) + "." + rnd(1, 254)])();
+    return pick([() => (a[rnd(1, 3)] = rnd(256, 400), ip(a)), () => a.slice(0, 2).join(".") + ".." + a[3], () => a.slice(0, 3).join(".") + ".", () => a.slice(0, 3).join(".") + "." + pick(["a", "x", "-1", "1a"]), () => ip(a) + "." + rnd(0, 9), () => a.slice(0, 3).join(".") + "," + a[3]])();
+  };
+  const sameIn = (a, p) => { const n = netA(a, p), b = bcA(a, p), r = a.slice(); for (let i = 0; i < 4; i++) r[i] = n[i] + rnd(0, b[i] - n[i]); if (ip(r) === ip(n)) r[3] = Math.min(b[3], n[3] + 1); return r; };
+  const otherNet = (a, p) => { // a hálózati rész egyik bitjét átbillentjük (nehéz szinten a határ közelében)
+    const k = Math.max(0, p - rnd(1, Math.min(3, p))), r = sameIn(a, p);
+    const i = Math.floor(k / 8), bit = 7 - (k % 8); r[i] ^= (1 << bit); return r;
+  };
+  const types = [
+    { id: "okt", name: "Oktett kettesben", gen(l){
+      if (l < 3){
+        const n = l === 1 ? rnd(0, 31) + pick([0, 0, 64, 128, 192]) : rnd(0, 255);
+        return { q: "Írd fel kettesben, 8 jeggyel: <span class='num'>" + n + "</span>", kind: "input", mode: "numeric", ph: "pl. 00001010", answer: bin8(n), sol: "<p>Hatványtáblázat (128, 64, …, 1), a legnagyobbtól: ha belefér a maradékba, 1, különben 0.</p>", frames: oneOct(n), title: "Oktett kettesben",
+          check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^[01]{1,8}$/.test(s)) return { ok: false, msg: "Csak 0 és 1 jegyeket írj, legfeljebb 8-at." }; if (parseInt(s, 2) === n) return { ok: true, msg: s.length < 8 ? "Helyes! Oktettként 8 jeggyel írjuk: " + bin8(n) : "Helyes!" }; if (parseInt(s.split("").reverse().join(""), 2) === n) return { ok: false, msg: "Fordított sorrend! A legnagyobb helyiérték (128) áll balra." }; return { ok: false, msg: "Nem jó: ez " + parseInt(s, 2) + " lenne. Nézd meg a megoldást lépésenként." }; } };
+      }
+      const a = privIp();
+      return { q: "Melyik IP-cím ez tízesben?<br><span class='num' style='overflow-wrap:anywhere'>" + a.map(bin8).join(".") + "</span>", kind: "input", mode: "decimal", ph: "pl. 192.168.1.10", answer: ip(a), sol: "<p>Mind a négy oktettet külön váltjuk át: összeadjuk azokat a helyiértékeket, ahol 1 áll.</p>" + a.map(x => "<div><code>" + bin8(x) + "</code> = " + (P8.filter((p, i) => bin8(x)[i] === "1").join(" + ") || "0") + " = " + x + "</div>").join(""),
+        check: v => cleanIp(v) === ip(a) ? { ok: true, msg: "Helyes!" } : { ok: false, msg: parseIp(cleanIp(v)) ? "Nem jó. Számold újra oktettenként: 128, 64, 32, 16, 8, 4, 2, 1." : "Négy számot írj pontokkal elválasztva." } };
+    } },
+    { id: "valid", name: "Érvényes cím?", gen(l){
+      if (l < 3){
+        const good = Math.random() < 0.45, s = good ? ip(privIp()) : badIp(l);
+        const opts = [{ l: "Érvényes", ok: good }, { l: "Hibás", ok: !good }];
+        return { q: "Érvényes IPv4-cím ez? <span class='num'>" + esc(s) + "</span>", kind: "choice", options: opts, answer: good ? "Érvényes" : "Hibás",
+          sol: "<p>Érvényes IPv4-cím: pontosan 4 szám, pontokkal elválasztva, mindegyik 0 és 255 között, betű és vessző nélkül.</p>", check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem jó. Számold meg a részeket (4 kell), és nézd meg, mindegyik 0 és 255 között van-e." }) };
+      }
+      const p = pick([24, 24, 16]), a = privIp(), kind = rnd(0, 2);
+      const n = netA(a, p), b = bcA(a, p);
+      let s = kind === 0 ? n : kind === 1 ? b : sameIn(a, p), guard = 0;
+      while (kind === 2 && (ip(s) === ip(n) || ip(s) === ip(b)) && guard++ < 50) s = sameIn(a, p);
+      const okAns = kind === 2 ? "Igen" : "Nem";
+      return yn(null, "Kiosztható-e egy gépnek ez a cím a /" + p + " hálózatban? <span class='num'>" + ip(s) + "/" + p + "</span>", okAns,
+        "<p>" + (kind === 0 ? "Ez a hálózati cím: a gép része csupa 0. Ez a hálózat neve, gép nem kaphatja." : kind === 1 ? "Ez a szórási cím: a gép része csupa 1. Ezen a címen mindenki kap üzenetet, gép nem kaphatja." : "A gép része se nem csupa 0, se nem csupa 1, ezért kiosztható.") + "</p>",
+        "Nem jó. A gép része (az utolsó " + (32 - p) + " bit) csupa 0 vagy csupa 1? Akkor nem adható gépnek.");
+    } },
+    { id: "mask", name: "Maszk és prefix", gen(l){
+      if (l === 3){
+        const p = rnd(9, 30), m = ip(maskA(p));
+        return { q: "Hány bites a hálózati rész (mi a prefix), ha a maszk <span class='num'>" + m + "</span>?", kind: "input", ph: "pl. /26", answer: "/" + p, frames: (() => { const F = []; maskFrame(p, F); return F; })(), title: "Maszk és prefix",
+          sol: "<p>Számold meg az 1-es biteket: " + maskA(p).map(x => "<code>" + bin8(x) + "</code>").join(" ") + ". A 255 nyolc darab 1-es.</p>",
+          check: v => { const s = cleanPre(v); return /^\d+$/.test(s) && +s === p ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Írd fel kettesben a maszkot, és számold meg az 1-eseket (a 255 nyolc 1-es)." }; } };
+      }
+      const p = l === 1 ? pick([8, 16, 24]) : rnd(17, 30), m = ip(maskA(p));
+      return { q: "Írd fel a maszkot pontozott tízes alakban: <span class='num'>/" + p + "</span>", kind: "input", mode: "decimal", ph: "pl. 255.255.255.0", answer: m, frames: (() => { const F = []; maskFrame(p, F); return F; })(), title: "Maszk és prefix",
+        sol: "<p>" + p + " darab 1-es bit, utána 0-k: " + maskA(p).map(x => "<code>" + bin8(x) + "</code>").join(" ") + ". Oktettenként tízesbe váltva: " + m + ".</p>",
+        check: v => cleanIp(v) === m ? { ok: true, msg: "Helyes!" } : { ok: false, msg: "Nem jó. Az első " + p + " bit 1-es: írd fel a 32 bitet, és váltsd át oktettenként." } };
+    } },
+    { id: "hosts", name: "Hány gép fér el?", gen(l){
+      if (l === 3){
+        const N = pick([rnd(3, 14), rnd(15, 60), rnd(61, 250), rnd(251, 2000)]);
+        let p = 30; while (hosts(p) < N) p--;
+        return { q: "Egy hálózatban <span class='num'>" + N + "</span> gépnek kell cím. Melyik a legnagyobb prefix (a legkisebb hálózat), amelyik még elég?", kind: "input", ph: "pl. /26", answer: "/" + p,
+          sol: "<p>Keresd meg azt a legkisebb gépbitszámot, amelyre 2<sup>gépbit</sup> − 2 legalább " + N + ". Ez " + (32 - p) + " bit: 2<sup>" + (32 - p) + "</sup> − 2 = " + hosts(p) + ". " + (p < 30 ? "Eggyel kevesebb bittel csak " + hosts(p + 1) + " gép férne el. " : "") + "A prefix 32 − " + (32 - p) + " = " + p + ".</p>",
+          check: v => { const s = cleanPre(v); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy prefixet írj, például /26." }; const q = +s; if (q === p) return { ok: true, msg: "Helyes!" }; if (q > p) return { ok: false, msg: "Kevés: /" + q + " esetén csak " + (q <= 30 ? hosts(q) : 0) + " gép fér el." }; return { ok: false, msg: "Elég lenne, de nagyobb a kelleténél. A legkisebb elég hálózatot keressük." }; } };
+      }
+      const p = l === 1 ? pick([24, 25, 26, 27, 28]) : rnd(16, 30);
+      return { q: "Hány gép kaphat címet egy <span class='num'>/" + p + "</span> hálózatban?", kind: "input", mode: "numeric", answer: hosts(p),
+        sol: "<p>A gép részének hossza 32 − " + p + " = " + (32 - p) + " bit. 2<sup>" + (32 - p) + "</sup> = " + (hosts(p) + 2) + " cím, ebből 2 foglalt (hálózati és szórási cím): " + (hosts(p) + 2) + " − 2 = " + hosts(p) + ".</p>",
+        check: v => { const s = String(v).replace(/\s+/g, ""); if (!/^\d+$/.test(s)) return { ok: false, msg: "Egy egész számot írj." }; if (+s === hosts(p)) return { ok: true, msg: "Helyes!" }; if (+s === hosts(p) + 2) return { ok: false, msg: "Majdnem! Ennyi cím van, de kettő foglalt: a hálózati és a szórási cím." }; return { ok: false, msg: "Nem jó. Gépbitek: 32 − " + p + ". Utána 2 a gépbitek számáig emelve, mínusz 2." }; } };
+    } },
+    { id: "net", name: "Hálózati cím", gen(l){
+      const p = l === 1 ? pick([8, 16, 24]) : l === 2 ? pick([16, 24]) : rnd(25, 30), bc = l >= 2 && Math.random() < 0.5;
+      const a = privIp(), res = ip(bc ? bcA(a, p) : netA(a, p));
+      return { q: "Mi a " + (bc ? "<b>szórási (broadcast) címe</b>" : "<b>hálózati címe</b>") + " ennek a gépnek? <span class='num'>" + ip(a) + "/" + p + "</span>", kind: "input", mode: "decimal", ph: "pl. 192.168.1.0", answer: res, frames: netFrames(a, p, bc), title: bc ? "Szórási cím" : "Hálózati cím",
+        sol: "<p>" + (bc ? "A hálózati rész marad, a gép részének minden bitje 1 lesz." : "Bitenként ÉS a maszkkal: a hálózati rész marad, a gép része 0 lesz.") + " A maszk: " + ip(maskA(p)) + ".</p>",
+        check: v => { const s = cleanIp(v); if (s === res) return { ok: true, msg: "Helyes!" }; if (s === ip(bc ? netA(a, p) : bcA(a, p))) return { ok: false, msg: bc ? "Ez a hálózati cím. A szórásinál a gép része csupa 1." : "Ez a szórási cím. A hálózatinál a gép része csupa 0." }; return { ok: false, msg: parseIp(s) ? "Nem jó. Írd fel kettesben az érintett oktettet, és végezd el az ÉS műveletet a maszkkal." : "Négy számot írj pontokkal elválasztva." }; } };
+    } },
+    { id: "same", name: "Egy hálózatban?", gen(l){
+      const p = l === 1 ? 24 : l === 2 ? pick([16, 24]) : rnd(25, 28), A = privIp(), same = Math.random() < 0.5, B = same ? sameIn(A, p) : otherNet(A, p);
+      const ans = ip(netA(A, p)) === ip(netA(B, p)) ? "Igen" : "Nem";
+      return yn(null, "Egy hálózatban van ez a két gép? <span class='num'>" + ip(A) + "/" + p + "</span> és <span class='num'>" + ip(B) + "/" + p + "</span>", ans,
+        "<p>Hálózati címek: " + ip(netA(A, p)) + " és " + ip(netA(B, p)) + ". " + (ans === "Igen" ? "Ugyanaz, tehát egy hálózat." : "Különböznek, tehát router kell köztük.") + "</p>",
+        "Nem jó. Számold ki mindkettő hálózati címét (ÉS a maszkkal), és hasonlítsd össze.", sameFrames(A, B, p), "Egy hálózatban?");
+    } },
+    { id: "fog", name: "Melyik eszköz, szolgáltatás?", gen(l){
+      const pool = FOG[l - 1], q = pick(pool), others = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3);
+      const opts = shuffle([{ l: q[1], ok: true }].concat(others.map(x => ({ l: x[1], ok: false }))));
+      return { q: "Mire illik ez a leírás? " + q[0], kind: "choice", options: opts, answer: q[1], sol: "<p>" + q[0] + " → <b>" + q[1] + "</b>. Nézd meg a diákat és a puskát.</p>",
+        check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : "Nem ez. A helyes: " + q[1] + "." }) };
+    } },
+    { id: "speed", name: "Letöltési idő", gen(l){
+      let v, mb, t, guard = 0;
+      if (l === 1){ do { v = pick([8, 16, 40, 80, 100, 200, 400]); t = rnd(2, 40); mb = t * v / 8; } while (mb % 1 && guard++ < 50);
+        return { q: "Mennyi idő alatt jön le egy <span class='num'>" + mb + " MB</span> méretű fájl <span class='num'>" + v + " Mbit/s</span> sebességgel? (másodpercben)", kind: "input", mode: "numeric", answer: t,
+          sol: "<p>A méret bitben: " + mb + " · 8 = " + mb * 8 + " Mbit. Idő: " + mb * 8 + " : " + v + " = " + t + " másodperc.</p>",
+          check: x => { const s = String(x).replace(/\s+/g, "").replace(",", "."); if (+s === t) return { ok: true, msg: "Helyes!" }; if (+s === mb / v || Math.abs(+s - mb / v) < 0.01) return { ok: false, msg: "Kimaradt a · 8! A fájl bájtban, a sebesség bitben van." }; return { ok: false, msg: "Nem jó. Idő = méret (MB) · 8 : sebesség (Mbit/s)." }; } };
+      }
+      if (l === 2){ const g = rnd(1, 8); v = pick([50, 100, 200, 300, 500, 1000]); t = Math.round(g * 1024 * 8 / v);
+        return { q: "Egy <span class='num'>" + g + " GB</span> méretű játékot töltesz le <span class='num'>" + v + " Mbit/s</span> sebességgel. Hány másodperc alatt jön le? Kerekíts egészre. (1 GB = 1024 MB)", kind: "input", mode: "numeric", answer: t,
+          sol: "<p>" + g + " GB = " + g * 1024 + " MB = " + g * 1024 * 8 + " Mbit. Idő: " + g * 1024 * 8 + " : " + v + " ≈ " + t + " másodperc (kb. " + Math.round(t / 60) + " perc).</p>",
+          check: x => { const s = String(x).replace(/\s+/g, "").replace(",", "."); if (Math.round(+s) === t && /^\d+(\.\d+)?$/.test(s)) return { ok: true, msg: "Helyes!" }; if (Math.round(+s) === Math.round(t / 8)) return { ok: false, msg: "Kimaradt a · 8! A fájl bájtban, a sebesség bitben van." }; return { ok: false, msg: "Nem jó. GB → MB (· 1024), MB → Mbit (· 8), aztán osztás a sebességgel." }; } };
+      }
+      do { v = pick([16, 40, 80, 100, 200, 400, 800]); t = pick([2, 4, 5, 8, 10, 20]); mb = v * t / 8; } while (mb % 1 && guard++ < 50);
+      return { q: "Egy <span class='num'>" + mb + " MB</span> méretű videónak <span class='num'>" + t + "</span> másodperc alatt kell lejönnie. Legalább mekkora sebesség kell? (Mbit/s-ban)", kind: "input", mode: "numeric", answer: v,
+        sol: "<p>" + mb + " MB = " + mb * 8 + " Mbit. Sebesség: " + mb * 8 + " : " + t + " = " + v + " Mbit/s.</p>",
+        check: x => { const s = String(x).replace(/\s+/g, "").replace(",", "."); if (+s === v) return { ok: true, msg: "Helyes!" }; if (+s === mb / t) return { ok: false, msg: "Ez MB/s. A kérdés Mbit/s: szorozd meg 8-cal." }; return { ok: false, msg: "Nem jó. Sebesség = méret (MB) · 8 : idő (s)." }; } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "halozat", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [8, 16, 24, 25, 26, 27, 28, 29, 30].map(p => [p, ip(maskA(p)), hosts(p)]);
+  $("#cheat").innerHTML = "<tr><th>Prefix</th><th>Maszk</th><th>Gépek</th></tr>" + rows.map(r => "<tr><td>/" + r[0] + "</td><td>" + r[1] + "</td><td>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
