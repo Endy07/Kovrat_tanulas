@@ -1,0 +1,1069 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023040006">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Elektronika alapjai</title>
+<style>
+.circ{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.circ .w{stroke:#8C99AA;stroke-width:3;fill:none;stroke-linecap:round}
+.circ .lbl{fill:#DCE3EC;font-family:var(--mono);font-size:13px}
+.circ .lbl.s{font-size:11px;fill:#8C99AA}
+.circ .e{fill:#72A6F2}
+.circ .meter{fill:#151B23;stroke:#DCE3EC;stroke-width:2}
+.circ .fuse.blown{stroke:#F2796C}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 22px}
+.sliders label{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:.9rem}
+.sliders input[type=range]{width:100%;accent-color:var(--led)}
+.blown-msg{color:#F2796C;font-weight:700}
+.hint{font-size:.9rem;color:var(--muted)}
+.calc{display:flex;flex-direction:column;gap:6px;font-size:1rem;line-height:1.5}
+.calc .dim2{color:var(--panel-muted)}
+.calc .new{transform-origin:left center}
+.slide .eq{white-space:normal}
+.tri{width:180px;height:auto}
+.band{display:inline-block;width:1.1em;height:1.1em;border-radius:3px;border:1px solid #0005;vertical-align:-.2em;margin-right:.3em}
+.ccode td{text-align:left}
+.res-svg{width:220px;max-width:100%;height:auto;display:block}
+.prompt .res-svg{margin:8px 0 4px}
+.cc-sel{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cc-sel select{font-size:1rem}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · elektronika</span>
+  <h1>Elektronika alapjai</h1>
+  <p class="lead">Feszültség, áram, ellenállás: a számítógép minden alkatrésze ezekből a törvényekből él. Állítsd a csúszkákat, és figyeld, mi történik az áramkörben.</p>
+  <div class="panel">
+    <span class="eyebrow">Egy elem, egy biztosíték, egy izzó · mérőműszerekkel</span>
+    <svg class="circ" id="circ" viewBox="0 0 470 240" role="img" aria-label="Áramkör: elem, biztosíték, izzó, ampermérő és voltmérő">
+      <defs><radialGradient id="glow"><stop offset="0" stop-color="#FFB01F" stop-opacity="1"/><stop offset="1" stop-color="#FFB01F" stop-opacity="0"/></radialGradient></defs>
+      <path class="w" d="M50 40 V98 M50 127 V200 H194 M226 200 H370 V137 M370 93 V40 H262 M218 40 H50"/>
+      <line x1="28" y1="100" x2="72" y2="100" stroke="#DCE3EC" stroke-width="3"/>
+      <line x1="38" y1="125" x2="62" y2="125" stroke="#DCE3EC" stroke-width="7"/>
+      <text class="lbl" x="76" y="98">+</text><text class="lbl" x="76" y="138">−</text>
+      <text class="lbl" id="lblU" x="92" y="118">U = 12 V</text>
+      <rect class="fuse" id="fuse" x="218" y="32" width="44" height="16" rx="4" fill="#151B23" stroke="#DCE3EC" stroke-width="2"/>
+      <line id="fuseWire" x1="220" y1="40" x2="260" y2="40" stroke="#DCE3EC" stroke-width="1.5"/>
+      <text class="lbl s" x="200" y="24">biztosíték 5 A</text>
+      <circle id="glowC" cx="370" cy="115" r="60" fill="url(#glow)" opacity=".3"/>
+      <circle cx="370" cy="115" r="22" fill="#151B23" stroke="#DCE3EC" stroke-width="2"/>
+      <path d="M356 101 L384 129 M384 101 L356 129" stroke="#DCE3EC" stroke-width="2"/>
+      <text class="lbl" id="lblR" x="270" y="120">R = 24 Ω</text>
+      <path class="w" d="M370 62 H430 V97 M430 133 V168 H370"/>
+      <circle class="meter" cx="430" cy="115" r="17"/><text class="lbl" x="424" y="120">V</text>
+      <circle class="meter" cx="210" cy="200" r="17"/><text class="lbl" x="205" y="205">A</text>
+      <text class="lbl s" id="lblA" x="160" y="232">ampermérő: 0,5 A</text>
+      <text class="lbl s" id="lblV" x="392" y="80">12 V</text>
+      <g id="dots"></g>
+    </svg>
+    <div class="sliders">
+      <label>Feszültség (U): <b id="vU">12 V</b><input type="range" id="sU" min="1" max="24" step="1" value="12" aria-label="Feszültség voltban"></label>
+      <label>Az izzó ellenállása (R): <b id="vR">24 Ω</b><input type="range" id="sR" min="1" max="100" step="1" value="24" aria-label="Ellenállás ohmban"></label>
+    </div>
+    <div class="readout">
+      <div><div class="eyebrow">Áramerősség</div><div class="big led" id="oI">0,5 A</div></div>
+      <div><div class="eyebrow">Teljesítmény</div><div class="big" id="oP">6 W</div></div>
+      <div class="expr" id="oE"></div>
+      <div class="expr" id="oB"></div>
+    </div>
+    <div class="row"><button class="btn" id="fuseReset" hidden>Új biztosíték</button></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: hogyan működik</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Öt tipikus számolás lépésenként. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="ohm" aria-selected="true">Ohm-törvény</button>
+    <button class="tab" data-m="soros" aria-selected="false">Soros kapcsolás</button>
+    <button class="tab" data-m="parh" aria-selected="false">Párhuzamos kapcsolás</button>
+    <button class="tab" data-m="led" aria-selected="false">LED előtét-ellenállása</button>
+    <button class="tab" data-m="szamla" aria-selected="false">Villanyszámla</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A tizedesvessző és a pont is jó, a mértékegységet nem kötelező beírni, de abban a mértékegységben add meg, amit a feladat kér. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Ohm-törvény</span><span><b>U = R · I</b>, ebből <b>I = U : R</b> és <b>R = U : I</b>. Takard le a háromszögben, amit keresel.</span></div>
+    <div class="trick"><span class="t">Teljesítmény, energia</span><span><b>P = U · I</b> (watt). Energia: <b>E = P · t</b>. 1 kWh = 1000 W egy órán át.</span></div>
+    <div class="trick"><span class="t">Soros</span><span>Az áram mindenhol ugyanaz. R = R₁ + R₂ + … A feszültségek összeadódnak.</span></div>
+    <div class="trick"><span class="t">Párhuzamos</span><span>A feszültség mindenhol ugyanaz. Két ellenállásra: R = R₁ · R₂ : (R₁ + R₂). Az áramok összeadódnak.</span></div>
+    <div class="trick"><span class="t">Előtagok</span><span>m = ezred (1 mA = 0,001 A) · k = ezer (1 kΩ = 1000 Ω) · M = millió (1 MΩ = 1 000 000 Ω)</span></div>
+    <div class="trick"><span class="t">LED előtét</span><span>R = (U<sub>táp</sub> − U<sub>LED</sub>) : I. Az áramot amperben írd be (20 mA = 0,02 A).</span></div>
+    <div class="trick"><span class="t">Mérés</span><span><b>Ampermérő sorosan</b> (az áram átfolyik rajta), <b>voltmérő párhuzamosan</b> (a fogyasztó két végére).</span></div>
+  </div>
+  <div class="ptwrap"><table class="pt ccode" id="cheat2"></table></div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push(
+    [/\s:\s/g, " osztva "], [/(\d)\s?kWh/g, "$1 kilowattóra"], [/(\d)\s?Wh/g, "$1 wattóra"],
+    [/(\d)\s?kΩ/g, "$1 kiloohm"], [/(\d)\s?MΩ/g, "$1 megaohm"], [/(\d)\s?Ω/g, "$1 ohm"],
+    [/(\d)\s?mA\b/g, "$1 milliamper"], [/(\d)\s?mV\b/g, "$1 millivolt"], [/(\d)\s?kW\b/g, "$1 kilowatt"],
+    [/(\d)\s?A\b/g, "$1 amper"], [/(\d)\s?V\b/g, "$1 volt"], [/(\d)\s?W\b/g, "$1 watt"], [/(\d)\s?Ft\b/g, "$1 forint"],
+    [/<sub>táp<\/sub>/g, " táp"], [/<sub>LED<\/sub>/g, " LED"], [/₁/g, " egy"], [/₂/g, " kettő"], [/₃/g, " három"], [/²/g, " a négyzeten"], [/\s∥\s/g, " párhuzamosan "]
+  );
+  const fmt = x => String(Number(Number(x).toFixed(6))).replace(".", ",");
+  const num = s => { s = String(s == null ? "" : s).replace(/(\d)\s+(?=\d)/g, "$1"); const m = s.match(/-?\d+(?:[.,]\d+)?/); return m ? parseFloat(m[0].replace(",", ".")) : NaN; };
+  const near = (a, b) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+
+  /* ---------- Hero: áramkör ---------- */
+  const H = { U: 12, R: 24, blown: false, pos: 0, last: 0 };
+  const LOOP = [[50, 40], [50, 200], [370, 200], [370, 40], [50, 40]];
+  const segs = []; let PER = 0;
+  for (let i = 0; i < LOOP.length - 1; i++){ const a = LOOP[i], b = LOOP[i + 1], len = Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]); segs.push({ a, b, len, s: PER }); PER += len; }
+  const ND = 18, dotsG = $("#dots");
+  for (let i = 0; i < ND; i++){ const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); c.setAttribute("r", "3.5"); c.setAttribute("class", "e"); dotsG.appendChild(c); }
+  const dotEls = $$("#dots circle");
+  function at(d){
+    d = ((d % PER) + PER) % PER;
+    const sg = segs.find(s => d >= s.s && d < s.s + s.len) || segs[0], t = (d - sg.s) / sg.len;
+    return [sg.a[0] + (sg.b[0] - sg.a[0]) * t, sg.a[1] + (sg.b[1] - sg.a[1]) * t];
+  }
+  function placeDots(){
+    dotEls.forEach((c, i) => {
+      const p = at(H.pos + i * PER / ND);
+      c.setAttribute("cx", p[0]); c.setAttribute("cy", p[1]);
+      c.style.display = (p[0] === 50 && p[1] > 95 && p[1] < 130) ? "none" : "";
+    });
+  }
+  const amp = I => I < 1 ? fmt(I) + " A (" + fmt(I * 1000) + " mA)" : fmt(I) + " A";
+  function heroRender(){
+    const I = H.blown ? 0 : H.U / H.R, P = H.U * I, Ir = Math.round(I * 1000) / 1000, Pr = Math.round(P * 100) / 100;
+    $("#vU").textContent = H.U + " V"; $("#vR").textContent = H.R + " Ω";
+    $("#lblU").textContent = "U = " + H.U + " V"; $("#lblR").textContent = "R = " + H.R + " Ω";
+    $("#lblA").textContent = "ampermérő: " + fmt(Ir) + " A"; $("#lblV").textContent = H.blown ? "0 V" : H.U + " V";
+    $("#oI").textContent = H.blown ? "0 A" : amp(Ir);
+    $("#oP").textContent = fmt(Pr) + " W";
+    $("#oE").innerHTML = H.blown ? "" : "I = U : R = " + H.U + " : " + H.R + " ≈ " + fmt(Ir) + " A";
+    $("#oB").innerHTML = H.blown ? '<span class="blown-msg">A biztosíték kiolvadt! Az áram nagyobb lett volna, mint 5 A (' + fmt(Math.round(H.U / H.R * 100) / 100) + ' A). Az áramkör megszakadt, nem folyik áram.</span>'
+      : "P = U · I = " + H.U + " · " + fmt(Ir) + " ≈ " + fmt(Pr) + " W" + (I > 3.5 ? ' · <span class="blown-msg">vigyázz, közel a biztosíték határa (5 A)</span>' : "");
+    $("#glowC").setAttribute("opacity", String(Math.min(1, Math.sqrt(P / 60))));
+    $("#fuse").classList.toggle("blown", H.blown); $("#fuseWire").style.display = H.blown ? "none" : "";
+    $("#fuseReset").hidden = !H.blown;
+  }
+  function heroInput(){
+    H.U = Number($("#sU").value); H.R = Number($("#sR").value);
+    if (H.U / H.R > 5) H.blown = true;
+    heroRender();
+  }
+  $("#sU").addEventListener("input", heroInput); $("#sR").addEventListener("input", heroInput);
+  $("#fuseReset").addEventListener("click", () => {
+    H.blown = false;
+    if (H.U / H.R > 5){ H.R = Math.ceil(H.U / 5) + 2; $("#sR").value = H.R; }
+    heroRender();
+  });
+  const still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function tick(t){
+    const dt = H.last ? Math.min(0.05, (t - H.last) / 1000) : 0; H.last = t;
+    if (!H.blown) H.pos += dt * Math.min(220, 28 * Math.sqrt(H.U / H.R) * 3);
+    placeDots(); requestAnimationFrame(tick);
+  }
+  heroRender(); placeDots();
+  if (!still) requestAnimationFrame(tick);
+
+  /* ---------- Levezetés-képkockák: sorok egymás alatt, az aktuális kiemelve ---------- */
+  function lines(steps){
+    return steps.map((s, k) => {
+      let h = '<div class="calc">';
+      steps.slice(0, k + 1).forEach((x, i) => { h += '<div class="' + (i === k ? "cur new" : "dim2") + '">' + x[0] + "</div>"; });
+      return { cap: s[1] || s[0], html: h + "</div>" };
+    });
+  }
+  const solOf = steps => steps.map(s => "<p>" + s[0] + "</p>").join("");
+
+  const DEMO = {
+    ohm: () => [
+      ["Ismert: U = 12 V, R = 60 Ω", "Egy izzóra 12 V feszültséget kapcsolunk, az ellenállása 60 Ω. Mekkora áram folyik át rajta?"],
+      ["Keresett: I", "Az áramerősséget keressük, a jele I, a mértékegysége az amper."],
+      ["Képlet: I = U : R", "Az Ohm-törvény háromszögében letakarjuk az I-t: U marad felül, R alul. Tehát I = U : R."],
+      ["I = 12 : 60", "Behelyettesítünk: 12 osztva 60."],
+      ["I = 0,2 A = 200 mA", "Az eredmény 0,2 amper, vagyis 200 milliamper. Ezerrel szorozva kapjuk a milliampert."],
+      ["Próba: R · I = 60 · 0,2 = 12 V ✓", "Próba: az ellenállás szorozva az árammal visszaadja a 12 voltot. Jó a megoldás."]
+    ],
+    soros: () => [
+      ["R₁ = 100 Ω, R₂ = 200 Ω sorosan, U = 12 V", "Két ellenállást sorba kötünk, egymás után, és 12 V-ra kapcsoljuk."],
+      ["Eredő: R = R₁ + R₂ = 100 + 200 = 300 Ω", "Soros kapcsolásnál az ellenállások összeadódnak: 100 meg 200, az 300 ohm."],
+      ["I = U : R = 12 : 300 = 0,04 A = 40 mA", "Az áram az Ohm-törvényből: 12 osztva 300, az 0,04 amper, vagyis 40 milliamper."],
+      ["Az áram mindkét ellenálláson ugyanaz: 40 mA", "Soros kapcsolásnál az áram mindenhol ugyanaz, mert csak egy út van."],
+      ["U₁ = R₁ · I = 100 · 0,04 = 4 V", "Az első ellenálláson eső feszültség: 100 szorozva 0,04, az 4 volt."],
+      ["U₂ = R₂ · I = 200 · 0,04 = 8 V", "A második ellenálláson: 200 szorozva 0,04, az 8 volt."],
+      ["Próba: U₁ + U₂ = 4 + 8 = 12 V ✓", "A két feszültség összege kiadja a tápfeszültséget, a 12 voltot. Soros kapcsolásnál a feszültségek összeadódnak."]
+    ],
+    parh: () => [
+      ["R₁ = 60 Ω, R₂ = 30 Ω párhuzamosan, U = 12 V", "Két ellenállást párhuzamosan, egymás mellé kötünk, és 12 V-ra kapcsoljuk."],
+      ["A feszültség mindkettőn ugyanaz: 12 V", "Párhuzamos kapcsolásnál mindkét ellenállás két vége közvetlenül az elemre kapcsolódik, ezért mindkettőn 12 volt van."],
+      ["I₁ = U : R₁ = 12 : 60 = 0,2 A", "Az első ágban: 12 osztva 60, az 0,2 amper."],
+      ["I₂ = U : R₂ = 12 : 30 = 0,4 A", "A második ágban: 12 osztva 30, az 0,4 amper. A kisebb ellenálláson több áram folyik."],
+      ["I = I₁ + I₂ = 0,2 + 0,4 = 0,6 A", "Az ágak áramai összeadódnak: 0,2 meg 0,4, az 0,6 amper folyik ki az elemből."],
+      ["Eredő: R = R₁ · R₂ : (R₁ + R₂) = 1800 : 90 = 20 Ω", "Két ellenállás eredője: a szorzatuk osztva az összegükkel. 60 szorozva 30 az 1800, 60 meg 30 az 90, 1800 osztva 90 az 20 ohm."],
+      ["Próba: U : R = 12 : 20 = 0,6 A ✓", "Próba: 12 osztva 20 szintén 0,6 amper. Az eredő kisebb, mint a legkisebb ellenállás."]
+    ],
+    led: () => [
+      ["U<sub>táp</sub> = 5 V, U<sub>LED</sub> = 2 V, I = 20 mA", "Egy piros LED-et 5 V-ról akarunk működtetni. A LED-en 2 volt esik, és 20 milliamper áram kell neki."],
+      ["Miért kell előtét-ellenállás?", "A LED-nek alig van ellenállása. Ha közvetlenül 5 V-ra kötnénk, túl nagy áram folyna, és kiégne. Ezért sorba kötünk vele egy ellenállást."],
+      ["Az ellenállásra jutó feszültség: 5 − 2 = 3 V", "A maradék feszültségnek az ellenálláson kell esnie: 5 mínusz 2, az 3 volt."],
+      ["I = 20 mA = 0,02 A", "Az áramot amperbe váltjuk: 20 milliamper az 0,02 amper."],
+      ["R = U : I = 3 : 0,02 = 150 Ω", "Az Ohm-törvényből: 3 osztva 0,02, az 150 ohm."],
+      ["Ellenőrzés: 150 · 0,02 = 3 V ✓", "Próba: 150 szorozva 0,02 visszaadja a 3 voltot. Kész: egy 150 ohmos ellenállás kell."]
+    ],
+    szamla: () => [
+      ["Vízforraló: P = 2000 W, napi 6 perc, 30 nap, 70 Ft/kWh", "Mennyibe kerül egy hónapban a vízforraló? A teljesítménye 2000 watt, naponta 6 percig megy, egy kilowattóra 70 forint."],
+      ["P = 2000 W = 2 kW", "Átváltjuk kilowattba: 2000 watt az 2 kilowatt."],
+      ["Idő: 6 · 30 = 180 perc = 3 óra", "Az idő egy hónap alatt: 6 szorozva 30, az 180 perc, ami 3 óra."],
+      ["E = P · t = 2 · 3 = 6 kWh", "Az energia a teljesítmény szorozva az idővel: 2 szorozva 3, az 6 kilowattóra."],
+      ["Költség: 6 · 70 = 420 Ft", "A költség: 6 szorozva 70, az 420 forint egy hónapra."]
+    ]
+  };
+  const MET = { ohm: "Ohm-törvény", soros: "Soros kapcsolás", parh: "Párhuzamos kapcsolás", led: "LED előtét-ellenállása", szamla: "Villanyszámla" };
+  const pb = K.player($("#pb"));
+  const PB = { m: "ohm" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(lines(DEMO[PB.m]()), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(x => x.setAttribute("aria-selected", String(x.dataset.m === PB.m))); playTo(lines(DEMO[PB.m]()), MET[PB.m]); }); };
+
+  /* ---------- Színkód ---------- */
+  const COL = [["fekete", "#151515"], ["barna", "#7A4A1E"], ["piros", "#D32F2F"], ["narancs", "#F57C00"], ["sárga", "#FBC02D"], ["zöld", "#2E7D32"], ["kék", "#1565C0"], ["lila", "#7B1FA2"], ["szürke", "#9E9E9E"], ["fehér", "#FAFAFA"]];
+  const GOLD = ["arany", "#C9A227"], SILV = ["ezüst", "#C0C0C0"];
+  const vstr = v => v < 1000 ? fmt(v) + " Ω" : v < 1e6 ? fmt(v / 1000) + " kΩ" : fmt(v / 1e6) + " MΩ";
+  const sw = c => '<span class="band" style="background:' + c[1] + '"></span>';
+  function resSvg(bands){
+    const xs = [70, 95, 120, 160];
+    return '<svg class="res-svg" viewBox="0 0 220 60" role="img" aria-label="Ellenállás sávokkal: ' + bands.map(b => b[0]).join(", ") + '">' +
+      '<line x1="0" y1="30" x2="220" y2="30" stroke="#8C99AA" stroke-width="4"/>' +
+      '<rect x="45" y="12" width="130" height="36" rx="14" fill="#E8D3A6" stroke="#9A8460" stroke-width="1.5"/>' +
+      bands.map((b, i) => '<rect x="' + xs[i] + '" y="12" width="12" height="36" fill="' + b[1] + '"/>').join("") + "</svg>";
+  }
+  const bandNames = bands => bands.map((b, i) => (i + 1) + ". sáv: " + b[0]).join(" · ");
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi az áram? A vízhasonlat", h:
+      "<p>Az áramkör olyan, mint egy vízvezeték. A vezetékben elektronok mozognak, ahogy a csőben a víz.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Villamos</th><th>Vizes hasonlat</th></tr><tr><td><b>Feszültség (U)</b></td><td>a víz nyomása (milyen magasan van a víztartály)</td></tr><tr><td><b>Áramerősség (I)</b></td><td>mennyi víz folyik át egy másodperc alatt</td></tr><tr><td><b>Ellenállás (R)</b></td><td>mennyire szűk a cső</td></tr><tr><td><b>Elem, tápegység</b></td><td>a szivattyú</td></tr></table></div>" +
+      "<div class='note'><b>Áram csak zárt körben folyik.</b> Ha a kör bárhol megszakad (kapcsoló, kiolvadt biztosíték), az áram mindenhol megáll.</div>" },
+    { k: "Mértékegységek", t: "Jelek és mértékegységek", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Mennyiség</th><th>Jele</th><th>Mértékegysége</th></tr><tr><td>feszültség</td><td>U</td><td>volt (V)</td></tr><tr><td>áramerősség</td><td>I</td><td>amper (A)</td></tr><tr><td>ellenállás</td><td>R</td><td>ohm (Ω)</td></tr><tr><td>teljesítmény</td><td>P</td><td>watt (W)</td></tr><tr><td>energia</td><td>E</td><td>wattóra (Wh), kilowattóra (kWh)</td></tr></table></div>" +
+      "<p>Az Ω görög betű, a neve omega. Példák: egy ceruzaelem 1,5 V, a konnektor 230 V, egy telefontöltő kb. 2 A áramot ad.</p>" },
+    { k: "Előtagok", t: "Milli, kilo, mega", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Előtag</th><th>Jelentése</th><th>Példa</th></tr><tr><td>m (milli)</td><td>ezred rész</td><td>250 mA = 0,25 A</td></tr><tr><td>k (kilo)</td><td>ezerszeres</td><td>4,7 kΩ = 4700 Ω</td></tr><tr><td>M (mega)</td><td>milliószoros</td><td>1 MΩ = 1 000 000 Ω</td></tr></table></div>" +
+      "<ul><li>Kisebb egységre váltasz (A → mA): <b>szorozz ezerrel</b>, a szám nagyobb lesz.</li><li>Nagyobb egységre (mA → A): <b>ossz ezerrel</b>, a szám kisebb lesz.</li></ul>" +
+      "<div class='note'><b>Ugyanaz, mint a méter és a kilométer:</b> 1 km = 1000 m, 1 kΩ = 1000 Ω.</div>" },
+    { k: "Ohm-törvény", t: "U = R · I", h:
+      "<div class='row' style='align-items:flex-start;gap:22px'><svg class='tri' viewBox='0 0 180 150' role='img' aria-label='Ohm-háromszög: felül U, alul R és I'><polygon points='90,6 174,144 6,144' fill='none' stroke='currentColor' stroke-width='3'/><line x1='42' y1='86' x2='138' y2='86' stroke='currentColor' stroke-width='2.5'/><line x1='90' y1='86' x2='90' y2='144' stroke='currentColor' stroke-width='2.5'/><text x='80' y='70' font-size='30' font-weight='700' fill='currentColor'>U</text><text x='54' y='130' font-size='28' font-weight='700' fill='currentColor'>R</text><text x='110' y='130' font-size='28' font-weight='700' fill='currentColor'>I</text></svg>" +
+      "<ul><li><b>U = R · I</b> (a feszültség)</li><li><b>I = U : R</b> (az áram)</li><li><b>R = U : I</b> (az ellenállás)</li></ul></div>" +
+      "<p>Takard le az ujjaddal, amit keresel. Ami marad: ha egymás mellett vannak, szorzás; ha egymás felett, osztás.</p>" +
+      "<p class='eq'>12 V, 60 Ω → I = 12 : 60 = <span class='hl'>0,2 A</span></p>" + playBtn("ohm"), init: playInit },
+    { k: "Teljesítmény", t: "Watt, kilowattóra, villanyszámla", h:
+      "<p>A <b>teljesítmény</b> megmondja, mennyi energiát használ a készülék másodpercenként: <b>P = U · I</b>.</p>" +
+      "<p class='eq'>230 V · 10 A = <span class='hl'>2300 W</span> (egy vízforraló)</p>" +
+      "<p>Az <b>energia</b> a teljesítmény szorozva az idővel: <b>E = P · t</b>. A villanyszámlán kWh-ban mérik: 1 kWh = 1000 W egy órán át.</p>" +
+      "<p class='eq'>2 kW · 3 óra = <span class='hl'>6 kWh</span> → 6 · 70 Ft = 420 Ft</p>" + playBtn("szamla"), init: playInit },
+    { k: "Soros", t: "Soros kapcsolás: egymás után", h:
+      "<ul><li>Csak <b>egy út</b> van, ezért az <b>áram mindenhol ugyanaz</b>.</li><li>Az ellenállások összeadódnak: <b>R = R₁ + R₂ + …</b></li><li>A feszültség szétoszlik: <b>U = U₁ + U₂</b>. A nagyobb ellenálláson több feszültség esik.</li></ul>" +
+      "<p class='eq'>100 Ω + 200 Ω = <span class='hl'>300 Ω</span></p>" +
+      "<div class='note'><b>Példa:</b> a régi karácsonyfaégősor: ha egy izzó kiég, az egész sor elalszik, mert megszakad az egyetlen út.</div>" + playBtn("soros"), init: playInit },
+    { k: "Párhuzamos", t: "Párhuzamos kapcsolás: egymás mellett", h:
+      "<ul><li>Minden ág ugyanarra a két pontra kapcsolódik, ezért a <b>feszültség mindenhol ugyanaz</b>.</li><li>Az ágak áramai összeadódnak: <b>I = I₁ + I₂</b>.</li><li>Két ellenállás eredője: <b>R = R₁ · R₂ : (R₁ + R₂)</b>. Két egyforma ellenállásnál ez a fele.</li></ul>" +
+      "<p class='eq'>60 Ω ∥ 30 Ω = 1800 : 90 = <span class='hl'>20 Ω</span></p>" +
+      "<div class='note'><b>Az eredő mindig kisebb, mint a legkisebb ellenállás.</b> A lakás konnektorai párhuzamosan vannak bekötve: mindegyiken 230 V van.</div>" + playBtn("parh"), init: playInit },
+    { k: "Mérés", t: "Mérés, rövidzár, biztosíték", h:
+      "<ul><li><b>Ampermérő: sorosan.</b> Az áramnak át kell folynia rajta, ezért megszakítod a kört, és közé kötöd.</li><li><b>Voltmérő: párhuzamosan.</b> A fogyasztó két végére érinted, a kört nem bontod meg.</li><li>A <b>multiméter</b> mindkettőt tudja, csak a gombot és a dugaszt kell jól beállítani.</li></ul>" +
+      "<div class='mistake'><b>Rövidzár:</b> az áram a fogyasztót megkerülve, szinte nulla ellenálláson folyik. Az áram óriási lesz, a vezeték felforrósodik. Az ampermérőt párhuzamosan bekötni is rövidzár!</div>" +
+      "<p>A <b>biztosíték</b> túl nagy áramnál megszakítja a kört. A fenti áramkörben 5 A felett old ki: próbáld ki kis ellenállással és nagy feszültséggel!</p>" },
+    { k: "Színkód", t: "Az ellenállás színkódja", h:
+      "<p>A kis ellenállásokra nem fér rá szám, ezért színes sávokat festenek rájuk. A négysávosnál: <b>1. jegy, 2. jegy, szorzó, tűrés</b>.</p>" +
+      "<div class='ptwrap'><table class='pt ccode'><tr><th>Szín</th><th>Jegy</th><th>Szorzó</th></tr>" + COL.slice(0, 7).map((c, i) => "<tr><td>" + sw(c) + c[0] + "</td><td>" + i + "</td><td>" + Math.pow(10, i).toLocaleString("hu-HU") + "</td></tr>").join("") + "<tr><td>" + sw(COL[7]) + "lila, " + sw(COL[8]) + "szürke, " + sw(COL[9]) + "fehér</td><td>7, 8, 9</td><td>–</td></tr></table></div>" +
+      "<p>Tűrés: " + sw(GOLD) + "arany ±5%, " + sw(SILV) + "ezüst ±10%. Ezt a sávot jobbra fordítod, és balról olvasol.</p>" +
+      "<div class='cc-sel' id='ccs'></div><div id='ccout'></div>",
+      init(el){
+        const box = el.querySelector("#ccs"), out = el.querySelector("#ccout");
+        const mk = (lab, n, def) => "<label>" + lab + " <select data-i='" + n + "'>" + COL.slice(0, n === 2 ? 7 : 10).map((c, i) => "<option value='" + i + "'" + (i === def ? " selected" : "") + ">" + c[0] + "</option>").join("") + "</select></label>";
+        box.innerHTML = mk("1. sáv", 0, 4) + mk("2. sáv", 1, 7) + mk("szorzó", 2, 2);
+        function upd(){
+          const v = $$("select", box).map(s => Number(s.value)), val = (v[0] * 10 + v[1]) * Math.pow(10, v[2]);
+          out.innerHTML = resSvg([COL[v[0]], COL[v[1]], COL[v[2]], GOLD]) + "<p class='eq'>" + v[0] + "" + v[1] + " · " + Math.pow(10, v[2]) + " = " + val + " Ω = <span class='hl'>" + vstr(val) + "</span></p>";
+        }
+        box.addEventListener("change", upd); upd();
+      } },
+    { k: "LED, DC és AC", t: "LED előtét-ellenállással; egyenáram és váltakozó áram", h:
+      "<p>A LED-et mindig <b>előtét-ellenállással</b> kötjük be, különben túl nagy áram folyik, és kiég.</p>" +
+      "<p class='eq'>R = (U<sub>táp</sub> − U<sub>LED</sub>) : I = (5 − 2) : 0,02 = <span class='hl'>150 Ω</span></p>" +
+      "<ul><li><b>Egyenáram (DC):</b> az áram mindig egy irányba folyik. Elem, akkumulátor, telefontöltő kimenete, a számítógép alkatrészei (3,3 V, 5 V, 12 V).</li><li><b>Váltakozó áram (AC):</b> az irány másodpercenként sokszor megfordul. A konnektor: 230 V, 50 Hz. A gép tápegysége ezt alakítja egyenárammá.</li></ul>" +
+      "<div class='mistake'><b>A 230 V életveszélyes.</b> Konnektorral, nyitott tápegységgel soha ne kísérletezz. Iskolában is csak a tanár engedélyével, törpefeszültséggel (pl. 9 V-os elemmel) dolgozz.</div>" + playBtn("led"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Elfelejtett átváltás.</b> 20 mA nem 20 A! Számolás előtt válts alapegységre: 20 mA = 0,02 A.</div>" +
+      "<div class='mistake'><b>Rossz irányú átváltás.</b> A → mA: szorzás ezerrel; mA → A: osztás ezerrel. Gondold meg: kisebb egységből több kell.</div>" +
+      "<div class='mistake'><b>Fordított képlet.</b> I = R : U rossz! Nézd meg a háromszöget: az U van felül.</div>" +
+      "<div class='mistake'><b>Párhuzamosnál összeadás.</b> 60 Ω és 30 Ω párhuzamosan nem 90 Ω, hanem 20 Ω. Az eredő kisebb, mint a legkisebb.</div>" +
+      "<div class='mistake'><b>W és kWh összekeverése.</b> A watt teljesítmény (milyen erős), a kWh energia (mennyit fogyasztott összesen).</div>" +
+      "<div class='mistake'><b>Ampermérő párhuzamosan.</b> Rövidzár: kiolvad a műszer biztosítéka.</div>" },
+    { k: "Trükkök", t: "Hasznos trükkök", h:
+      "<div class='two-col'><div class='trick'><span class='t'>kΩ és mA együtt</span><span>kΩ · mA = V, és V : kΩ = mA. Így nem kell átváltani: 5 V : 1 kΩ = 5 mA.</span></div>" +
+      "<div class='trick'><span class='t'>Próba</span><span>A kiszámolt értéket helyettesítsd vissza: R · I adja vissza az U-t?</span></div>" +
+      "<div class='trick'><span class='t'>Becslés</span><span>Párhuzamosan két egyforma ellenállás: a fele. Három egyforma: a harmada.</span></div>" +
+      "<div class='trick'><span class='t'>Áram a konnektorból</span><span>I = P : U. Egy 2300 W-os vízforraló 230 V-on 10 A-t vesz fel.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  function chk(ans, unit, o){
+    const tol = (o && o.tol) || 1e-6 * Math.max(1, Math.abs(ans));
+    return v => {
+      const x = num(v);
+      if (isNaN(x)) return { ok: false, msg: "Számot írj be (a tizedesvessző és a pont is jó)." };
+      if (Math.abs(x - ans) <= tol) return { ok: true, msg: "Helyes!" };
+      if (ans && (near(x, ans * 1000) || near(x, ans / 1000))) return { ok: false, msg: "Ezerszeres eltérés: figyelj az előtagra! Ebben a mértékegységben kérjük: " + unit + "." };
+      return { ok: false, msg: (o && o.msg) || "Nem jó. Nézd meg a megoldást lépésenként." };
+    };
+  }
+  function T(q, ans, unit, steps, o){
+    o = o || {};
+    const shown = (o.show != null ? o.show : fmt(ans)) + " " + unit;
+    return { q: q + "<br><span class='hint'>Add meg ebben a mértékegységben: <b>" + unit + "</b>" + (o.round ? ". " + o.round : "") + "</span>",
+      kind: "input", mode: "decimal", ph: "Válaszod (" + unit + ")", answer: shown, sol: solOf(steps), frames: lines(steps), title: o.title || "Levezetés", check: chk(ans, unit, o) };
+  }
+  const chooser = (q, ok, wrongs, sol, msg) => {
+    const opts = shuffle([{ l: ok, ok: true }].concat(wrongs.slice(0, 3).map(w => ({ l: w, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: ok, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : (msg || "Nem ez. Nézd meg a megoldást.") }) };
+  };
+
+  function genOhm(l){
+    const find = pick(["U", "I", "R"]);
+    let U, R, I, uR = "Ω", uI = "A", steps = [], q, ans, unit, o = { title: "Ohm-törvény", msg: "Nem jó. Nézd meg a háromszöget: U = R · I, I = U : R, R = U : I." };
+    if (l === 3 && Math.random() < .5){
+      const Ut = pick([5, 9, 12]), Ul = pick([1.8, 2, 2.2, 3]), Im = pick([10, 15, 20, 25]), Ur = Ut - Ul, Rv = Ur / (Im / 1000), Rr = Math.round(Rv);
+      steps = [["U<sub>táp</sub> = " + Ut + " V, U<sub>LED</sub> = " + fmt(Ul) + " V, I = " + Im + " mA", "A tápfeszültség " + Ut + " volt, a LED-en " + fmt(Ul) + " volt esik, az áram " + Im + " milliamper."],
+        ["Az ellenállásra jutó feszültség: " + Ut + " − " + fmt(Ul) + " = " + fmt(Ur) + " V", "A maradék feszültség esik az ellenálláson: " + fmt(Ur) + " volt."],
+        ["I = " + Im + " mA = " + fmt(Im / 1000) + " A", "Az áramot amperbe váltjuk."],
+        ["R = U : I = " + fmt(Ur) + " : " + fmt(Im / 1000) + " ≈ " + fmt(Rr) + " Ω", "Az Ohm-törvényből az ellenállás: " + fmt(Rr) + " ohm."]];
+      return T("Egy LED-et " + Ut + " V tápfeszültségről működtetsz. A LED feszültsége " + fmt(Ul) + " V, az árama " + Im + " mA legyen. Mekkora előtét-ellenállás kell?", Rv, "Ω", steps, { show: fmt(Rr), tol: 0.5 + 1e-9, round: "Egészre kerekíts", title: "LED előtét-ellenállása", msg: "Nem jó. Előbb vond ki a LED feszültségét, aztán válts amperbe, és oszd el." });
+    }
+    if (l === 1){ R = pick([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30]); I = pick([1, 2, 3, 4, 5]); U = R * I; }
+    else if (l === 2){ R = pick([1, 2, 3, 4, 5, 6, 10, 12, 20]); I = pick([1, 2, 3, 4, 5, 6, 10]); U = R * I; uR = "kΩ"; uI = "mA"; }
+    else { R = pick([220, 330, 470, 680, 1000]); I = pick([2, 5, 10, 20]) / 1000; U = R * I; }
+    const sU = fmt(U) + " V", sR = fmt(R) + " " + uR, sI = (l === 3 ? fmt(I * 1000) + " mA" : fmt(I) + " " + uI);
+    const conv = l === 2 ? [["kΩ · mA = V, ezért itt nem kell átváltani.", "Kiloohm szorozva milliamper éppen volt, ezért nem kell átváltani."]] : l === 3 ? [["I = " + fmt(I * 1000) + " mA = " + fmt(I) + " A", "A milliampert amperbe váltjuk: osztunk ezerrel."]] : [];
+    if (find === "I"){
+      q = "Az ellenállásra U = " + sU + " feszültséget kapcsolsz, az ellenállás R = " + sR + ". Mekkora az áramerősség (I)?";
+      unit = l === 1 ? "A" : "mA"; ans = l === 1 ? I : I * (l === 2 ? 1 : 1000);
+      steps = [["Ismert: U = " + sU + ", R = " + sR], ["Keresett: I. Képlet: I = U : R", "Az áramot keressük: I egyenlő U osztva R."]].concat(l === 2 ? [["V : kΩ = mA, ezért itt nem kell átváltani.", "Volt osztva kiloohm éppen milliamper."]] : [])
+        .concat([["I = " + fmt(U) + " : " + fmt(R) + " = " + fmt(l === 3 ? I : I) + (l === 3 ? " A = " + fmt(I * 1000) + " mA" : " " + uI)]]);
+    } else if (find === "U"){
+      q = "Az ellenálláson I = " + sI + " áram folyik, az ellenállás R = " + sR + ". Mekkora a feszültség (U)?";
+      unit = "V"; ans = U;
+      steps = [["Ismert: I = " + sI + ", R = " + sR], ["Keresett: U. Képlet: U = R · I", "A feszültséget keressük: U egyenlő R szorozva I."]].concat(conv)
+        .concat([["U = " + fmt(R) + " · " + fmt(l === 2 ? I : I) + " = " + sU]]);
+    } else {
+      q = "Az ellenállásra U = " + sU + " feszültséget kapcsolsz, és I = " + sI + " áram folyik. Mekkora az ellenállás (R)?";
+      unit = uR; ans = R;
+      steps = [["Ismert: U = " + sU + ", I = " + sI], ["Keresett: R. Képlet: R = U : I", "Az ellenállást keressük: R egyenlő U osztva I."]].concat(l === 2 ? [["V : mA = kΩ, ezért itt nem kell átváltani.", "Volt osztva milliamper éppen kiloohm."]] : conv)
+        .concat([["R = " + fmt(U) + " : " + fmt(I) + " = " + sR]]);
+    }
+    steps.push(["Próba: R · I = " + fmt(R) + " · " + fmt(I) + " = " + sU + " ✓", "Próba: az ellenállás szorozva az árammal visszaadja a feszültséget."]);
+    return T(q, ans, unit, steps, o);
+  }
+
+  const CONV = {
+    1: [["mA", "A", 1 / 1000, [100, 200, 250, 500, 750, 1500, 2000]], ["A", "mA", 1000, [0.1, 0.2, 0.5, 1, 1.5, 2, 3]], ["kΩ", "Ω", 1000, [1, 2, 3, 5, 10, 47]], ["Ω", "kΩ", 1 / 1000, [1000, 2000, 5000, 10000, 22000]]],
+    2: [["mA", "A", 1 / 1000, [35, 2, 1250, 80, 5]], ["A", "mA", 1000, [0.035, 0.02, 1.25, 0.005]], ["kΩ", "Ω", 1000, [4.7, 2.2, 0.47, 33, 6.8]], ["Ω", "kΩ", 1 / 1000, [470, 3300, 680, 150]], ["mV", "V", 1 / 1000, [500, 1500, 250, 3300]], ["V", "mV", 1000, [1.5, 0.7, 3.3, 0.05]], ["W", "kW", 1 / 1000, [1500, 2300, 750, 60]], ["kW", "W", 1000, [0.75, 2.2, 1.8]]],
+    3: [["MΩ", "kΩ", 1000, [1, 2.2, 0.47, 4.7]], ["MΩ", "Ω", 1e6, [1, 2.2, 0.1, 3.3]], ["kΩ", "MΩ", 1 / 1000, [470, 2200, 100, 1500]], ["Wh", "kWh", 1 / 1000, [500, 2500, 150, 12000]], ["kWh", "Wh", 1000, [0.5, 1.2, 0.08, 3]], ["mA", "A", 1 / 1000, [0.5, 5, 12.5, 0.2]], ["Ω", "MΩ", 1e-6, [470000, 1000000, 2200000, 150000]]]
+  };
+  function genConv(l){
+    const c = pick(CONV[l]), v = pick(c[3]), ans = v * c[2];
+    const how = c[2] > 1 ? "szorzunk " + (c[2] === 1e6 ? "millióval" : "ezerrel") : "osztunk " + (c[2] === 1e-6 ? "millióval" : "ezerrel");
+    const why = c[2] > 1 ? "Kisebb egységre váltunk, ezért a szám nagyobb lesz: " + how + "." : "Nagyobb egységre váltunk, ezért a szám kisebb lesz: " + how + ".";
+    const one = c[2] > 1 ? "1 " + c[0] + " = " + fmt(c[2]) + " " + c[1] : "1 " + c[1] + " = " + fmt(1 / c[2]) + " " + c[0];
+    const steps = [[one, "Először: " + one + "."], [why], [fmt(v) + " " + c[0] + " = " + fmt(ans) + " " + c[1], "Az eredmény: " + fmt(ans) + " " + c[1] + "."]];
+    return T("Váltsd át: " + fmt(v) + " " + c[0] + " = ? " + c[1], ans, c[1], steps, { title: "Átváltás", msg: "Nem jó. " + one + ". Kisebb egységre szorzás, nagyobbra osztás." });
+  }
+
+  function genPow(l){
+    let steps, q, ans, unit, o = { title: "Teljesítmény", msg: "Nem jó. P = U · I, ebből I = P : U és U = P : I." };
+    if (l === 1){
+      const U = pick([6, 12, 24, 230]), I = pick([1, 2, 3, 5, 10]); ans = U * I; unit = "W";
+      q = "Egy készülék U = " + U + " V feszültségről működik, és I = " + I + " A áramot vesz fel. Mekkora a teljesítménye (P)?";
+      steps = [["Ismert: U = " + U + " V, I = " + I + " A"], ["Képlet: P = U · I", "A teljesítmény a feszültség szorozva az árammal."], ["P = " + U + " · " + I + " = " + ans + " W"]];
+    } else if (l === 2){
+      if (Math.random() < .5){
+        const I = pick([1, 2, 3, 4, 5, 8, 10]), P = 230 * I; ans = I; unit = "A";
+        q = "Egy " + P + " W teljesítményű készüléket a konnektorba (230 V) dugsz. Mekkora áramot vesz fel (I)?";
+        steps = [["Ismert: P = " + P + " W, U = 230 V"], ["Képlet: I = P : U", "A P egyenlő U szorozva I képletből: I egyenlő P osztva U."], ["I = " + P + " : 230 = " + I + " A"]];
+      } else {
+        const I = pick([0.5, 2, 4, 5]), U = pick([5, 12, 20]), P = U * I; ans = U; unit = "V";
+        q = "Egy töltő P = " + fmt(P) + " W teljesítményt ad le, és I = " + fmt(I) + " A áramot. Mekkora a feszültsége (U)?";
+        steps = [["Ismert: P = " + fmt(P) + " W, I = " + fmt(I) + " A"], ["Képlet: U = P : I", "A feszültség a teljesítmény osztva az árammal."], ["U = " + fmt(P) + " : " + fmt(I) + " = " + U + " V"]];
+      }
+    } else {
+      if (Math.random() < .5){
+        const U = pick([10, 20, 50]), R = pick([10, 20, 50, 100]); ans = U * U / R; unit = "W";
+        q = "Egy R = " + R + " Ω ellenállásra U = " + U + " V feszültséget kapcsolsz. Mekkora teljesítmény alakul hővé rajta (P)?";
+        steps = [["Ismert: U = " + U + " V, R = " + R + " Ω"], ["Először az áram: I = U : R = " + U + " : " + R + " = " + fmt(U / R) + " A", "Előbb kiszámoljuk az áramot az Ohm-törvénnyel."], ["P = U · I = " + U + " · " + fmt(U / R) + " = " + fmt(ans) + " W", "Aztán a teljesítmény: U szorozva I."], ["Rövidebben: P = U² : R = " + (U * U) + " : " + R + " = " + fmt(ans) + " W", "Egy lépésben is mehet: U a négyzeten osztva R."]];
+      } else {
+        const I = pick([0.5, 1, 2, 3]), R = pick([4, 10, 20]); ans = I * I * R; unit = "W";
+        q = "Egy R = " + R + " Ω ellenálláson I = " + fmt(I) + " A áram folyik. Mekkora a teljesítmény (P)?";
+        steps = [["Ismert: I = " + fmt(I) + " A, R = " + R + " Ω"], ["Először a feszültség: U = R · I = " + R + " · " + fmt(I) + " = " + fmt(R * I) + " V", "Előbb a feszültség az Ohm-törvényből."], ["P = U · I = " + fmt(R * I) + " · " + fmt(I) + " = " + fmt(ans) + " W"], ["Rövidebben: P = I² · R", "Egy lépésben: I a négyzeten szorozva R."]];
+      }
+    }
+    return T(q, ans, unit, steps, o);
+  }
+
+  const DEV = [["Vízforraló", [1000, 2000]], ["Hajszárító", [1000, 2000]], ["Mikrohullámú sütő", [1000]], ["Porszívó", [500, 1000, 1500]], ["Számítógép", [500]], ["Vasaló", [1500, 2000]]];
+  function genBill(l){
+    const o = { title: "Villanyszámla", msg: "Nem jó. Előbb a kWh: P (kW) · t (óra), aztán szorozd meg az árral." };
+    if (l === 1){
+      const P = pick([100, 500, 1000, 2000]), t = pick([1, 2, 3, 4, 5, 10]), E = P * t / 1000;
+      return T("Egy " + P + " W teljesítményű készülék " + t + " órán át működik. Mennyi energiát fogyaszt (kWh)?", E, "kWh",
+        [["P = " + P + " W = " + fmt(P / 1000) + " kW", "Előbb kilowattba váltunk: osztunk ezerrel."], ["E = P · t = " + fmt(P / 1000) + " · " + t + " = " + fmt(E) + " kWh", "Az energia a teljesítmény szorozva az idővel."]], o);
+    }
+    if (l === 2){
+      const d = pick(DEV), P = pick([500, 1000, 1500, 2000]), t = pick([1, 2, 4]), ar = pick([40, 50, 60, 70, 80]), E = P * t / 1000, C = E * ar;
+      return T(d[0] + ": P = " + P + " W, összesen " + t + " órát működik. Egy kWh ára " + ar + " Ft. Mennyibe kerül az áram (Ft)?", C, "Ft",
+        [["P = " + P + " W = " + fmt(P / 1000) + " kW"], ["E = " + fmt(P / 1000) + " · " + t + " = " + fmt(E) + " kWh", "Az energia: kilowatt szorozva óra."], ["Költség: " + fmt(E) + " · " + ar + " = " + fmt(C) + " Ft", "A költség: a kilowattóra szorozva az árával."]], o);
+    }
+    const P = pick([1200, 1800, 2400, 3000]), perc = pick([10, 15, 20, 30]), nap = 30, ar = pick([50, 60, 70]), ora = perc * nap / 60, E = P / 1000 * ora, C = E * ar;
+    return T("Egy " + P + " W teljesítményű hajszárítót naponta " + perc + " percig használsz, egy hónapig (30 nap). Egy kWh ára " + ar + " Ft. Mennyibe kerül egy hónapban (Ft)?", C, "Ft",
+      [["Idő: " + perc + " · 30 = " + (perc * 30) + " perc = " + fmt(ora) + " óra", "Előbb az idő egy hónapra, órában: a perceket osztjuk hatvannal."], ["P = " + P + " W = " + fmt(P / 1000) + " kW"], ["E = " + fmt(P / 1000) + " · " + fmt(ora) + " = " + fmt(E) + " kWh"], ["Költség: " + fmt(E) + " · " + ar + " = " + fmt(C) + " Ft"]], { title: "Villanyszámla", msg: o.msg, tol: 0.5 + 1e-9 });
+  }
+
+  const PAR = [[6, 3], [12, 6], [20, 30], [60, 30], [10, 40], [100, 100], [40, 60], [12, 4], [20, 5], [90, 10], [150, 100], [300, 200], [50, 50], [24, 24]];
+  function genCirc(l){
+    if (l === 1){
+      const n = rnd(2, 3), Rs = Array.from({ length: n }, () => pick([10, 20, 22, 33, 47, 50, 68, 100, 150, 220])), S = Rs.reduce((a, b) => a + b, 0);
+      return T(n + " ellenállást sorba kötsz: " + Rs.map(r => r + " Ω").join(", ") + ". Mekkora az eredő ellenállás?", S, "Ω",
+        [["Soros kapcsolás: R = R₁ + R₂" + (n === 3 ? " + R₃" : ""), "Soros kapcsolásnál az ellenállások összeadódnak."], ["R = " + Rs.join(" + ") + " = " + S + " Ω"]], { title: "Soros kapcsolás", msg: "Nem jó. Sorosan az ellenállások egyszerűen összeadódnak." });
+    }
+    if (l === 2){
+      const p = pick(PAR), a = p[0], b = p[1], R = a * b / (a + b);
+      return T("Két ellenállást párhuzamosan kötsz: R₁ = " + a + " Ω és R₂ = " + b + " Ω. Mekkora az eredő ellenállás?", R, "Ω",
+        [["Párhuzamos kapcsolás: R = R₁ · R₂ : (R₁ + R₂)", "Két párhuzamos ellenállás eredője: a szorzat osztva az összeggel."], ["Szorzat: " + a + " · " + b + " = " + (a * b), "A szorzatuk " + (a * b) + "."], ["Összeg: " + a + " + " + b + " = " + (a + b), "Az összegük " + (a + b) + "."], ["R = " + (a * b) + " : " + (a + b) + " = " + fmt(R) + " Ω", "Az eredő " + fmt(R) + " ohm, kisebb, mint a kisebbik ellenállás."]],
+        { title: "Párhuzamos kapcsolás", msg: "Nem jó. Párhuzamosan nem összeadunk: szorzat osztva összeggel. Az eredő kisebb, mint a kisebbik." });
+    }
+    const v = rnd(0, 2);
+    if (v === 0){
+      const p = pick(PAR), R1 = pick([10, 20, 50, 100]), Rp = p[0] * p[1] / (p[0] + p[1]), R = R1 + Rp;
+      return T("R₁ = " + R1 + " Ω ellenállással sorba kötöd két párhuzamos ellenállás csoportját: R₂ = " + p[0] + " Ω és R₃ = " + p[1] + " Ω. Mekkora az eredő ellenállás?", R, "Ω",
+        [["Előbb a párhuzamos rész: R₂ ∥ R₃ = " + (p[0] * p[1]) + " : " + (p[0] + p[1]) + " = " + fmt(Rp) + " Ω", "Először a párhuzamos részt számoljuk ki: szorzat osztva összeggel."], ["Aztán soros: R = " + R1 + " + " + fmt(Rp) + " = " + fmt(R) + " Ω", "Ezzel sorban van az első ellenállás, ezért hozzáadjuk."]], { title: "Vegyes kapcsolás", msg: "Nem jó. Előbb a párhuzamos részt számold (szorzat : összeg), aztán add hozzá a soros ellenállást." });
+    }
+    const U = pick([6, 9, 12]), Rt = pick([300, 600]), k = rnd(1, Rt / 100 - 1), R1 = k * 100, R2 = Rt - R1;
+    if (v === 1){
+      const I = U / Rt;
+      return T("Sorba kötsz R₁ = " + R1 + " Ω és R₂ = " + R2 + " Ω ellenállást, és U = " + U + " V feszültségre kapcsolod. Mekkora áram folyik (mA)?", I * 1000, "mA",
+        [["Eredő: R = " + R1 + " + " + R2 + " = " + Rt + " Ω"], ["I = U : R = " + U + " : " + Rt + " = " + fmt(I) + " A", "Az Ohm-törvényből az áram amperben."], ["I = " + fmt(I) + " A = " + fmt(I * 1000) + " mA", "Milliamperbe váltunk: szorzunk ezerrel."]], { title: "Soros kapcsolás", msg: "Nem jó. Add össze az ellenállásokat, oszd el vele a feszültséget, és válts milliamperbe." });
+    }
+    const U1 = U * R1 / Rt;
+    return T("Sorba kötsz R₁ = " + R1 + " Ω és R₂ = " + R2 + " Ω ellenállást, és U = " + U + " V feszültségre kapcsolod. Mekkora feszültség esik az első ellenálláson (U₁)?", U1, "V",
+      [["Eredő: R = " + R1 + " + " + R2 + " = " + Rt + " Ω"], ["I = U : R = " + U + " : " + Rt + " = " + fmt(U / Rt) + " A", "Az áram mindkét ellenálláson ugyanaz."], ["U₁ = R₁ · I = " + R1 + " · " + fmt(U / Rt) + " = " + fmt(U1) + " V", "Az első ellenálláson eső feszültség: R egy szorozva az árammal."]], { title: "Soros kapcsolás", msg: "Nem jó. Előbb az áram (U : eredő), aztán U₁ = R₁ · I." });
+  }
+
+  function genColor(l){
+    const d1 = rnd(1, 9), d2 = rnd(0, 9), m = l === 1 ? rnd(0, 1) : l === 2 ? rnd(0, 4) : rnd(0, 5), tol = l === 1 ? GOLD : pick([GOLD, SILV]);
+    const val = (d1 * 10 + d2) * Math.pow(10, m), bands = [COL[d1], COL[d2], COL[m], tol];
+    const steps = [["1. sáv: " + COL[d1][0] + " → " + d1, "Az első sáv " + COL[d1][0] + ", ez az első jegy."], ["2. sáv: " + COL[d2][0] + " → " + d2, "A második sáv " + COL[d2][0] + ", ez a második jegy."],
+      ["3. sáv (szorzó): " + COL[m][0] + " → · " + Math.pow(10, m), "A harmadik sáv a szorzó."], [String(d1) + d2 + " · " + Math.pow(10, m) + " = " + val + " Ω = " + vstr(val)], ["4. sáv (tűrés): " + tol[0] + " → ±" + (tol === GOLD ? 5 : 10) + "%"]];
+    const sol = solOf(steps);
+    if (l < 3){
+      const cand = [(d1 * 10 + d2) * Math.pow(10, m + 1), m > 0 ? (d1 * 10 + d2) * Math.pow(10, m - 1) : (d1 * 10 + d2) * 1000, d2 ? (d2 * 10 + d1) * Math.pow(10, m) : (d1 * 10 + 1) * Math.pow(10, m), (d1 * 10 + d2) * Math.pow(10, m + 2), (d1 + d2) * Math.pow(10, m)];
+      const wr = []; cand.forEach(c => { const s = vstr(c); if (s !== vstr(val) && !wr.includes(s)) wr.push(s); });
+      const t = chooser("Mekkora az ellenállás értéke?" + resSvg(bands) + "<span class='hint'>" + bandNames(bands) + "</span>", vstr(val), wr, sol, "Nem ez. Első két sáv: a két jegy, a harmadik: hány nulla jön utána.");
+      t.frames = lines(steps); t.title = "Színkód"; return t;
+    }
+    const nm = b => b.map(x => x[0]).join(" – ");
+    const okL = nm(bands), wr = [];
+    [[COL[d2], COL[d1], COL[m], tol], [COL[d1], COL[d2], COL[(m + 1) % 10], tol], [COL[d1], COL[d2], COL[m > 0 ? m - 1 : m + 2], tol], [COL[d1], COL[(d2 + 1) % 10], COL[m], tol]].forEach(b => { const s = nm(b); if (s !== okL && !wr.includes(s)) wr.push(s); });
+    const t = chooser("Melyik színsor jelöli ezt az ellenállást: <b>" + vstr(val) + "</b>, tűrés: ±" + (tol === GOLD ? 5 : 10) + "%?", okL, wr, sol, "Nem ez. Írd fel ohmban, az első két jegy két szín, aztán számold meg a nullákat.");
+    t.frames = lines(steps); t.title = "Színkód"; return t;
+  }
+
+  const CONC = {
+    1: [["Hogyan kötjük be az ampermérőt?", "sorosan, a kört megszakítva", ["párhuzamosan, a fogyasztó két végére", "mindegy, hogyan", "csak az elem két pólusára"]],
+      ["Hogyan kötjük be a voltmérőt?", "párhuzamosan, a fogyasztó két végére", ["sorosan, a kört megszakítva", "mindegy, hogyan", "a biztosíték helyére"]],
+      ["Mi a feszültség mértékegysége?", "volt (V)", ["amper (A)", "ohm (Ω)", "watt (W)"]],
+      ["Mi az áramerősség mértékegysége?", "amper (A)", ["volt (V)", "ohm (Ω)", "watt (W)"]],
+      ["Mi az ellenállás mértékegysége?", "ohm (Ω)", ["volt (V)", "amper (A)", "kilowattóra (kWh)"]],
+      ["Mi a teljesítmény mértékegysége?", "watt (W)", ["volt (V)", "amper (A)", "ohm (Ω)"]],
+      ["A vízhasonlatban minek felel meg a feszültség?", "a víz nyomásának", ["a cső szűkületének", "az átfolyó víz mennyiségének", "a cső hosszának"]],
+      ["A vízhasonlatban minek felel meg az ellenállás?", "a cső szűkületének", ["a víz nyomásának", "az átfolyó víz mennyiségének", "a szivattyúnak"]],
+      ["Mikor folyik áram?", "ha az áramkör zárt", ["ha az áramkör nyitott", "ha nincs elem", "mindig"]]],
+    2: [["Mi a rövidzár?", "az áram a fogyasztót megkerülve, szinte nulla ellenálláson folyik", ["az áramkör megszakad", "túl hosszú a vezeték", "a fogyasztó túl lassan kapcsol be"]],
+      ["Mit csinál a biztosíték?", "túl nagy áramnál megszakítja az áramkört", ["növeli a feszültséget", "egyenárammá alakítja a váltakozó áramot", "méri az áramot"]],
+      ["Milyen áramot ad egy elem?", "egyenáramot (DC)", ["váltakozó áramot (AC)", "230 V-os váltakozó áramot", "semmilyet"]],
+      ["Milyen a konnektor feszültsége itthon?", "230 V, váltakozó (50 Hz)", ["12 V, egyenáram", "5 V, egyenáram", "1,5 V, váltakozó"]],
+      ["Soros kapcsolásnál mi azonos minden ellenálláson?", "az áramerősség", ["a feszültség", "a teljesítmény", "semmi"]],
+      ["Párhuzamos kapcsolásnál mi azonos minden ágon?", "a feszültség", ["az áramerősség", "az ellenállás", "semmi"]],
+      ["Mit alakít át a számítógép tápegysége?", "a 230 V-os váltakozó áramot kis feszültségű egyenárammá", ["az egyenáramot 230 V-os váltakozó árammá", "a hőt árammá", "az adatot árammá"]],
+      ["A karácsonyfaégősorban egy izzó kiég, és mind elalszik. Hogyan vannak kötve?", "sorosan", ["párhuzamosan", "vegyesen", "sehogy"]],
+      ["Mit mér a villanyóra?", "a felhasznált energiát (kWh)", ["a pillanatnyi feszültséget (V)", "az ellenállást (Ω)", "az áram irányát"]]],
+    3: [["Ha azonos ellenállás mellett a feszültséget kétszeresére növeled, mi lesz az árammal?", "kétszeresére nő", ["felére csökken", "nem változik", "négyszeresére nő"]],
+      ["Ha azonos feszültség mellett az ellenállást kétszeresére növeled, mi lesz az árammal?", "felére csökken", ["kétszeresére nő", "nem változik", "négyszeresére nő"]],
+      ["Mekkora két párhuzamosan kötött ellenállás eredője?", "kisebb, mint a kisebbik ellenállás", ["nagyobb, mint a nagyobbik", "a kettő összege", "a kettő átlaga"]],
+      ["Mi történik, ha egy LED-et előtét-ellenállás nélkül kötsz 9 V-ra?", "túl nagy áram folyik, és kiég", ["nem világít, de nem baj", "halványan világít", "semmi különös"]],
+      ["Ha azonos ellenálláson a feszültséget kétszeresére növeled, mi lesz a teljesítménnyel?", "négyszeresére nő", ["kétszeresére nő", "nem változik", "felére csökken"]],
+      ["Mi történik, ha az ampermérőt párhuzamosan kötöd a fogyasztóval?", "rövidzár: nagy áram folyik, kiolvadhat a műszer biztosítéka", ["pontosan mér", "a feszültséget méri", "semmi, nem folyik áram"]],
+      ["Melyik fogyaszt több energiát: 2000 W fél óráig vagy 100 W 8 óráig?", "2000 W fél óráig (1 kWh)", ["100 W 8 óráig (0,8 kWh)", "ugyanannyit", "nem lehet megmondani"]],
+      ["Miért melegszik a vezeték, ha nagy áram folyik benne?", "mert a vezeték ellenállásán is teljesítmény alakul hővé", ["mert nő a feszültség", "mert az elektronok elfogynak", "nem melegszik"]]]
+  };
+  function genConc(l){
+    const c = pick(CONC[l]);
+    return chooser(c[0], c[1], shuffle(c[2]), "<p>A helyes válasz: <b>" + esc(c[1]) + "</b>. Nézd meg a diákat (mérés, soros, párhuzamos, LED).</p>");
+  }
+
+  const types = [
+    { id: "ohm", name: "Ohm-törvény", gen: genOhm },
+    { id: "conv", name: "Átváltás", gen: genConv },
+    { id: "pow", name: "Teljesítmény", gen: genPow },
+    { id: "bill", name: "Energia és költség", gen: genBill },
+    { id: "circ", name: "Soros, párhuzamos", gen: genCirc },
+    { id: "color", name: "Színkód", gen: genColor },
+    { id: "conc", name: "Fogalmak, mérés", gen: genConc }
+  ];
+  K.practice($("#practice"), { id: "elektronika", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["feszültség", "U", "volt (V)", "U = R · I"], ["áramerősség", "I", "amper (A)", "I = U : R"], ["ellenállás", "R", "ohm (Ω)", "R = U : I"], ["teljesítmény", "P", "watt (W)", "P = U · I"], ["energia", "E", "kWh", "E = P · t"]];
+  $("#cheat").innerHTML = "<tr><th>Mennyiség</th><th>Jel</th><th>Mértékegység</th><th>Képlet</th></tr>" + rows.map(r => "<tr>" + r.map(c => "<td>" + c + "</td>").join("") + "</tr>").join("");
+  $("#cheat2").innerHTML = "<tr><th>Szín</th><th>Jegy</th><th>Szorzó</th></tr>" + COL.map((c, i) => "<tr><td>" + sw(c) + c[0] + "</td><td>" + i + "</td><td>" + (i < 7 ? Math.pow(10, i).toLocaleString("hu-HU") : "–") + "</td></tr>").join("") + "<tr><td>" + sw(GOLD) + "arany / " + sw(SILV) + "ezüst</td><td colspan='2'>tűrés: ±5% / ±10%</td></tr>";
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>

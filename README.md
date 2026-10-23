@@ -20,6 +20,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [CSS alapok](css-alapok.html) | Szelektorok, színek, dobozmodell, display és position, melyik szabály nyer |
 | [Git és GitHub alapok](git-alapok.html) | Munkamappa, staging, commit, ág, GitHub; parancsok beírása |
 | [Reszponzív weboldalak](reszponziv-weboldalak.html) | Viewport, media query, relatív mértékegységek, flex és grid, Bootstrap-rács; szélességállítható előnézet, kódolós feladatok több ablakszélességen ellenőrizve |
+| [Elektronika alapjai](elektronika-alapjai.html) | Feszültség, áram, ellenállás, Ohm-törvény, teljesítmény, villanyszámla, soros és párhuzamos kapcsolás, színkód, LED előtét-ellenállása; áramkör csúszkákkal és biztosítékkal |
 | [Hálózatok alapjai](halozatok-alapjai.html) | IP-cím kettesben, maszk és prefix, hálózati és szórási cím, egy hálózatban vannak-e (ÉS a maszkkal), eszközök, DHCP, DNS, NAT, portok, letöltési idő, a dolgok internete |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
