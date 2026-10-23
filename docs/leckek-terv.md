@@ -39,6 +39,22 @@ aztán a matek és a gondolkodás, végül a 10.-es előzetesek.
 | 23 | Digitális áramkörök | `digitalis-aramkorok` | logika + kettes számrendszer + elektronika; az ALU alapja | Első félév |
 | 24 | Táblázatkezelés | `tablazatkezeles` | ⚠️ nem biztos, hogy tanulja (digitális kultúra / irodai alapok) | Digitális kultúra |
 | 25 | Informatikai angol | `informatikai-angol` | minden eszköz, hibaüzenet és leírás angolul van | Digitális kultúra |
+| 26 | Fájlok, mappák és a Windows | `windows-fajlkezeles` | a „Windows telepítése és konfigurációja” (15 óra) gépen gyakorolható része | Második félév |
+
+Az 1–25. leckét a végén négy friss szemű lektor is átnézte (nyelv, szakmai és matematikai helyesség); a javítások
+a `d6e7a7a` commitban vannak.
+
+## Nyitott apróságok (a lektorok jelezték, nem sürgős)
+
+- **Felolvasás:** szám vagy mértékegység utáni toldalék hibásan hangzik („10 A-t”, „B3-tól”); a felolvasó-szabály nem kezeli.
+- **MI:** az élő k-NN síkon, ha a diák maga rak le pontokat, döntetlen előfordulhat; ilyenkor jelzés nélkül a sorrend dönt.
+- **Programozási tételek:** az „eldöntés” és a „lineáris keresés” a „Van-e…?” kérdésnél mindkettő védhető; most az eldöntés
+  a jó válasz (a szokásos tanítási megkülönböztetés). Endi döntse el.
+- **Linux:** a játék-terminálban az `echo szia>f.txt` szóköz nélkül nem működik, a `cp`/`mv` nem létező célmappába is másol;
+  a „Hol leszel?” feladat néha furcsa utat generál (iskola/iskola), de helyesen számol.
+- **Egyenletek:** 1-es együtthatónál egy megoldássor kétszer ugyanazt írja; a könnyű „Melyik lépés hibás?” gyöke 0 is lehet.
+- **Koordináták:** a grafikonos feladatok rajzát gépi teszt nézte, ember nem.
+- **Projektmunka:** a Kanban, Scrum, SMART és konfliktuskezelés tartalmát forrással nem vetettük össze.
 
 ## Később (ha lesz idő, vagy Kovrat válasza alapján)
 

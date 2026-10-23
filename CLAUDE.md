@@ -23,7 +23,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tanrend.html`, `docs/tanrend-9.md` | A 9. évfolyam éves tanrendje (hónapkártyák, melyikhez van már lecke). A `.md` a kutatás forrásokkal: ✅ biztos / ⚠️ feltételezés. |
 | `8-visszatekintes.html` | Visszatekintés a 8. osztályra: hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség (kész) |
 | `tizenhatos-szamrendszer.html`, `logikai-muveletek.html`, `szoveg-es-kep.html`, `html-alapok.html`, `css-alapok.html`, `git-alapok.html` | A 2026. 10. 22-i leckék (kész). **A forrásuk a `tools/lessons/*.src.html`**, ne a kimenetet szerkeszd. |
-| A 2026. 10. 23-i (éjszakai) leckék | 25 új lecke, a listájuk és a sorrend indoka: [`docs/leckek-terv.md`](docs/leckek-terv.md), a kezdőlapon csoportokban. Forrásuk szintén `tools/lessons/*.src.html`. |
+| A 2026. 10. 23-i (éjszakai) leckék | 26 új lecke, a listájuk és a sorrend indoka: [`docs/leckek-terv.md`](docs/leckek-terv.md), a kezdőlapon csoportokban. Forrásuk szintén `tools/lessons/*.src.html`. |
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
 | `docs/leckek-terv.md`, `docs/tanrend-10.md` | A leckék sorrendje és indoka; a 10. évfolyam tanrend-vázlata (lecke nélkül). |
@@ -111,9 +111,11 @@ Endi a pultban: „Kovrat tanulás mehet tovább, reggel 7-ig, Opussal.” Kés�
 gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek meg, a döntések feltételezések
 (`docs/tanrend-9.md`, „Döntések 2026-10-23 éjjel”).
 
-- **25 új lecke**, mind a közös készlettel, gépi teszttel (minden típus × szint, 390 px, sötét téma), leckénként egy commit:
+- **26 új lecke**, mind a közös készlettel, gépi teszttel (minden típus × szint, 390 px, sötét téma), leckénként egy commit.
+  A végén négy friss szemű **lektor** nézte át az 1–25. leckét (nyelv, szakmai és matematikai helyesség, két jó gombos
+  feladatok), a javításuk egy commit (`d6e7a7a`); a nyitva hagyott apróságok: `docs/leckek-terv.md` vége.
   - *9.-es informatika:* hálózatok alapjai, elektronika alapjai, a számítógép felépítése, digitális áramkörök (kapuktól az
-    összeadóig), hang és videó digitalizálása, virtualizáció és felhő, IT-biztonság alapjai, (10.-es előzetesként) Ethernet/kapcsoló/IPv6, Linux parancssor, mesterséges intelligencia.
+    összeadóig), hang és videó digitalizálása, fájlok/mappák és a Windows, virtualizáció és felhő, IT-biztonság alapjai, (10.-es előzetesként) Ethernet/kapcsoló/IPv6, Linux parancssor, mesterséges intelligencia.
   - *9.-es programozás:* algoritmusok és játékos programozás, programozási tételek (keresés, rendezés), JavaScript-bevezető,
     Python-előzetes (kódolvasás, futtató nélkül).
   - *Matek:* oszthatóság és statisztika, koordináták és függvények (8.-os), halmazok, algebrai kifejezések, egyenletek,
