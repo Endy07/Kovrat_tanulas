@@ -1,0 +1,1147 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261023041531">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Logikai fejtörők</title>
+<style>
+.hanoi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rod{position:relative;height:170px;background:none;border:2px solid transparent;border-radius:12px;display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;padding:0 4px 12px;color:inherit}
+.rod::before{content:"";position:absolute;left:50%;bottom:10px;top:16px;width:6px;margin-left:-3px;background:#3A4656;border-radius:3px}
+.rod::after{content:"";position:absolute;left:4px;right:4px;bottom:4px;height:6px;background:#3A4656;border-radius:3px}
+.rod:hover{border-color:#3A4656}
+.rod.sel{border-color:var(--led)}
+.disk{position:relative;z-index:1;height:20px;border-radius:8px;margin-top:3px;flex:none;transition:transform .15s}
+.disk.up{transform:translateY(-14px);box-shadow:0 0 12px var(--led-glow)}
+.hn-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.srow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+.srow .lb{min-width:8.5em;font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.cell{border:1.5px solid #3A4656;border-radius:8px;padding:2px 9px;font-family:var(--mono);font-weight:700;min-width:2.2em;text-align:center}
+.cell.q{border-style:dashed}
+.cell.hl{border-color:var(--led);color:var(--led)}
+.gr{width:100%;max-width:440px;height:auto;display:block}
+.gr .e{stroke:var(--muted);stroke-width:2.5}
+.gr .e.on{stroke:var(--led);stroke-width:5}
+.gr .wb{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.gr .wt{fill:var(--ink);font:700 13px var(--mono);text-anchor:middle;dominant-baseline:central}
+.gr .n{fill:var(--accent)}
+.gr .n.done{fill:var(--ok)}
+.gr .n.cur{fill:var(--led)}
+.gr .nt{fill:#fff;font:700 15px var(--body);text-anchor:middle;dominant-baseline:central}
+.gr .dl{fill:var(--led);font:700 13px var(--mono);text-anchor:middle;dominant-baseline:central}
+.pb-stage .gr .wb{fill:#27313E;stroke:#3A4656}
+.pb-stage .gr .wt{fill:#DCE3EC}
+.pb-stage .gr .e{stroke:#5A6678}
+.pb-stage .gr .e.on{stroke:#FFB01F}
+.pb-stage .gr .n.done{fill:#1E7F47}
+.pb-stage .gr .dl{fill:#FFB01F}
+.pc{font-family:var(--mono);font-size:.9rem;line-height:1.5;white-space:pre;overflow-x:auto;background:var(--panel);color:var(--panel-ink);border-radius:10px;padding:10px 12px;margin:6px 0}
+.pc .cur{display:block;background:#4a3a12;color:#FFB01F}
+.pb-stage .pc{margin:0}
+.vars{font-family:var(--mono);margin-top:8px}
+.say{border-left:3px solid var(--accent);padding-left:10px;margin:4px 0}
+.hint{font-size:.9rem;color:var(--muted)}
+.pb-stage .hint{color:var(--panel-muted);font-family:var(--body)}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Gondolkodás · fejtörők · algoritmusok</span>
+  <h1>Logikai fejtörők</h1>
+  <p class="lead">Sorozatok, igazmondók és hazugok, hányféle lehet, legrövidebb út, programok követése. A programozás fele ilyen gondolkodás: szabályt keresni és módszeresen végignézni az eseteket.</p>
+  <div class="panel">
+    <span class="eyebrow">Hanoi tornyai: vidd át az összes korongot a jobb oldali rúdra</span>
+    <p>Egyszerre egy korongot mozgathatsz, és nagyobb korong nem kerülhet kisebbre. Kattints egy rúdra (felveszed a felső korongot), majd egy másikra (ott leteszed).</p>
+    <div class="hn-bar" id="hn-bar">
+      <span class="eyebrow">Korongok</span>
+      <button class="chip" data-hn="3">3</button><button class="chip" data-hn="4">4</button><button class="chip" data-hn="5">5</button>
+      <button class="btn" data-ha="reset">↺ Újra</button>
+      <button class="btn" data-ha="auto">▶ Mutasd a megoldást</button>
+    </div>
+    <div class="hanoi" id="hanoi"></div>
+    <div class="readout">
+      <div><span class="eyebrow">Lépéseid</span><div class="big" id="hn-moves">0</div></div>
+      <div><span class="eyebrow">Legkevesebb</span><div class="big led" id="hn-min">7</div></div>
+      <div class="expr" id="hn-msg" aria-live="polite"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák: módszerek</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>Négy fejtörő lépésről lépésre. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy. Minden fül új példát hoz.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="seq" aria-selected="true">Sorozat szabálya</button>
+    <button class="tab" data-m="liar" aria-selected="false">Igazmondó vagy hazug?</button>
+    <button class="tab" data-m="path" aria-selected="false">Legrövidebb út</button>
+    <button class="tab" data-m="trace" aria-selected="false">Program követése</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hét feladattípus, három szint. Minden feladat új, véletlenül készül, és mindegyiknek egyetlen jó válasza van. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Sorozat</span><span>1. különbség, 2. hányados, 3. a különbségek különbsége, 4. két sorozat egymásba fésülve, 5. az előző kettő összege.</span></div>
+    <div class="trick"><span class="t">Igazmondó és hazug</span><span>Írd fel az összes esetet (2 embernél 4, 3 embernél 8), és húzd ki, ahol ellentmondás van.</span></div>
+    <div class="trick"><span class="t">Hányféle?</span><span>Egymás után választasz: <b>szorozz</b>. Ha a sorrend nem számít: oszd el azzal, ahányféleképpen ugyanazokat sorba lehet rakni.</span></div>
+    <div class="trick"><span class="t">Kerítésoszlop</span><span>10 méteren 2 méterenként: 5 szakasz, de 6 oszlop. Mindig rajzold le kicsiben!</span></div>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        // Tab = két szóköz (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code")
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, norm, art, Art } = K;
+  K.tts.rules.push([/\s*&lt;\s*/g, " kisebb, mint "], [/\s*&gt;\s*/g, " nagyobb, mint "], [/≠/g, " nem egyenlő "], [/→/g, ", "], [/\s:\s/g, " osztva "]);
+  const NAMES = ["Anna", "Bence", "Csaba", "Dóra", "Emese"];
+  const ORD_A = ["az első", "a második", "a harmadik", "a negyedik", "az ötödik"];
+  const L = "ABCDEFG";
+  const num = v => { const s = norm(v).replace(/−/g, "-"); return /^-?\d+$/.test(s) ? Number(s) : NaN; };
+  const numCheck = (ans, hint) => v => num(v) === ans ? { ok: true, msg: "Helyes!" } : { ok: false, msg: hint };
+  const choice = (opts, hint) => v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : hint });
+  const sgn = x => x < 0 ? "−" + (-x) : "+" + x;
+  const fact = n => n <= 1 ? 1 : n * fact(n - 1);
+
+  /* ---------- Hero: Hanoi tornyai ---------- */
+  const COL = ["#F29E0C", "#1B9E77", "#3D7DDB", "#C2477A", "#8C6BD1"];
+  const H = { n: 3, rods: [[], [], []], sel: -1, moves: 0, timer: null };
+  const hMin = () => Math.pow(2, H.n) - 1;
+  function hReset(n){
+    clearTimeout(H.timer); H.timer = null;
+    if (n) H.n = n;
+    H.rods = [[], [], []]; for (let s = H.n; s >= 1; s--) H.rods[0].push(s);
+    H.sel = -1; H.moves = 0; $("#hn-msg").textContent = ""; hRender();
+  }
+  function hRender(){
+    $("#hanoi").innerHTML = H.rods.map((r, i) => '<button class="rod' + (H.sel === i ? " sel" : "") + '" data-r="' + i + '" aria-label="Rúd ' + (i + 1) + ", korongok: " + r.length + '">' +
+      r.map((s, j) => '<span class="disk' + (H.sel === i && j === r.length - 1 ? " up" : "") + '" style="width:' + (20 + s * 16) + "%;background:" + COL[s - 1] + '"></span>').join("") + "</button>").join("");
+    $("#hn-moves").textContent = H.moves; $("#hn-min").textContent = hMin();
+    $$("#hn-bar [data-hn]").forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.hn) === H.n)));
+  }
+  function hMove(a, b){
+    const ra = H.rods[a], rb = H.rods[b];
+    if (!ra.length || (rb.length && rb[rb.length - 1] < ra[ra.length - 1])) return false;
+    rb.push(ra.pop()); H.moves++; return true;
+  }
+  function hWin(){
+    if (H.rods[2].length !== H.n) return;
+    $("#hn-msg").textContent = "Kész, " + H.moves + " lépés. " + (H.moves === hMin() ? "Ez a legkevesebb!" : "A legkevesebb " + hMin() + " lépés, próbáld újra!");
+  }
+  $("#hanoi").addEventListener("click", e => {
+    const b = e.target.closest(".rod"); if (!b || H.timer) return;
+    const i = Number(b.dataset.r);
+    if (H.sel < 0){ if (H.rods[i].length) H.sel = i; }
+    else if (H.sel === i) H.sel = -1;
+    else { $("#hn-msg").textContent = hMove(H.sel, i) ? "" : "Nagyobb korong nem kerülhet kisebbre."; H.sel = -1; }
+    hRender(); hWin();
+  });
+  $("#hn-bar").addEventListener("click", e => {
+    const c = e.target.closest("[data-hn]"); if (c){ hReset(Number(c.dataset.hn)); return; }
+    const a = e.target.closest("[data-ha]"); if (!a) return;
+    if (a.dataset.ha === "reset") hReset();
+    else {
+      hReset();
+      const mv = [];
+      (function go(k, x, y, z){ if (!k) return; go(k - 1, x, z, y); mv.push([x, y]); go(k - 1, z, y, x); })(H.n, 0, 2, 1);
+      let k = 0;
+      const tick = () => { if (k >= mv.length){ H.timer = null; hWin(); return; } hMove(mv[k][0], mv[k][1]); k++; hRender(); H.timer = setTimeout(tick, 550); };
+      $("#hn-msg").textContent = "Figyeld: a kis korong minden második lépésben mozdul.";
+      H.timer = setTimeout(tick, 400);
+    }
+  });
+  hReset(3);
+
+  /* ---------- Sorozatok ---------- */
+  const cells = (a, cls) => a.map(x => '<span class="cell' + (cls ? " " + cls : "") + '">' + x + "</span>").join("");
+  const srow = (lb, a, extra) => '<div class="srow"><span class="lb">' + lb + "</span>" + cells(a) + (extra || "") + "</div>";
+  const diffs = t => t.slice(1).map((x, i) => sgn(x - t[i]));
+  function seqGen(l, force){
+    const kind = force || pick(l === 1 ? ["add", "sub", "mul"] : l === 2 ? ["sq", "pow2", "fib", "d2"] : ["alt", "inter", "lin", "fact"]);
+    let t = [], next, calc, ex = [], rule;
+    if (kind === "add"){ const a = rnd(1, 20), d = rnd(2, 9); for (let i = 0; i < 6; i++) t.push(a + i * d);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "Nézzük a szomszédos tagok különbségét: mindig " + sgn(d) + "." }]; rule = "Minden tag az előző + " + d + "."; calc = t[4] + " + " + d; }
+    else if (kind === "sub"){ const d = rnd(3, 9), a = d * 6 + rnd(5, 30); for (let i = 0; i < 6; i++) t.push(a - i * d);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbség mindig ugyanannyi: minden tag " + d + " egységgel kisebb az előzőnél." }]; rule = "Minden tag az előző − " + d + "."; calc = t[4] + " − " + d; }
+    else if (kind === "mul" || kind === "pow2"){ const r = kind === "pow2" ? 2 : pick([2, 3]), a = kind === "pow2" ? Math.pow(2, rnd(0, 5)) : rnd(1, r === 2 ? 6 : 3); for (let i = 0; i < 6; i++) t.push(a * Math.pow(r, i));
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbségek nem egyformák, tehát nem összeadásról van szó." },
+            { lb: "szorzó", c: t.slice(1, 5).map(() => "· " + r), cap: kind === "pow2" ? "Ezek kettő hatványai: minden tag az előző kétszerese." : "Viszont minden tag az előző " + (r === 2 ? "kétszerese" : "háromszorosa") + "." }];
+      rule = "Minden tag az előző · " + r + "."; calc = t[4] + " · " + r; }
+    else if (kind === "sq"){ const k = rnd(1, 6); for (let i = 0; i < 6; i++) t.push((k + i) * (k + i));
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbségek páratlan számok, és mindig kettővel nőnek." },
+            { lb: "négyzet", c: t.slice(0, 5).map((x, i) => (k + i) + "·" + (k + i)), cap: "A tagok négyzetszámok: " + k + " · " + k + " = " + t[0] + ", és így tovább." }];
+      rule = "Négyzetszámok."; calc = (k + 5) + " · " + (k + 5); }
+    else if (kind === "fib"){ const a = rnd(1, 4), b = rnd(a, a + 4); t = [a, b]; while (t.length < 7) t.push(t[t.length - 1] + t[t.length - 2]);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 6)), cap: "A különbségek nem egyformák, és nem is egyenletesen nőnek." },
+            { lb: "előző kettő", c: t.slice(2, 6).map((x, i) => t[i] + "+" + t[i + 1]), cap: "Minden tag az előző kettő összege, mint a Fibonacci-sorozatban." }];
+      rule = "Minden tag az előző kettő összege."; calc = t[4] + " + " + t[5]; }
+    else if (kind === "d2"){ const a = rnd(1, 10), d = rnd(1, 4), c = rnd(1, 3); t = [a]; for (let i = 0; i < 5; i++) t.push(t[i] + d + i * c);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbségek egyre nőnek." },
+            { lb: "különbségek különbsége", c: Array(3).fill(sgn(c)), cap: "A különbségek különbsége mindig " + c + ". Így a következő különbség: " + (d + 4 * c) + "." }];
+      rule = "A különbségek mindig " + c + " egységgel nőnek."; calc = t[4] + " + " + (d + 4 * c); }
+    else if (kind === "alt"){ const s = rnd(1, 4), p = rnd(1, 5), r = pick([2, 3]); t = [s]; for (let i = 0; i < 6; i++) t.push(i % 2 === 0 ? t[i] + p : t[i] * r);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 6)), cap: "A különbségek nem egyformák." },
+            { lb: "lépés", c: t.slice(1, 6).map((x, i) => i % 2 === 0 ? "+ " + p : "· " + r), cap: "A lépések felváltva jönnek: először + " + p + ", aztán · " + r + ", és így tovább." }];
+      rule = "Felváltva + " + p + " és · " + r + "."; calc = t[5] + " · " + r; }
+    else if (kind === "inter"){ const a = rnd(1, 9), d1 = rnd(2, 6), b = rnd(30, 60), d2 = rnd(2, 6); for (let i = 0; i < 8; i++) t.push(i % 2 === 0 ? a + (i / 2) * d1 : b - ((i - 1) / 2) * d2);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 7)), cap: "A különbségek összevissza ugrálnak: gyanús, hogy két sorozat van egymásba fésülve." },
+            { lb: "páratlan helyek", c: t.filter((x, i) => i % 2 === 0 && i < 7), cap: "A páratlan helyeken: mindig + " + d1 + "." },
+            { lb: "páros helyek", c: t.filter((x, i) => i % 2 === 1 && i < 7), cap: "A páros helyeken: mindig − " + d2 + ". A következő, nyolcadik tag páros helyen áll." }];
+      rule = "Két sorozat egymásba fésülve."; calc = t[5] + " − " + d2; }
+    else if (kind === "lin"){ const b = pick([1, 2, 3, -1]), s = rnd(b < 0 ? 2 : 1, 4); t = [s]; for (let i = 0; i < 5; i++) t.push(t[i] * 2 + b);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbségek mindig megduplázódnak." },
+            { lb: "szabály", c: t.slice(1, 5).map(() => "·2 " + (b > 0 ? "+ " + b : "− " + (-b))), cap: "Minden tag: az előző · 2, " + (b > 0 ? "plusz " + b : "mínusz " + (-b)) + "." }];
+      rule = "Az előző · 2 " + (b > 0 ? "+ " + b : "− " + (-b)) + "."; calc = t[4] + " · 2 " + (b > 0 ? "+ " + b : "− " + (-b)); }
+    else { const s = rnd(1, 3), m0 = rnd(1, 2); t = [s]; for (let i = 0; i < 5; i++) t.push(t[i] * (m0 + i));
+      if (m0 === 1){ t.shift(); t.push(t[t.length - 1] * (m0 + 5)); }
+      const ms = t.slice(1).map((x, i) => x / t[i]);
+      ex = [{ lb: "különbség", c: diffs(t.slice(0, 5)), cap: "A különbségek gyorsan nőnek, nézzük a hányadosokat." },
+            { lb: "szorzó", c: ms.slice(0, 4).map(x => "· " + x), cap: "A szorzó minden lépésben eggyel nő." }];
+      rule = "A szorzó mindig eggyel nő."; calc = t[4] + " · " + ms[4]; }
+    const shown = t.slice(0, t.length - 1);
+    next = t[t.length - 1];
+    return { kind, shown, next, calc, ex, rule };
+  }
+  function seqHtml(S, upto, done){
+    return srow("sorozat", S.shown, done ? '<span class="cell hl">' + S.next + "</span>" : '<span class="cell q">?</span>') + S.ex.slice(0, upto).map(r => srow(r.lb, r.c)).join("");
+  }
+  function seqFrames(S){
+    const F = [{ cap: "Folytasd a sorozatot: " + S.shown.join(", ") + ". Keressük a szabályt!", html: seqHtml(S, 0) }];
+    S.ex.forEach((r, i) => F.push({ cap: r.cap, html: seqHtml(S, i + 1) }));
+    F.push({ cap: "A következő tag tehát: " + S.calc + " = " + S.next + ".", html: seqHtml(S, S.ex.length, true) });
+    return F;
+  }
+
+  /* ---------- Igazmondók és hazugok ---------- */
+  function mkStmt(kind, s, n){
+    const oth = [0, 1, 2].slice(0, n).filter(i => i !== s), o = pick(oth), p = oth.find(i => i !== o);
+    const liars = T => T.filter(x => !x).length;
+    if (kind === "L") return { txt: NAMES[o] + " hazug.", val: T => !T[o] };
+    if (kind === "T") return { txt: NAMES[o] + " igazmondó.", val: T => T[o] };
+    if (kind === "same") return { txt: NAMES[o] + " és én egyformák vagyunk.", val: T => T[s] === T[o] };
+    if (kind === "diff") return { txt: NAMES[o] + " és én különbözünk.", val: T => T[s] !== T[o] };
+    if (kind === "some") return { txt: "Közöttünk van hazug.", val: T => liars(T) > 0 };
+    if (kind === "both" && n === 3) return { txt: NAMES[o] + " és " + NAMES[p] + " mindketten hazugok.", val: T => !T[o] && !T[p] };
+    if (kind === "or" && n === 3) return { txt: NAMES[o] + " és " + NAMES[p] + " közül legalább az egyik hazug.", val: T => !T[o] || !T[p] };
+    const k = rnd(0, n);
+    return { txt: k === 0 ? "Közöttünk nincs hazug." : k === n ? (n === 2 ? "Mindketten" : "Mindhárman") + " hazugok vagyunk." : "Közöttünk pontosan " + k + " hazug van.", val: T => liars(T) === k };
+  }
+  const allAssign = n => Array.from({ length: 1 << n }, (x, m) => Array.from({ length: n }, (y, i) => !((m >> (n - 1 - i)) & 1)));
+  const lab = (T) => T.map((x, i) => NAMES[i] + ": " + (x ? "igazmondó" : "hazug")).join(", ");
+  function liarBuild(n, st){
+    const all = allAssign(n), good = all.filter(T => st.every((x, s) => x.val(T) === T[s]));
+    return good.length === 1 ? { n, st, all, sol: good[0] } : null;
+  }
+  function liarGen(l){
+    const n = l === 1 ? 2 : 3;
+    const kinds = l === 1 ? ["L", "T", "same", "diff", "cnt"] : l === 2 ? ["L", "T", "cnt", "some"] : ["L", "T", "same", "diff", "cnt", "some", "both", "or"];
+    for (let g = 0; g < 2000; g++){
+      const st = []; for (let s = 0; s < n; s++) st.push(mkStmt(pick(kinds), s, n));
+      const P = liarBuild(n, st); if (P) return P;
+    }
+    return liarBuild(2, [{ txt: "Bence hazug.", val: T => !T[1] }, { txt: "Anna és én egyformák vagyunk.", val: T => T[0] === T[1] }]);
+  }
+  const liarQ = P => "Egy szigeten mindenki vagy <b>igazmondó</b> (mindig igazat mond), vagy <b>hazug</b> (mindig hazudik). Ezt mondják:" +
+    P.st.map((x, i) => '<div class="say"><b>' + NAMES[i] + ":</b> „" + x.txt + "”</div>").join("");
+  function liarTable(P, upto){
+    let h = "<p class='hint'>Eset: I = igazmondó, H = hazug (" + NAMES.slice(0, P.n).join(", ") + " sorrendben). A nevek alatt: amit mond, igaz vagy hamis, és illik-e hozzá (✓) vagy nem (✗).</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Eset</th>" + P.st.map((x, i) => "<th>" + NAMES[i] + "</th>").join("") + "<th>Jó?</th></tr>";
+    P.all.slice(0, upto == null ? P.all.length : upto).forEach(T => {
+      const ok = P.st.every((x, i) => x.val(T) === T[i]);
+      h += "<tr><td>" + T.map(x => x ? "I" : "H").join(" ") + "</td>" + P.st.map((x, i) => { const v = x.val(T), g = v === T[i]; return "<td class='" + (g ? "yes" : "no") + "'>" + (v ? "igaz" : "hamis") + (g ? " ✓" : " ✗") + "</td>"; }).join("") +
+        "<td" + (ok ? " class='hl'" : "") + ">" + (ok ? "jó" : "nem") + "</td></tr>";
+    });
+    return h + "</table></div>";
+  }
+  function liarFrames(P){
+    const say = P.st.map((x, i) => '<div class="say"><b>' + NAMES[i] + ":</b> „" + x.txt + "”</div>").join("");
+    const F = [{ cap: "Minden lehetséges esetet végignézünk. " + (P.n === 2 ? "Két embernél ez 4 eset." : "Három embernél ez 8 eset.") + " Egy eset akkor jó, ha minden igazmondó állítása igaz, és minden hazug állítása hamis.", html: say }];
+    P.all.forEach((T, k) => {
+      let c = "Tegyük fel: " + lab(T) + ". ";
+      for (let i = 0; i < P.n; i++){
+        const v = P.st[i].val(T), g = v === T[i];
+        c += NAMES[i] + " állítása " + (v ? "igaz" : "hamis") + ", és " + NAMES[i] + " " + (T[i] ? "igazmondó" : "hazug") + (g ? ": rendben. " : ": ellentmondás, ez az eset nem jó.");
+        if (!g) break;
+      }
+      if (P.st.every((x, i) => x.val(T) === T[i])) c += "Ez az eset jó!";
+      F.push({ cap: c, html: say + liarTable(P, k + 1) });
+    });
+    F.push({ cap: "Egyetlen eset maradt: " + lab(P.sol) + ".", html: say + liarTable(P) });
+    return F;
+  }
+
+  /* ---------- Legrövidebb út ---------- */
+  const GT = {
+    1: { P: [[30, 120], [175, 45], [175, 195], [320, 120]], E: [[0, 1], [0, 2], [1, 2], [1, 3], [2, 3]] },
+    2: { P: [[25, 120], [120, 45], [120, 195], [230, 45], [230, 195], [325, 120]], E: [[0, 1], [0, 2], [1, 2], [1, 3], [1, 4], [2, 4], [3, 4], [3, 5], [4, 5]] },
+    3: { P: [[22, 120], [105, 45], [105, 195], [185, 120], [265, 45], [265, 195], [328, 120]], E: [[0, 1], [0, 2], [0, 3], [1, 3], [2, 3], [1, 4], [3, 4], [3, 5], [2, 5], [4, 6], [5, 6], [4, 5]] }
+  };
+  function dijkstra(G){
+    const n = G.P.length, dist = Array(n).fill(Infinity), prev = Array(n).fill(-1), done = Array(n).fill(false), steps = [];
+    dist[0] = 0;
+    for (;;){
+      let u = -1;
+      for (let i = 0; i < n; i++) if (!done[i] && dist[i] < Infinity && (u < 0 || dist[i] < dist[u])) u = i;
+      if (u < 0) break;
+      done[u] = true;
+      const upd = [];
+      G.E.forEach((e, k) => {
+        const v = e[0] === u ? e[1] : e[1] === u ? e[0] : -1; if (v < 0 || done[v]) return;
+        const nd = dist[u] + G.W[k];
+        if (nd < dist[v]){ upd.push(L[v] + ": " + dist[u] + " + " + G.W[k] + " = " + nd + (dist[v] < Infinity ? ", ez jobb, mint az eddigi " + dist[v] : "")); dist[v] = nd; prev[v] = u; }
+        else upd.push(L[v] + ": " + dist[u] + " + " + G.W[k] + " = " + nd + (nd === dist[v] ? ", ez ugyanannyi, mint az eddigi" : ", ez nem jobb, mint az eddigi " + dist[v]));
+      });
+      steps.push({ u, dist: dist.slice(), done: done.slice(), upd });
+      if (u === n - 1) break;
+    }
+    return { dist, prev, steps };
+  }
+  function countShortest(G, dist){
+    const n = G.P.length, cnt = Array(n).fill(0); cnt[0] = 1;
+    const order = Array.from({ length: n }, (x, i) => i).filter(i => dist[i] < Infinity).sort((a, b) => dist[a] - dist[b]);
+    order.forEach(v => { if (!v) return; G.E.forEach((e, k) => { const u = e[0] === v ? e[1] : e[1] === v ? e[0] : -1; if (u >= 0 && dist[u] + G.W[k] === dist[v]) cnt[v] += cnt[u]; }); });
+    return cnt[n - 1];
+  }
+  function pathGen(l){
+    const T = GT[l];
+    for (let g = 0; g < 500; g++){
+      const G = { P: T.P, E: T.E, W: T.E.map(() => rnd(1, 9)) };
+      // a teljes Dijkstra a célig; csak egyértelmű legrövidebb utat adunk
+      const full = (function(){ const n = G.P.length, d = Array(n).fill(Infinity), dn = Array(n).fill(false); d[0] = 0;
+        for (;;){ let u = -1; for (let i = 0; i < n; i++) if (!dn[i] && d[i] < Infinity && (u < 0 || d[i] < d[u])) u = i; if (u < 0) break; dn[u] = true;
+          G.E.forEach((e, k) => { const v = e[0] === u ? e[1] : e[1] === u ? e[0] : -1; if (v >= 0 && d[u] + G.W[k] < d[v]) d[v] = d[u] + G.W[k]; }); }
+        return d; })();
+      if (countShortest(G, full) !== 1) continue;
+      const D = dijkstra(G), t = G.P.length - 1, path = [];
+      for (let v = t; v >= 0; v = D.prev[v]) path.unshift(v);
+      if (path.length < 3) continue;
+      const pe = new Set();
+      for (let i = 1; i < path.length; i++) G.E.forEach((e, k) => { if ((e[0] === path[i - 1] && e[1] === path[i]) || (e[1] === path[i - 1] && e[0] === path[i])) pe.add(k); });
+      return { G, D, len: full[t], path, pe };
+    }
+  }
+  function svgGraph(G, st){
+    st = st || {};
+    let s = '<svg class="gr" viewBox="0 0 350 240" role="img" aria-label="Térkép pontokkal és utakkal">';
+    G.E.forEach((e, i) => { const A = G.P[e[0]], B = G.P[e[1]]; s += '<line class="e' + (st.pe && st.pe.has(i) ? " on" : "") + '" x1="' + A[0] + '" y1="' + A[1] + '" x2="' + B[0] + '" y2="' + B[1] + '"/>'; });
+    G.E.forEach((e, i) => { const A = G.P[e[0]], B = G.P[e[1]], x = (A[0] + B[0]) / 2, y = (A[1] + B[1]) / 2; s += '<circle class="wb" cx="' + x + '" cy="' + y + '" r="11"/><text class="wt" x="' + x + '" y="' + y + '">' + G.W[i] + "</text>"; });
+    G.P.forEach((p, i) => {
+      const cls = st.cur === i ? " cur" : st.done && st.done[i] ? " done" : "";
+      s += '<circle class="n' + cls + '" cx="' + p[0] + '" cy="' + p[1] + '" r="16"/><text class="nt" x="' + p[0] + '" y="' + p[1] + '">' + L[i] + "</text>";
+      if (st.dist){ const d = st.dist[i]; s += '<text class="dl" x="' + p[0] + '" y="' + (p[1] > 120 ? p[1] + 28 : p[1] - 26) + '">' + (d === Infinity ? "∞" : d) + "</text>"; }
+    });
+    return s + "</svg>";
+  }
+  function pathFrames(R){
+    const G = R.G, n = G.P.length, t = L[n - 1];
+    const F = [{ cap: "A legrövidebb utat keressük A és " + t + " között. A pontok fölé írjuk, milyen messze vannak A-tól az eddig ismert legjobb úton. Az A távolsága 0, a többié egyelőre végtelen.", html: svgGraph(G, { dist: [0].concat(Array(n - 1).fill(Infinity)) }) }];
+    R.D.steps.forEach(s => {
+      const c = "A legközelebbi még le nem zárt pont: " + L[s.u] + ", távolsága " + s.dist[s.u] + ". Ezt lezárjuk, ennél rövidebb út már nem lehet." + (s.u === n - 1 ? " Ez a cél!" : s.upd.length ? " Szomszédai: " + s.upd.join("; ") + "." : "");
+      F.push({ cap: c, html: svgGraph(G, { dist: s.dist, done: s.done, cur: s.u }) });
+    });
+    F.push({ cap: "Kész. A legrövidebb út: " + R.path.map(i => L[i]).join(" → ") + ", a hossza " + R.len + ".", html: svgGraph(G, { dist: R.D.steps[R.D.steps.length - 1].dist, done: R.D.steps[R.D.steps.length - 1].done, pe: R.pe }) });
+    return F;
+  }
+
+  /* ---------- Program követése ---------- */
+  function progGen(l, force){
+    const tr = [], P = { lines: [], tr };
+    const st = (ln, v, note) => tr.push({ ln, v: Object.assign({}, v), note });
+    const kind = force || pick(l === 1 ? ["add", "mul", "seq"] : l === 2 ? ["dbl", "sum", "down"] : ["even", "big", "swap", "collatz"]);
+    let v = {}, ans;
+    if (kind === "add" || kind === "mul"){
+      const a = rnd(1, kind === "add" ? 9 : 5), k = rnd(3, kind === "add" ? 5 : 4), d = kind === "add" ? rnd(2, 6) : 2;
+      P.lines = ["x = " + a, "ISMÉTELD " + k + " ALKALOMMAL:", kind === "add" ? "    x = x + " + d : "    x = x * 2", "KIÍR x"];
+      v.x = a; st(0, v, "Az x értéke " + a + " lesz.");
+      for (let i = 1; i <= k; i++){ st(1, v, "Ez " + art(i) + " " + i + ". ismétlés."); const o = v.x; v.x = kind === "add" ? o + d : o * 2; st(2, v, "x = " + o + (kind === "add" ? " + " + d : " · 2") + " = " + v.x + "."); }
+      ans = v.x; st(3, v, "Kiírjuk az x értékét: " + ans + ".");
+    } else if (kind === "seq"){
+      const a = rnd(2, 9), b = rnd(2, 9);
+      P.lines = ["x = " + a, "y = x + " + b, "x = y * 2", "KIÍR x"];
+      v.x = a; st(0, v, "Az x értéke " + a + "."); v.y = a + b; st(1, v, "y = " + a + " + " + b + " = " + v.y + ".");
+      v.x = v.y * 2; st(2, v, "x = " + v.y + " · 2 = " + v.x + ". Az x régi értéke elveszett."); ans = v.x; st(3, v, "Kiírjuk az x értékét: " + ans + ".");
+    } else if (kind === "dbl"){
+      const a = rnd(1, 5), N = rnd(20, 100);
+      P.lines = ["x = " + a, "db = 0", "AMÍG x < " + N + ":", "    x = x * 2", "    db = db + 1", "KIÍR db"];
+      v.x = a; st(0, v, "Az x értéke " + a + "."); v.db = 0; st(1, v, "A db (darabszám) értéke 0.");
+      while (v.x < N){ st(2, v, "Igaz-e, hogy " + v.x + " &lt; " + N + "? Igen, belépünk a ciklusba."); const o = v.x; v.x *= 2; st(3, v, "x = " + o + " · 2 = " + v.x + "."); v.db++; st(4, v, "A db eggyel nő, most " + v.db + "."); }
+      st(2, v, "Igaz-e, hogy " + v.x + " &lt; " + N + "? Nem, kilépünk a ciklusból."); ans = v.db; st(5, v, "Kiírjuk a db értékét: " + ans + ".");
+    } else if (kind === "sum"){
+      const L2 = Array.from({ length: rnd(4, 5) }, () => rnd(1, 12));
+      P.lines = ["s = 0", "MINDEN szam ÉRTÉKRE EBBŐL: [" + L2.join(", ") + "]", "    s = s + szam", "KIÍR s"];
+      v.s = 0; st(0, v, "Az s értéke 0.");
+      L2.forEach(x => { v.szam = x; st(1, v, "A következő szám: " + x + "."); const o = v.s; v.s += x; st(2, v, "s = " + o + " + " + x + " = " + v.s + "."); });
+      ans = v.s; st(3, v, "Kiírjuk az s értékét: " + ans + ". Ez a számok összege.");
+    } else if (kind === "down"){
+      const a = rnd(10, 40), d = rnd(3, 7);
+      P.lines = ["x = " + a, "db = 0", "AMÍG x > 0:", "    x = x - " + d, "    db = db + 1", "KIÍR db"];
+      v.x = a; st(0, v, "Az x értéke " + a + "."); v.db = 0; st(1, v, "A db értéke 0.");
+      while (v.x > 0){ st(2, v, "Igaz-e, hogy " + v.x + " &gt; 0? Igen, belépünk."); const o = v.x; v.x -= d; st(3, v, "x = " + o + " − " + d + " = " + v.x + "."); v.db++; st(4, v, "A db most " + v.db + "."); }
+      st(2, v, "Igaz-e, hogy " + v.x + " &gt; 0? Nem, kilépünk."); ans = v.db; st(5, v, "Kiírjuk a db értékét: " + ans + ".");
+    } else if (kind === "even" || kind === "big"){
+      const L2 = Array.from({ length: rnd(5, 6) }, () => rnd(1, 30)), t = rnd(8, 20);
+      P.lines = kind === "even" ? ["db = 0", "MINDEN szam ÉRTÉKRE EBBŐL: [" + L2.join(", ") + "]", "    HA szam MOD 2 == 0 AKKOR:", "        db = db + 1", "KIÍR db"]
+        : ["s = 0", "MINDEN szam ÉRTÉKRE EBBŐL: [" + L2.join(", ") + "]", "    HA szam > " + t + " AKKOR:", "        s = s + szam", "KIÍR s"];
+      const key = kind === "even" ? "db" : "s"; v[key] = 0; st(0, v, (key === "s" ? "Az s" : "A db") + " értéke 0.");
+      L2.forEach(x => {
+        v.szam = x; st(1, v, "A következő szám: " + x + ".");
+        const ok = kind === "even" ? x % 2 === 0 : x > t;
+        st(2, v, kind === "even" ? x + " MOD 2 = " + (x % 2) + ", tehát " + (ok ? "páros, a feltétel igaz." : "páratlan, a feltétel hamis.") : "Igaz-e, hogy " + x + " &gt; " + t + "? " + (ok ? "Igen." : "Nem, ezt kihagyjuk."));
+        if (ok){ if (kind === "even"){ v.db++; st(3, v, "A db most " + v.db + "."); } else { const o = v.s; v.s += x; st(3, v, "s = " + o + " + " + x + " = " + v.s + "."); } }
+      });
+      ans = v[key]; st(4, v, "Kiírjuk: " + ans + ".");
+      if (kind === "even") P.note = "A MOD a maradékos osztás maradéka: 7 MOD 2 = 1, 8 MOD 2 = 0.";
+    } else if (kind === "swap"){
+      const vals = shuffle([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 3), [p, q, r] = vals;
+      P.lines = ["a = " + p, "b = " + q, "c = " + r, "a = b", "b = c", "c = a", "KIÍR c"];
+      v.a = p; st(0, v, "Az a változó értéke " + p + "."); v.b = q; st(1, v, "A b változó értéke " + q + "."); v.c = r; st(2, v, "A c változó értéke " + r + ".");
+      v.a = v.b; st(3, v, "Az a változó megkapja a b értékét: " + q + ". A régi érték elveszett."); v.b = v.c; st(4, v, "A b változó megkapja a c értékét: " + r + "."); v.c = v.a; st(5, v, "A c változó megkapja az a értékét, ami most már " + q + ".");
+      ans = v.c; st(6, v, "Kiírjuk a c értékét: " + ans + ".");
+    } else {
+      const x0 = pick([3, 5, 6, 8, 10, 12]);
+      P.lines = ["x = " + x0, "db = 0", "AMÍG x ≠ 1:", "    HA x MOD 2 == 0 AKKOR:", "        x = x / 2", "    KÜLÖNBEN:", "        x = 3 * x + 1", "    db = db + 1", "KIÍR db"];
+      v.x = x0; st(0, v, "Az x értéke " + x0 + "."); v.db = 0; st(1, v, "A db értéke 0.");
+      while (v.x !== 1){
+        st(2, v, "Az x nem 1, belépünk.");
+        const o = v.x;
+        if (o % 2 === 0){ st(3, v, o + " páros."); v.x = o / 2; st(4, v, "x = " + o + " : 2 = " + v.x + "."); }
+        else { st(3, v, o + " páratlan, a KÜLÖNBEN ág jön."); v.x = 3 * o + 1; st(6, v, "x = 3 · " + o + " + 1 = " + v.x + "."); }
+        v.db++; st(7, v, "A db most " + v.db + ".");
+      }
+      st(2, v, "Az x már 1, kilépünk."); ans = v.db; st(8, v, "Kiírjuk a db értékét: " + ans + ".");
+      P.note = "A MOD a maradékos osztás maradéka: 7 MOD 2 = 1, 8 MOD 2 = 0.";
+    }
+    P.ans = ans; P.kind = kind;
+    return P;
+  }
+  const pcode = (P, cur) => '<div class="pc">' + P.lines.map((x, i) => i === cur ? '<span class="cur">' + esc(x) + "</span>" : esc(x) + "\n").join("") + "</div>";
+  const varsTxt = v => Object.keys(v).map(k => k + " = " + v[k]).join(", ") || "(még nincs változó)";
+  function progFrames(P){
+    const F = [{ cap: "Kövessük a programot soronként, és figyeljük a változók értékét.", html: pcode(P, -1) + '<div class="vars">(még nincs változó)</div>' }];
+    P.tr.forEach(s => F.push({ cap: s.note, html: pcode(P, s.ln) + '<div class="vars">' + varsTxt(s.v) + "</div>" }));
+    return F;
+  }
+
+  /* ---------- Sorba állás ---------- */
+  function perms(a){ if (a.length <= 1) return [a]; const r = []; a.forEach((x, i) => perms(a.slice(0, i).concat(a.slice(i + 1))).forEach(p => r.push([x].concat(p)))); return r; }
+  function orderGen(l){
+    const n = l + 2, people = Array.from({ length: n }, (x, i) => i), all = perms(people);
+    const kinds = l === 1 ? ["pos", "npos", "before", "jb"] : ["pos", "npos", "before", "jb", "adj", "nadj"];
+    const posName = k => k === n - 1 ? "az utolsó" : ORD_A[k];
+    for (let g = 0; g < 300; g++){
+      const sol = shuffle(people), at = p => sol.indexOf(p);
+      const clue = () => {
+        const kd = pick(kinds), [x, y] = shuffle(people);
+        if (kd === "pos"){ const k = at(x); return { t: NAMES[x] + " " + posName(k) + " a sorban.", f: o => o.indexOf(x) === k }; }
+        if (kd === "npos"){ const k = pick(people.filter(i => i !== at(x))); return { t: NAMES[x] + " nem " + posName(k) + " a sorban.", f: o => o.indexOf(x) !== k }; }
+        const a = at(x) < at(y) ? x : y, b = a === x ? y : x;
+        if (kd === "before") return { t: NAMES[a] + " előbb áll a sorban, mint " + NAMES[b] + ".", f: o => o.indexOf(a) < o.indexOf(b) };
+        if (kd === "jb"){ const k = at(x); if (k === n - 1) return null; const z = sol[k + 1]; return { t: NAMES[x] + " közvetlenül " + NAMES[z] + " előtt áll.", f: o => o.indexOf(x) + 1 === o.indexOf(z) }; }
+        const adj = Math.abs(at(x) - at(y)) === 1;
+        if (kd === "adj" && adj) return { t: NAMES[a] + " és " + NAMES[b] + " egymás mellett áll.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) === 1 };
+        if (kd === "nadj" && !adj) return { t: NAMES[a] + " és " + NAMES[b] + " nem áll egymás mellett.", f: o => Math.abs(o.indexOf(a) - o.indexOf(b)) !== 1 };
+        return null;
+      };
+      let cl = [], left = all, guard = 0;
+      while (left.length > 1 && guard++ < 60){ const c = clue(); if (!c) continue; const nl = left.filter(c.f); if (nl.length < left.length){ cl.push(c); left = nl; } }
+      if (left.length !== 1) continue;
+      // fölösleges nyomok elhagyása
+      for (let i = cl.length - 1; i >= 0; i--){ const rest = cl.filter((c, j) => j !== i); if (all.filter(o => rest.every(c => c.f(o))).length === 1) cl = rest; }
+      if (cl.length < 2) continue;
+      cl = shuffle(cl);
+      const labO = o => o.map(i => NAMES[i]).join(", ");
+      const others = all.filter(o => o.join() !== sol.join()).map(o => ({ o, s: cl.filter(c => c.f(o)).length })).sort((a, b) => b.s - a.s || Math.random() - .5).slice(0, 3);
+      return { n, sol, cl, label: labO(sol), opts: shuffle([{ l: labO(sol), ok: true }].concat(others.map(x => ({ l: labO(x.o), ok: false })))) };
+    }
+  }
+
+  /* ---------- Diák ---------- */
+  const playTab = m => { PB.m = m; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const slides = [
+    { k: "Alap", t: "Mire jó a fejtörés?", h:
+      "<p>A programozó nem gépel sokat, hanem <b>gondolkodik</b>: szabályt keres, végiggondolja az összes esetet, és lépésről lépésre halad. Ez az <b>algoritmikus gondolkodás</b>.</p>" +
+      "<ul><li><b>Szabály keresése:</b> mi a sorozat következő tagja?</li><li><b>Esetek végignézése:</b> ki hazudik, ki mond igazat?</li><li><b>Számolás okosan:</b> hányféle kód lehet?</li><li><b>Lépésenkénti módszer:</b> melyik a legrövidebb út?</li><li><b>Program követése:</b> mit ír ki a gép?</li></ul>" +
+      "<div class='note'><b>Ezek versenyfeladatok is:</b> a Bebras és a Kenguru verseny feladatai pont ilyenek.</div>" },
+    { k: "Sorozatok", t: "Mi a következő szám?", h:
+      "<p>Mindig ugyanabban a sorrendben próbálkozz:</p><ol><li><b>Különbség:</b> 3, 7, 11, 15 → mindig +4 (számtani sorozat).</li><li><b>Hányados:</b> 3, 6, 12, 24 → mindig · 2 (mértani sorozat).</li><li><b>A különbségek különbsége:</b> 1, 4, 9, 16 → +3, +5, +7 → a különbség mindig 2-vel nő (négyzetszámok).</li><li><b>Az előző kettő összege:</b> 1, 1, 2, 3, 5, 8 (Fibonacci).</li><li><b>Két sorozat egymásba fésülve:</b> 1, 20, 3, 18, 5, 16 → a páratlan helyeken +2, a páros helyeken −2.</li></ol>" +
+      "<p><button class='btn' data-play='seq'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTab("seq")); } },
+    { k: "Logika", t: "Igazmondók és hazugok", h:
+      "<p>Az igazmondó <b>mindig</b> igazat mond, a hazug <b>mindig</b> hazudik. Ki kicsoda?</p>" +
+      "<div class='say'><b>Anna:</b> „Bence hazug.”</div><div class='say'><b>Bence:</b> „Anna és én egyformák vagyunk.”</div>" +
+      "<p><b>Módszer:</b> sorold fel az összes esetet. Két embernél 4 eset van (igaz-igaz, igaz-hazug, hazug-igaz, hazug-hazug). Minden esetben nézd meg: az igazmondó állítása igaz-e, és a hazugé hamis-e? Ahol ellentmondás van, azt az esetet húzd ki.</p>" +
+      "<p>Az „egyformák vagyunk” azt jelenti: vagy mindketten igazmondók, vagy mindketten hazugok.</p>" +
+      "<p><button class='btn' data-play='liar'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTab("liar")); } },
+    { k: "Kombinatorika", t: "Hányféle lehet? Szorozz!", h:
+      "<p>Ha egymás után több dolgot választasz, a lehetőségek számát <b>összeszorzod</b>.</p>" +
+      "<ul><li>3 póló és 4 nadrág: 3 · 4 = 12 öltözék.</li><li>3 tárcsás kódzár, tárcsánként 10 számjeggyel: 10 · 10 · 10 = 1000 kód.</li><li>4 ember sorba áll: az első helyre 4, a másodikra 3, aztán 2, végül 1 ember marad: 4 · 3 · 2 · 1 = 24 sorrend.</li></ul>" +
+      "<div class='note'><b>Faktoriális:</b> a 4 · 3 · 2 · 1 jele 4! (négy faktoriális). Gyorsan nő: 10! már több mint 3 millió.</div>" },
+    { k: "Kombinatorika", t: "Ha a sorrend nem számít", h:
+      "<p><b>Kézfogás:</b> 5 ember mindenkivel kezet fog. Mindenki 4 másikkal fog kezet: 5 · 4 = 20. De így minden kézfogást kétszer számoltunk (Anna–Bence ugyanaz, mint Bence–Anna), ezért 20 : 2 = <b>10</b>.</p>" +
+      "<p><b>Csapat választása:</b> 6 emberből 2-t választunk. Sorrenddel 6 · 5 = 30 lenne, de egy párt kétféle sorrendben is kiválaszthatunk, ezért 30 : 2 = <b>15</b>.</p>" +
+      "<p>3 ember választásánál ugyanazt a 3 embert 3 · 2 · 1 = 6 sorrendben kaphatjuk meg, ezért 6-tal osztunk.</p>" },
+    { k: "Gráfok", t: "Legrövidebb út", h:
+      "<p>A térképen a pontok a városok, a vonalak az utak, a számok a hosszuk. Ez egy <b>gráf</b>. Az útvonaltervező (és a GPS) ezzel dolgozik.</p>" +
+      "<p><b>Dijkstra módszere:</b></p><ol><li>Az indulópont távolsága 0, a többié egyelőre végtelen.</li><li>Válaszd ki a legközelebbi még le nem zárt pontot, és zárd le: ennél rövidebb út oda már nem lehet.</li><li>Nézd meg a szomszédait: ha rajta keresztül rövidebb az út, írd át a távolságukat.</li><li>Ismételd, amíg a cél le nem zárul.</li></ol>" +
+      "<p><button class='btn' data-play='path'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTab("path")); } },
+    { k: "Algoritmus", t: "Program követése", h:
+      "<p>Egy program soronként halad. A változó olyan, mint egy címkés doboz: egyszerre egy értéket tárol, és az új érték felülírja a régit.</p>" +
+      "<div class='pc'>x = 2\nISMÉTELD 3 ALKALOMMAL:\n    x = x * 2\nKIÍR x</div>" +
+      "<p>Írj <b>nyomkövető táblázatot</b>: minden lépésnél írd fel a változók értékét. Itt: x = 2, aztán 4, 8, 16. A program 16-ot ír ki.</p>" +
+      "<ul><li><code>x = x + 1</code>: az x új értéke a régi + 1 (ez értékadás, nem egyenlet).</li><li><code>==</code> azt vizsgálja, egyenlő-e. A <code>MOD</code> a maradékos osztás maradéka: 7 MOD 2 = 1.</li><li><code>AMÍG</code>: addig ismétel, amíg a feltétel igaz.</li></ul>" +
+      "<p><button class='btn' data-play='trace'>▶ Nézd meg lejátszva</button></p>",
+      init(el){ el.querySelector("[data-play]").addEventListener("click", () => playTab("trace")); } },
+    { k: "Klasszikusok", t: "Hanoi tornyai, mérlegelés", h:
+      "<p><b>Hanoi tornyai:</b> n korong átviteléhez először n − 1 korongot pakolsz félre, átteszed a legnagyobbat, aztán az n − 1 korongot rá. Ezért a lépésszám minden új koronggal kb. megduplázódik: 1, 3, 7, 15, 31 … A képlet: 2<sup>n</sup> − 1.</p>" +
+      "<p><b>Mérlegelés:</b> 9 érméből egy könnyebb. Tegyél 3-at balra, 3-at jobbra, 3 marad az asztalon. Ha a mérleg egyensúlyban van, a könnyebb az asztalon van; ha nem, a felemelkedő oldalon. Így egy méréssel 9 helyett 3 érme marad, a második méréssel 1. Egy méréssel 3, kettővel 9, hárommal 27 érme közül lehet megtalálni.</p>" +
+      "<p><b>Farkas, kecske, káposzta:</b> a csónakban csak egy fér el melléd. Az első út: a kecskét viszed át, mert a farkas a káposztát nem eszi meg.</p>" },
+    { k: "Hibák", t: "Tipikus gondolkodási hibák", h:
+      "<div class='mistake'><b>Kerítésoszlop-hiba.</b> 10 méteren 2 méterenként oszlop: nem 5, hanem 6 oszlop kell (az elején is van egy). Egy rudat 5 darabra vágni viszont csak 4 vágás.</div>" +
+      "<div class='mistake'><b>Elsietett szabály.</b> A 2, 4, … után jöhet 6 (+2) és 8 (· 2) is. Mindig nézz meg legalább 4 tagot, és ellenőrizd a szabályt az összesen.</div>" +
+      "<div class='mistake'><b>Kétszer számolt eset.</b> A kézfogásnál Anna–Bence és Bence–Anna ugyanaz. Ha a sorrend nem számít, osztani kell.</div>" +
+      "<div class='mistake'><b>Kimaradt eset.</b> Igazmondós feladatnál ne csak egy esetet nézz meg. Mind a 4 (vagy 8) esetet sorold fel.</div>" +
+      "<div class='mistake'><b>Régi érték a programban.</b> Az <code>x = y</code> után az x régi értéke elveszett. A csere ezért segédváltozó nélkül nem megy.</div>" },
+    { k: "Trükkök", t: "Hasznos szokások", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Rajzolj!</span><span>Kicsiben rajzold le: 3 oszlop, 4 ember, 2 korong. A kis esetből látszik a szabály.</span></div>" +
+      "<div class='trick'><span class='t'>Táblázat</span><span>Az eseteket és a változók értékét táblázatba írd. Így semmi nem marad ki.</span></div>" +
+      "<div class='trick'><span class='t'>Ellenőrzés</span><span>A kapott választ tedd vissza a feladatba: minden feltétel teljesül?</span></div>" +
+      "<div class='trick'><span class='t'>Visszafelé</span><span>Néha könnyebb a végéről indulni (csiga a kútban, Hanoi utolsó lépése).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Levezetések ---------- */
+  const pb = K.player($("#pb"));
+  const PB = { m: "seq" };
+  const MET = { seq: "Sorozat szabálya", liar: "Igazmondó vagy hazug?", path: "Legrövidebb út", trace: "Program követése" };
+  function demo(m){
+    if (m === "seq") return seqFrames(seqGen(0, pick(["d2", "fib", "inter", "mul"])));
+    if (m === "liar") return liarFrames(liarGen(pick([1, 2])));
+    if (m === "path") return pathFrames(pathGen(2));
+    return progFrames(progGen(0, pick(["dbl", "even", "sum"])));
+  }
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(demo(PB.m), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Gyakorlás ---------- */
+  function combGen(l){
+    const k3 = l === 1 ? ["cloth", "lock", "menu"] : l === 2 ? ["order", "hand", "lock10"] : ["podium", "choose", "norep", "word"];
+    const kind = pick(k3);
+    if (kind === "cloth"){ const a = rnd(2, 6), b = rnd(2, 5); return { q: "A szekrényedben " + a + " különböző póló és " + b + " különböző nadrág van. Hányféleképpen öltözhetsz fel, ha egy pólót és egy nadrágot veszel fel?", ans: a * b, sol: "Minden pólóhoz " + b + " nadrág választható, ezért szorzunk: " + a + " · " + b + " = " + a * b + "." }; }
+    if (kind === "lock"){ const k = rnd(2, 3), m = rnd(2, 5); return { q: "Egy kódzáron " + k + " tárcsa van, és mindegyik tárcsán " + m + " szám közül lehet választani. Hány különböző kód van?", ans: Math.pow(m, k), sol: "Minden tárcsán " + m + " lehetőség van, ezeket összeszorozzuk: " + Array(k).fill(m).join(" · ") + " = " + Math.pow(m, k) + "." }; }
+    if (kind === "menu"){ const a = rnd(2, 4), b = rnd(2, 4), c = rnd(2, 3); return { q: "A menüben " + a + " leves, " + b + " főétel és " + c + " desszert közül választhatsz, mindegyikből egyet. Hányféle ebéd állítható össze?", ans: a * b * c, sol: "Három választás egymás után: " + a + " · " + b + " · " + c + " = " + a * b * c + "." }; }
+    if (kind === "order"){ const n = rnd(3, 6); return { q: n + " barát sorba áll a mozipénztár előtt. Hányféle sorrendben állhatnak?", ans: fact(n), sol: "Az első helyre " + n + " ember állhat, a másodikra már csak " + (n - 1) + ", és így tovább: " + Array.from({ length: n }, (x, i) => n - i).join(" · ") + " = " + fact(n) + "." }; }
+    if (kind === "hand"){ const n = rnd(4, 12); return { q: "Egy megbeszélésen " + n + " ember van, és mindenki mindenkivel pontosan egyszer kezet fog. Hány kézfogás lesz összesen?", ans: n * (n - 1) / 2, sol: "Mindenki " + (n - 1) + " másik emberrel fog kezet: " + n + " · " + (n - 1) + " = " + n * (n - 1) + ". Így viszont minden kézfogást kétszer számoltunk, ezért elosztjuk kettővel: " + n * (n - 1) / 2 + "." }; }
+    if (kind === "lock10"){ const k = rnd(2, 4); return { q: "Egy számzár " + k + " jegyű kódot kér. Minden jegy 0 és 9 között bármi lehet, ismétlődhet is. Hány különböző kód van?", ans: Math.pow(10, k), sol: "Minden helyre 10 számjegy kerülhet: " + Array(k).fill(10).join(" · ") + " = " + Math.pow(10, k) + "." }; }
+    if (kind === "podium"){ const n = rnd(5, 10); return { q: "Egy versenyen " + n + " versenyző indul. Hányféleképpen alakulhat a dobogó (első, második és harmadik hely)?", ans: n * (n - 1) * (n - 2), sol: "Az elsőre " + n + ", a másodikra " + (n - 1) + ", a harmadikra " + (n - 2) + " versenyző kerülhet: " + n + " · " + (n - 1) + " · " + (n - 2) + " = " + n * (n - 1) * (n - 2) + "." }; }
+    if (kind === "choose"){ const n = rnd(5, 9), k = pick([2, 3]), ord = k === 2 ? n * (n - 1) : n * (n - 1) * (n - 2), c = ord / fact(k);
+      return { q: "Egy " + n + " fős csoportból " + k + " embert kell kiválasztani a versenyre. A sorrend nem számít. Hányféleképpen lehet?", ans: c, sol: "Ha a sorrend számítana: " + (k === 2 ? n + " · " + (n - 1) : n + " · " + (n - 1) + " · " + (n - 2)) + " = " + ord + ". De ugyanazt a csapatot " + fact(k) + " különböző sorrendben is kiválaszthattuk, ezért osztunk: " + ord + " : " + fact(k) + " = " + c + "." }; }
+    if (kind === "norep"){ const k = rnd(2, 4); let p = 1; const f = []; for (let i = 0; i < k; i++){ p *= 10 - i; f.push(10 - i); } return { q: "Egy " + k + " jegyű kódban minden jegy különböző (a jegyek 0 és 9 között vannak). Hány ilyen kód van?", ans: p, sol: "Az első jegy 10-féle, a második már csak 9-féle (az elsőt nem ismételhetjük), és így tovább: " + f.join(" · ") + " = " + p + "." }; }
+    const W = pick([["ALMA", 12, "4 · 3 · 2 · 1 = 24, de a két A felcserélése ugyanazt a szót adja, ezért 24 : 2 = 12."], ["TATA", 6, "4 · 3 · 2 · 1 = 24, de a T és az A is kétszer szerepel, ezért 24 : (2 · 2) = 6."], ["KAJAK", 30, "5 · 4 · 3 · 2 · 1 = 120, de a K és az A is kétszer szerepel, ezért 120 : (2 · 2) = 30."], ["ANNA", 6, "4 · 3 · 2 · 1 = 24, de az A és az N is kétszer szerepel, ezért 24 : (2 · 2) = 6."], ["KÉP", 6, "Három különböző betű: 3 · 2 · 1 = 6."]]);
+    return { q: "Hány különböző betűsort lehet kirakni ennek a szónak az összes betűjéből: <b>" + W[0] + "</b>? (Értelmetlen betűsor is számít.)", ans: W[1], sol: W[2] };
+  }
+  function classicGen(l){
+    const kind = pick(l === 1 ? ["hanoi", "cut", "fence"] : l === 2 ? ["coins", "hanoiRev", "circle"] : ["snail", "coinsMax", "pages"]);
+    if (kind === "hanoi"){ const n = rnd(2, 6), m = Math.pow(2, n) - 1; return { q: "Hanoi tornyai " + n + " koronggal: legkevesebb hány lépésben lehet átvinni az összes korongot a harmadik rúdra?", ans: m, sol: "A képlet: 2<sup>n</sup> − 1. Itt 2<sup>" + n + "</sup> − 1 = " + Math.pow(2, n) + " − 1 = " + m + ". (Minden új korong megduplázza a munkát, plusz egy lépés.)" }; }
+    if (kind === "cut"){ const k = rnd(3, 12); return { q: "Egy hosszú rudat " + k + " egyforma darabra vágsz. Hány vágás kell?", ans: k - 1, sol: "Az utolsó darabot már nem kell levágni: minden vágás eggyel több darabot ad, egy darabból indulsz. " + k + " − 1 = " + (k - 1) + "." }; }
+    if (kind === "fence"){ const d = pick([2, 3, 4, 5]), m = rnd(3, 10), Lm = d * m; return { q: "Egy " + Lm + " méter hosszú, egyenes kerítés mentén " + d + " méterenként áll egy oszlop, az elején és a végén is. Hány oszlop van?", ans: m + 1, sol: "A szakaszok száma " + Lm + " : " + d + " = " + m + ". Az oszlopok eggyel többen vannak, mert az elején is áll egy: " + m + " + 1 = " + (m + 1) + "." }; }
+    if (kind === "coins"){ const n = rnd(4, 81); let k = 0, p = 1; while (p < n){ p *= 3; k++; } return { q: n + " egyforma kinézetű érme közül egy könnyebb a többinél. Egy kétkarú mérlegen legkevesebb hány méréssel találod meg biztosan?", ans: k, sol: "Egy méréssel három részre osztjuk az érméket (bal serpenyő, jobb serpenyő, asztal), így egy méréssel 3, kettővel 9, hárommal 27, néggyel 81 érme közül lehet megtalálni. " + n + " érméhez ezért " + k + " mérés kell." }; }
+    if (kind === "hanoiRev"){ const n = rnd(3, 7), m = Math.pow(2, n) - 1; return { q: "Hanoi tornyainál a legkevesebb lépésszám " + m + ". Hány korong van?", ans: n, sol: "A lépésszám 2<sup>n</sup> − 1. Ha ez " + m + ", akkor 2<sup>n</sup> = " + (m + 1) + ", és ez 2<sup>" + n + "</sup>. Tehát " + n + " korong." }; }
+    if (kind === "circle"){ const d = pick([2, 3, 4, 5]), m = rnd(5, 15), Lm = d * m; return { q: "Egy kör alakú kert kerülete " + Lm + " méter. A kerítés mentén " + d + " méterenként áll egy oszlop. Hány oszlop van?", ans: m, sol: "Körben a kezdő és a záró oszlop ugyanaz, ezért itt nincs +1: " + Lm + " : " + d + " = " + m + "." }; }
+    if (kind === "snail"){ const u = rnd(3, 5), v = rnd(1, u - 1), Hh = rnd(u + 3, 20), day = Math.ceil((Hh - u) / (u - v)) + 1;
+      return { q: "Egy csiga egy " + Hh + " méter mély kút alján van. Napközben " + u + " métert mászik felfelé, éjjel " + v + " métert visszacsúszik. Hányadik napon ér ki a kútból?", ans: day, sol: "Az utolsó napon már nem csúszik vissza, mert kiér. Minden teljes nap (nappal és éjjel) " + (u - v) + " métert jut feljebb. Az utolsó nap reggelén legalább " + (Hh - u) + " méter magasan kell lennie: ehhez " + (day - 1) + " teljes nap kell (" + (day - 1) + " · " + (u - v) + " = " + (day - 1) * (u - v) + "). A következő napon kiér: ez a nap sorszáma " + day + "." }; }
+    if (kind === "coinsMax"){ const k = rnd(2, 4), m = Math.pow(3, k); return { q: "Az érmék közül egy könnyebb a többinél. Legfeljebb hány érme közül találod meg biztosan kétkarú mérleggel, ha " + k + " mérést végezhetsz?", ans: m, sol: "Minden mérés három részre osztja a lehetőségeket (bal, jobb, asztal). " + k + " mérés: " + Array(k).fill(3).join(" · ") + " = " + m + " érme." }; }
+    const N = rnd(20, 150), dg = Math.min(N, 9) + 2 * Math.max(0, Math.min(N, 99) - 9) + 3 * Math.max(0, N - 99);
+    return { q: "Egy könyv oldalait 1-től kezdve számozzák. Hány számjegyet kell összesen kinyomtatni, ha a könyvnek " + N + " oldala van?", ans: dg,
+      sol: "Az egyjegyű oldalszámok (1–9): 9 jegy. A kétjegyűek (10–" + Math.min(N, 99) + "): " + (Math.min(N, 99) - 9) + " oldal, mindegyik 2 jegy: " + 2 * (Math.min(N, 99) - 9) + " jegy." + (N > 99 ? " A háromjegyűek (100–" + N + "): " + (N - 99) + " oldal · 3 = " + 3 * (N - 99) + " jegy." : "") + " Összesen " + dg + "." };
+  }
+  const types = [
+    { id: "seq", name: "Sorozatok", gen(l){
+      const S = seqGen(l);
+      return { q: "Mi a sorozat következő tagja?" + srow("sorozat", S.shown, '<span class="cell q">?</span>'), kind: "input", mode: "numeric", answer: S.next,
+        sol: "<p>Szabály: " + S.rule + "</p><p>" + S.calc + " = " + S.next + "</p>", frames: seqFrames(S), title: "Sorozat szabálya",
+        check: numCheck(S.next, "Nem jó. Nézd meg a különbségeket, aztán a hányadosokat, aztán a különbségek különbségét.") };
+    } },
+    { id: "liar", name: "Igazmondó, hazug", gen(l){
+      const P = liarGen(l), sl = lab(P.sol);
+      const others = shuffle(P.all.filter(T => lab(T) !== sl)).slice(0, 3);
+      const opts = shuffle([{ l: sl, ok: true }].concat(others.map(T => ({ l: lab(T), ok: false }))));
+      return { q: liarQ(P) + "<p>Ki igazmondó, és ki hazug?</p>", kind: "choice", options: opts, answer: sl, sol: liarTable(P), frames: liarFrames(P), title: "Igazmondó vagy hazug?",
+        check: choice(opts, "Nem ez. Nézd meg ezt az esetet: van olyan ember, akinek az állítása nem illik hozzá?") };
+    } },
+    { id: "comb", name: "Hányféle?", gen(l){
+      const C = combGen(l);
+      return { q: C.q, kind: "input", mode: "numeric", answer: C.ans, sol: "<p>" + C.sol + "</p>", check: numCheck(C.ans, "Nem jó. Gondold végig: egymás után választasz (szorzás)? Számít a sorrend (ha nem, osztani kell)?") };
+    } },
+    { id: "path", name: "Legrövidebb út", gen(l){
+      const R = pathGen(l), t = L[R.G.P.length - 1];
+      return { q: "Mennyi a legrövidebb út hossza A és " + t + " között? A vonalakon az utak hossza áll." + svgGraph(R.G), kind: "input", mode: "numeric", answer: R.len,
+        sol: "<p>A legrövidebb út: " + R.path.map(i => L[i]).join(" → ") + ".</p>" + svgGraph(R.G, { pe: R.pe }) + "<p>Hossza: " + R.path.slice(1).map((v, i) => { const u = R.path[i]; return R.G.W[R.G.E.findIndex(e => (e[0] === u && e[1] === v) || (e[1] === u && e[0] === v))]; }).join(" + ") + " = " + R.len + ".</p>",
+        frames: pathFrames(R), title: "Legrövidebb út", check: numCheck(R.len, "Nem jó. Próbáld Dijkstra módszerével: mindig a legközelebbi még le nem zárt pontot zárd le.") };
+    } },
+    { id: "trace", name: "Mit ír ki?", gen(l){
+      const P = progGen(l);
+      return { q: "Mit ír ki ez a program?" + pcode(P, -1) + (P.note ? '<span class="hint">' + P.note + "</span>" : ""), kind: "input", mode: "numeric", answer: P.ans,
+        sol: "<ol>" + P.tr.map(s => "<li>" + s.note + "</li>").join("") + "</ol>", frames: progFrames(P), title: "Program követése",
+        check: numCheck(P.ans, "Nem jó. Írj nyomkövető táblázatot: minden sor után írd fel a változók értékét.") };
+    } },
+    { id: "order", name: "Sorba állás", gen(l){
+      const O = orderGen(l);
+      return { q: O.n + " gyerek áll sorban a büfénél: " + NAMES.slice(0, O.n).join(", ") + ". Ezt tudjuk:<ul>" + O.cl.map(c => "<li>" + c.t + "</li>").join("") + "</ul>Milyen sorrendben állnak, elölről hátrafelé?",
+        kind: "choice", options: O.opts, answer: O.label, sol: "<p>Kezdd a legbiztosabb nyommal (pontos hely, közvetlenül előtte), aztán zárd ki a lehetetlen sorrendeket. Ellenőrzés a jó sorrenddel (" + O.label + "):</p><ul>" + O.cl.map(c => "<li>✓ " + c.t + "</li>").join("") + "</ul>",
+        check: choice(O.opts, "Nem ez. Nézd meg minden nyomot ezzel a sorrenddel: melyik nem teljesül?") };
+    } },
+    { id: "classic", name: "Klasszikusok", gen(l){
+      const C = classicGen(l);
+      return { q: C.q, kind: "input", mode: "numeric", answer: C.ans, sol: "<p>" + C.sol + "</p>", check: numCheck(C.ans, "Nem jó. Rajzold le kicsiben, és vigyázz a kerítésoszlop-hibára!") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "fejtorok", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [
+    ["Számtani sorozat", "mindig ugyanannyit adunk hozzá", "3, 7, 11, 15 (+4)"], ["Mértani sorozat", "mindig ugyanannyival szorzunk", "3, 6, 12, 24 (· 2)"],
+    ["Négyzetszámok", "a különbségek 2-vel nőnek", "1, 4, 9, 16, 25"], ["Fibonacci", "az előző kettő összege", "1, 1, 2, 3, 5, 8"],
+    ["Egymás utáni választás", "szorzás", "3 póló, 4 nadrág: 12"], ["Sorrendek", "n! = n · (n − 1) · … · 1", "4! = 24"],
+    ["Kézfogások", "n · (n − 1) : 2", "5 ember: 10"], ["Választás sorrend nélkül", "sorrenddel számolva, osztva", "6-ból 2: 30 : 2 = 15"],
+    ["Hanoi tornyai", "2<sup>n</sup> − 1 lépés", "3 korong: 7"], ["Mérlegelés", "egy mérés: 3 rész", "3 mérés: 27 érme"],
+    ["Kerítés (egyenes)", "szakaszok + 1 oszlop", "10 m, 2 m-enként: 6"], ["Legrövidebb út", "Dijkstra: mindig a legközelebbi pont", "útvonaltervező"]
+  ];
+  $("#cheat").innerHTML = "<tr><th>Mi?</th><th>Szabály</th><th>Példa</th></tr>" + rows.map(r => "<tr><td style='text-align:left;font-weight:700'>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td><td style='text-align:left'>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>

@@ -12,6 +12,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 |---|---|
 | [Visszatekintés a 8. osztályra](8-visszatekintes.html) | Hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség: a 9.-es anyag alapjai. 9 dia, 3 levezetés, 6 feladattípus, próbadolgozat |
 | [Oszthatóság, maradék, prímek, statisztika](oszthatosag-statisztika.html) | Maradékos osztás és a `%` jel, oszthatósági szabályok, prímek és Eratoszthenész szitája, prímtényezős felbontás, LNKO, LKKT, euklideszi algoritmus, átlag, medián, módusz, rövid Python-programok |
+| [Logikai fejtörők](logikai-fejtorok.html) | Hanoi tornyai, számsorozatok, igazmondók és hazugok, kombinatorika, legrövidebb út (Dijkstra), pszeudokód követése, sorba állás, klasszikus fejtörők |
 | [Algoritmusok és játékos programozás](algoritmusok.html) | Robot a rácson gombokkal összerakott programmal, szekvencia, ciklus, elágazás, változó, pszeudokód, folyamatábra, hibakeresés |
 | [Kettes számrendszer](kettes-szamrendszer.html) | Kapcsolótábla, 9 magyarázó dia, magától lejátszódó levezetések (osztogatás, helyiértékek, kettesből tízesbe), 5 típusú gyakorlófeladat 3 szinten, puska |
 | [Hármas, ötös, hatos, hetes számrendszer](szamrendszerek.html) | Kovrat füzetének példái (876 → ötös, hármas, hetes) kockás lapon lépésenként, befejezve, választható alapszám (3/5/6/7), számláló átvitellel, 11 dia, az iskolai módszer (helyiérték-táblázat + kivonás + próba) és az osztogatás, felolvasott levezetések, 6 típusú gyakorlás 3 szinten (vegyes számrendszerekkel is), próbadolgozat érdemjeggyel, puska |
