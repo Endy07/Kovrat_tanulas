@@ -37,6 +37,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Python-előzetes: kódolvasás](python-elozetes.html) | A 10.-es Python alapjai olvasva (futtató nélkül): típusok, osztások, input, if, for/range, while, lista, szelet, függvény; sorról sorra léptető változótáblával; a generált feladatokat valódi Python igazolta |
 | [Elektronika alapjai](elektronika-alapjai.html) | Feszültség, áram, ellenállás, Ohm-törvény, teljesítmény, villanyszámla, soros és párhuzamos kapcsolás, színkód, LED előtét-ellenállása; áramkör csúszkákkal és biztosítékkal |
 | [Virtualizáció és felhő](virtualizacio-felho.html) | Virtuális gép, hipervizor, pillanatkép, konténer, IaaS/PaaS/SaaS, felhő vagy saját szerver, 3-2-1 mentés, jelszóerősség, kétlépcsős azonosítás; VM-építő és jelszómérő |
+| [Mesterséges intelligencia alapjai](mesterseges-intelligencia.html) | Szabály vagy tanulás, tanítóadat, k-NN, mesterséges neuron és logikai kapuk, perceptron-tanulás, nyelvi modellek, hallucináció, torzítás, felelős használat; tanítható alma–körte sík |
 | [Hálózatok alapjai](halozatok-alapjai.html) | IP-cím kettesben, maszk és prefix, hálózati és szórási cím, egy hálózatban vannak-e (ÉS a maszkkal), eszközök, DHCP, DNS, NAT, portok, letöltési idő, a dolgok internete |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)

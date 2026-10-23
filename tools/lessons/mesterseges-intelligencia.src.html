@@ -1,0 +1,372 @@
+<!--@HEAD-->
+<title>Mesterséges intelligencia</title>
+<style>
+.ksvg{width:100%;max-width:340px;height:auto;display:block;touch-action:manipulation;cursor:crosshair}
+.ksvg text{font-family:var(--mono);font-size:10px;fill:currentColor}
+.ksvg .ax{stroke:currentColor;opacity:.5}
+.mi-ctl{display:flex;flex-direction:column;gap:10px}
+.mi-ctl .row .btn[aria-pressed="true"]{background:var(--led);color:#2A1A00;border-color:var(--led)}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;align-items:start}
+.verdict{font-family:var(--display);font-weight:800;font-size:clamp(1.3rem,5vw,1.9rem)}
+.verdict.a{color:#F2796C}.verdict.k{color:#8BD45E}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--panel-muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.nn{font-family:var(--mono);font-size:.9rem;line-height:1.6}
+.nn .on{color:#FFB01F;font-weight:700}
+.slide .eq{white-space:normal}
+.prompt .ksvg{margin-top:8px;cursor:default;max-width:260px}
+.pb-stage .ksvg{cursor:default;max-width:260px}
+.opt{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Informatikai alapok · mesterséges intelligencia</span>
+  <h1>Mesterséges intelligencia alapjai</h1>
+  <p class="lead">A gépi tanulás nem varázslat: a gép példákból tanul. Tanítsd meg te magad: tegyél le almákat és körtéket, és nézd meg, hogyan dönt a gép egy új gyümölcsről.</p>
+  <div class="panel">
+    <span class="eyebrow">Tanítsd meg a gépet: kattints a síkra</span>
+    <div class="hero-grid">
+      <div id="plane"></div>
+      <div class="mi-ctl">
+        <div class="row" id="modes">
+          <button class="btn" data-mode="alma" aria-pressed="false">🍎 Alma</button>
+          <button class="btn" data-mode="korte" aria-pressed="false">🍐 Körte</button>
+          <button class="btn" data-mode="q" aria-pressed="true">❓ Új gyümölcs</button>
+        </div>
+        <div class="row" id="ks"><span class="eyebrow">k (hány szomszéd szavaz):</span>
+          <button class="btn" data-k="1" aria-pressed="false">1</button><button class="btn" data-k="3" aria-pressed="true">3</button><button class="btn" data-k="5" aria-pressed="false">5</button>
+        </div>
+        <div class="row"><button class="btn" id="clr">Pontok törlése</button><button class="btn" id="rst">↺ Alapállapot</button></div>
+        <div class="legend"><span><span class="sw" style="background:#E5484D"></span>alma</span><span><span class="sw" style="background:#6CC24A"></span>körte</span><span>halvány háttér: ezt jósolná a gép ott</span></div>
+      </div>
+    </div>
+    <div class="readout">
+      <div><div class="eyebrow">A gép döntése az új gyümölcsről</div><div class="verdict" id="verd"></div></div>
+      <div class="expr" id="why"></div>
+    </div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, magától</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="knn" aria-selected="true">Legközelebbi szomszédok</button>
+    <button class="tab" data-m="neuron" aria-selected="false">Egy neuron kiszámolása</button>
+    <button class="tab" data-m="perc" aria-selected="false">A perceptron tanul</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint. A tizedes törtet vesszővel vagy ponttal is írhatod, a negatív előjel lehet sima kötőjel. A neuron kimenete 1, ha a súlyozott összeg legalább akkora, mint a küszöb, különben 0. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">k-NN</span><span>Számold ki a távolságokat (Pitagorasz), vedd a k legközelebbit, és a többség dönt. A k legyen páratlan, hogy ne legyen döntetlen.</span></div>
+    <div class="trick"><span class="t">Neuron</span><span class="mono">összeg = w₁ · x₁ + w₂ · x₂ + …</span><span>Kimenet: 1, ha összeg ≥ küszöb, különben 0.</span></div>
+    <div class="trick"><span class="t">Perceptron-tanulás</span><span class="mono">hiba = elvárt − kapott<br>új w = régi w + ráta · hiba · x</span></div>
+    <div class="trick"><span class="t">Pontosság</span><span class="mono">helyes : összes · 100</span><span>Mindig a <b>tesztadaton</b> mérjük, nem a tanítóadaton.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc, Art } = K;
+  K.tts.rules.push([/₁/g, " egy"], [/₂/g, " kettő"], [/₃/g, " három"], [/≥/g, " nagyobb vagy egyenlő, mint "], [/\s:\s/g, " osztva "], [/√/g, "négyzetgyök "], [/²/g, " a négyzeten"], [/k-NN/g, "ká en en"]);
+
+  /* ---------- Segédek ---------- */
+  const fn = x => { const r = Math.round(x * 100) / 100; return String(r).replace("-", "−").replace(".", ","); };
+  const num = v => { const s = String(v).replace(/\s+/g, "").replace(/−/g, "-").replace(",", ".").replace(/%$/, ""); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : NaN; };
+  const COL = { alma: "#E5484D", korte: "#6CC24A" }, NAME = { alma: "alma", korte: "körte" };
+  const d2 = (a, b) => (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+  function knn(pts, q, k){
+    const s = pts.map(p => ({ p, d: d2(p, q) })).sort((a, b) => a.d - b.d).slice(0, k);
+    const na = s.filter(o => o.p.c === "alma").length;
+    return { near: s, c: na * 2 > s.length ? "alma" : "korte", na, nk: s.length - na };
+  }
+  // sík SVG-ben: 0..10 mindkét tengelyen
+  function plane(o){
+    const S = 28, W = 10 * S, X = x => 26 + x * S, Y = y => 10 + (10 - y) * S;
+    let s = '<svg class="ksvg" viewBox="0 0 ' + (W + 36) + " " + (W + 36) + '" role="img" aria-label="Pontok a síkon">';
+    if (o.bg && o.pts.length){
+      const n = 20, c = 10 / n;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++){ const r = knn(o.pts, { x: (i + .5) * c, y: (j + .5) * c }, Math.min(o.k, o.pts.length)); s += '<rect x="' + X(i * c) + '" y="' + Y((j + 1) * c) + '" width="' + (c * S + .3) + '" height="' + (c * S + .3) + '" fill="' + COL[r.c] + '" opacity=".16"/>'; }
+    }
+    s += '<line class="ax" x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(10) + '" y2="' + Y(0) + '"/><line class="ax" x1="' + X(0) + '" y1="' + Y(0) + '" x2="' + X(0) + '" y2="' + Y(10) + '"/>';
+    for (let i = 0; i <= 10; i += 2) s += '<text x="' + (X(i) - 3) + '" y="' + (Y(0) + 12) + '">' + i + '</text><text x="' + (X(0) - 16) + '" y="' + (Y(i) + 3) + '">' + i + "</text>";
+    s += '<text x="' + (X(10) - 52) + '" y="' + (Y(0) - 4) + '">kerekség →</text><text x="' + (X(0) + 4) + '" y="' + (Y(10) + 9) + '">↑ pirosság</text>';
+    if (o.q && o.lines) o.lines.forEach(p => { s += '<line x1="' + X(o.q.x) + '" y1="' + Y(o.q.y) + '" x2="' + X(p.x) + '" y2="' + Y(p.y) + '" stroke="#FFB01F" stroke-width="1.6" stroke-dasharray="4 3"/>'; });
+    o.pts.forEach(p => {
+      s += p.c === "alma" ? '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="7" fill="' + COL.alma + '" stroke="#fff" stroke-width="1.2"/>' : '<rect x="' + (X(p.x) - 6.5) + '" y="' + (Y(p.y) - 6.5) + '" width="13" height="13" rx="2" fill="' + COL.korte + '" stroke="#fff" stroke-width="1.2"/>';
+      if (p.n) s += '<text x="' + (X(p.x) + 8) + '" y="' + (Y(p.y) - 7) + '" style="font-weight:700">' + p.n + "</text>";
+    });
+    if (o.q) s += '<path d="M' + X(o.q.x) + " " + (Y(o.q.y) - 10) + " l9 10 l-9 10 l-9 -10z" + '" fill="#FFB01F" stroke="#fff" stroke-width="1.2"/><text x="' + (X(o.q.x) - 3) + '" y="' + (Y(o.q.y) + 4) + '" style="font-weight:700;fill:#2A1A00">?</text>';
+    return s + "</svg>";
+  }
+
+  /* ---------- Hero ---------- */
+  const H0 = () => ({ pts: [{ x: 7, y: 8, c: "alma" }, { x: 8, y: 6, c: "alma" }, { x: 6, y: 7, c: "alma" }, { x: 8.5, y: 8.5, c: "alma" }, { x: 9, y: 7, c: "alma" }, { x: 3, y: 3, c: "korte" }, { x: 2, y: 5, c: "korte" }, { x: 4, y: 2, c: "korte" }, { x: 3, y: 6, c: "korte" }, { x: 5, y: 4, c: "korte" }], q: { x: 5.5, y: 5.5 }, k: 3, mode: "q" });
+  let H = H0();
+  function hero(){
+    const k = Math.min(H.k, H.pts.length), r = H.pts.length && H.q ? knn(H.pts, H.q, k) : null;
+    $("#plane").innerHTML = plane({ pts: H.pts, q: H.q, bg: true, k: H.k, lines: r ? r.near.map(o => o.p) : [] });
+    $$("#modes [data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === H.mode)));
+    $$("#ks [data-k]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.k === H.k)));
+    if (!r){ $("#verd").className = "verdict"; $("#verd").textContent = H.pts.length ? "Tegyél le egy új gyümölcsöt (❓)" : "Előbb tanítsd: tegyél le almákat és körtéket"; $("#why").textContent = ""; return; }
+    $("#verd").className = "verdict " + (r.c === "alma" ? "a" : "k"); $("#verd").textContent = "Szerintem: " + NAME[r.c];
+    $("#why").textContent = "A legközelebbi " + k + " pontból alma: " + r.na + ", körte: " + r.nk + ". A többség dönt. Próbáld ki: tegyél egy körtét az új gyümölcs mellé, vagy váltsd a k értékét!";
+  }
+  $("#plane").addEventListener("click", e => {
+    const svg = $("#plane svg"); if (!svg) return;
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM(); if (!m) return;
+    const p = pt.matrixTransform(m.inverse()), x = Math.round((p.x - 26) / 28 * 2) / 2, y = Math.round((10 - (p.y - 10) / 28) * 2) / 2;
+    if (x < 0 || x > 10 || y < 0 || y > 10) return;
+    if (H.mode === "q") H.q = { x, y }; else H.pts.push({ x, y, c: H.mode });
+    hero();
+  });
+  $("#modes").addEventListener("click", e => { const b = e.target.closest("[data-mode]"); if (b){ H.mode = b.dataset.mode; hero(); } });
+  $("#ks").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b){ H.k = +b.dataset.k; hero(); } });
+  $("#clr").addEventListener("click", () => { H.pts = []; H.mode = "alma"; hero(); });
+  $("#rst").addEventListener("click", () => { H = H0(); hero(); });
+  hero();
+
+  /* ---------- Levezetések ---------- */
+  const LET = "ABCDEFGH";
+  function knnTable(pts, q, upto, hl){
+    const rows = pts.map((p, i) => ({ p, i, d: d2(p, q) }));
+    return '<div class="ptwrap"><table class="pt"><tr><th>pont</th><th>x</th><th>y</th><th>címke</th><th>távolság</th></tr>' + rows.map(r => "<tr><td" + (hl && hl.includes(r.i) ? ' class="hl"' : "") + ">" + r.p.n + "</td><td>" + fn(r.p.x) + "</td><td>" + fn(r.p.y) + "</td><td>" + NAME[r.p.c] + "</td><td" + (hl && hl.includes(r.i) ? ' class="hl"' : "") + ">" + (r.i < upto ? "√" + r.d + " ≈ " + fn(Math.sqrt(r.d)) : "") + "</td></tr>").join("") + "</table></div>";
+  }
+  function knnFrames(pts, q, k){
+    const F = [], r = knn(pts, q, k), idx = r.near.map(o => pts.indexOf(o.p));
+    F.push({ cap: "Az új gyümölcs helye: kerekség " + fn(q.x) + ", pirosság " + fn(q.y) + ". A tanítóadatban " + pts.length + " ismert gyümölcs van. A k értéke " + k + ": ennyi legközelebbi szomszéd szavaz.", html: plane({ pts, q }) });
+    pts.forEach((p, i) => F.push({ cap: p.n + " pont: vízszintes különbség " + fn(Math.abs(p.x - q.x)) + ", függőleges " + fn(Math.abs(p.y - q.y)) + ". A távolság Pitagorasszal: √" + d2(p, q) + ", kb. " + fn(Math.sqrt(d2(p, q))) + ".", html: knnTable(pts, q, i + 1, [i]) }));
+    F.push({ cap: Art(k) + " " + k + " legközelebbi: " + r.near.map(o => o.p.n + " (" + NAME[o.p.c] + ")").join(", ") + ".", html: plane({ pts, q, lines: r.near.map(o => o.p) }) + knnTable(pts, q, pts.length, idx) });
+    F.push({ cap: "Szavazás: alma " + r.na + ", körte " + r.nk + ". A többség dönt: a gép szerint ez " + NAME[r.c] + ".", html: plane({ pts, q, lines: r.near.map(o => o.p) }) + '<p class="big led" style="margin-top:10px">' + NAME[r.c] + "</p>" });
+    return F;
+  }
+  const nnBox = (x, w, th, k) => {
+    const terms = x.map((v, i) => fn(w[i]) + " · " + fn(v));
+    const sum = x.reduce((s, v, i) => s + v * w[i], 0);
+    return '<div class="nn">' + x.map((v, i) => '<div class="' + (i === k ? "on" : "") + '">x' + "₁₂₃"[i] + " = " + fn(v) + " &nbsp; w" + "₁₂₃"[i] + " = " + fn(w[i]) + "</div>").join("") + (th == null ? "" : "<div>küszöb: " + fn(th) + "</div>") + (k >= x.length ? '<div class="on">összeg = ' + terms.join(" + ") + " = " + fn(sum) + "</div>" : "") + "</div>";
+  };
+  function neuronFrames(x, w, th, noOut){
+    const F = [], sum = Math.round(x.reduce((s, v, i) => s + v * w[i], 0) * 100) / 100, out = sum >= th - 1e-9 ? 1 : 0;
+    F.push({ cap: "Egy mesterséges neuron. Bemenetei az x értékek, mindegyikhez tartozik egy súly (w): ez mondja meg, mennyire fontos az a bemenet.", html: nnBox(x, w, th, -1) });
+    x.forEach((v, i) => F.push({ cap: (i + 1) + ". bemenet: " + fn(v) + ", a súlya " + fn(w[i]) + ". A szorzatuk: " + fn(v * w[i]) + ".", html: nnBox(x, w, th, i) }));
+    F.push({ cap: "Összeadjuk a szorzatokat: a súlyozott összeg " + fn(sum) + ".", html: nnBox(x, w, th, x.length) });
+    if (!noOut) F.push({ cap: "Összehasonlítjuk a küszöbbel (" + fn(th) + "). " + (out ? "Az összeg legalább akkora, ezért a neuron tüzel: a kimenet 1." : "Az összeg kisebb, ezért a kimenet 0."), html: nnBox(x, w, th, x.length) + '<p class="big led" style="margin-top:10px">kimenet: ' + out + "</p>" });
+    return F;
+  }
+  function percFrames(){
+    // az ÉS kapu megtanulása: küszöb 1,5, ráta 0,5, kezdő súlyok 0 és 0 (tizedekben számolunk)
+    const D = [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, 1, 1]], th = 15, rate = 5; let w = [0, 0]; const F = [];
+    const tbl = (k, extra) => '<div class="ptwrap"><table class="pt"><tr><th>x₁</th><th>x₂</th><th>elvárt</th></tr>' + D.map((d, i) => "<tr><td" + (i === k ? ' class="hl"' : "") + ">" + d[0] + "</td><td" + (i === k ? ' class="hl"' : "") + ">" + d[1] + "</td><td" + (i === k ? ' class="hl"' : "") + ">" + d[2] + "</td></tr>").join("") + '</table></div><div class="nn" style="margin-top:8px">w₁ = ' + fn(w[0] / 10) + " &nbsp; w₂ = " + fn(w[1] / 10) + " &nbsp; küszöb: 1,5 &nbsp; ráta: 0,5" + (extra || "") + "</div>";
+    F.push({ cap: "A perceptron megtanulja az ÉS kaput. Kezdetben mindkét súly 0, a küszöb 1,5, a tanulási ráta 0,5. Sorban megmutatjuk neki a négy példát.", html: tbl(-1) });
+    for (let ep = 1; ep <= 4; ep++){
+      let changed = false;
+      D.forEach((d, i) => {
+        const sum = w[0] * d[0] + w[1] * d[1], out = sum >= th ? 1 : 0, err = d[2] - out;
+        if (err){ const old = w.slice(); w = [w[0] + rate * err * d[0], w[1] + rate * err * d[1]]; changed = true;
+          F.push({ cap: ep + ". kör, bemenet " + d[0] + " és " + d[1] + ": az összeg " + fn(sum / 10) + ", a kimenet " + out + ", de az elvárt " + d[2] + ". Hiba: " + fn(err) + ". Új súlyok: w₁ = " + fn(old[0] / 10) + " + 0,5 · " + fn(err) + " · " + d[0] + " = " + fn(w[0] / 10) + ", w₂ = " + fn(old[1] / 10) + " + 0,5 · " + fn(err) + " · " + d[1] + " = " + fn(w[1] / 10) + ".", html: tbl(i, " &nbsp; <span class='cur'>hiba: " + fn(err) + "</span>") });
+        } else if (i === 3 || ep === 1) F.push({ cap: ep + ". kör, bemenet " + d[0] + " és " + d[1] + ": az összeg " + fn(sum / 10) + ", a kimenet " + out + ", és ez az elvárt. Nincs hiba, a súlyok maradnak.", html: tbl(i) });
+      });
+      if (!changed){ F.push({ cap: "Egy teljes körben egyszer sem hibázott: megtanulta az ÉS kaput. A végső súlyok: w₁ = " + fn(w[0] / 10) + ", w₂ = " + fn(w[1] / 10) + ".", html: tbl(-1) + '<p class="big led" style="margin-top:10px">megtanulta</p>' }); break; }
+    }
+    return F;
+  }
+  const P0 = [{ x: 2, y: 3, c: "korte" }, { x: 4, y: 6, c: "korte" }, { x: 7, y: 8, c: "alma" }, { x: 6, y: 4, c: "alma" }, { x: 8, y: 5, c: "alma" }, { x: 3, y: 8, c: "korte" }].map((p, i) => Object.assign(p, { n: LET[i] }));
+  const MET = { knn: "Legközelebbi szomszédok", neuron: "Egy neuron kiszámolása", perc: "A perceptron tanul" };
+  const MF = { knn: () => knnFrames(P0, { x: 5, y: 6 }, 3), neuron: () => neuronFrames([1, 0, 1], [0.6, 0.9, 0.5], 1), perc: percFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "knn" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }); };
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a mesterséges intelligencia?", h:
+      "<p>A <b>mesterséges intelligencia</b> (MI) olyan program, amely emberi gondolkodást igénylő feladatot old meg: képet ismer fel, szöveget ír, fordít, ajánl.</p>" +
+      "<ul><li><b>Szabályalapú program</b>: a programozó írja le a szabályokat. „Ha a levélben szerepel a <i>nyeremény</i> szó, akkor kéretlen.” Pontosan azt teszi, amit leírtak.</li><li><b>Tanuló program</b> (gépi tanulás): a programozó <b>példákat</b> ad, és a gép maga találja meg a szabályt. Millió megjelölt levélből tanulja meg, mi a kéretlen levél.</li></ul>" +
+      "<div class='note'><b>Röviden:</b> a hagyományos program szabályokból és adatokból választ ad. A gépi tanulás adatokból és válaszokból szabályt készít.</div>" },
+    { k: "Adat", t: "Tanítóadat, jellemző, címke", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>kerekség</th><th>pirosság</th><th>címke</th></tr><tr><td>8</td><td>7</td><td>alma</td></tr><tr><td>3</td><td>4</td><td>körte</td></tr><tr><td>7</td><td>9</td><td>alma</td></tr></table></div>" +
+      "<ul><li><b>Jellemzők</b>: amit a gép lát (itt a kerekség és a pirosság; egy képnél a pixelek).</li><li><b>Címke</b>: a helyes válasz, amit egy ember megadott (alma vagy körte).</li><li><b>Tanítóadat</b>: a sok felcímkézett példa, amiből a gép tanul.</li><li><b>Modell</b>: ami a tanulás végén létrejön, és új esetekről dönt.</li></ul>" },
+    { k: "Mérés", t: "Tanítás, tesztelés, túltanulás", h:
+      "<p>Az adatokat kettéosztjuk: kb. 80% a <b>tanítóadat</b>, 20% a <b>tesztadat</b>. A tesztadatot a gép tanulás közben nem látja: ezen mérjük, mennyire jó.</p>" +
+      "<p class='eq'>pontosság = helyes válaszok : összes · 100%</p>" +
+      "<div class='mistake'><b>Túltanulás:</b> a modell bemagolja a tanítóadatot, a saját példáin 100%-os, de új esetekre rossz. Olyan, mint aki a dolgozat előtt a mintafeladatok válaszait tanulja meg, és nem a módszert.</div>" },
+    { k: "k-NN", t: "A legközelebbi szomszéd módszer", h:
+      "<p>A legegyszerűbb tanuló módszer: egy új esetről úgy dönt, hogy megnézi a hozzá <b>legközelebbi k ismert példát</b>, és <b>a többség dönt</b>.</p>" +
+      "<ol><li>Számold ki a távolságot minden ismert ponttól (Pitagorasz: √(Δx² + Δy²), lásd a koordináták leckét).</li><li>Rendezd sorba, vedd a k legközelebbit.</li><li>Amelyik címkéből több van, az a válasz.</li></ol>" +
+      "<p>A k legyen páratlan, így két címkénél nincs döntetlen. Kis k: érzékeny egy-egy rossz példára; nagy k: elmossa a határokat.</p>" + playBtn("knn"), init: playInit },
+    { k: "Neuron", t: "A mesterséges neuron", h:
+      "<p>Az agy idegsejtjének egyszerű utánzata:</p><ol><li>Bemenetek: x₁, x₂, …</li><li>Mindegyiknek van <b>súlya</b>: w₁, w₂, …</li><li>Súlyozott összeg: w₁ · x₁ + w₂ · x₂ + …</li><li>Ha az összeg eléri a <b>küszöböt</b>, a kimenet 1 (a neuron „tüzel”), különben 0.</li></ol>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>kapu</th><th>w₁</th><th>w₂</th><th>küszöb</th></tr><tr><td>ÉS</td><td>1</td><td>1</td><td>2</td></tr><tr><td>VAGY</td><td>1</td><td>1</td><td>1</td></tr><tr><td>NEM x₁</td><td>−1</td><td>0</td><td>0</td></tr></table></div>" +
+      "<p>Ellenőrizd: ÉS esetén csak az 1 és 1 bemenet adja a 2-t. Ez ugyanaz a logikai ÉS, mint a logikai műveletek leckében!</p>" + playBtn("neuron"), init: playInit },
+    { k: "Tanulás", t: "Hogyan tanul a perceptron?", h:
+      "<p>A <b>perceptron</b> egyetlen neuron, amely a hibáiból tanul:</p>" +
+      "<p class='eq'>hiba = elvárt − kapott &nbsp;·&nbsp; új w = régi w + ráta · hiba · x</p>" +
+      "<ul><li>Ha jó volt a válasz, a hiba 0: semmi nem változik.</li><li>Ha 1 kellett volna, de 0 jött (hiba = 1), a súlyok nőnek, hogy legközelebb nagyobb legyen az összeg.</li><li>Ha 0 kellett volna, de 1 jött (hiba = −1), a súlyok csökkennek.</li><li>Ahol a bemenet 0, ott a súly nem változik: az a bemenet nem tehet a hibáról.</li></ul>" +
+      "<p>A <b>tanulási ráta</b> (például 0,5) azt mondja meg, mekkorát lép egy hiba után.</p>" + playBtn("perc"), init: playInit },
+    { k: "Hálózat", t: "Neuronháló és mély tanulás", h:
+      "<p>Sok neuron rétegekbe rendezve: <b>bemeneti réteg</b> (például egy kép pixelei), <b>rejtett rétegek</b>, <b>kimeneti réteg</b> (például: „macska”, „kutya”). Minden neuron az előző réteg összes kimenetét kapja.</p>" +
+      "<p>Ha sok rejtett réteg van, <b>mély tanulásnak</b> hívjuk. Egy képfelismerő hálónak több millió súlya van: ezeket a tanítás állítja be, sok-sok példán, nagy teljesítményű videókártyákon.</p>" +
+      "<div class='note'><b>Képfelismerés:</b> a kép csak számok táblázata (pixelek, lásd a szöveg és kép kódolása leckét). Az első rétegek éleket, a későbbiek formákat, a legutolsók tárgyakat ismernek fel.</div>" },
+    { k: "Nyelvi modell", t: "Hogyan „ír” a chatbot?", h:
+      "<p>A <b>nagy nyelvi modell</b> (például a csevegő MI-k) óriási mennyiségű szövegből tanulta meg, melyik szó milyen valószínűséggel jön a következő helyen. Szóról szóra (pontosabban szódarabról szódarabra) írja a választ.</p>" +
+      "<p class='eq'>„A kutya ugat, a macska …” → nyávog (sokszor), dorombol (néha), repül (szinte soha)</p>" +
+      "<div class='mistake'><b>Hallucináció:</b> a modell magabiztosan állíthat valótlant is (kitalált forrást, rossz évszámot, hibás számolást), mert nem ellenőriz, csak valószínű szöveget ír. Fontos tényt mindig ellenőrizz!</div>" },
+    { k: "Felelősség", t: "Torzítás, adatvédelem, hamisítás", h:
+      "<ul><li><b>Torzítás</b> (bias): a modell olyan, mint az adat, amiből tanult. Ha egy arcfelismerőt főleg világos bőrű arcokon tanítottak, a sötétebb bőrűeket rosszabbul ismeri fel.</li><li><b>Adatvédelem</b>: amit beírsz egy MI-szolgáltatásba, azt eltárolhatják és tanításra használhatják. Személyes adatot, jelszót, mások adatait ne írd be.</li><li><b>Hamisítás</b> (deepfake): valósnak látszó hamis kép, hang, videó. Ellenőrizd a forrást, mielőtt elhiszed vagy továbbküldöd.</li></ul>" },
+    { k: "Tanulás", t: "MI a tanulásban: mire jó, mire nem?", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Jó segítség</span><span>Magyarázd el másképp! Adj még gyakorlófeladatot! Hol a hiba a megoldásomban? Kérdezz ki a témából!</span></div>" +
+      "<div class='trick'><span class='t'>Nem jó segítség</span><span>A kész házi bemásolása: a dolgozatban nem lesz ott, és a tanár általában észreveszi. A programozást csak úgy tanulod meg, ha te írod a kódot.</span></div></div>" +
+      "<p>Az iskola szabályait tartsd be: van, ahol tilos MI-t használni, van, ahol jelezni kell.</p>" },
+    { k: "Tévhitek", t: "Tipikus tévhitek", h:
+      "<div class='mistake'><b>„Az MI gondolkodik és érez.”</b> Nem: számokat számol, mintákat ismer fel az adatban.</div>" +
+      "<div class='mistake'><b>„Amit az MI mond, az igaz.”</b> Hallucinálhat. Ellenőrizni kell.</div>" +
+      "<div class='mistake'><b>„A 100%-os pontosság a tanítóadaton nagyon jó.”</b> Lehet, hogy csak bemagolta (túltanulás). A tesztadat számít.</div>" +
+      "<div class='mistake'><b>„A gép nem lehet elfogult.”</b> Annyira elfogult, amennyire az adat, amiből tanult.</div>" +
+      "<div class='mistake'><b>„Minden okos program MI.”</b> A szabályalapú program (például egy átlagszámoló) nem tanul.</div>" },
+    { k: "Trükkök", t: "Számolási trükkök", h:
+      "<div class='two-col'><div class='trick'><span class='t'>k-NN gyorsan</span><span>A távolságok sorrendjéhez elég a négyzetük (Δx² + Δy²): a gyökvonás a sorrenden nem változtat.</span></div>" +
+      "<div class='trick'><span class='t'>Neuron</span><span>Ahol a bemenet 0, azt a tagot ki is hagyhatod.</span></div>" +
+      "<div class='trick'><span class='t'>Perceptron</span><span>Hiba 0 → nincs változás. Bemenet 0 → az a súly nem változik.</span></div>" +
+      "<div class='trick'><span class='t'>Pontosság</span><span>Helyes = eltalált igen + eltalált nem. Az összes a teljes tesztadat.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const choice = (q, good, others, sol, bad, frames, title) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, frames, title, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const numCheck = (ans, hint, extra, tol) => v => { const x = num(v); if (isNaN(x)) return { ok: false, msg: "Egy számot írj." }; if (Math.abs(x - ans) <= (tol || 1e-9)) return { ok: true, msg: "Helyes!" }; return { ok: false, msg: (extra && extra(x)) || hint }; };
+  const GATES = [["ÉS", (a, b) => a && b], ["VAGY", (a, b) => a || b], ["NEM x₁", (a) => !a], ["x₁ ÉS NEM x₂", (a, b) => a && !b], ["NEM-ÉS (NAND)", (a, b) => !(a && b)]];
+  const impl = (w1, w2, th, g) => [[0, 0], [0, 1], [1, 0], [1, 1]].every(([a, b]) => ((w1 * a + w2 * b >= th) ? 1 : 0) === (g(a, b) ? 1 : 0));
+  const wlab = (w1, w2, th) => "w₁ = " + fn(w1) + ", w₂ = " + fn(w2) + ", küszöb: " + fn(th);
+  const FOG = [
+    [["Felcímkézett példák, amelyekből a gép tanul.", "tanítóadat"], ["A helyes válasz egy példánál, amit egy ember adott meg.", "címke"], ["Egy tulajdonság, amit a gép lát (például a gyümölcs kereksége).", "jellemző"], ["Ami a tanulás végén létrejön, és új esetekről dönt.", "modell"], ["Olyan példák, amelyeket a gép tanulás közben nem látott; ezen mérjük a pontosságot.", "tesztadat"], ["A helyes válaszok aránya százalékban.", "pontosság"]],
+    [["A modell bemagolja a tanítóadatot, de új esetekre rosszul válaszol.", "túltanulás"], ["A modell elfogult, mert egyoldalú adatból tanult.", "torzítás"], ["Megmondja, mennyire fontos egy bemenet a neuronnak.", "súly"], ["Ha a súlyozott összeg eléri, a neuron kimenete 1.", "küszöb"], ["A bemeneti és a kimeneti réteg közötti neuronok.", "rejtett réteg"], ["A k legközelebbi ismert példa többsége dönt.", "k-NN"]],
+    [["A nyelvi modell magabiztosan állít valótlant.", "hallucináció"], ["Óriási szövegmennyiségből tanult, a következő szót jósolja.", "nagy nyelvi modell"], ["Megmondja, mekkorát változik egy súly egy hiba után.", "tanulási ráta"], ["Sok rejtett réteggel rendelkező neuronháló tanítása.", "mély tanulás"], ["Valósnak látszó, MI-vel hamisított videó vagy hang.", "deepfake"], ["Egyetlen neuron, amely a hibáiból igazítja a súlyait.", "perceptron"]]
+  ];
+  const MIE = [
+    ["A számológép összeadja a beírt számokat.", 0], ["A levelezőprogram több millió megjelölt levélből tanulta meg, mi a kéretlen levél.", 1], ["Ha a hőmérséklet 20 fok alá megy, a termosztát bekapcsolja a fűtést.", 0], ["A telefon fotók ezreiből tanulta meg felismerni az arcodat.", 1],
+    ["A KRÉTA kiszámolja a jegyeid átlagát.", 0], ["A videómegosztó a nézési előzményeidből tanulja meg, mit ajánljon.", 1], ["A játékban a szörny minden lépésben egyet lép a játékos felé.", 0], ["A fordítóprogram sok millió lefordított mondatpárból tanult.", 1],
+    ["Az oldal a jelszavad hosszát és jeleit nézi, és kiírja: gyenge vagy erős.", 0], ["A program tízezer kézzel írt számjegy képéből tanulta meg felismerni a számjegyeket.", 1], ["A sakkprogram millió, önmaga ellen játszott partiból tanulta meg, melyik lépés jó.", 1], ["A navigáció a megadott térképen a legrövidebb utat keresi (Dijkstra-módszerrel).", 0]
+  ];
+  const ML = ["szabályalapú program", "tanuló program (gépi tanulás)"];
+  const types = [
+    { id: "knn", name: "Legközelebbi szomszéd", gen(l){
+      const k = l === 1 ? 1 : l === 2 ? 3 : pick([3, 5]), n = l === 1 ? 4 : l === 2 ? 6 : pick([7, 8]), want = l > 1 && Math.random() < 0.5;
+      let pts, q, guard = 0, ok;
+      do {
+        pts = Array.from({ length: n }, (_, i) => ({ x: rnd(0, 10), y: rnd(0, 10), c: pick(["alma", "korte"]), n: LET[i] }));
+        q = { x: rnd(1, 9), y: rnd(1, 9) };
+        const ds = pts.map(p => d2(p, q));
+        ok = new Set(ds).size === n && !ds.includes(0) && new Set(pts.map(p => p.x + "," + p.y)).size === n && pts.some(p => p.c === "alma") && pts.some(p => p.c === "korte") && (!want || knn(pts, q, k).c !== knn(pts, q, 1).c);
+      } while (!ok && guard++ < 2000);
+      const r = knn(pts, q, k), ans = NAME[r.c];
+      const tbl = '<div class="ptwrap"><table class="pt"><tr><th>pont</th><th>kerekség</th><th>pirosság</th><th>címke</th></tr>' + pts.map(p => "<tr><td>" + p.n + "</td><td>" + p.x + "</td><td>" + p.y + "</td><td>" + NAME[p.c] + "</td></tr>").join("") + "</table></div>";
+      return choice("Új gyümölcs: kerekség <span class='num'>" + q.x + "</span>, pirosság <span class='num'>" + q.y + "</span>. Mit mond a k-NN, ha <b>k = " + k + "</b>?" + tbl + plane({ pts, q }), ans, [ans === "alma" ? "körte" : "alma"],
+        "<p>A távolságok négyzete: " + pts.map(p => ({ p, d: d2(p, q) })).sort((a, b) => a.d - b.d).map(o => o.p.n + ": " + o.d).join(", ") + ". " + Art(k) + " " + k + " legközelebbi: " + r.near.map(o => o.p.n).join(", ") + " (alma " + r.na + ", körte " + r.nk + "): " + ans + ".</p>",
+        "Nem jó. Számold ki minden pont távolságának négyzetét (Δx² + Δy²), vedd a k legkisebbet, és a többség dönt.", knnFrames(pts, q, k), "Legközelebbi szomszédok");
+    } },
+    { id: "neuron", name: "Neuron kimenete", gen(l){
+      let x, w, th;
+      if (l === 1){ x = [rnd(0, 1), rnd(0, 1)]; w = [rnd(1, 3), rnd(1, 3)]; th = rnd(1, 4); }
+      else { x = [rnd(0, 1), rnd(0, 1), rnd(0, 1)]; w = [0, 0, 0].map(() => rnd(-2, 4) / 2); th = rnd(1, 5) / 2; }
+      const sumT = x.reduce((s, v, i) => s + v * Math.round(w[i] * 10), 0), sum = sumT / 10, out = sumT >= Math.round(th * 10) ? 1 : 0;
+      const desc = x.map((v, i) => "x" + "₁₂₃"[i] + " = " + v + ", w" + "₁₂₃"[i] + " = " + fn(w[i])).join("; ");
+      if (l === 3){
+        const xx = [0, 0, 0].map(() => rnd(0, 3)), ww = [0, 0, 0].map(() => rnd(-9, 9) / 10), sT = xx.reduce((s, v, i) => s + v * Math.round(ww[i] * 10), 0);
+        return { q: "Mennyi a neuron súlyozott összege? <span class='num'>" + xx.map((v, i) => "x" + "₁₂₃"[i] + " = " + v + ", w" + "₁₂₃"[i] + " = " + fn(ww[i])).join("; ") + "</span>", kind: "input", mode: "decimal", answer: fn(sT / 10), frames: neuronFrames(xx, ww, null, true), title: "Egy neuron kiszámolása",
+          sol: "<p>" + xx.map((v, i) => fn(ww[i]) + " · " + v).join(" + ") + " = " + fn(sT / 10) + ".</p>", check: numCheck(sT / 10, "Nem jó. Minden bemenetet szorozz meg a súlyával, és add össze (a negatív súlyra figyelj).") };
+      }
+      return { q: "Mi a neuron kimenete (0 vagy 1)? <span class='num'>" + desc + "; küszöb: " + fn(th) + "</span>", kind: "input", mode: "numeric", ph: "0 vagy 1", answer: out, frames: neuronFrames(x, w, th), title: "Egy neuron kiszámolása",
+        sol: "<p>Összeg: " + x.map((v, i) => fn(w[i]) + " · " + v).join(" + ") + " = " + fn(sum) + ". " + (out ? "Legalább akkora, mint a küszöb (" + fn(th) + "): 1." : "Kisebb a küszöbnél (" + fn(th) + "): 0.") + "</p>",
+        check: v => { const s = String(v).trim(); if (s === String(out)) return { ok: true, msg: "Helyes!" }; if (s !== "0" && s !== "1") return { ok: false, msg: "A kimenet csak 0 vagy 1 lehet. Az összeget a küszöbbel kell összevetni." }; return { ok: false, msg: "Nem jó. Az összeg " + fn(sum) + ", a küszöb " + fn(th) + ": legalább akkora?" }; } };
+    } },
+    { id: "kapu", name: "Neuron mint logikai kapu", gen(l){
+      const g = l === 1 ? pick(GATES.slice(0, 2)) : l === 2 ? pick(GATES.slice(0, 3)) : pick(GATES.slice(2)), W = l === 1 ? [0, 1, 2] : [-2, -1, 0, 1, 2], TH = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+      let good, guard = 0; do { good = [pick(W), pick(W), pick(TH)]; } while (!impl(good[0], good[1], good[2], g[1]) && guard++ < 3000);
+      if (!impl(good[0], good[1], good[2], g[1])) good = { "ÉS": [1, 1, 2], "VAGY": [1, 1, 1], "NEM x₁": [-1, 0, 0], "x₁ ÉS NEM x₂": [1, -1, 1], "NEM-ÉS (NAND)": [-1, -1, -1.5] }[g[0]];
+      const others = []; guard = 0;
+      while (others.length < 3 && guard++ < 3000){ const c = [pick(W), pick(W), pick(TH)]; const lab = wlab(c[0], c[1], c[2]); if (!impl(c[0], c[1], c[2], g[1]) && lab !== wlab(good[0], good[1], good[2]) && !others.includes(lab)) others.push(lab); }
+      const tt = [[0, 0], [0, 1], [1, 0], [1, 1]].map(([a, b]) => a + " és " + b + " → " + (good[0] * a + good[1] * b >= good[2] ? 1 : 0)).join(", ");
+      return choice("Melyik beállítással valósítja meg a neuron ezt a kaput: <b>" + g[0] + "</b>? (Kimenet 1, ha w₁ · x₁ + w₂ · x₂ legalább a küszöb.)", wlab(good[0], good[1], good[2]), others,
+        "<p>Próbáld ki mind a négy bemenetre: " + tt + ". Ez pontosan ennek a kapunak az igazságtáblája: " + g[0] + ".</p>", "Nem jó. Számold ki a négy bemenetre (0 és 0, 0 és 1, 1 és 0, 1 és 1) az összeget, és vesd össze a kapu igazságtáblájával.");
+    } },
+    { id: "fog", name: "Fogalmak", gen(l){
+      const pool = FOG[l - 1], q = pick(pool), o = shuffle(pool.filter(x => x[1] !== q[1])).slice(0, 3).map(x => x[1]);
+      return choice("Mire illik ez a leírás? " + q[0], q[1], o, "<p>" + q[0] + " → <b>" + q[1] + "</b>.</p>", "Nem ez. Nézd meg a diákat és a puskát.");
+    } },
+    { id: "mie", name: "Tanul, vagy szabályt követ?", gen(l){
+      const s = pick(l === 1 ? MIE.slice(0, 6) : l === 2 ? MIE.slice(3, 10) : MIE.slice(6));
+      return choice("Szabályalapú program vagy gépi tanulás? " + s[0], ML[s[1]], [ML[1 - s[1]]], "<p>" + (s[1] ? "Példákból (adatból) tanulta meg a szabályt: gépi tanulás." : "A programozó előre leírta a szabályt, a program nem tanul: szabályalapú.") + "</p>", "Nem jó. Kérdezd meg: ki találta ki a szabályt, a programozó vagy a gép a példákból?");
+    } },
+    { id: "pont", name: "Pontosság", gen(l){
+      const pc = v => { const s = String(v).trim().replace(/\s*%$/, ""); return s; };
+      if (l === 1){ let N, c, g = 0; do { N = pick([20, 25, 40, 50, 80, 100, 200]); c = rnd(Math.ceil(N / 2), N); } while ((c * 100 / N) % 1 && g++ < 200);
+        const ans = c * 100 / N;
+        return { q: "A tesztadat <span class='num'>" + N + "</span> képből áll. A modell <span class='num'>" + c + "</span> képet ismert fel helyesen. Hány százalék a pontosság?", kind: "input", mode: "numeric", ph: "pl. 85", answer: ans,
+          sol: "<p>" + c + " : " + N + " · 100 = " + ans + "%.</p>", check: v => numCheck(ans, "Nem jó. Helyes : összes · 100.", x => x === c / N ? "Ez az arány. Szorozd meg 100-zal, hogy százalék legyen." : "")(pc(v)) };
+      }
+      if (l === 2){ let S, TP, FP, g = 0; do { S = rnd(20, 60); TP = rnd(Math.ceil(S * 0.6), S); FP = rnd(0, 15); } while (FP > 100 - S && g++ < 200);
+        const ans = TP + (100 - S - FP);
+        return { q: "A spamszűrő 100 levelet kap, ebből <span class='num'>" + S + "</span> kéretlen (spam). A szűrő <span class='num'>" + TP + "</span> spamet kiszűrt, és <span class='num'>" + FP + "</span> rendes levelet tévesen spamnek vett. Hány százalék a pontossága?", kind: "input", mode: "numeric", answer: ans,
+          sol: "<p>Helyes döntés: a kiszűrt spamek (" + TP + ") és az átengedett rendes levelek (" + (100 - S) + " − " + FP + " = " + (100 - S - FP) + "). Összesen " + ans + " a 100-ból: " + ans + "%.</p>",
+          check: v => numCheck(ans, "Nem jó. A helyes döntések: a jól kiszűrt spamek és a jól átengedett rendes levelek. Ezek száma a 100-ból.", x => x === TP ? "A rendesen átengedett levelek is helyes döntések!" : "")(pc(v)) };
+      }
+      let a, b, c, d, g = 0; do { a = rnd(5, 60); b = rnd(0, 15); c = rnd(5, 60); d = rnd(0, 15); } while (Math.abs((a + c) * 100 / (a + b + c + d) % 1 - 0.5) < 0.02 && g++ < 200);
+      const tot = a + b + c + d, ans = Math.round((a + c) * 100 / tot);
+      return { q: "Egy betegségfelismerő teszteredménye: <span class='num'>" + a + "</span> beteget jól felismert, <span class='num'>" + b + "</span> egészségest tévesen betegnek mondott, <span class='num'>" + c + "</span> egészségest jól egészségesnek mondott, <span class='num'>" + d + "</span> beteget nem vett észre. Hány százalék a pontosság? Kerekíts egészre.", kind: "input", mode: "numeric", answer: ans,
+        sol: "<p>Helyes: " + a + " + " + c + " = " + (a + c) + ". Összes: " + a + " + " + b + " + " + c + " + " + d + " = " + tot + ". " + (a + c) + " : " + tot + " · 100 ≈ " + ans + "%.</p>",
+        check: v => numCheck(ans, "Nem jó. Helyes döntés a jól felismert beteg és a jól felismert egészséges. Ezt oszd el az összes esettel, és szorozd 100-zal.", null, 0.5)(pc(v)) };
+    } },
+    { id: "perc", name: "Perceptron-lépés", gen(l){
+      let w, th, x, t, out, err, rate, g = 0;
+      do {
+        if (l < 3){ w = [rnd(-2, 3), rnd(-2, 3)]; th = rnd(0, 3); rate = 1; } else { w = [rnd(-10, 10), rnd(-10, 10)]; th = rnd(0, 15); rate = pick([1, 2, 5]); }
+        x = [rnd(0, 1), rnd(0, 1)]; t = rnd(0, 1);
+        const sum = l < 3 ? w[0] * x[0] + w[1] * x[1] : w[0] * x[0] + w[1] * x[1];
+        out = sum >= th ? 1 : 0; err = t - out;
+      } while (((l > 1 && err === 0) || (l === 1 && Math.random() < 0.3 && err === 0)) && g++ < 500);
+      const sc = l < 3 ? 1 : 10, W = w.map(v => v / sc), TH = th / sc, R = l < 3 ? 1 : rate / 10, sum = (w[0] * x[0] + w[1] * x[1]) / sc;
+      const desc = "x₁ = " + x[0] + ", x₂ = " + x[1] + "; w₁ = " + fn(W[0]) + ", w₂ = " + fn(W[1]) + "; küszöb: " + fn(TH) + "; elvárt kimenet: " + t;
+      if (l === 1) return { q: "Mennyi a hiba (elvárt − kapott)? <span class='num'>" + desc + "</span>", kind: "input", mode: "decimal", answer: fn(err),
+        sol: "<p>Összeg: " + fn(W[0]) + " · " + x[0] + " + " + fn(W[1]) + " · " + x[1] + " = " + fn(sum) + ", a kimenet " + out + ". Hiba: " + t + " − " + out + " = " + fn(err) + ".</p>", check: numCheck(err, "Nem jó. Előbb a kimenet (összeg ≥ küszöb?), aztán elvárt mínusz kapott.", z => z === -err && err ? "Fordítva vontál ki: elvárt mínusz kapott." : "") };
+      const i = rnd(0, 1), nw = (w[i] + (l < 3 ? err * x[i] : rate * err * x[i])) / sc;
+      return { q: "Egy tanulási lépés, tanulási ráta: " + fn(R) + ". Mennyi lesz az új <b>w" + "₁₂"[i] + "</b>? <span class='num'>" + desc + "</span>", kind: "input", mode: "decimal", answer: fn(nw),
+        sol: "<p>Összeg: " + fn(sum) + ", kimenet: " + out + ", hiba: " + t + " − " + out + " = " + fn(err) + ". Új w" + "₁₂"[i] + " = " + fn(W[i]) + " + " + fn(R) + " · " + fn(err) + " · " + x[i] + " = " + fn(nw) + "." + (x[i] ? "" : " A bemenet 0, ezért ez a súly nem változik.") + "</p>",
+        check: numCheck(nw, "Nem jó. Új w = régi w + ráta · hiba · bemenet; a hiba = elvárt − kapott.", z => Math.abs(z - W[i]) < 1e-9 && x[i] ? "A súly változik, mert a hiba nem 0, és a bemenet 1." : "") };
+    } }
+  ];
+  K.practice($("#practice"), { id: "mi", types, play: playTo });
+
+  /* ---------- Puska ---------- */
+  const rows = [["tanítóadat", "felcímkézett példák a tanuláshoz"], ["tesztadat", "ezen mérjük a pontosságot"], ["jellemző", "amit a gép lát"], ["címke", "a helyes válasz"], ["túltanulás", "bemagolja, új esetre rossz"], ["torzítás", "egyoldalú adat → elfogult modell"], ["k-NN", "a k legközelebbi szomszéd szavaz"], ["neuron", "súlyozott összeg ≥ küszöb → 1"], ["hallucináció", "magabiztos valótlanság"]];
+  $("#cheat").innerHTML = "<tr><th>Fogalom</th><th>Röviden</th></tr>" + rows.map(r => "<tr><td>" + r[0] + "</td><td style='text-align:left'>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
