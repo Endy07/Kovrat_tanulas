@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261023041550">
+<meta name="kovrat-version" content="20261023041719">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -152,6 +152,23 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
 .ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
 .ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
 
+.jsed{display:flex;flex-direction:column;gap:10px}
+.jsed label,.jsed .jl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.jsed .jhtml{max-height:180px;overflow:auto;font-size:.85rem}
+.jsed .jbar{margin-top:8px}
+.jsed .jin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;text-transform:none;letter-spacing:0;font-size:.85rem;margin:0}
+.jsed .jin input{width:12em;font-size:.95rem;padding:.35em .6em}
+.jright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.jright iframe{width:100%;min-height:140px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.jsout{background:var(--panel);color:var(--panel-ink);border-radius:10px;font-family:var(--mono);font-size:.88rem;min-height:110px;display:flex;flex-direction:column}
+.jsout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--panel-muted);padding:6px 12px;border-bottom:1px solid #334051}
+.jsout-b{padding:8px 12px;max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere;white-space:pre-wrap}
+.jsout-b .dim{color:var(--panel-muted)}
+.jsout-b .a{color:#FFB01F}
+.jsout-b .p{color:#7fb8ff}
+.jsout-b .e{color:#ff8a7d}
+.jsout-b .e span{color:var(--panel-ink);opacity:.85}
+
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 <title>Éves tanrend</title>
@@ -215,7 +232,7 @@ a.ls{color:var(--accent);font-weight:700}
   <p>A második félév leckéi a becsült sorrendben következnek. Ami kész, megnyitható, a többi a tanév során készül el.</p>
   <div class="months"><div class="mrow"><div class="mh">Február</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="elektronika-alapjai.html">Elektronika alapjai: Ohm-törvény, teljesítmény</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>CSS: elrendezés (display, position) <a class="ls" href="css-alapok.html">(a CSS leckében)</a></li></ul></div></div>
     <div class="mrow"><div class="mh">Március</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Karbantartás, hibakeresés, laptopok, nyomtatók <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li><a class="ls" href="reszponziv-weboldalak.html">Reszponzív weboldalak, Bootstrap</a> <span class="tag k">kész lecke</span></li></ul></div></div>
-    <div class="mrow"><div class="mh">Április</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="virtualizacio-felho.html">Virtualizáció és felhő</a> <span class="tag k">kész lecke</span></li><li>Windows telepítése <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>JavaScript-bevezető <span class="tag t">tervezett</span></li></ul></div></div>
+    <div class="mrow"><div class="mh">Április</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="virtualizacio-felho.html">Virtualizáció és felhő</a> <span class="tag k">kész lecke</span></li><li>Windows telepítése <span class="tag f">iskolában</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li><a class="ls" href="javascript-bevezeto.html">JavaScript-bevezető</a> <span class="tag k">kész lecke</span></li></ul></div></div>
     <div class="mrow"><div class="mh">Május</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li><a class="ls" href="halozatok-alapjai.html">Hálózatok alapjai, a dolgok internete</a> <span class="tag k">kész lecke</span></li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Év végi weboldal-projekt</li></ul></div></div>
     <div class="mrow"><div class="mh">Június</div><div class="mc"><div class="ml">Informatikai alapok</div><ul><li>Összefoglalás</li></ul></div><div class="mc"><div class="ml">Programozás</div><ul><li>Projektbemutató</li></ul></div></div></div>
 </section>
