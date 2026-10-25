@@ -49,10 +49,12 @@
 - **A GitHub Pages a GitHub Actions-ön fut:** Actions-zavarnál az oldal órákig nem frissül, és
   a megszakadt építéseket kézzel kell újraindítani.
 - **A tanmenet becslés:** az országos programtanterv alapján van éves tanrend (`docs/tanrend-9.md`), de az iskola saját
-  sorrendje nem nyilvános; Kovrat válaszai igazítanak rajta. A 9.-ben nincs Python (HTML/CSS/JS, Git), az a 10.-ben jön.
-- **Python a böngészőben:** a JavaScript-futtató 2026-10-23 óta kész (`sandbox="allow-scripts"` iframe, `postMessage`,
-  ciklusszámláló, időkorlát). Pythonhoz még nincs futtató: a Pyodide kb. 10 MB és külső függőség, egy saját
-  részhalmaz-értelmező pedig sok munka. Addig a Python-lecke kódolvasós (a választ a lecke maga számolja).
+  sorrendje nem nyilvános; Kovrat válaszai igazítanak rajta. A programtanterv szerint a 9.-ben nincs Python, de a Mechwartban
+  van: 2026 októberében Python-dolgozat (változók, műveletek, beépített függvények, szövegek).
+- **Python a böngészőben (2026-10-25 óta kész):** Pyodide 0.27.7 a jsDelivr CDN-ről, egy Web Workerben, csak a Python-dolgozat
+  leckén és csak az első futtatáskor töltődik be (kb. 10 MB). Az `input()` a „Bemenetek” mezőből olvas; a végtelen ciklust
+  6 mp után a worker leállítása szakítja meg. Ha nem tölt be (nincs net, tiltó böngésző), a mintamegoldások és a példafutások
+  akkor is láthatók. A JavaScript-futtató 2026-10-23 óta kész (`sandbox="allow-scripts"` iframe, `postMessage`).
 - **Sok lecke gyorsan:** 2026-10-23 éjjel párhuzamos alügynökök írták a leckéket, a fő session illesztette össze. A minőséget
   a gépi, néma leckeellenőrző (`tools/lessons/lesson-test.js`) és leckénként egy független ellenőrzés (valódi Python,
   `ipaddress`, nyers erő) tartja; a szöveg nyelvhelyességét emberi szem még nem nézte át mindenhol.

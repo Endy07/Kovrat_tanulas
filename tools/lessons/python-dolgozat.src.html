@@ -1,0 +1,1137 @@
+<!--@HEAD-->
+<title>Python-dolgozat</title>
+<style>
+.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b{font-variant-ligatures:none}
+.slide .eq{white-space:normal}
+.src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
+.src div{padding:0 14px;white-space:pre}
+.src div.cur{background:#4a3a12;color:#FFB01F}
+.src .ln{display:inline-block;width:1.8em;color:#5A6676;user-select:none}
+.idx{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--mono)}
+.idx span{display:flex;flex-direction:column;align-items:center;border:1.5px solid #3A4656;border-radius:8px;padding:4px 8px;min-width:2.4em}
+.idx small{font-size:.7rem;color:#8C99AA}
+.idx span.hl{border-color:#FFB01F;background:#4a3a12;color:#FFB01F}
+.sp{color:#8C99AA}
+.pyed{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.pyed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.panel .pyed label{color:var(--panel-muted)}
+.pyed textarea{width:100%;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:4;resize:vertical}
+.panel .pyed textarea{border-color:#3A4656;background:#0A0E13}
+.pyed .pyta{min-height:190px}
+.pyed .pyin{min-height:76px}
+.pyright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pyst{font-size:.85rem;color:var(--muted)}
+.panel .pyst{color:var(--panel-muted)}
+.term,.pyout{background:#0A0E13;color:#DCE3EC;border-radius:10px;font-family:var(--mono);font-size:.88rem}
+.pyout{min-height:110px;display:flex;flex-direction:column;border:1.5px solid #3A4656}
+.pyout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;padding:6px 12px;border-bottom:1px solid #334051}
+.pyout-b,.term{margin:0;padding:8px 12px;max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.term .i,.pyout-b .i{color:#7fb8ff}
+.term .e,.pyout-b .e{color:#ff8a7d}
+.term .h,.pyout-b .h{color:#DCE3EC;opacity:.85}
+.term .dim,.pyout-b .dim{color:#8C99AA}
+.feedback .term{margin-top:8px;font-weight:400}
+.otabs{padding:4px 0}
+.olist{display:flex;flex-direction:column;gap:12px}
+.ot{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.ot .on{font-family:var(--mono);font-weight:700;color:var(--accent);margin-right:.35em}
+.ot .oq{max-width:70ch}
+.ot .osol,.ot .owork{display:flex;flex-direction:column;gap:8px;border-left:4px solid var(--accent);padding:8px 12px;background:var(--accent-soft);border-radius:0 10px 10px 0}
+.ot .owork{border-left-color:var(--led);background:transparent}
+.ot .lbl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.ch-head{display:flex;flex-direction:column;gap:6px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+.sheet{display:flex;flex-direction:column;gap:12px}
+.dolg{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.tag{display:inline-block;font-family:var(--mono);font-size:.75rem;border:1.5px solid var(--line);border-radius:999px;padding:0 .6em;color:var(--muted);margin-left:.4em;vertical-align:middle}
+.big-note{border:2px solid var(--led);border-radius:14px;padding:12px 16px;max-width:70ch}
+#cheat td{text-align:left}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Programozás · 9. évfolyam · dolgozat</span>
+  <h1>Python-dolgozat: felkészülés</h1>
+  <p class="lead">A dolgozat témái: változók és műveletek, a <code>max</code>, <code>min</code>, <code>abs</code>, <code>round</code>, a szövegek (összefűzés, index, <code>len</code>, <code>in</code>) és a szöveg-metódusok. Itt mindent megtalálsz: magyarázatot, a gyakorló feladatsor mind az 52 feladatát mintamegoldással, új feladatokat gépi ellenőrzéssel és próbadolgozatot. A programjaidat itt, a böngészőben is lefuttathatod.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írj programot, add meg a bemeneteket, és futtasd</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>A dolgozat szabálya:</b> az eredményt mindig <b>f-stringgel</b> írd ki: <code>print(f"Az összeg: {a + b}")</code>. Elágazás (<code>if</code>) és ciklus (<code>for</code>, <code>while</code>) nem kell, ezek később jönnek.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag: így kell</h2>
+  <p>Témánként egy dia, mindegyiken példa. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát, és le is futtatja.</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések, lépésenként</h2>
+  <p>Mit csinál a gép egy-egy sornál? A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="atlag" aria-selected="true">input → int → átlag</button>
+    <button class="tab" data-m="oszt" aria-selected="false">/ , // és %</button>
+    <button class="tab" data-m="index" aria-selected="false">Index: Python → Pyn</button>
+    <button class="tab" data-m="lanc" aria-selected="false">strip, lower, replace</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head" id="eredeti">
+  <span class="eyebrow">3. rész</span><h2>A gyakorló feladatsor: mind az 52 feladat</h2>
+  <p>A feladatok szövege szó szerint a gyakorló feladatsorból van. Előbb próbáld meg magad („✎ Megoldom itt”), és csak utána nézd meg a mintamegoldást. A mintamegoldás <b>egy</b> jó megoldás: a kiírt mondat lehet más is, a lényeg, hogy a számolt érték jó legyen.</p>
+  <div class="tabs otabs" id="otabs"></div>
+  <div id="olist" class="olist"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Gyakorlás: új feladatok, gépi ellenőrzéssel</h2>
+  <p>Az „Írd meg” típusoknál a gép a programodat két különböző bemenettel is lefuttatja, és megnézi, jó-e az eredmény. A kiírt mondatod lehet más, mint a mintában, de az f-string kell. A „Mit ír ki?” és a „Hibakereső” feladatok Python nélkül is mennek. A „📝 Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Próbadolgozat: feladatlap</h2>
+  <p>Olyan feladatlap, mint a dolgozat: témánként két feladat. Oldd meg papíron vagy itt, a végén nézd meg a mintamegoldást. Az „Új feladatlap” gomb mindig másikat ad.</p>
+  <div class="dolg">
+    <div class="row"><label class="mono" for="dlvl">Nehézség</label><select id="dlvl"><option value="1">könnyű</option><option value="2" selected>közepes</option><option value="3">nehéz</option><option value="0">vegyes</option></select><button class="btn primary" id="dnew">Új feladatlap</button></div>
+    <div id="dsheet" class="sheet"></div>
+  </div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">6. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A program váza</span><span>1. bekérés (<code>input</code>, típusváltás) · 2. számolás (változóba) · 3. kiírás (<code>print(f"…")</code>).</span></div>
+    <div class="trick"><span class="t">input = szöveg</span><span>Számhoz <code>int(input(…))</code> vagy <code>float(input(…))</code>. Szövegnél nem kell semmi.</span></div>
+    <div class="trick"><span class="t">Osztások</span><span class="mono">17 / 5 = 3.4 · 17 // 5 = 3 · 17 % 5 = 2</span></div>
+    <div class="trick"><span class="t">Index</span><span class="mono">s[0] első · s[1] második · s[-1] = s[len(s) - 1] utolsó</span></div>
+    <div class="trick"><span class="t">A metódus nem módosít</span><span><code>nev.strip()</code> egy új szöveget ad. Mentsd el: <code>nev = nev.strip()</code>.</span></div>
+    <div class="trick"><span class="t">Idézőjel az f-stringben</span><span>Kívül dupla, belül szimpla: <code>f"{'*' * 5}"</code>, <code>f"{'@' in email}"</code>.</span></div>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s\/\/\s/g, " egész osztva "], [/\s%\s/g, " maradéka "], [/\s\/\s/g, " osztva "], [/\*\*/g, " a hatványon "], [/\s\*\s/g, " szorozva "]);
+
+/*@HARNESS*/
+  // A diák programját futtató Python-keret (a Pyodide-ban és a py-check.js-ben ugyanez fut).
+  // A print csak a kimenetbe ír; a bemenetet (prompt + begépelt érték) külön jelöli, így az ellenőrzés csak a print-et nézi.
+  const HARNESS = String.raw`
+import sys, traceback, builtins
+def _kovrat_run(code, inputs):
+    inputs = [str(x) for x in inputs]
+    out = []
+    segs = []
+    used = [0]
+    class _W:
+        def write(self, s):
+            s = str(s)
+            out.append(s)
+            if segs and segs[-1][0] == "o":
+                segs[-1][1] += s
+            else:
+                segs.append(["o", s])
+            return len(s)
+        def flush(self):
+            pass
+    def _input(prompt=""):
+        p = str(prompt)
+        if p:
+            segs.append(["p", p])
+        if used[0] >= len(inputs):
+            raise EOFError("EOF when reading a line")
+        v = inputs[used[0]]
+        used[0] += 1
+        segs.append(["i", v + chr(10)])
+        return v
+    g = {"__name__": "__main__", "__builtins__": builtins, "input": _input}
+    old = sys.stdout
+    sys.stdout = _W()
+    err = ""
+    etype = ""
+    line = 0
+    try:
+        exec(compile(code, "<program>", "exec"), g)
+    except SyntaxError as e:
+        etype = type(e).__name__
+        err = etype + ": " + str(e.msg)
+        line = e.lineno or 0
+    except BaseException as e:
+        etype = type(e).__name__
+        for fr in traceback.extract_tb(e.__traceback__):
+            if fr.filename == "<program>":
+                line = fr.lineno
+        err = etype + (": " + str(e) if str(e) else "")
+    finally:
+        sys.stdout = old
+    return {"out": "".join(out), "segs": segs, "err": err, "etype": etype, "line": line, "used": used[0]}
+`;
+/*@/HARNESS*/
+
+  /* ---------- Python-futtató: Pyodide egy Web Workerben, lustán (csak az első futtatáskor tölt be) ---------- */
+  const PY = (function(){
+    const BASE = "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/";
+    let worker = null, readyP = null, seq = 0, state = "idle", msg = "";
+    const wait = {}, subs = [];
+    const setState = (s, m) => { state = s; msg = m || ""; subs.forEach(f => f(state, msg)); };
+    function start(){
+      if (readyP) return readyP;
+      setState("loading");
+      readyP = new Promise(res => {
+        const src = "importScripts(" + JSON.stringify(BASE + "pyodide.js") + ");\n" +
+          "var H = " + JSON.stringify(HARNESS) + ";\n" +
+          "var ready = loadPyodide({ indexURL: " + JSON.stringify(BASE) + " }).then(function(p){ p.runPython(H); self.py = p; postMessage({ type: 'ready' }); }, function(e){ postMessage({ type: 'fail', msg: String(e && e.message || e) }); });\n" +
+          "onmessage = function(e){ var d = e.data; ready.then(function(){ var r; try { var f = self.py.globals.get('_kovrat_run'); var x = f(d.code, self.py.toPy(d.inputs)); r = x.toJs({ dict_converter: Object.fromEntries }); x.destroy(); f.destroy(); } catch (err){ r = { out: '', segs: [], err: 'Belső hiba: ' + err, etype: 'Error', line: 0, used: 0 }; } r.id = d.id; r.type = 'res'; postMessage(r); }); };";
+        let to = null;
+        const failed = m => { clearTimeout(to); try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("failed", m); res(false); };
+        try { worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" }))); }
+        catch (e){ failed(String(e && e.message || e)); return; }
+        to = setTimeout(() => failed("időtúllépés"), 120000);
+        worker.onmessage = e => {
+          const d = e.data;
+          if (d.type === "ready"){ clearTimeout(to); setState("ready"); res(true); }
+          else if (d.type === "fail") failed(d.msg);
+          else if (wait[d.id]){ const w = wait[d.id]; delete wait[d.id]; w(d); }
+        };
+        worker.onerror = e => { e.preventDefault && e.preventDefault(); failed(e.message || "a Python nem töltődött be"); };
+      });
+      return readyP;
+    }
+    function restart(){ try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("idle"); }
+    async function run(code, inputs){
+      const ok = await start();
+      if (!ok) return { fail: true, msg };
+      const id = ++seq;
+      return new Promise(res => {
+        const t = setTimeout(() => { delete wait[id]; restart(); res({ out: "", segs: [], err: "Időtúllépés: a program 6 másodperc alatt sem fejeződött be.", etype: "Timeout", line: 0, used: 0 }); }, 6000);
+        wait[id] = d => { clearTimeout(t); res(d); };
+        worker.postMessage({ id, code: String(code), inputs: (inputs || []).map(String) });
+      });
+    }
+    return { run, start, on(f){ subs.push(f); f(state, msg); }, get state(){ return state; } };
+  })();
+
+  /* ---------- Kimenet megjelenítése, magyar hibatippek ---------- */
+  function pyHint(etype, err){
+    const m = String(err);
+    if (etype === "NameError"){ const n = /name '(\w+)'/.exec(m); return "Nincs ilyen nevű változó" + (n ? ": " + n[1] : "") + ". Elírtad (a kis- és nagybetű is számít), vagy kimaradt az idézőjel egy szöveg körül?"; }
+    if (/can only concatenate str/.test(m)) return "Szöveghez számot nem lehet +-szal hozzáfűzni. Írd ki f-stringgel, vagy alakítsd át: str(szam).";
+    if (/unsupported operand type\(s\) for [-+*\/]+: '(int|float)' and 'str'|'str' and '(int|float)'/.test(m)) return "Szöveggel akarsz számolni. Az input() mindig szöveget ad: tedd köré az int()-et vagy a float()-ot.";
+    if (/can't multiply sequence by non-int/.test(m)) return "Szöveget csak egész számmal lehet szorozni. Elfelejtetted az int()-et az input() köré?";
+    if (/invalid literal for int\(\)/.test(m)) return "Az int() csak egész számot tud átalakítani. Tizedes törthöz float() kell, és pontot írj, ne vesszőt (3.5).";
+    if (/could not convert string to float/.test(m)) return "Ez nem szám. Tizedesvessző helyett pontot írj: 3.5.";
+    if (etype === "IndexError") return "Nincs ilyen indexű karakter. Az index 0-tól len(s) − 1-ig megy, az utolsó: s[-1] vagy s[len(s) - 1].";
+    if (etype === "IndentationError") return "Behúzási hiba: ezekben a feladatokban minden sor a sor elején kezdődik, szóköz nélkül.";
+    if (etype === "SyntaxError") return "Szintaktikai hiba: hiányzik vagy fölösleges egy zárójel, idézőjel vagy kapcsos zárójel? Az f-stringben belül szimpla idézőjelet használj: f\"{'*' * 3}\".";
+    if (etype === "ZeroDivisionError") return "Nullával osztottál.";
+    if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez.";
+    if (etype === "AttributeError"){ if (/'(int|float)' object/.test(m)) return "Ez a metódus csak szövegen működik (például az upper). Számon nem."; return "Nincs ilyen metódus. Kisbetűvel írd, és ne felejtsd el a zárójelet: upper(), lower(), strip()."; }
+    if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például max = …)?";
+    if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";
+    return "";
+  }
+  const segsHtml = (segs, err, line) => (segs || []).map(s => s[0] === "i" ? '<span class="i">' + esc(s[1]) + "</span>" : esc(s[1])).join("") +
+    (err ? '<span class="e">✖ ' + (line ? line + ". sor: " : "") + esc(err) + "</span>" + (pyHint(err.split(":")[0], err) ? '\n<span class="h">' + esc(pyHint(err.split(":")[0], err)) + "</span>" : "") : "");
+  const term = (segs, err, line) => '<pre class="term">' + (segsHtml(segs, err, line) || '<span class="dim">(nem írt ki semmit)</span>') + "</pre>";
+  const failMsg = "A Python nem tudott betöltődni (nincs internet, vagy a böngésző nem engedi). A mintamegoldások és a várt kimenetek ettől még láthatók.";
+
+  /* ---------- Python-szerkesztő: kód + bemenetek + futtatás ---------- */
+  function tab4(ta){
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey){
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "    " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 4;
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+  }
+  function pyEd(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pyed"><div><label>Python-kód</label><textarea class="pyta" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Python-kód"></textarea></div>' +
+      '<div class="pyright"><div><label>Bemenetek: amit a gépre beírnál, soronként egy</label><textarea class="pyin" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Bemenetek, soronként egy"></textarea></div>' +
+      '<div class="row"><button class="btn' + (o.primary ? " primary" : "") + '" type="button" data-p="run">▶ Futtatás</button><span class="pyst" aria-live="polite"></span></div>' +
+      '<div class="pyout"><div class="pyout-h">Kimenet</div><pre class="pyout-b"><span class="dim">Nyomd meg: ▶ Futtatás</span></pre></div></div></div>';
+    const ta = $(".pyta", root), inp = $(".pyin", root), out = $(".pyout-b", root), st = $(".pyst", root), btn = $('[data-p="run"]', root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || ""; inp.value = (o.inputs || []).join("\n");
+    tab4(ta);
+    const stText = { idle: "Az első futtatáskor betölt a Python (kb. 10 MB, csak egyszer).", loading: "A Python betöltése… (az első alkalommal fél perc is lehet)", ready: "", failed: failMsg };
+    PY.on(s => { st.textContent = stText[s] || ""; });
+    async function run(){
+      btn.disabled = true; out.innerHTML = '<span class="dim">Fut…</span>';
+      const ins = inp.value === "" ? [] : inp.value.replace(/\r/g, "").split("\n");
+      const r = await PY.run(ta.value, ins);
+      btn.disabled = false;
+      if (r.fail){ out.innerHTML = '<span class="e">' + esc(failMsg) + "</span>"; return r; }
+      out.innerHTML = segsHtml(r.segs, r.err, r.line) || '<span class="dim">(a program nem írt ki semmit)</span>';
+      return r;
+    }
+    btn.addEventListener("click", run);
+    return { get: () => ta.value, set(c, ins){ ta.value = c; if (ins) inp.value = ins.join("\n"); }, inputs: () => inp.value, run, raw: () => ({ code: ta.value }) };
+  }
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban is futtatja) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle){
+    const C = (...l) => l.join("\n");
+    const NEV = ["Anna", "Bence", "Dóra", "Gergő", "Lili", "Máté", "Réka", "Zoli", "Petra", "Dani"];
+    const PNEV = ["Bence", "Dóra", "Gergő", "Lili", "Máté", "Réka", "Zoli", "Petra", "Dani"];   // mássalhangzóval kezdődnek („A Bence helyére”)
+    const VEZ = ["Kovács", "Nagy", "Szabó", "Tóth", "Horváth", "Kiss", "Molnár", "Varga", "Farkas", "Balogh"];
+    const SZO = ["alma", "kutya", "iskola", "program", "macska", "python", "tanterem", "ablak", "banana", "füzet", "tükör", "virág", "számítógép", "ceruza", "kenyér"];
+    const PARATLAN = ["alma", "kutya", "iskola", "program", "ablak", "tükör", "virág", "ceruza", "kenyér", "pohár", "tanterem"].filter(w => w.length % 2);
+    const MONDAT = ["Ma Python dolgozatot írunk", "A macska alszik a kanapén", "Holnap este moziba megyünk", "Szeretem a banánt és az almát", "A programozás nem is olyan nehéz", "Kovács Anna jól tud programozni", "Az iskola után focizni megyünk"];
+    const ENEV = ["Anna", "Bence", "Dora", "Petra", "Dani", "Zoli", "Lili", "Mate"], EVEZ = ["Kiss", "Nagy", "Toth", "Szabo", "Varga", "Molnar", "Farkas"];   // e-mail-címhez, ékezet nélkül
+    const CITY = ["Debrecen", "Szeged", "Pécs", "Győr", "Miskolc", "Nyíregyháza", "Eger"];
+    const TARGY = ["informatika", "matek", "történelem", "angol", "fizika"];
+    const VEL = { 2: "2-vel", 3: "3-mal", 4: "4-gyel", 5: "5-tel", 6: "6-tal", 7: "7-tel", 8: "8-cal", 9: "9-cel", 10: "10-zel", 12: "12-vel", 15: "15-tel", 20: "20-szal" };
+    const SZOROS = { 2: "kétszeresét", 3: "háromszorosát", 4: "négyszeresét", 5: "ötszörösét" };
+    const SZAMSZO = { 2: "Két", 3: "Három", 4: "Négy", 5: "Öt", 6: "Hat" };
+    const TIZ = { 1: "egy tizedesre", 2: "két tizedesre", 3: "három tizedesre" };
+    const DB = { 3: "három", 4: "négy", 5: "öt", 6: "hat", 7: "hét" };
+    // kerekítés, ha a szám nincs a ,5-ös határon (a generátor ezt biztosítja; Pythonban a határon párosra kerekít)
+    const rnd2 = (x, k) => Math.round(x * Math.pow(10, k)) / Math.pow(10, k);
+    const tie = (x, k) => { const y = Math.abs(x) * Math.pow(10, k); return Math.abs(y - Math.floor(y) - 0.5) < 1e-6; };
+    // k tizedesjegyű szám szövegként: a jegyek között nincs 0 és 5, így egyik kerekítés sem esik határra
+    const dec = (lo, hi, k) => { const ip = rnd(lo, hi), d = Array.from({ length: k }, () => pick([1, 2, 3, 4, 6, 7, 8, 9])).join(""); return (ip < 0 ? "-" + (-ip) : ip === 0 && Math.random() < .3 ? "-0" : String(ip)) + "." + d; };
+    const many = (n, f) => Array.from({ length: n }, f);
+    const distinct = (f, n) => { const a = []; let g = 0; while (a.length < n && g++ < 500){ const x = f(); if (!a.includes(x)) a.push(x); } return a; };
+    const sum = a => a.reduce((p, q) => p + q, 0);
+    const tokS = s => ({ s }), tokL = s => ({ s, line: true });
+    const AEIOU = w => [..."aeiou"].reduce((p, c) => p + w.split(c).length - 1, 0);
+    const cnt = (s, p) => s.split(p).length - 1;
+    const rep = (s, a, b) => s.split(a).join(b);
+    const vn = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, "_");
+
+    /* ---- Kimenet-összevetés: a várt értékek (szám, szöveg, egész sor) benne vannak-e a print kimenetében ---- */
+    const NUMRE = /-?\d+(?:\.\d+)?(?:e[-+]?\d+)?/gi;
+    const isW = c => c != null && /[0-9A-Za-zÀ-ɏ_]/.test(c);
+    function findShort(txt, s){
+      let i = -1;
+      while ((i = txt.indexOf(s, i + 1)) >= 0) if (!isW(txt[i - 1]) && !isW(txt[i + s.length])) return i;
+      return -1;
+    }
+    function cmpOut(out, exp){
+      const nums = []; String(out).replace(NUMRE, m => { nums.push({ v: parseFloat(m), m, used: false }); return m; });
+      let txt = String(out);
+      const lines = String(out).split("\n").map(l => ({ l, used: false }));
+      const miss = [];
+      for (const e of exp){
+        if (typeof e === "number"){
+          const tol = 1e-6 * Math.max(1, Math.abs(e));
+          const k = nums.find(n => !n.used && Math.abs(n.v - e) <= tol);
+          if (k){ k.used = true; continue; }
+          const near = nums.find(n => !n.used && Math.abs(n.v - e) < 0.02 * Math.max(1, Math.abs(e)));
+          miss.push({ e, near: near && near.m }); continue;
+        }
+        if (e.line){
+          const L = lines.find(x => !x.used && (x.l === e.s || x.l.endsWith(" " + e.s)));
+          if (L){ L.used = true; continue; }
+          miss.push({ e: e.s, line: true }); continue;
+        }
+        const i = e.s.length <= 3 ? findShort(txt, e.s) : txt.indexOf(e.s);
+        if (i < 0){ miss.push({ e: e.s }); continue; }
+        txt = txt.slice(0, i) + "\u0001".repeat(e.s.length) + txt.slice(i + e.s.length);
+        if (e.no && e.no.some(x => String(out).includes(x))) miss.push({ e: e.s, extra: e.noMsg });
+      }
+      return miss;
+    }
+
+    /* ---- „Írd meg” sablonok: { q, code, tests: [{ ins, exp }], must: [[regex, üzenet]], ex } ---- */
+    const two = a => shuffle(a).slice(0, 2).map(x => [x]);   // két különböző próbabemenet
+    const T2 = (ins1, ins2, f) => [{ ins: ins1, exp: f(ins1) }, { ins: ins2, exp: f(ins2) }];
+    const fstr = /\bf["']/;
+    const VALT = [
+      [ // 1. szint
+        () => { const k = pick([3, 5, 7, 10]); return { q: "Kérd be a felhasználó életkorát, majd írd ki, hány éves lesz " + k + " év múlva!",
+          code: C('kor = int(input("Hány éves vagy? "))', 'print(f"' + k + ' év múlva {kor + ' + k + '} éves leszel.")'),
+          tests: T2([String(rnd(10, 17))], [String(rnd(30, 70))], i => [+i[0] + k]), ex: "Az input szöveget ad, ezért int() kell köré. A kapcsos zárójelbe számolást is írhatsz: {kor + " + k + "}." }; },
+        () => ({ q: "Kérj be két egész számot, majd írd ki az összegüket és a szorzatukat!",
+          code: C('a = int(input("Az első szám: "))', 'b = int(input("A második szám: "))', 'print(f"Az összegük: {a + b}")', 'print(f"A szorzatuk: {a * b}")'),
+          tests: T2([String(rnd(2, 30)), String(rnd(2, 30))], [String(rnd(31, 99)), String(rnd(2, 12))], i => [+i[0] + +i[1], i[0] * i[1]]), ex: "Két input, két int. A szorzás jele a csillag: *." }),
+        () => { const n = pick([3, 4]), it = shuffle(["tej", "kenyér", "vaj", "sajt", "alma", "banán", "joghurt", "keksz"]).slice(0, n);
+          return { q: "Egy boltban " + DB[n] + " terméket veszel: " + it.join(", ") + ". Kérd be a termékek árát, majd írd ki a fizetendő végösszeget!",
+            code: C(...it.map(t => vn(t) + ' = int(input("' + t[0].toUpperCase() + t.slice(1) + ' ára: "))'), "osszeg = " + it.map(vn).join(" + "), 'print(f"Fizetendő: {osszeg} Ft")'),
+            tests: T2(many(n, () => String(rnd(15, 200) * 10)), many(n, () => String(rnd(100, 999))), i => [sum(i.map(Number))]), ex: "Minden árat int()-tel alakíts számmá, különben a + összefűzi őket (\"350\" + \"420\" = \"350420\")." }; },
+        () => { const m = pick([2, 3, 4, 5]); return { q: "Kérj be egy egész számot, majd írd ki a " + SZOROS[m] + " és a felét!",
+          code: C('szam = int(input("Adj meg egy egész számot: "))', 'print(f"A ' + SZOROS[m] + ': {szam * ' + m + '}")', 'print(f"A fele: {szam / 2}")'),
+          tests: T2([String(rnd(3, 49) * 2 + 1)], [String(rnd(5, 60) * 2)], i => [i[0] * m, i[0] / 2]), ex: "A / mindig tizedes törtet ad: 7 / 2 = 3.5, de 8 / 2 is 4.0." }; }
+      ],
+      [ // 2. szint
+        () => pick([
+          () => ({ q: "Kérd be egy négyzet oldalának hosszát (egész szám), majd számítsd ki a kerületét és a területét! K = 4 · a, T = a · a",
+            code: C('a = int(input("A négyzet oldala: "))', "kerulet = 4 * a", "terulet = a * a", 'print(f"A kerület: {kerulet}")', 'print(f"A terület: {terulet}")'),
+            tests: T2([String(rnd(3, 15))], [String(rnd(16, 40))], i => [4 * i[0], i[0] * i[0]]), ex: "Előbb kiszámolod, változóba teszed, és csak a végén írod ki. Így áttekinthetőbb." }),
+          () => ({ q: "Kérd be egy kocka élének hosszát (egész szám), majd írd ki a térfogatát (a ** 3) és a felszínét (6 · a ** 2)! Használd a ** operátort!",
+            code: C('a = int(input("A kocka éle: "))', 'print(f"A térfogat: {a ** 3}")', 'print(f"A felszín: {6 * a ** 2}")'),
+            tests: T2([String(rnd(2, 9))], [String(rnd(10, 25))], i => [i[0] ** 3, 6 * i[0] ** 2]), must: [[/\*\*/, "Használd a ** operátort (hatványozás)!"]], ex: "A ** a hatványozás: a ** 3 = a · a · a. A hatvány előbb számolódik, mint a szorzás: 6 * a ** 2 = 6 · (a · a)." })
+        ])(),
+        () => ({ q: "Kérj be két egész számot, majd írd ki, mennyi az első és a második egész osztásának hányadosa (//), és mennyi a maradék (%)!",
+          code: C('a = int(input("Az osztandó: "))', 'b = int(input("Az osztó: "))', 'print(f"Hányados: {a // b}")', 'print(f"Maradék: {a % b}")'),
+          tests: T2([String(rnd(20, 99)), String(rnd(2, 9))], [String(rnd(100, 500)), String(rnd(11, 19))], i => [Math.floor(i[0] / i[1]), i[0] % i[1]]),
+          must: [[/\/\//, "Használd a // jelet (egész osztás)!"], [/%/, "Használd a % jelet (maradék)!"]], ex: "17 // 5 = 3 (hányszor van meg benne), 17 % 5 = 2 (ennyi marad), mert 17 = 3 · 5 + 2." }),
+        () => pick([
+          () => ({ q: "Kérd be, hány percig tartott egy film, majd írd ki, hány óra és hány perc ez! (Használd a // és a % jelet.)",
+            code: C('perc = int(input("A film hossza percben: "))', "ora = perc // 60", "maradek = perc % 60", 'print(f"{ora} óra {maradek} perc")'),
+            tests: T2([String(rnd(61, 179))], [String(rnd(181, 299))], i => [Math.floor(i[0] / 60), i[0] % 60]), must: [[/\/\//, "Használd a // jelet!"], [/%/, "Használd a % jelet!"]], ex: "Egy órában 60 perc van: a // 60 adja az órákat, a % 60 a maradék perceket." }),
+          () => ({ q: "Kérd be, hány másodpercig futott egy versenyző, majd írd ki, hány perc és hány másodperc ez! (Használd a // és a % jelet.)",
+            code: C('mp = int(input("Az idő másodpercben: "))', "perc = mp // 60", "maradek = mp % 60", 'print(f"{perc} perc {maradek} másodperc")'),
+            tests: T2([String(rnd(61, 299))], [String(rnd(300, 999))], i => [Math.floor(i[0] / 60), i[0] % 60]), must: [[/\/\//, "Használd a // jelet!"], [/%/, "Használd a % jelet!"]], ex: "Egy percben 60 másodperc van: a // 60 adja a perceket, a % 60 a maradékot." })
+        ])(),
+        () => { const p = pick([2, 5, 8, 10, 12, 15, 20]), q = pick([3, 4, 6, 7, 9]); return { q: "Kérj be egy egész számot! Növeld meg " + VEL[p] + " a += operátorral, majd csökkentsd " + VEL[q] + " a -= operátorral! Írd ki a végeredményt!",
+          code: C('szam = int(input("Adj meg egy egész számot: "))', "szam += " + p, "szam -= " + q, 'print(f"A végeredmény: {szam}")'),
+          tests: T2([String(rnd(1, 50))], [String(rnd(100, 300))], i => [+i[0] + p - q]), must: [[/\+=/, "Használd a += operátort!"], [/-=/, "Használd a -= operátort!"]], ex: "A szam += " + p + " ugyanaz, mint a szam = szam + " + p + ": a változó új értéket kap." }; }
+      ],
+      [ // 3. szint
+        () => { const n = pick([3, 3, 4, 6]); return { q: "Kérj be " + n + " dolgozatjegyet, majd számítsd ki az átlagukat két tizedesre kerekítve!",
+          code: C(...many(n, (_, k) => "j" + (k + 1) + ' = int(input("' + (k + 1) + '. jegy: "))'), "atlag = (" + many(n, (_, k) => "j" + (k + 1)).join(" + ") + ") / " + n, 'print(f"Az átlag: {round(atlag, 2)}")'),
+          tests: T2(many(n, () => String(rnd(1, 5))), many(n, () => String(rnd(2, 5))), i => [rnd2(sum(i.map(Number)) / n, 2)]), must: [[/round\s*\(/, "Kerekíts a round() függvénnyel!"]], ex: "Zárójel kell: (j1 + j2 + j3) / 3. Zárójel nélkül csak az utolsó jegyet osztaná el. round(atlag, 2): két tizedesre kerekít." }; },
+        () => { const ar = rnd(10, 200) * 100, sz = pick([5, 10, 15, 20, 25, 30, 40, 50]), ar2 = rnd(5, 99) * 100, sz2 = pick([10, 20, 25, 35]);
+          return { q: "Kérd be egy termék árát és a kedvezmény százalékát! Számítsd ki a kedvezmény összegét és a kedvezményes árat!",
+            code: C('ar = int(input("A termék ára (Ft): "))', 'szazalek = int(input("A kedvezmény (%): "))', "kedvezmeny = ar * szazalek / 100", "uj_ar = ar - kedvezmeny", 'print(f"A kedvezmény: {kedvezmeny} Ft")', 'print(f"A kedvezményes ár: {uj_ar} Ft")'),
+            tests: T2([String(ar), String(sz)], [String(ar2), String(sz2)], i => [i[0] * i[1] / 100, i[0] - i[0] * i[1] / 100]), ex: "A 15% a szám 15 századrésze: ar * 15 / 100. A kedvezményes ár: az eredeti ár mínusz a kedvezmény." }; },
+        () => { let F1, F2, g = 0; do { F1 = rnd(-4, 110); F2 = rnd(-4, 110); } while ((tie((F1 - 32) / 1.8, 1) || tie((F2 - 32) / 1.8, 1) || F1 === F2) && g++ < 50);
+          return { q: "Kérj be egy Fahrenheit-fokban megadott hőmérsékletet, és váltsd át Celsius-fokra, egy tizedesre kerekítve! C = (F − 32) / 1.8",
+            code: C('fahr = float(input("Hőmérséklet Fahrenheit-fokban: "))', "celsius = (fahr - 32) / 1.8", 'print(f"{fahr} °F = {round(celsius, 1)} °C")'),
+            tests: T2([String(F1)], [String(F2)], i => [rnd2((i[0] - 32) / 1.8, 1)]), must: [[/round\s*\(/, "Kerekíts a round() függvénnyel!"]], ex: "A zárójel itt is kell: előbb a kivonás, utána az osztás. A tizedesjel pont: 1.8." }; },
+        () => { const n = pick([3, 4, 5, 6]); return { q: SZAMSZO[n] + " barát egyenlően osztozik egy pénzösszegen. Kérd be az összeget (egész szám), és írd ki, hány forintot kap egy ember, ha csak egész forintot kaphat, és hány forint marad!",
+          code: C('osszeg = int(input("Az összeg (Ft): "))', "fejenkent = osszeg // " + n, "marad = osszeg % " + n, 'print(f"Fejenként: {fejenkent} Ft")', 'print(f"Marad: {marad} Ft")'),
+          tests: T2([String(rnd(1000, 9999))], [String(rnd(10000, 50000) + 1)], i => [Math.floor(i[0] / n), i[0] % n]), must: [[/\/\//, "Használd a // jelet!"], [/%/, "Használd a % jelet!"]], ex: "Egész forintokat a // ad, a maradékot a %. A / itt nem jó, mert tizedes törtet adna." }; }
+      ]
+    ];
+    const FV = [
+      [
+        () => { const n = pick([3, 4, 5]); return { q: "Kérj be " + n + " egész számot, és írd ki közülük a legnagyobbat!",
+          code: C(...many(n, (_, k) => "sz" + (k + 1) + ' = int(input("' + (k + 1) + '. szám: "))'), 'print(f"A legnagyobb: {max(' + many(n, (_, k) => "sz" + (k + 1)).join(", ") + ')}")'),
+          tests: T2(distinct(() => String(rnd(-20, 99)), n), distinct(() => String(rnd(100, 999)), n), i => [Math.max(...i.map(Number))]), must: [[/max\s*\(/, "Használd a max() függvényt!"]], ex: "A max() akárhány számot kaphat, vesszővel elválasztva." }; },
+        () => { const n = pick([3, 4, 5]); return { q: "Kérj be " + n + " valós számot, majd írd ki a legkisebbet!",
+          code: C(...many(n, (_, k) => "x" + (k + 1) + ' = float(input("' + (k + 1) + '. szám: "))'), 'print(f"A legkisebb: {min(' + many(n, (_, k) => "x" + (k + 1)).join(", ") + ')}")'),
+          tests: T2(distinct(() => dec(-20, 30, 2), n), distinct(() => dec(1, 9, 1), n), i => [Math.min(...i.map(Number))]), must: [[/min\s*\(/, "Használd a min() függvényt!"]], ex: "Valós szám: float(). A tizedesjel pont." }; },
+        () => ({ q: "Kérj be egy negatív vagy pozitív számot, majd írd ki, milyen messze van a nullától a számegyenesen!",
+          code: C('szam = float(input("Adj meg egy számot: "))', 'print(f"A nullától való távolság: {abs(szam)}")'),
+          tests: T2(["-" + dec(1, 50, 2)], [dec(1, 99, 1)], i => [Math.abs(Number(i[0]))]), must: [[/abs\s*\(/, "Használd az abs() függvényt!"]], ex: "A nullától való távolság az abszolút érték: abs(-7.5) = 7.5." }),
+        () => ({ q: "Kérj be két egész számot, és írd ki a különbségük abszolút értékét! Az első szám kisebb legyen, mint a második!",
+          code: C('a = int(input("Az első (kisebb) szám: "))', 'b = int(input("A második (nagyobb) szám: "))', 'print(f"A különbség abszolút értéke: {abs(a - b)}")'),
+          tests: T2((() => { const a = rnd(1, 40); return [String(a), String(a + rnd(1, 50))]; })(), (() => { const a = rnd(-30, 10); return [String(a), String(a + rnd(5, 90))]; })(), i => [Math.abs(i[0] - i[1])]), must: [[/abs\s*\(/, "Használd az abs() függvényt!"]], ex: "a − b negatív, mert a kisebb. Az abs() pozitívvá teszi." })
+      ],
+      [
+        () => { const k = pick([1, 2, 3]); return { q: "Kérj be egy valós számot, majd írd ki egész számra kerekítve és " + TIZ[k] + " kerekítve!",
+          code: C('x = float(input("Adj meg egy valós számot: "))', 'print(f"Egészre: {round(x)}")', 'print(f"' + TIZ[k][0].toUpperCase() + TIZ[k].slice(1) + ': {round(x, ' + k + ')}")'),
+          tests: T2([dec(1, 99, 4)], [dec(-50, -1, 4)], i => [rnd2(Number(i[0]), 0), rnd2(Number(i[0]), k)]), must: [[/round\s*\(/, "Használd a round() függvényt!"]], ex: "round(x) egészre, round(x, " + k + ") " + TIZ[k] + " kerekít." }; },
+        () => { const n = pick([4, 5, 6, 7]); return { q: "Kérd be " + DB[n] + " nap hőmérsékletét (egész számok)! Írd ki a leghidegebb és a legmelegebb nap hőmérsékletét, valamint a két érték különbségét!",
+          code: C(...many(n, (_, k) => "n" + (k + 1) + ' = int(input("' + (k + 1) + '. nap: "))'), "hideg = min(" + many(n, (_, k) => "n" + (k + 1)).join(", ") + ")", "meleg = max(" + many(n, (_, k) => "n" + (k + 1)).join(", ") + ")", 'print(f"Leghidegebb: {hideg} °C")', 'print(f"Legmelegebb: {meleg} °C")', 'print(f"Különbség: {meleg - hideg} °C")'),
+          tests: T2(many(n, () => String(rnd(-8, 12))), many(n, () => String(rnd(10, 35))), i => { const a = i.map(Number); return [Math.min(...a), Math.max(...a), Math.max(...a) - Math.min(...a)]; }), must: [[/min\s*\(/, "Használd a min() függvényt!"], [/max\s*\(/, "Használd a max() függvényt!"]], ex: "Érdemes a min() és a max() eredményét változóba tenni, mert a különbséghez újra kell." }; },
+        () => ({ q: "Kérd be 4 termék árát, és számítsd ki, mennyit spórolhatunk, ha a legdrágább helyett a legolcsóbbat választjuk!",
+          code: C('a = int(input("1. ár: "))', 'b = int(input("2. ár: "))', 'c = int(input("3. ár: "))', 'd = int(input("4. ár: "))', "sporolas = max(a, b, c, d) - min(a, b, c, d)", 'print(f"Ennyit spórolhatunk: {sporolas} Ft")'),
+          tests: T2(distinct(() => String(rnd(50, 300) * 10), 4), distinct(() => String(rnd(100, 999)), 4), i => [Math.max(...i.map(Number)) - Math.min(...i.map(Number))]), must: [[/max\s*\(/, "Használd a max() függvényt!"], [/min\s*\(/, "Használd a min() függvényt!"]], ex: "A megtakarítás: a legdrágább ára mínusz a legolcsóbb ára." }),
+        () => { const n = pick([3, 4]); return { q: SZAMSZO[n] + " versenyző pontszámát kérd be! Írd ki a legnagyobb pontszámot, a legkisebb pontszámot és a versenyzők átlagát két tizedesre kerekítve!",
+          code: C(...many(n, (_, k) => "p" + (k + 1) + ' = int(input("' + (k + 1) + '. versenyző: "))'), 'print(f"Legnagyobb: {max(' + many(n, (_, k) => "p" + (k + 1)).join(", ") + ')}")', 'print(f"Legkisebb: {min(' + many(n, (_, k) => "p" + (k + 1)).join(", ") + ')}")', "atlag = (" + many(n, (_, k) => "p" + (k + 1)).join(" + ") + ") / " + n, 'print(f"Átlag: {round(atlag, 2)}")'),
+          tests: T2(distinct(() => String(rnd(40, 100)), n), distinct(() => String(rnd(10, 60)), n), i => { const a = i.map(Number); return [Math.max(...a), Math.min(...a), rnd2(sum(a) / n, 2)]; }), must: [[/round\s*\(/, "Kerekíts a round() függvénnyel!"]], ex: "Az átlagnál a zárójel kell: (p1 + p2 + p3) / 3." }; }
+      ],
+      [
+        () => ({ q: "Kérj be 3 egész számot! Az abs() és min() függvények segítségével írd ki, hogy a három szám közül mekkora a legkisebb nullától mért távolsága!",
+          code: C('a = int(input("1. szám: "))', 'b = int(input("2. szám: "))', 'c = int(input("3. szám: "))', 'print(f"A legkisebb távolság: {min(abs(a), abs(b), abs(c))}")'),
+          tests: T2([String(-rnd(2, 9)), String(rnd(10, 30)), String(-rnd(10, 40))], [String(rnd(20, 50)), String(-rnd(3, 19)), String(rnd(30, 60))], i => [Math.min(...i.map(x => Math.abs(x)))]), must: [[/abs\s*\(/, "Használd az abs() függvényt!"], [/min\s*\(/, "Használd a min() függvényt!"]], ex: "Függvényt függvénybe is tehetsz: min(abs(a), abs(b), abs(c)). Belülről kifelé számol." }),
+        () => ({ q: "Kérj be két egész számot: két pont helyét a számegyenesen! Írd ki a két pont távolságát és a felezőpontjukat!",
+          code: C('a = int(input("Az első pont: "))', 'b = int(input("A második pont: "))', 'print(f"A távolság: {abs(a - b)}")', 'print(f"A felezőpont: {(a + b) / 2}")'),
+          tests: T2([String(rnd(-20, 0)), String(rnd(1, 30))], [String(rnd(40, 90)), String(rnd(-10, 30))], i => [Math.abs(i[0] - i[1]), (+i[0] + +i[1]) / 2]), must: [[/abs\s*\(/, "Használd az abs() függvényt!"]], ex: "A távolság abs(a − b), mert nem tudjuk, melyik a nagyobb. A felezőpont a két szám átlaga." }),
+        () => ({ q: "Kérj be 3 valós számot! Írd ki közülük a legnagyobb abszolút értékűnek az abszolút értékét!",
+          code: C('a = float(input("1. szám: "))', 'b = float(input("2. szám: "))', 'c = float(input("3. szám: "))', 'print(f"A legnagyobb abszolút érték: {max(abs(a), abs(b), abs(c))}")'),
+          tests: T2(["-" + dec(20, 60, 1), dec(1, 19, 1), dec(-15, -1, 2)], [dec(30, 80, 2), "-" + dec(1, 29, 1), dec(1, 9, 1)], i => [Math.max(...i.map(x => Math.abs(Number(x))))]), must: [[/abs\s*\(/, "Használd az abs() függvényt!"], [/max\s*\(/, "Használd a max() függvényt!"]], ex: "Előbb mindhárom szám abszolút értéke, aztán ezek közül a legnagyobb: max(abs(a), abs(b), abs(c))." }),
+        () => { let A, B, g = 0; const pct = a => (Math.max(...a) - Math.min(...a)) / Math.min(...a) * 100;
+          do { A = distinct(() => rnd(80, 400) * 10, 3); B = distinct(() => rnd(1000, 3000), 3); } while ((tie(pct(A), 1) || tie(pct(B), 1)) && g++ < 50);
+          return { q: "Kérd be egy termék árát három boltban! Írd ki a legolcsóbb árat, és azt, hogy a legdrágább hány százalékkal drágább a legolcsóbbnál, egy tizedesre kerekítve!",
+            code: C('a = int(input("1. bolt: "))', 'b = int(input("2. bolt: "))', 'c = int(input("3. bolt: "))', "olcso = min(a, b, c)", "draga = max(a, b, c)", "szazalek = (draga - olcso) / olcso * 100", 'print(f"A legolcsóbb: {olcso} Ft")', 'print(f"A legdrágább ennyivel drágább: {round(szazalek, 1)}%")'),
+            tests: T2(A.map(String), B.map(String), i => { const a = i.map(Number); return [Math.min(...a), rnd2(pct(a), 1)]; }), must: [[/round\s*\(/, "Kerekíts a round() függvénnyel!"]], ex: "Hány százalék: a különbséget elosztod azzal, amihez viszonyítasz (a legolcsóbbal), és megszorzod 100-zal." }; }
+      ]
+    ];
+    const STR = [
+      [
+        () => { const v1 = pick(VEZ), k1 = pick(NEV), v2 = pick(VEZ.filter(x => x !== v1)), k2 = pick(NEV.filter(x => x !== k1));
+          return { q: "Kérd be külön a vezetéknevet és a keresztnevet, majd fűzd össze őket egy teljes névvé!",
+            code: C('vezetek = input("Vezetéknév: ")', 'kereszt = input("Keresztnév: ")', 'teljes = vezetek + " " + kereszt', 'print(f"A teljes név: {teljes}")'),
+            tests: T2([v1, k1], [v2, k2], i => [tokS(i[0] + " " + i[1])]), ex: "A + szóköz nélkül fűz össze: a két név közé a \" \" szóközt neked kell betenned." }; },
+        () => { const S = pick([n => "Helló, " + n + "! Jó tanulást!", n => "Szia, " + n + "! Ma Pythonozunk.", n => "Kedves " + n + ", sok sikert a dolgozathoz!", n => "Üdv, " + n + "! Örülök, hogy itt vagy!"]), ex1 = pick(PNEV);
+          const tpl = S("{nev}");
+          return { q: "Kérj be egy nevet, majd írd ki a következő mondatot: <b>" + esc(S(ex1)) + "</b> A " + ex1 + " helyére mindig a bekért név kerüljön!",
+            code: C('nev = input("Hogy hívnak? ")', 'print(f"' + tpl + '")'),
+            tests: T2([pick(NEV)], [pick(VEZ)], i => [tokS(S(i[0]))]), ex: "Az f-stringben a {nev} helyére a változó értéke kerül. A mondat többi része betűre pontosan úgy maradjon (vessző, felkiáltójel)." }; },
+        () => ({ q: "Kérj be egy szót és egy egész számot! Írd ki a szót annyiszor egymás után, amennyit a felhasználó megadott!",
+          code: C('szo = input("Egy szó: ")', 'db = int(input("Hányszor? "))', 'print(f"{szo * db}")'),
+          tests: T2([pick(["hip", "la", "bumm", "kakukk"]), String(rnd(2, 5))], [pick(SZO), String(rnd(3, 6))], i => [tokL(i[0].repeat(+i[1]))]), ex: "Szöveg szorozva egész számmal: \"la\" * 3 = \"lalala\". A számot int()-tel kell bekérni!" }),
+        () => { const c = pick(["*", "#", "=", "+", "-"]); return { q: "Kérj be egy egész számot, és jeleníts meg annyi " + { "*": "csillagot", "#": "kettőskeresztet (#)", "=": "egyenlőségjelet (=)", "+": "pluszjelet (+)", "-": "kötőjelet (-)" }[c] + " egy sorban!",
+          code: C('db = int(input("Hány jel legyen? "))', "print(f\"{'" + c + "' * db}\")"),
+          tests: T2([String(rnd(3, 9))], [String(rnd(10, 30))], i => [tokL(c.repeat(+i[0]))]), ex: "Az f-stringen belül szimpla idézőjel kell: f\"{'" + c + "' * db}\". Írhatod így is: jelek = \"" + c + "\" * db, és utána print(f\"{jelek}\")." }; },
+        () => ({ q: "Kérj be egy nevet, majd írd ki, hogy hány karakterből áll!",
+          code: C('nev = input("Adj meg egy nevet: ")', 'print(f"A név {len(nev)} karakterből áll.")'),
+          tests: T2([pick(NEV)], [pick(VEZ) + " " + pick(NEV)], i => [i[0].length]), must: [[/len\s*\(/, "Használd a len() függvényt!"]], ex: "A len() minden karaktert megszámol, a szóközt is: len(\"Kiss Anna\") = 9." })
+      ],
+      [
+        () => ({ q: "Kérj be egy szót! Írd ki a szó első és utolsó karakterét a szöveg hosszának felhasználásával!",
+          code: C('szo = input("Adj meg egy szót: ")', 'print(f"Az első karakter: {szo[0]}")', 'print(f"Az utolsó karakter: {szo[len(szo) - 1]}")'),
+          tests: T2(...two(SZO), i => [tokS(i[0][0]), tokS(i[0][i[0].length - 1])]), must: [[/len\s*\(/, "A feladat a hossz (len) használatát kéri: szo[len(szo) - 1]."]], ex: "Az index 0-tól indul, ezért az utolsó karakter indexe len(szo) − 1. A szo[len(szo)] már hiba (IndexError)." }),
+        () => { const V = pick([["második, majd az első", w => w[1] + w[0], "szo[1] + szo[0]", "kutya → uk"], ["első, majd az utolsó", w => w[0] + w[w.length - 1], "szo[0] + szo[-1]", "kutya → ka"], ["utolsó, majd az első", w => w[w.length - 1] + w[0], "szo[-1] + szo[0]", "kutya → ak"]]);
+          return { q: "Kérj be egy legalább két karakteres szót! Állíts össze egy kétkarakteres szöveget, amelyben először a szó " + V[0] + " karaktere szerepel! Például: " + V[3],
+            code: C('szo = input("Adj meg egy szót: ")', "kod = " + V[2], 'print(f"A kód: {kod}")'),
+            tests: T2(...two(SZO), i => [tokS(V[1](i[0]))]), ex: "Két karaktert a + fűz össze. Az utolsó karakter: szo[-1] (vagy szo[len(szo) - 1])." }; },
+        () => { const V = pick([["első, második és utolsó", w => w[0] + w[1] + w[w.length - 1], "szo[0] + szo[1] + szo[-1]", "Python → Pyn"], ["első, utolsó előtti és utolsó", w => w[0] + w.slice(-2), "szo[0] + szo[-2] + szo[-1]", "Python → Pon"], ["első, harmadik és utolsó", w => w[0] + w[2] + w[w.length - 1], "szo[0] + szo[2] + szo[-1]", "Python → Ptn"]]);
+          return { q: "Kérj be egy legalább három karakteres szót! Hozz létre egy kódot a szó " + V[0] + " karakteréből! Például: " + V[3],
+            code: C('szo = input("Adj meg egy szót: ")', "kod = " + V[2], 'print(f"A kód: {kod}")'),
+            tests: T2([pick(SZO)], [pick(NEV)], i => [tokS(V[1](i[0]))]), ex: "Az index 0-tól indul: a harmadik karakter a szo[2]. Hátulról: szo[-1] az utolsó, szo[-2] az utolsó előtti." }; },
+        () => { const m1 = pick(MONDAT), w1 = pick(m1.split(" ").filter(w => w.length > 2)), m2 = pick(MONDAT.filter(x => x !== m1)), w2 = pick(["kutya", "dolgozat", "Python", "nyár", "focizni"].filter(w => !m2.includes(w)));
+          return { q: "Kérj be egy mondatot, majd egy keresett szót! Az in operátor segítségével írd ki, hogy a keresett szó szerepel-e a mondatban!",
+            code: C('mondat = input("Egy mondat: ")', 'szo = input("A keresett szó: ")', 'print(f"Szerepel-e: {szo in mondat}")'),
+            tests: T2([m1, w1], [m2, w2], i => [tokS(i[0].includes(i[1]) ? "True" : "False")]), must: [[/\bin\b/, "Használd az in operátort!"]], ex: "A szo in mondat értéke True (igaz) vagy False (hamis). A kis- és nagybetű számít!" }; }
+      ],
+      [
+        () => ({ q: "Kérj be egy e-mail-címet, majd írd ki a hosszát és azt, hogy szerepel-e benne a \"@\" karakter!",
+          code: C('email = input("E-mail-cím: ")', 'print(f"Hossza: {len(email)}")', "print(f\"Van benne @: {'@' in email}\")"),
+          tests: T2([vn(pick(NEV)) + "." + vn(pick(VEZ)) + "@gmail.com"], [vn(pick(NEV)) + vn(pick(VEZ)) + ".freemail.hu"], i => [i[0].length, tokS(i[0].includes("@") ? "True" : "False")]), must: [[/\bin\b/, "Használd az in operátort!"], [/len\s*\(/, "Használd a len() függvényt!"]], ex: "Az f-string dupla idézőjelén belül a '@' szimpla idézőjelbe kerül." }),
+        () => { const c = pick(["*", "#"]); return { q: "Kérj be egy szót, majd jelenítsd meg keretben így (a Python szóval):<pre class='code'>" + esc(c.repeat(10) + "\n" + c + " Python " + c + "\n" + c.repeat(10)) + "</pre>A jelek számát a szó hossza alapján számítsd ki, és bármilyen hosszúságú szóval működjön!",
+          code: C('szo = input("Adj meg egy szót: ")', "keret = '" + c + "' * (len(szo) + 4)", 'print(f"{keret}")', 'print(f"' + c + ' {szo} ' + c + '")', 'print(f"{keret}")'),
+          tests: T2([pick(SZO)], [pick(NEV)], i => [tokL(c.repeat(i[0].length + 4)), tokL(c + " " + i[0] + " " + c), tokL(c.repeat(i[0].length + 4))]), must: [[/len\s*\(/, "A jelek számát a len() segítségével számold ki!"]], ex: "A középső sor: jel, szóköz, a szó, szóköz, jel. Ez a szó hossza + 4 karakter, ezért kell (len(szo) + 4) jel." }; },
+        () => ({ q: "Kérd be egy személy vezetéknevét és keresztnevét, majd készíts belőlük monogramot! Például: Kovács Anna → K.A.",
+          code: C('vezetek = input("Vezetéknév: ")', 'kereszt = input("Keresztnév: ")', 'monogram = vezetek[0] + "." + kereszt[0] + "."', 'print(f"A monogram: {monogram}")'),
+          tests: T2([pick(VEZ), pick(NEV)], [pick(VEZ), pick(NEV)], i => [tokS(i[0][0] + "." + i[1][0] + ".")]), ex: "A kezdőbetű az első karakter: vezetek[0]. Utána a pontot szövegként fűzöd hozzá: \".\"" }),
+        () => ({ q: "Kérj be egy páratlan hosszúságú szót, és írd ki a középső betűjét! (A középső index: len(szo) // 2.)",
+          code: C('szo = input("Adj meg egy páratlan hosszú szót: ")', 'print(f"A középső betű: {szo[len(szo) // 2]}")'),
+          tests: T2(...two(PARATLAN), i => [tokS(i[0][Math.floor(i[0].length / 2)])]), must: [[/len\s*\(/, "Használd a len() függvényt!"], [/\/\//, "Az indexhez egész szám kell: //."]], ex: "Egy 5 betűs szóban a középső a 3. betű, aminek az indexe 2 = 5 // 2. A / itt hibát adna, mert tizedes törtet (2.5) ad, az pedig nem lehet index." }),
+        () => ({ q: "Kérj be egy szót, írd ki, és alá húzd alá annyi kötőjellel (-), ahány betűs a szó!",
+          code: C('szo = input("Adj meg egy szót: ")', 'print(f"{szo}")', "print(f\"{'-' * len(szo)}\")"),
+          tests: T2([pick(SZO)], [pick(VEZ) + " " + pick(NEV)], i => [tokL(i[0]), tokL("-".repeat(i[0].length))]), must: [[/len\s*\(/, "A kötőjelek számát a len() adja!"]], ex: "Két kiírás: előbb a szó, aztán '-' * len(szo). Így bármilyen hosszú szónál pontosan alá ér." })
+      ]
+    ];
+    const MET = [
+      [
+        () => ({ q: "Kérj be egy mondatot, és alakítsd teljes egészében nagybetűssé!",
+          code: C('mondat = input("Egy mondat: ")', 'print(f"{mondat.upper()}")'),
+          tests: T2([pick(MONDAT)], [pick(MONDAT) + "!"], i => [tokS(i[0].toUpperCase())]), must: [[/\.upper\s*\(\s*\)/, "Használd az upper() metódust!"]], ex: "A metódust ponttal írjuk a szöveg után, és zárójel kell a végére: mondat.upper()." }),
+        () => ({ q: "Kérj be egy csupa nagybetűs mondatot, és alakítsd kisbetűssé!",
+          code: C('mondat = input("Egy nagybetűs mondat: ")', 'print(f"{mondat.lower()}")'),
+          tests: T2([pick(MONDAT).toUpperCase()], [pick(MONDAT).toUpperCase() + "."], i => [tokS(i[0].toLowerCase())]), must: [[/\.lower\s*\(\s*\)/, "Használd a lower() metódust!"]], ex: "A lower() kisbetűssé alakít, az ékezetes betűket is (Á → á)." }),
+        () => { const sp = () => " ".repeat(rnd(2, 4)); const n1 = pick(VEZ) + " " + pick(NEV), n2 = pick(NEV);
+          return { q: "Kérj be egy nevet, amelynek az elején vagy a végén felesleges szóközök is lehetnek! Távolítsd el a felesleges szóközöket a .strip() metódussal, majd írd ki a megtisztított nevet!",
+            code: C('nev = input("Adj meg egy nevet: ")', "nev = nev.strip()", 'print(f"A megtisztított név: [{nev}]")'),
+            tests: T2([sp() + n1 + sp()], [sp() + n2 + sp()], i => { const s = i[0].trim(); return [{ s, no: ["  " + s, s + "  "], noMsg: "Maradt szóköz a név előtt vagy után." }]; }), must: [[/\.strip\s*\(\s*\)/, "Használd a strip() metódust!"]], ex: "A strip() csak a szöveg két széléről vesz le szóközt, a szavak közöttit nem bántja. A szögletes zárójel a kiírásban csak arra jó, hogy lásd: nem maradt szóköz." }; },
+        () => { const w1 = pick(["banana", "kakaó", "alma", "programozás", "Mississippi", "csokoládé", "tananyag"]), l1 = pick([...new Set(w1.replace(/[^a-z]/g, ""))]), w2 = pick(SZO);
+          return { q: "Kérj be egy szót és egy betűt, majd számold meg, hányszor szerepel a betű a szóban!",
+            code: C('szo = input("Egy szó: ")', 'betu = input("Egy betű: ")', 'print(f"Ennyiszer szerepel: {szo.count(betu)}")'),
+            tests: T2([w1, l1], [w2, pick(["a", "e", "o", "k"])], i => [cnt(i[0], i[1])]), must: [[/\.count\s*\(/, "Használd a count() metódust!"]], ex: "A szo.count(betu) megszámolja, hányszor fordul elő a betű. Ha egyszer sem, 0-t ad." }; }
+      ],
+      [
+        () => { const V = pick([["alma", ["Az alma piros, az almafa alatt almát szedek.", "Alma, alma, mindenhol alma!", "Ma almás pitét eszünk.", "Nincs itt semmi gyümölcs."]], ["ma", ["Ma a mama mamuszt vesz.", "Ma matekórán számolunk.", "Holnap nem lesz óra.", "A mamut nagy állat."]], ["ka", ["A kakaó és a kalács finom.", "Kati kabátja kék.", "A kutya ugat.", "Kakukk szól a kakas mellett."]]]);
+          const [m1, m2] = shuffle(V[1]).slice(0, 2);
+          return { q: "Kérj be egy mondatot, majd számold meg, hányszor fordul elő benne ez a szövegrészlet: \"" + V[0] + "\"!",
+            code: C('mondat = input("Egy mondat: ")', "print(f\"Ennyiszer fordul elő: {mondat.count('" + V[0] + "')}\")"),
+            tests: T2([m1], [m2], i => [cnt(i[0], V[0])]), must: [[/\.count\s*\(/, "Használd a count() metódust!"]], ex: "A count() szavak belsejében is megtalálja a részletet (almafa, almát), de a kis- és nagybetű számít: az \"Alma\" nem \"alma\"." }; },
+        () => { const V = pick([["a", "e"], ["e", "a"], ["o", "ö"], ["i", "u"]]), ws = SZO.filter(w => w.includes(V[0]));
+          return { q: "Kérj be egy szót, majd cseréld ki benne az összes \"" + V[0] + "\" betűt \"" + V[1] + "\" betűre!",
+            code: C('szo = input("Egy szó: ")', "uj = szo.replace(\"" + V[0] + "\", \"" + V[1] + "\")", 'print(f"Az új szó: {uj}")'),
+            tests: T2(...two(ws), i => [tokS(rep(i[0], V[0], V[1]))]), must: [[/\.replace\s*\(/, "Használd a replace() metódust!"]], ex: "A replace(régi, új) az összes előfordulást lecseréli. Az eredeti szó nem változik, ezért mentsd el új változóba." }; },
+        () => { const V = pick([["A macska alszik, a macska játszik.", "macska", "kutya"], ["Ma esik az eső, ma hideg van.", "ma", "holnap"], ["Szeretem a Pythont, a Python jó.", "Python", "JavaScript"], ["Az alma piros, az alma édes.", "alma", "körte"]]), V2 = pick([["Kati sétál, Kati énekel.", "Kati", "Peti"], ["A tanár beszél, a tanár ír.", "tanár", "diák"]]);
+          return { q: "Kérj be egy mondatot, majd egy régi és egy új szót! A .replace() segítségével cseréld le a régi szó összes előfordulását az újra!",
+            code: C('mondat = input("Egy mondat: ")', 'regi = input("A régi szó: ")', 'uj = input("Az új szó: ")', 'print(f"{mondat.replace(regi, uj)}")'),
+            tests: T2(V, V2, i => [tokS(rep(i[0], i[1], i[2]))]), must: [[/\.replace\s*\(/, "Használd a replace() metódust!"]], ex: "A replace() két paramétere változó is lehet: mondat.replace(regi, uj)." }; },
+        () => { const mk = () => "  " + pick(ENEV) + "." + pick(EVEZ) + "@" + pick(["Gmail.com", "FREEMAIL.hu", "Citromail.HU"]) + " ";
+          return { q: "Kérj be egy e-mail-címet! Távolítsd el a felesleges kezdő és záró szóközöket, majd alakítsd kisbetűssé! Például: \" TESZT@GMAIL.COM \" → teszt@gmail.com",
+            code: C('email = input("E-mail-cím: ")', "email = email.strip().lower()", 'print(f"[{email}]")'),
+            tests: T2([mk()], [mk().toUpperCase()], i => { const s = i[0].trim().toLowerCase(); return [{ s, no: ["  " + s, s + " "], noMsg: "Maradt szóköz a cím előtt vagy után." }]; }), must: [[/\.strip\s*\(\s*\)/, "Használd a strip() metódust!"], [/\.lower\s*\(\s*\)/, "Használd a lower() metódust!"]], ex: "A metódusok egymás után fűzhetők: email.strip().lower(). Balról jobbra hajtja végre őket." }; }
+      ],
+      [
+        () => { const w1 = pick(["programozas", "matematika", "informatika", "alakzat", "bicikli", "kosarlabda"]), w2 = pick(["szamitogep", "tolltarto", "radir", "ablakuveg"]);
+          return { q: "Kérj be egy szót, majd számold meg, hány a, e, i, o és u betűt tartalmaz összesen! Használd többször a .count() metódust! Az ékezetes magánhangzókat most nem kell figyelembe venni.",
+            code: C('szo = input("Egy szó: ")', 'db = szo.count("a") + szo.count("e") + szo.count("i") + szo.count("o") + szo.count("u")', 'print(f"Magánhangzók száma: {db}")'),
+            tests: T2([w1], [w2], i => [AEIOU(i[0])]), must: [[/\.count\s*\(/, "Használd a count() metódust!"]], ex: "Öt count() összege. Hosszú sor lesz, de egyszerű." }; },
+        () => { const V = pick([[["a", "@"], ["e", "3"]], [["o", "0"], ["i", "1"]], [["a", "4"], ["s", "$"]]]);
+          return { q: "Kérj be egy mondatot! Cseréld ki benne az összes " + V[0][0] + " betűt " + V[0][1] + " karakterre, az összes " + V[1][0] + " betűt pedig " + V[1][1] + " karakterre!",
+            code: C('mondat = input("Egy mondat: ")', "uj = mondat.replace(\"" + V[0][0] + "\", \"" + V[0][1] + "\").replace(\"" + V[1][0] + "\", \"" + V[1][1] + "\")", 'print(f"{uj}")'),
+            tests: T2(...two(MONDAT), i => [tokS(rep(rep(i[0], V[0][0], V[0][1]), V[1][0], V[1][1]))]), must: [[/\.replace\s*\(/, "Használd a replace() metódust!"]], ex: "Két replace() egymás után: az első eredményén fut a második." }; },
+        () => { const V = pick([["Alma, alma, ALMA! Almás pite.", "alma"], ["Ma MAMA mamuszt vett.", "MA"], ["A Python jó. PYTHON! python?", "Python"], ["Kati, KATI, kati!", "kati"]]), V2 = pick([["Esik az eső, ESIK, esik.", "esik"], ["Szia SZIA szia!", "Szia"]]);
+          return { q: "Kérj be egy mondatot és egy keresett szövegrészletet. Alakítsd mindkettőt kisbetűssé, majd számold meg, hányszor szerepel a keresett részlet a mondatban!",
+            code: C('mondat = input("Egy mondat: ")', 'resz = input("A keresett részlet: ")', "db = mondat.lower().count(resz.lower())", 'print(f"Ennyiszer szerepel: {db}")'),
+            tests: T2(V, V2, i => [cnt(i[0].toLowerCase(), i[1].toLowerCase())]), must: [[/\.lower\s*\(\s*\)/, "Használd a lower() metódust!"], [/\.count\s*\(/, "Használd a count() metódust!"]], ex: "Ha mindkettő kisbetűs, a \"Alma\" és az \"ALMA\" is megtalálható. Mindkettőt alakítsd át!" }; },
+        () => { const [m1, m2] = shuffle(MONDAT), mk = m => "  " + m.toUpperCase() + "  ";
+          return { q: "Kérj be egy szöveget, majd: a) távolítsd el a szélső szóközöket, b) alakítsd kisbetűssé, c) cseréld ki a szóközöket kötőjelekre, d) írd ki az átalakított szöveget és a hosszát! Például: \" SZIA VILÁG \" → szia-világ",
+            code: C('szoveg = input("Egy szöveg: ")', "szoveg = szoveg.strip()", "szoveg = szoveg.lower()", 'szoveg = szoveg.replace(" ", "-")', 'print(f"{szoveg}")', 'print(f"Hossza: {len(szoveg)}")'),
+            tests: T2([mk(m1)], [mk(m2)], i => { const s = rep(i[0].trim().toLowerCase(), " ", "-"); return [tokS(s), s.length]; }), must: [[/\.strip\s*\(\s*\)/, "Használd a strip() metódust!"], [/\.replace\s*\(/, "Használd a replace() metódust!"]], ex: "A sorrend számít: ha előbb cserélnéd a szóközöket, a széleken is kötőjel lenne, és a strip() már nem venné le." }; },
+        () => ({ q: "Kérj be egy mondatot! Alakítsd kisbetűssé, majd végezd el a következő cseréket: a → 4, e → 3, i → 1, o → 0, szóköz → _ Írd ki a titkosított mondatot!",
+          code: C('mondat = input("Egy mondat: ")', "titkos = mondat.lower()", 'titkos = titkos.replace("a", "4").replace("e", "3").replace("i", "1")', 'titkos = titkos.replace("o", "0").replace(" ", "_")', 'print(f"A titkosított mondat: {titkos}")'),
+          tests: T2(...two(MONDAT), i => [tokS([["a", "4"], ["e", "3"], ["i", "1"], ["o", "0"], [" ", "_"]].reduce((s, r) => rep(s, r[0], r[1]), i[0].toLowerCase()))]), must: [[/\.lower\s*\(\s*\)/, "Előbb alakítsd kisbetűssé: lower()!"], [/\.replace\s*\(/, "Használd a replace() metódust!"]], ex: "Előbb kisbetűs, mert különben az \"A\" nem cserélődne. Az ékezetes betűk (á, é) maradnak, mert azok más karakterek." })
+      ]
+    ];
+    const KOMP = [
+      [
+        () => { const n = pick([2, 3]); const mk = () => shuffle(["tej", "kenyér", "sajt", "alma", "füzet", "toll", "csoki"]).slice(0, n).flatMap(t => [t, String(rnd(10, 300) * 10)]);
+          return { q: "Kérj be " + DB[n] + " terméknevet és a hozzájuk tartozó árakat! Írd ki a termékeket és az árukat külön sorokba, majd a teljes fizetendő összeget!",
+            code: C(...many(n, (_, k) => ["t" + (k + 1) + ' = input("' + (k + 1) + '. termék neve: ")', "a" + (k + 1) + ' = int(input("' + (k + 1) + '. termék ára: "))']).flat(), ...many(n, (_, k) => 'print(f"{t' + (k + 1) + '}: {a' + (k + 1) + '} Ft")'), 'print(f"Összesen: {' + many(n, (_, k) => "a" + (k + 1)).join(" + ") + '} Ft")'),
+            tests: T2(mk(), mk(), i => { const r = []; for (let k = 0; k < n; k++) r.push(tokS(i[2 * k]), +i[2 * k + 1]); r.push(sum(i.filter((_, k) => k % 2).map(Number))); return r; }), ex: "A nevet nem kell átalakítani (szöveg), az árat igen (int). Minden termék egy print, a végén az összeg." }; },
+        () => ({ q: "Kérd be a felhasználó nevét, életkorát és városát! Írd ki az adatokat több sorban, f-stringgel, és azt is, hány éves lesz jövőre!",
+          code: C('nev = input("Név: ")', 'kor = int(input("Életkor: "))', 'varos = input("Város: ")', 'print(f"Név: {nev}")', 'print(f"Életkor: {kor}")', 'print(f"Város: {varos}")', 'print(f"Jövőre {kor + 1} éves leszel.")'),
+          tests: T2([pick(NEV), String(rnd(12, 17)), pick(CITY)], [pick(VEZ) + " " + pick(NEV), String(rnd(30, 60)), pick(CITY)], i => [tokS(i[0]), +i[1], tokS(i[2]), +i[1] + 1]), ex: "Minden adat külön sorba: négy print. A kort int()-tel kérd be, különben a + 1 hibát ad." }),
+        () => { let a, b, g = 0; do { a = [String(rnd(20, 300)), String(rnd(15, 240))]; b = [String(rnd(100, 900)), String(rnd(60, 600))]; } while ((tie(a[0] / (a[1] / 60), 1) || tie(b[0] / (b[1] / 60), 1)) && g++ < 50);
+          return { q: "Kérd be a megtett utat kilométerben és az időt percben! Írd ki az átlagsebességet km/h-ban, egy tizedesre kerekítve!",
+            code: C('ut = int(input("A megtett út (km): "))', 'perc = int(input("Az idő (perc): "))', "ora = perc / 60", "sebesseg = ut / ora", 'print(f"Az átlagsebesség: {round(sebesseg, 1)} km/h")'),
+            tests: T2(a, b, i => [rnd2(i[0] / (i[1] / 60), 1)]), must: [[/round\s*\(/, "Kerekíts a round() függvénnyel!"]], ex: "Előbb az időt váltsd órára (perc / 60), aztán sebesség = út / idő." }; }
+      ],
+      [
+        () => { const n = pick([4, 5]); return { q: "Kérd be egy diák nevét és " + DB[n] + " jegyét! Írd ki a diák nevét nagybetűvel, a jegyek átlagát két tizedesre kerekítve, valamint a legjobb és a legrosszabb jegyét!",
+          code: C('nev = input("A diák neve: ")', ...many(n, (_, k) => "j" + (k + 1) + ' = int(input("' + (k + 1) + '. jegy: "))'), 'print(f"Név: {nev.upper()}")', "atlag = (" + many(n, (_, k) => "j" + (k + 1)).join(" + ") + ") / " + n, 'print(f"Átlag: {round(atlag, 2)}")', 'print(f"Legjobb jegy: {max(' + many(n, (_, k) => "j" + (k + 1)).join(", ") + ')}")', 'print(f"Legrosszabb jegy: {min(' + many(n, (_, k) => "j" + (k + 1)).join(", ") + ')}")'),
+          tests: T2([pick(NEV), ...many(n, () => String(rnd(1, 5)))], [pick(VEZ) + " " + pick(NEV), ...many(n, () => String(rnd(2, 5)))], i => { const j = i.slice(1).map(Number); return [tokS(i[0].toUpperCase()), rnd2(sum(j) / n, 2), Math.max(...j), Math.min(...j)]; }), must: [[/\.upper\s*\(\s*\)/, "A nevet upper()-rel alakítsd nagybetűssé!"]], ex: "Minden, amit eddig tanultál: upper(), átlag zárójellel, round(), max(), min()." }; },
+        () => { const mk = d => "  " + pick(ENEV) + "." + pick(EVEZ) + "@" + d + " ";
+          return { q: "Kérj be egy e-mail-címet! Alakítsd kisbetűssé, távolítsd el a szélső szóközöket, majd írd ki: a) a megtisztított címet, b) a karakterek számát, c) hogy szerepel-e benne @, d) hogy szerepel-e benne gmail.com.",
+            code: C('email = input("E-mail-cím: ")', "email = email.lower().strip()", 'print(f"A cím: {email}")', 'print(f"Karakterek száma: {len(email)}")', "print(f\"Van benne @: {'@' in email}\")", "print(f\"Gmail-es: {'gmail.com' in email}\")"),
+            tests: T2([mk("GMAIL.com")], [mk("Freemail.HU")], i => { const s = i[0].trim().toLowerCase(); return [{ s, no: ["  " + s, s + " "], noMsg: "Maradt szóköz a cím előtt vagy után." }, s.length, tokS("True"), tokS(s.includes("gmail.com") ? "True" : "False")]; }), must: [[/\.strip\s*\(\s*\)/, "Használd a strip() metódust!"], [/\.lower\s*\(\s*\)/, "Használd a lower() metódust!"], [/\bin\b/, "Használd az in operátort!"]], ex: "Először tisztítsd meg a címet, és mentsd el (email = …). Utána minden kiírás a tiszta címmel dolgozik." }; },
+        () => ({ q: "Kérj be egy mondatot! Írd ki a mondat hosszát, első és utolsó karakterét, valamint azt, hogy hány szóköz van benne!",
+          code: C('mondat = input("Egy mondat: ")', 'print(f"Hossza: {len(mondat)}")', 'print(f"Első karakter: {mondat[0]}")', 'print(f"Utolsó karakter: {mondat[-1]}")', "print(f\"Szóközök száma: {mondat.count(' ')}\")"),
+          tests: T2([pick(MONDAT) + "."], [pick(MONDAT) + "!"], i => [i[0].length, tokS(i[0][0]), tokS(i[0][i[0].length - 1]), cnt(i[0], " ")]), must: [[/\.count\s*\(/, "A szóközöket a count() számolja meg!"]], ex: "A szóköz is karakter: count(' ') megszámolja. A szavak száma ennél eggyel több." })
+      ],
+      [
+        () => { const mk = () => [String(rnd(250, 450) * 10), String(rnd(2, 6)), String(pick([0, 490, 790, 990])), String(pick([5, 10, 15, 20, 25]))];
+          return { q: "Kérd be egy pizza árát, a rendelt pizzák számát, a szállítási díjat, valamint a kedvezmény százalékát! Számítsd ki a teljes fizetendő összeget! A kedvezmény csak a pizzák árára vonatkozzon, a szállításra ne.",
+            code: C('ar = int(input("Egy pizza ára (Ft): "))', 'db = int(input("Hány pizza? "))', 'szallitas = int(input("Szállítási díj (Ft): "))', 'kedv = int(input("Kedvezmény (%): "))', "pizzak = ar * db", "kedvezmeny = pizzak * kedv / 100", "fizetendo = pizzak - kedvezmeny + szallitas", 'print(f"Fizetendő: {fizetendo} Ft")'),
+            tests: T2(mk(), mk(), i => { const p = i[0] * i[1], kd = p * i[3] / 100; return [p - kd + Number(i[2])]; }), ex: "Lépésenként: a pizzák ára, abból a kedvezmény, a kedvezményes árhoz a szállítás. Ha mindent egy sorba írsz, a zárójelekre figyelj!" }; },
+        () => { const ev = rnd(2028, 2035); return { q: "Kérj be egy diáknevet, születési évet, három tantárgyi jegyet és egy kedvenc szót! Készíts összefoglalót, amely tartalmazza a diák nevét nagybetűsen, a " + ev + "-ben betöltött életkorát, a jegyek átlagát két tizedesre kerekítve, a legjobb és legrosszabb jegyét, a kedvenc szó hosszát, első és utolsó betűjét, illetve a kedvenc szót háromszor egymás után!",
+          code: C('nev = input("Név: ")', 'szuletes = int(input("Születési év: "))', 'j1 = int(input("1. jegy: "))', 'j2 = int(input("2. jegy: "))', 'j3 = int(input("3. jegy: "))', 'szo = input("Kedvenc szó: ")', 'print(f"Név: {nev.upper()}")', 'print(f"Életkor ' + ev + '-ben: {' + ev + ' - szuletes}")', 'print(f"Átlag: {round((j1 + j2 + j3) / 3, 2)}")', 'print(f"Legjobb: {max(j1, j2, j3)}, legrosszabb: {min(j1, j2, j3)}")', 'print(f"A szó hossza: {len(szo)}, első betűje: {szo[0]}, utolsó betűje: {szo[-1]}")', 'print(f"{szo * 3}")'),
+          tests: T2([pick(NEV), String(rnd(2008, 2013)), String(rnd(1, 5)), String(rnd(2, 5)), String(rnd(3, 5)), pick(SZO)], [pick(NEV), String(rnd(1990, 2007)), String(rnd(1, 5)), String(rnd(1, 5)), String(rnd(1, 5)), pick(SZO)], i => { const j = i.slice(2, 5).map(Number), w = i[5]; return [tokS(i[0].toUpperCase()), ev - i[1], rnd2(sum(j) / 3, 2), Math.max(...j), Math.min(...j), w.length, tokS(w[0]), tokS(w[w.length - 1]), tokS(w.repeat(3))]; }), must: [[/\.upper\s*\(\s*\)/, "A nevet upper()-rel írd ki!"], [/round\s*\(/, "Az átlagot round()-dal kerekítsd!"]], ex: "Hosszú feladat, de minden része egy-egy sor, amit már ismersz. Haladj sorban: bekérés, aztán soronként egy kiírás." }; },
+        () => { const n = pick([2, 3, 4, 5]); let a, b, g = 0; const calc = i => { const o = i[0] * i[1] + i[2] * i[3]; const f = o - o * i[4] / 100; return [f, rnd2(f / n, 2)]; };
+          const mk = () => [String(rnd(10, 250) * 10), String(rnd(1, 4)), String(rnd(10, 250) * 10), String(rnd(1, 4)), String(pick([0, 10, 15, 20]))];
+          do { a = mk(); b = mk(); } while ((tie(calc(a)[0] / n, 2) || tie(calc(b)[0] / n, 2)) && g++ < 50);
+          return { q: SZAMSZO[n] + " barát együtt vásárol. Kérd be két termék árát és darabszámát, valamint a teljes vásárlásra kapott kedvezmény százalékát! Írd ki a fizetendő összeget, és hogy ez fejenként mennyi, két tizedesre kerekítve!",
+            code: C('ar1 = int(input("1. termék ára: "))', 'db1 = int(input("1. termék darabszáma: "))', 'ar2 = int(input("2. termék ára: "))', 'db2 = int(input("2. termék darabszáma: "))', 'kedv = int(input("Kedvezmény (%): "))', "osszeg = ar1 * db1 + ar2 * db2", "fizetendo = osszeg - osszeg * kedv / 100", 'print(f"Fizetendő: {fizetendo} Ft")', 'print(f"Fejenként: {round(fizetendo / ' + n + ', 2)} Ft")'),
+            tests: T2(a, b, calc), must: [[/round\s*\(/, "A fejenkénti összeget round()-dal kerekítsd!"]], ex: "A szorzás előbb számolódik, mint az összeadás, ezért itt nem kell zárójel: ar1 * db1 + ar2 * db2." }; }
+      ]
+    ];
+
+    /* ---- „Mit ír ki?” (Python nélkül is megy): { code, ans, sol } ---- */
+    const pyF = x => Number.isInteger(x) ? x.toFixed(1) : String(x);
+    const KIIR = [
+      [
+        () => { const a = rnd(2, 20), b = rnd(2, 9), c = rnd(2, 5); return pick([
+          { code: "print(" + a + " + " + b + " * " + c + ")", ans: String(a + b * c), sol: "Előbb a szorzás: " + b + " * " + c + " = " + b * c + ", aztán az összeadás." },
+          { code: "print((" + a + " + " + b + ") * " + c + ")", ans: String((a + b) * c), sol: "A zárójel előbb számolódik: " + (a + b) + " * " + c + "." }]); },
+        () => { const a = rnd(10, 60), b = rnd(2, 9); return pick([
+          { code: "print(" + a + " // " + b + ")", ans: String(Math.floor(a / b)), sol: a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + ". A // a hányados." },
+          { code: "print(" + a + " % " + b + ")", ans: String(a % b), sol: a + " = " + Math.floor(a / b) + " · " + b + " + " + a % b + ". A % a maradék." }]); },
+        () => { const b = pick([2, 4, 5, 8]), a = rnd(3, 40); return { code: "print(" + a + " / " + b + ")", ans: pyF(a / b), sol: "A / mindig tizedes törtet ad (float), egész eredménynél is: 8 / 2 = 4.0." }; },
+        () => { const a = rnd(2, 5), b = rnd(2, 4); return { code: "print(" + a + " ** " + b + ")", ans: String(Math.pow(a, b)), sol: "Hatványozás: " + Array(b).fill(a).join(" · ") + " = " + Math.pow(a, b) + "." }; },
+        () => { const a = rnd(1, 9), b = rnd(1, 9); return { code: 'print("' + a + '" + "' + b + '")', ans: String(a) + String(b), sol: "Idézőjelben szövegek: a + összefűzi őket, nem összeadja." }; },
+        () => { const w = pick(["ha", "la", "Py", "ab"]), n = rnd(2, 4); return { code: 'print("' + w + '" * ' + n + ")", ans: w.repeat(n), sol: "Szöveg szorozva egész számmal: ismétlés." }; },
+        () => { const w = pick(SZO); return { code: 'print(len("' + w + '"))', ans: String(w.length), sol: "A len() a karakterek számát adja (az ékezetes betű is egy karakter)." }; },
+        () => { const x = rnd(5, 30), p = rnd(2, 9), q = rnd(1, 9); return { code: "x = " + x + "\nx += " + p + "\nx -= " + q + "\nprint(x)", ans: String(x + p - q), sol: "x = " + x + ", aztán " + (x + p) + ", végül " + (x + p - q) + "." }; }
+      ],
+      [
+        () => { const s = dec(1, 30, 4), k = pick([0, 1, 2]); return { code: k ? "print(round(" + s + ", " + k + "))" : "print(round(" + s + "))", ans: k ? pyF(rnd2(Number(s), k)) : String(rnd2(Number(s), 0)), sol: k ? "round(x, " + k + ") " + TIZ[k] + " kerekít." : "round(x) egész számra kerekít, és egész számot (int) ad." }; },
+        () => { const a = distinct(() => rnd(-20, 40), 3); return pick([
+          { code: "print(max(" + a.join(", ") + "))", ans: String(Math.max(...a)), sol: "A legnagyobb érték." },
+          { code: "print(min(" + a.join(", ") + "))", ans: String(Math.min(...a)), sol: "A legkisebb érték (a negatív kisebb, mint a 0)." },
+          { code: "print(abs(" + a[0] + " - " + a[1] + "))", ans: String(Math.abs(a[0] - a[1])), sol: a[0] + " − (" + a[1] + ") = " + (a[0] - a[1]) + ", ennek az abszolút értéke." }]); },
+        () => { const w = pick(SZO); return pick([
+          { code: 'szo = "' + w + '"\nprint(szo[0])', ans: w[0], sol: "Az index 0-tól indul: szo[0] az első karakter." },
+          { code: 'szo = "' + w + '"\nprint(szo[-1])', ans: w[w.length - 1], sol: "A -1 index az utolsó karakter." },
+          { code: 'szo = "' + w + '"\nprint(szo[len(szo) - 1])', ans: w[w.length - 1], sol: "len(szo) − 1 az utolsó index." },
+          { code: 'szo = "' + w + '"\nprint(szo[2])', ans: w[2], sol: "szo[2] a harmadik karakter (0, 1, 2)." },
+          { code: 'szo = "' + w + '"\nprint(szo[1] + szo[0])', ans: w[1] + w[0], sol: "A második, majd az első karakter." }]); },
+        () => { const m = pick(MONDAT), w = pick(["Python", "alma", "macska", "kutya", "Ma"]); return { code: 'mondat = "' + m + '"\nprint("' + w + '" in mondat)', ans: m.includes(w) ? "True" : "False", sol: "Az in szövegrészletet keres; a kis- és nagybetű számít." }; },
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return pick([
+          { code: 'x = "' + a + '"\nprint(int(x) + ' + b + ")", ans: String(a + b), sol: "Az int() számmá alakítja a szöveget, így összeadás lesz." },
+          { code: 'x = "' + a + '"\nprint(x * ' + b + ")", ans: String(a).repeat(b), sol: "x szöveg! Szöveg szorozva számmal: ismétlés." },
+          { code: "a = " + a + "\nb = " + b + '\nprint(f"{a} + {b} = {a + b}")', ans: a + " + " + b + " = " + (a + b), sol: "Az f-stringben csak a kapcsos zárójel helyére kerül érték; a többi szöveg marad." }]); }
+      ],
+      [
+        () => { const n = pick(NEV); return pick([
+          { code: 'nev = "   ' + n + '  "\nprint("[" + nev.strip() + "]")', ans: "[" + n + "]", sol: "A strip() leveszi a szélső szóközöket." },
+          { code: 'nev = "   ' + n + '  "\nprint(len(nev.strip()))', ans: String(n.length), sol: "Előbb a strip(), aztán a hossz: csak a név betűi maradtak." },
+          { code: 'nev = "  ' + n + '"\nnev.strip()\nprint("[" + nev + "]")', ans: "[  " + n + "]", sol: "Csapda: a nev.strip() eredményét nem mentette el, ezért a nev nem változott!" }]); },
+        () => { const w = pick(["banana", "alma", "kakaó", "Anna", "programozás", "tananyag"]), l = pick(["a", "n", "o"]); return { code: 'print("' + w + '".count("' + l + '"))', ans: String(cnt(w, l)), sol: "A count() megszámolja; a nagy A nem számít kis a-nak." }; },
+        () => { const w = pick(SZO.filter(x => x.includes("a"))); return pick([
+          { code: 'print("' + w + '".replace("a", "o"))', ans: rep(w, "a", "o"), sol: "Minden a betű o lesz." },
+          { code: 'print("' + w + '".upper())', ans: w.toUpperCase(), sol: "Nagybetűs lesz minden betű." }]); },
+        () => { const m = pick(MONDAT); return { code: 's = "  ' + m + ' "\nprint(s.strip().lower().replace(" ", "-"))', ans: rep(m.toLowerCase(), " ", "-"), sol: "Balról jobbra: strip, lower, majd a szóközökből kötőjel." }; },
+        () => { const n = pick(NEV); return { code: 'nev = "' + n + '"\nprint(f"{nev.upper()} {len(nev)}")', ans: n.toUpperCase() + " " + n.length, sol: "Az f-stringben metódus és függvény is lehet." }; },
+        () => { const v = pick(VEZ), k = pick(NEV); return { code: 'v = "' + v + '"\nk = "' + k + '"\nprint(v[0] + "." + k[0] + ".")', ans: v[0] + "." + k[0] + ".", sol: "Monogram: a két kezdőbetű ponttal." }; }
+      ]
+    ];
+
+    /* ---- Hibakereső: melyik sort kell kijavítani? ---- */
+    const HIBA = [
+      [
+        ["Kérd be az életkort, és írd ki, hány éves lesz jövőre!", ['kor = input("Hány éves vagy? ")', 'print(f"Jövőre {kor + 1} éves leszel.")'], 1, "Az input szöveget ad: kor = int(input(…)) kell. A hibaüzenet a 2. sornál jön, de az 1. sort kell javítani."],
+        ["Kérj be egy nevet, és köszöntsd!", ['nev = input("Hogy hívnak? ")', 'print("Szia, {nev}!")'], 2, "Hiányzik az f a nyitó idézőjel elől: print(f\"Szia, {nev}!\"). Nélküle a {nev} betű szerint kiíródik."],
+        ["Két szám összege és szorzata.", ['a = int(input("a: "))', 'b = int(input("b: "))', 'print(f"Az összeg: {a + b}")', 'print(f"A szorzat: {a x b}")'], 4, "A szorzás jele a csillag: a * b."],
+        ["A szó hossza.", ['szo = input("Szó: ")', 'print(f"Hossza: {szo.len()}")'], 2, "A len() függvény, nem metódus: len(szo)."],
+        ["Kérd be az árat, és írd ki!", ['ar = int(input("Ár: ")', 'print(f"Az ár: {ar} Ft")'], 1, "Hiányzik egy zárójel: int(input(\"Ár: \")). Minden nyitó zárójelhez kell egy záró."]
+      ],
+      [
+        ["A szó utolsó betűje.", ['szo = input("Szó: ")', 'print(f"Utolsó betű: {szo[len(szo)]}")'], 2, "Az utolsó index len(szo) − 1. A szo[len(szo)] IndexError."],
+        ["Egy valós szám két tizedesre kerekítve.", ['szam = float(input("Szám: "))', 'print(f"Két tizedesre: {round(szam), 2}")'], 2, "A 2 a round zárójelén belül kell: round(szam, 2)."],
+        ["A mondat nagybetűvel.", ['mondat = input("Mondat: ")', 'print(f"{mondat.Upper()}")'], 2, "A metódus neve kisbetűs: upper(). A nagy U-val AttributeError lesz."],
+        ["A név szóközök nélkül.", ['nev = input("Név: ")', "nev.strip()", 'print(f"[{nev}]")'], 2, "A strip() eredményét el kell menteni: nev = nev.strip(). Az eredeti szöveg nem változik."],
+        ["Annyi csillag, amennyit a felhasználó kér.", ['db = input("Hány csillag? ")', "print(f\"{'*' * db}\")"], 1, "Szöveget szöveggel nem lehet szorozni: db = int(input(…))."],
+        ["A tizedes tört kétszerese.", ['x = int(input("Egy tizedes tört: "))', 'print(f"A kétszerese: {x * 2}")'], 1, "Tizedes törthöz float() kell; az int(\"2.5\") ValueError."]
+      ],
+      [
+        ["Három jegy átlaga két tizedesre.", ['j1 = int(input("1. jegy: "))', 'j2 = int(input("2. jegy: "))', 'j3 = int(input("3. jegy: "))', 'print(f"Átlag: {round(j1 + j2 + j3 / 3, 2)}")'], 4, "Zárójel kell: (j1 + j2 + j3) / 3. Nélküle csak a j3-at osztja el. Hibaüzenet nincs, csak rossz az eredmény!"],
+        ["20%-os kedvezmény.", ['ar = int(input("Ár: "))', "kedv = ar * 20", 'print(f"Kedvezményes ár: {ar - kedv}")'], 2, "A 20% a 20 század része: ar * 20 / 100."],
+        ["Monogram, például Kovács Anna → K.A.", ['vez = input("Vezetéknév: ")', 'ker = input("Keresztnév: ")', 'print(f"{vez[1]}.{ker[1]}.")'], 3, "Az első betű indexe 0: vez[0], ker[0]."],
+        ["E-mail-cím kisbetűvel, szóközök nélkül.", ['email = input("E-mail: ")', "email = email.lower", 'print(f"{email.strip()}")'], 2, "A metódus után zárójel kell: email.lower(). Nélküle nem hívja meg."],
+        ["Hány a betű van a mondatban (a nagy A is számít)?", ['mondat = input("Mondat: ")', 'db = mondat.count("a")', 'print(f"Ennyi a betű van benne: {db}")'], 2, "A nagy A-t is meg kell számolni: mondat.lower().count(\"a\")."],
+        ["Celsiusból Fahrenheit.", ['c = float(input("Celsius: "))', "fahr = c * 1,8 + 32", 'print(f"{fahr} °F")'], 2, "A tizedesjel pont: 1.8. A vesszővel a Python két külön értéket csinál belőle."],
+        ["A szó első és utolsó betűje.", ['szo = input("Szó: ")', 'print(f"Első: {szo[1]}")', 'print(f"Utolsó: {szo[-1]}")'], 2, "Az első betű a szo[0]; a szo[1] már a második."]
+      ]
+    ];
+
+    // a # utáni megjegyzés levágása, de az idézőjelen belüli # marad ('#' * 5)
+    const stripCom = c => String(c).split("\n").map(l => { let q = ""; for (let i = 0; i < l.length; i++){ const ch = l[i]; if (q){ if (ch === "\\") i++; else if (ch === q) q = ""; } else if (ch === '"' || ch === "'") q = ch; else if (ch === "#") return l.slice(0, i); } return l; }).join("\n");
+    return { VALT, FV, STR, MET, KOMP, KIIR, HIBA, cmpOut, fstr, pyF, stripCom };
+  })(rnd, pick, shuffle);
+/*@/LOGIC*/
+
+/*@ORIG*/
+  /* ---------- Az eredeti gyakorló feladatsor (52 feladat, a szöveg szó szerint) ---------- */
+  const FEJ = [["Változók és alapvető műveletek", 1, 11], ["Beépített matematikai függvények", 12, 20], ["String operátorok és karakterek", 21, 32], ["String metódusok", 33, 44], ["Összetett, életszerű feladatok", 45, 52]];
+  const ORIG = [
+    { n: 1, q: "Kérd be a felhasználó életkorát, majd írd ki, hány éves lesz 5 év múlva!", ins: ["15"],
+      code: 'kor = int(input("Hány éves vagy? "))\nprint(f"5 év múlva {kor + 5} éves leszel.")',
+      ex: "Az <code>input()</code> mindig szöveget ad, ezért kell köré az <code>int()</code>. Az f-string kapcsos zárójelébe számolást is írhatsz: <code>{kor + 5}</code>." },
+    { n: 2, q: "Kérd be, hogy mennyi zsebpénzed van jelenleg, majd azt, hogy mennyit szeretnél még hozzá kapni! Írd ki, mennyi pénzed lesz így összesen!", ins: ["2500", "1500"],
+      code: 'van = int(input("Mennyi zsebpénzed van most? "))\nkap = int(input("Mennyit szeretnél még kapni? "))\nprint(f"Összesen {van + kap} Ft-od lesz.")',
+      ex: "Ha az <code>int()</code> kimarad, a <code>+</code> összefűz: \"2500\" + \"1500\" = \"25001500\"." },
+    { n: 3, q: "Egy boltban a felhasználó 3 terméket vásárol: kenyér, rizs, tészta. Kérd be ezen három termék árát, majd írd ki a fizetendő végösszeget!", ins: ["650", "899", "480"],
+      code: 'kenyer = int(input("A kenyér ára: "))\nrizs = int(input("A rizs ára: "))\nteszta = int(input("A tészta ára: "))\nosszeg = kenyer + rizs + teszta\nprint(f"Fizetendő: {osszeg} Ft")',
+      ex: "A változónévben ne legyen ékezet és szóköz (kenyer, teszta): így biztosan működik. Az összeget külön változóba tettük, így olvashatóbb." },
+    { n: 4, q: "Kérd be egy téglalap két oldalának hosszát, majd számítsd ki a kerületét és a területét!", qx: "<div class='eq'>T = a · b &nbsp;&nbsp; K = 2(a + b)</div>", ins: ["5", "3"],
+      code: 'a = float(input("Az a oldal: "))\nb = float(input("A b oldal: "))\nkerulet = 2 * (a + b)\nterulet = a * b\nprint(f"A kerület: {kerulet}")\nprint(f"A terület: {terulet}")',
+      ex: "Pythonban a szorzásjelet ki kell írni: <code>2 * (a + b)</code>, a <code>2(a + b)</code> hiba. A <code>float()</code> miatt tizedes tört is lehet az oldal (ezért írja ki: 16.0); ha csak egész oldalak vannak, <code>int()</code> is jó." },
+    { n: 5, q: "Kérj be egy egész számot, majd írd ki a négyzetét és a köbét a ** operátor segítségével!", ins: ["4"],
+      code: 'szam = int(input("Adj meg egy egész számot: "))\nprint(f"A négyzete: {szam ** 2}")\nprint(f"A köbe: {szam ** 3}")',
+      ex: "A <code>**</code> a hatványozás: <code>szam ** 2</code> = szam · szam, <code>szam ** 3</code> = szam · szam · szam." },
+    { n: 6, q: "Kérj be egy egész számot, majd írd ki a kettővel való osztás maradékát! Ebből megállapítható, hogy a szám páros vagy páratlan.", ins: ["17"],
+      code: 'szam = int(input("Adj meg egy egész számot: "))\nprint(f"A kettővel való osztás maradéka: {szam % 2}")\nprint("(Ha 0, a szám páros; ha 1, páratlan.)")',
+      ex: "A <code>%</code> a maradék: 17 = 8 · 2 + 1, tehát 17 % 2 = 1, páratlan. A páros számoknál 0. (A döntést kiíró <code>if</code> később jön.)" },
+    { n: 7, q: "Három barát egyenlően oszt el egy megadott összeget. Kérd be az összeget, és számítsd ki, mennyit kapnak fejenként!", ins: ["10000"],
+      code: 'osszeg = float(input("Mekkora összeget osztanak el? "))\nfejenkent = osszeg / 3\nprint(f"Fejenként: {round(fejenkent, 2)} Ft")',
+      ex: "10000 / 3 = 3333.3333333333335: ezt szebb két tizedesre kerekíteni a <code>round()</code>-dal. Ha egész forintokat kérnek, a <code>//</code> kell (3333), a <code>%</code> pedig megadja, mennyi marad (1)." },
+    { n: 8, q: "Kérj be egy Celsius-fokban megadott hőmérsékletet, és váltsd át Fahrenheit fokra!", qx: "<div class='eq'>F = C * 1.8 + 32</div>", ins: ["25"],
+      code: 'celsius = float(input("Hőmérséklet Celsius-fokban: "))\nfahr = celsius * 1.8 + 32\nprint(f"{celsius} °C = {fahr} °F")',
+      ex: "A tizedesjel pont: 1.8. A szorzás előbb számolódik, mint az összeadás, ezért itt nem kell zárójel." },
+    { n: 9, q: "Kérj be egy egész számot! Növeld meg 10-zel a += operátor segítségével, majd csökkentsd 3-mal a -= operátorral! Írd ki a végeredményt!", ins: ["20"],
+      code: 'szam = int(input("Adj meg egy egész számot: "))\nszam += 10\nszam -= 3\nprint(f"A végeredmény: {szam}")',
+      ex: "<code>szam += 10</code> ugyanaz, mint <code>szam = szam + 10</code>. A változó felülíródik az új értékkel." },
+    { n: 10, q: "Kérj be 3 dolgozatjegyet, majd számítsd ki az átlagukat, két tizedesre kerekítve!", ins: ["5", "4", "4"],
+      code: 'j1 = int(input("1. jegy: "))\nj2 = int(input("2. jegy: "))\nj3 = int(input("3. jegy: "))\natlag = (j1 + j2 + j3) / 3\nprint(f"Az átlag: {round(atlag, 2)}")',
+      ex: "A zárójel kötelező: <code>j1 + j2 + j3 / 3</code> csak a j3-at osztaná el. A <code>round(atlag, 2)</code> két tizedesre kerekít: 4.333… → 4.33." },
+    { n: 11, q: "Kérd be egy termék árát és a kedvezmény százalékát! Számítsd ki a kedvezmény összegét és a kedvezményes árat!", ins: ["12000", "15"],
+      code: 'ar = int(input("A termék ára (Ft): "))\nszazalek = int(input("A kedvezmény (%): "))\nkedvezmeny = ar * szazalek / 100\nuj_ar = ar - kedvezmeny\nprint(f"A kedvezmény: {kedvezmeny} Ft")\nprint(f"A kedvezményes ár: {uj_ar} Ft")',
+      ex: "A 15% a 15 század része: <code>ar * 15 / 100</code>. A <code>/</code> miatt tizedes tört lesz az eredmény (1800.0)." },
+    { n: 12, q: "Kérj be 4 egész számot, és írd ki közülük a legnagyobbat!", ins: ["12", "45", "7", "30"],
+      code: 'a = int(input("1. szám: "))\nb = int(input("2. szám: "))\nc = int(input("3. szám: "))\nd = int(input("4. szám: "))\nprint(f"A legnagyobb: {max(a, b, c, d)}")',
+      ex: "A <code>max()</code> akárhány értéket kaphat, vesszővel elválasztva." },
+    { n: 13, q: "Kérj be 5 valós számot, majd írd ki a legkisebbet!", ins: ["3.5", "-1.25", "7", "0.5", "2"],
+      code: 'a = float(input("1. szám: "))\nb = float(input("2. szám: "))\nc = float(input("3. szám: "))\nd = float(input("4. szám: "))\ne = float(input("5. szám: "))\nprint(f"A legkisebb: {min(a, b, c, d, e)}")',
+      ex: "Valós szám = tizedes tört: <code>float()</code>. Beíráskor pontot használj (3.5), ne vesszőt." },
+    { n: 14, q: "Kérj be két egész számot, és írd ki a különbségük abszolút értékét! Az első szám kisebb legyen, mint a második!", ins: ["3", "10"],
+      code: 'a = int(input("Az első (kisebb) szám: "))\nb = int(input("A második (nagyobb) szám: "))\nprint(f"A különbség abszolút értéke: {abs(a - b)}")',
+      ex: "3 − 10 = −7, ennek az abszolút értéke 7. Az <code>abs()</code> a negatív számot pozitívvá teszi." },
+    { n: 15, q: "Kérj be egy negatív vagy pozitív számot, majd írd ki, milyen messze van a nullától a számegyenesen!", ins: ["-12.5"],
+      code: 'szam = float(input("Adj meg egy számot: "))\nprint(f"A nullától való távolság: {abs(szam)}")',
+      ex: "A nullától való távolság pont az abszolút érték: <code>abs(-12.5)</code> = 12.5." },
+    { n: 16, q: "Kérj be egy valós számot, majd írd ki egy egész számra kerekítve, egy tizedesre kerekítve, valamint három tizedesre kerekítve.", ins: ["3.14159"],
+      code: 'x = float(input("Adj meg egy valós számot: "))\nprint(f"Egészre: {round(x)}")\nprint(f"Egy tizedesre: {round(x, 1)}")\nprint(f"Három tizedesre: {round(x, 3)}")',
+      ex: "<code>round(x)</code> egészre, <code>round(x, 1)</code> egy, <code>round(x, 3)</code> három tizedesre kerekít." },
+    { n: 17, q: "Kérd be 5 nap hőmérsékletét! Írd ki a leghidegebb és a legmelegebb nap hőmérsékletét, valamint a két érték különbségét!", ins: ["12.5", "15", "9.5", "17", "14"],
+      code: 'n1 = float(input("1. nap: "))\nn2 = float(input("2. nap: "))\nn3 = float(input("3. nap: "))\nn4 = float(input("4. nap: "))\nn5 = float(input("5. nap: "))\nhideg = min(n1, n2, n3, n4, n5)\nmeleg = max(n1, n2, n3, n4, n5)\nprint(f"Leghidegebb: {hideg} °C")\nprint(f"Legmelegebb: {meleg} °C")\nprint(f"Különbség: {meleg - hideg} °C")',
+      ex: "A <code>min()</code> és a <code>max()</code> eredményét változóba tettük, mert a különbséghez újra kell." },
+    { n: 18, q: "Kérd be 4 termék árát, és számítsd ki, mennyit spórolhatunk, ha a legdrágább helyett a legolcsóbbat választjuk!", ins: ["1200", "950", "1490", "1100"],
+      code: 'a = int(input("1. ár: "))\nb = int(input("2. ár: "))\nc = int(input("3. ár: "))\nd = int(input("4. ár: "))\nsporolas = max(a, b, c, d) - min(a, b, c, d)\nprint(f"Ennyit spórolhatunk: {sporolas} Ft")',
+      ex: "A megtakarítás a legdrágább és a legolcsóbb ár különbsége." },
+    { n: 19, q: "Kérj be 3 egész számot! Az abs() és min() függvények segítségével írd ki, hogy a három szám közül mekkora a legkisebb nullától mért távolsága!", ins: ["-7", "12", "-3"],
+      code: 'a = int(input("1. szám: "))\nb = int(input("2. szám: "))\nc = int(input("3. szám: "))\nprint(f"A legkisebb távolság: {min(abs(a), abs(b), abs(c))}")',
+      ex: "Belülről kifelé: előbb a három abszolút érték (7, 12, 3), aztán ezek közül a legkisebb: 3. Vigyázz: <code>min(a, b, c)</code> −7 lenne!" },
+    { n: 20, q: "Három versenyző pontszámát kérd be! Írd ki a legnagyobb pontszámot, a legkisebb pontszámot és a három versenyző átlagát két tizedesre kerekítve!", ins: ["78", "92", "86"],
+      code: 'p1 = int(input("1. versenyző: "))\np2 = int(input("2. versenyző: "))\np3 = int(input("3. versenyző: "))\nprint(f"Legnagyobb: {max(p1, p2, p3)}")\nprint(f"Legkisebb: {min(p1, p2, p3)}")\nprint(f"Átlag: {round((p1 + p2 + p3) / 3, 2)}")',
+      ex: "Az átlag kiszámolható az f-stringen belül is; a zárójelek itt is fontosak." },
+    { n: 21, q: "Kérd be külön a vezetéknevet és a keresztnevet, majd fűzd össze őket egy teljes névvé!", ins: ["Kovács", "Anna"],
+      code: 'vezetek = input("Vezetéknév: ")\nkereszt = input("Keresztnév: ")\nteljes = vezetek + " " + kereszt\nprint(f"A teljes név: {teljes}")',
+      ex: "A <code>+</code> szóköz nélkül fűz: a <code>\" \"</code> szóközt neked kell közé tenni. Szövegnél nem kell <code>int()</code>." },
+    { n: 22, q: "Kérj be egy nevet, majd írd ki a következő mondatot: Szia, Bence! Örülök, hogy itt vagy! A Bence helyére mindig a bekért név kerüljön!", ins: ["Bence"],
+      code: 'nev = input("Hogy hívnak? ")\nprint(f"Szia, {nev}! Örülök, hogy itt vagy!")',
+      ex: "Az f-string erre való: a mondat marad, csak a <code>{nev}</code> helyére kerül a név." },
+    { n: 23, q: "Kérj be egy szót és egy egész számot! Írd ki a szót annyiszor egymás után, amennyit a felhasználó megadott!", ins: ["hip", "3"],
+      code: 'szo = input("Egy szó: ")\ndb = int(input("Hányszor? "))\nprint(f"{szo * db}")',
+      ex: "Szöveg szorozva egész számmal: ismétlés. A számot <code>int()</code>-tel kell bekérni, különben hiba lesz (szöveget szöveggel nem lehet szorozni)." },
+    { n: 24, q: "Kérj be egy egész számot, és jeleníts meg annyi csillagot egy sorban!", ins: ["8"],
+      code: 'db = int(input("Hány csillag legyen? "))\nprint(f"{\'*\' * db}")',
+      ex: "Az f-string dupla idézőjelén belül a csillag szimpla idézőjelbe kerül: <code>{'*' * db}</code>. Írhatod két lépésben is: <code>csillagok = \"*\" * db</code>, utána <code>print(f\"{csillagok}\")</code>." },
+    { n: 25, q: "Kérj be egy nevet, majd írd ki, hogy hány karakterből áll!", ins: ["Kovács Anna"],
+      code: 'nev = input("Adj meg egy nevet: ")\nprint(f"A név {len(nev)} karakterből áll.")',
+      ex: "A <code>len()</code> minden karaktert számol, a szóközt is: a „Kovács Anna” 11 karakter." },
+    { n: 26, q: "Kérj be egy szót! Írd ki a szó első és utolsó karakterét a szöveg hosszának felhasználásával!", ins: ["alma"],
+      code: 'szo = input("Adj meg egy szót: ")\nprint(f"Az első karakter: {szo[0]}")\nprint(f"Az utolsó karakter: {szo[len(szo) - 1]}")',
+      ex: "Az index 0-tól indul, így az utolsó karakter indexe <code>len(szo) - 1</code> (az „alma”-nál 3). A <code>szo[len(szo)]</code> már hiba. Rövidebben: <code>szo[-1]</code>, de itt a hosszt kérik." },
+    { n: 27, q: "Kérj be egy legalább két karakteres szót! Állíts össze egy kétkarakteres szöveget, amelyben először a szó második, majd az első karaktere szerepel! Például: kutya → uk", ins: ["kutya"],
+      code: 'szo = input("Adj meg egy szót: ")\nkod = szo[1] + szo[0]\nprint(f"{kod}")',
+      ex: "A második karakter indexe 1, az elsőé 0. A <code>+</code> összefűzi a két karaktert." },
+    { n: 28, q: "Kérj be egy legalább három karakteres szót! Hozz létre egy kódot a szó első, második és utolsó karakteréből! Például: Python → Pyn", ins: ["Python"],
+      code: 'szo = input("Adj meg egy szót: ")\nkod = szo[0] + szo[1] + szo[len(szo) - 1]\nprint(f"A kód: {kod}")',
+      ex: "Az utolsó karakter <code>szo[len(szo) - 1]</code> vagy <code>szo[-1]</code>; mindkettő jó." },
+    { n: 29, q: "Kérj be egy mondatot, majd egy keresett szót! Az in operátor segítségével írd ki, hogy a keresett szó szerepel-e a mondatban!", ins: ["Ma Python dolgozatot írunk", "Python"],
+      code: 'mondat = input("Egy mondat: ")\nszo = input("A keresett szó: ")\nprint(f"Szerepel-e a mondatban: {szo in mondat}")',
+      ex: "A <code>szo in mondat</code> értéke <code>True</code> vagy <code>False</code>. A kis- és nagybetű számít: a „python” nincs benne." },
+    { n: 30, q: "Kérj be egy emailt, majd írd ki a hosszát és azt, hogy szerepel-e benne az \"@\" karakter!", ins: ["kovacs.anna@gmail.com"],
+      code: 'email = input("E-mail-cím: ")\nprint(f"A hossza: {len(email)}")\nprint(f"Van benne @: {\'@\' in email}")',
+      ex: "A <code>'@'</code> szimpla idézőjelben van, mert az f-string dupla idézőjelén belül áll." },
+    { n: 31, q: "Kérj be egy szót, majd jelenítsd meg ilyen formában:", qx: "<pre class='code'>**********\n* Python *\n**********</pre><p>A csillagok számát a szó hossza alapján számítsd ki, és bármilyen hosszúságú szóval működjön!</p>", ins: ["Python"],
+      code: 'szo = input("Adj meg egy szót: ")\ncsillagok = "*" * (len(szo) + 4)\nprint(f"{csillagok}")\nprint(f"* {szo} *")\nprint(f"{csillagok}")',
+      ex: "A középső sor: csillag, szóköz, a szó, szóköz, csillag, vagyis a szó hossza + 4 karakter. Ezért kell <code>len(szo) + 4</code> csillag (a Pythonnál 10)." },
+    { n: 32, q: "Kérd be egy személy vezetéknevét és keresztnevét, majd készíts belőlük monogramot! Például: Kovács Anna → K.A.", ins: ["Kovács", "Anna"],
+      code: 'vezetek = input("Vezetéknév: ")\nkereszt = input("Keresztnév: ")\nmonogram = vezetek[0] + "." + kereszt[0] + "."\nprint(f"A monogram: {monogram}")',
+      ex: "A kezdőbetű a <code>[0]</code> indexű karakter. Az f-stringgel így is írhatod: <code>f\"{vezetek[0]}.{kereszt[0]}.\"</code>" },
+    { n: 33, q: "Kérj be egy mondatot, és alakítsd teljes egészében nagybetűssé!", ins: ["Holnap Python dolgozatot írunk."],
+      code: 'mondat = input("Egy mondat: ")\nprint(f"{mondat.upper()}")',
+      ex: "A metódus a szöveg után jön, ponttal, és zárójel kell a végére: <code>mondat.upper()</code>." },
+    { n: 34, q: "Kérj be egy csupa nagybetűs mondatot, és alakítsd kisbetűssé!", ins: ["EZ EGY CSUPA NAGYBETŰS MONDAT."],
+      code: 'mondat = input("Egy nagybetűs mondat: ")\nprint(f"{mondat.lower()}")',
+      ex: "A <code>lower()</code> az ékezetes betűket is kisbetűssé alakítja (Ű → ű)." },
+    { n: 35, q: "Kérj be egy nevet, amelynek az elején vagy a végén felesleges szóközök is lehetnek! Távolítsd el a felesleges szóközöket a .strip() metódussal, majd írd ki a megtisztított nevet!", ins: ["   Kiss Péter  "],
+      code: 'nev = input("Adj meg egy nevet: ")\nnev = nev.strip()\nprint(f"A megtisztított név: [{nev}]")',
+      ex: "A <code>strip()</code> csak a széleken lévő szóközöket veszi le, a két szó közöttit nem. Az eredményt el kell menteni (<code>nev = nev.strip()</code>). A szögletes zárójel csak azt mutatja, hogy tényleg nincs szóköz a szélén." },
+    { n: 36, q: "Kérj be egy e-mail-címet! Távolítsd el a felesleges kezdő és záró szóközöket, majd alakítsd kisbetűssé! Például: \" TESZT@GMAIL.COM \" → teszt@gmail.com", ins: [" TESZT@GMAIL.COM "],
+      code: 'email = input("E-mail-cím: ")\nemail = email.strip().lower()\nprint(f"{email}")',
+      ex: "A metódusok láncolhatók: <code>email.strip().lower()</code>. Balról jobbra hajtja végre őket." },
+    { n: 37, q: "Kérj be egy szót és egy betűt, majd számold meg, hányszor szerepel a betű a szóban!", ins: ["banana", "a"],
+      code: 'szo = input("Egy szó: ")\nbetu = input("Egy betű: ")\nprint(f"Ennyiszer szerepel: {szo.count(betu)}")',
+      ex: "A <code>count()</code> zárójelébe az kerül, amit keresünk; ez lehet változó is." },
+    { n: 38, q: "Kérj be egy mondatot, majd számold meg, hányszor fordul elő benne az \"alma\" szövegrészlet!", ins: ["Az alma piros, az almafa alatt almát szedek."],
+      code: 'mondat = input("Egy mondat: ")\nprint(f"Az alma ennyiszer fordul elő: {mondat.count(\'alma\')}")',
+      ex: "A <code>count()</code> szövegrészletet keres, ezért az „almafa” és az „almát” is számít: itt 3. A nagy kezdőbetűs „Alma” nem számítana." },
+    { n: 39, q: "Kérj be egy szót, majd cseréld ki benne az összes a betűt e betűre!", ins: ["banana"],
+      code: 'szo = input("Egy szó: ")\nuj = szo.replace("a", "e")\nprint(f"{uj}")',
+      ex: "A <code>replace(régi, új)</code> az összes előfordulást cseréli: banana → benene. Az eredeti szó nem változik." },
+    { n: 40, q: "Kérj be egy mondatot, majd egy régi és egy új szót! A .replace() segítségével cseréld le a régi szó összes előfordulását az újra!", ins: ["A macska alszik, a macska játszik.", "macska", "kutya"],
+      code: 'mondat = input("Egy mondat: ")\nregi = input("A régi szó: ")\nuj = input("Az új szó: ")\nprint(f"{mondat.replace(regi, uj)}")',
+      ex: "A <code>replace()</code> mindkét paramétere változó is lehet." },
+    { n: 41, q: "Kérj be egy szót, majd számold meg, hány a, e, i, o és u betűt tartalmaz összesen! Használd többször a .count() metódust! Az ékezetes magánhangzókat most nem kell figyelembe venni.", ins: ["programozas"],
+      code: 'szo = input("Egy szó: ")\ndb = szo.count("a") + szo.count("e") + szo.count("i") + szo.count("o") + szo.count("u")\nprint(f"Magánhangzók száma: {db}")',
+      ex: "Öt <code>count()</code> összeadva. A „programozas” szóban: 2 a, 2 o, összesen 4." },
+    { n: 42, q: "Kérj be egy mondatot! Cseréld ki benne az összes a betűt @ karakterre, az összes e betűt pedig 3 karakterre!", ins: ["Ma este Pythonban programozunk"],
+      code: 'mondat = input("Egy mondat: ")\nuj = mondat.replace("a", "@").replace("e", "3")\nprint(f"{uj}")',
+      ex: "Két <code>replace()</code> egymás után. Az ékezetes á és é marad, mert az más karakter." },
+    { n: 43, q: "Kérj be egy mondatot és egy keresett szövegrészletet. Alakítsd mindkettőt kisbetűssé, majd számold meg, hányszor szerepel a keresett részlet a mondatban!", ins: ["Alma, alma, ALMA!", "Alma"],
+      code: 'mondat = input("Egy mondat: ")\nresz = input("A keresett részlet: ")\ndb = mondat.lower().count(resz.lower())\nprint(f"Ennyiszer szerepel: {db}")',
+      ex: "Ha csak a mondatot alakítod kisbetűssé, a nagybetűs „Alma” keresés 0-t adna. Mindkettőt át kell alakítani." },
+    { n: 44, q: "Kérj be egy szöveget, majd hajtsd végre a következő műveleteket:", qx: "<p>a. Távolítsd el a szélső szóközöket.<br>b. Alakítsd kisbetűssé.<br>c. Cseréld ki a szóközöket kötőjelekre.<br>d. Írd ki az átalakított szöveget és a hosszát.</p><p>Például: \" SZIA VILÁG \" → szia-világ</p>", ins: [" SZIA VILÁG "],
+      code: 'szoveg = input("Egy szöveg: ")\nszoveg = szoveg.strip()\nszoveg = szoveg.lower()\nszoveg = szoveg.replace(" ", "-")\nprint(f"{szoveg}")\nprint(f"A hossza: {len(szoveg)}")',
+      ex: "A sorrend számít: ha előbb cserélnéd a szóközöket, a széleken is kötőjel lenne. Egy sorban is lehet: <code>szoveg.strip().lower().replace(\" \", \"-\")</code>." },
+    { n: 45, q: "Kérj be három terméknevet és a hozzájuk tartozó árakat! Írd ki a termékeket és az árukat külön sorokba, majd a teljes fizetendő összeget!", ins: ["tej", "420", "kenyér", "650", "sajt", "1890"],
+      code: 't1 = input("1. termék neve: ")\na1 = int(input("1. termék ára: "))\nt2 = input("2. termék neve: ")\na2 = int(input("2. termék ára: "))\nt3 = input("3. termék neve: ")\na3 = int(input("3. termék ára: "))\nprint(f"{t1}: {a1} Ft")\nprint(f"{t2}: {a2} Ft")\nprint(f"{t3}: {a3} Ft")\nprint(f"Összesen: {a1 + a2 + a3} Ft")',
+      ex: "A név szöveg (nem kell átalakítani), az ár szám (<code>int()</code>). Minden termék egy <code>print</code>." },
+    { n: 46, q: "Kérd be egy diák nevét és 5 jegyét! Írd ki a diák nevét nagybetűvel, az öt jegy átlagát két tizedesre kerekítve, valamint a legjobb és a legrosszabb jegyét!", ins: ["Kiss Bence", "5", "4", "3", "5", "4"],
+      code: 'nev = input("A diák neve: ")\nj1 = int(input("1. jegy: "))\nj2 = int(input("2. jegy: "))\nj3 = int(input("3. jegy: "))\nj4 = int(input("4. jegy: "))\nj5 = int(input("5. jegy: "))\natlag = (j1 + j2 + j3 + j4 + j5) / 5\nprint(f"Név: {nev.upper()}")\nprint(f"Átlag: {round(atlag, 2)}")\nprint(f"Legjobb jegy: {max(j1, j2, j3, j4, j5)}")\nprint(f"Legrosszabb jegy: {min(j1, j2, j3, j4, j5)}")',
+      ex: "Itt minden együtt van: <code>upper()</code>, átlag zárójellel, <code>round()</code>, <code>max()</code>, <code>min()</code>." },
+    { n: 47, q: "Kérj be egy e-mail-címet! Alakítsd kisbetűssé, távolítsd el a szélső szóközöket, majd írd ki:", qx: "<p>a. a megtisztított címet,<br>b. a karakterek számát,<br>c. hogy szerepel-e benne @,<br>d. hogy szerepel-e benne gmail.com.</p>", ins: ["  Kiss.Bence@Gmail.com "],
+      code: 'email = input("E-mail-cím: ")\nemail = email.lower().strip()\nprint(f"A cím: {email}")\nprint(f"Karakterek száma: {len(email)}")\nprint(f"Van benne @: {\'@\' in email}")\nprint(f"Gmail-es cím: {\'gmail.com\' in email}")',
+      ex: "Először tisztítsd meg, és mentsd el; utána minden kiírás a tiszta címmel dolgozik." },
+    { n: 48, q: "Kérj be egy mondatot! Írd ki a mondat hosszát, első és utolsó karakterét, valamint azt, hogy hány szóköz van benne!", ins: ["Holnap dolgozatot írunk Pythonból."],
+      code: 'mondat = input("Egy mondat: ")\nprint(f"A hossza: {len(mondat)}")\nprint(f"Az első karakter: {mondat[0]}")\nprint(f"Az utolsó karakter: {mondat[-1]}")\nprint(f"Szóközök száma: {mondat.count(\' \')}")',
+      ex: "Az utolsó karakter itt a pont. A szóközt is a <code>count()</code> számolja meg: <code>count(' ')</code>." },
+    { n: 49, q: "Kérd be a felhasználó nevét, életkorát, városát és kedvenc tantárgyát! Az adatokat több sorban, formázottan jelenítsd meg f-string segítségével!", ins: ["Kiss Bence", "15", "Debrecen", "informatika"],
+      code: 'nev = input("Név: ")\nkor = int(input("Életkor: "))\nvaros = input("Város: ")\ntantargy = input("Kedvenc tantárgy: ")\nprint(f"Név:              {nev}")\nprint(f"Életkor:          {kor} év")\nprint(f"Város:            {varos}")\nprint(f"Kedvenc tantárgy: {tantargy}")',
+      ex: "Formázott = jól olvasható: egy adat egy sor, címkével. Ha a címkék után szóközökkel igazítasz, az értékek egymás alá kerülnek. Egy <code>print</code>-tel is lehet több sor: a <code>\\n</code> új sort kezd." },
+    { n: 50, q: "Kérd be egy pizza árát, a rendelt pizzák számát, a szállítási díjat, valamint a kedvezmény százalékát! Számítsd ki a teljes fizetendő összeget! A kedvezmény csak a pizzák árára vonatkozzon, a szállításra ne.", ins: ["3290", "3", "990", "10"],
+      code: 'ar = int(input("Egy pizza ára (Ft): "))\ndb = int(input("Hány pizza? "))\nszallitas = int(input("Szállítási díj (Ft): "))\nkedv = int(input("Kedvezmény (%): "))\npizzak = ar * db\nkedvezmeny = pizzak * kedv / 100\nfizetendo = pizzak - kedvezmeny + szallitas\nprint(f"A pizzák ára: {pizzak} Ft")\nprint(f"A kedvezmény: {kedvezmeny} Ft")\nprint(f"Fizetendő: {fizetendo} Ft")',
+      ex: "Lépésenként a legbiztosabb: a pizzák ára → a kedvezmény (csak ebből) → a kedvezményes árhoz hozzáadod a szállítást." },
+    { n: 51, q: "Kérj be egy mondatot! Alakítsd kisbetűssé, majd végezd el a következő cseréket: a → 4, e → 3, i → 1, o → 0, szóköz → _", qx: "<p>Írd ki a titkosított mondatot!</p>", ins: ["Ez egy titkos uzenet"],
+      code: 'mondat = input("Egy mondat: ")\ntitkos = mondat.lower()\ntitkos = titkos.replace("a", "4").replace("e", "3").replace("i", "1")\ntitkos = titkos.replace("o", "0").replace(" ", "_")\nprint(f"A titkosított mondat: {titkos}")',
+      ex: "Előbb kisbetűs, különben a nagy „E” nem cserélődne. A hosszú láncot két sorba is írhatod: a második sor az első eredményén folytatja." },
+    { n: 52, q: "Kérj be egy diáknevet, születési évet, három tantárgyi jegyet és egy kedvenc szót! Készíts összefoglalót, amely tartalmazza a diák nevét nagybetűsen, a 2030-ban betöltött életkorát, a jegyek átlagát két tizedesre kerekítve, a legjobb és legrosszabb jegyét, a kedvenc szó hosszát, első és utolsó betűjét, illetve a kedvenc szót háromszor egymás után!", ins: ["Kiss Bence", "2011", "5", "4", "5", "python"],
+      code: 'nev = input("Név: ")\nszuletes = int(input("Születési év: "))\nj1 = int(input("1. jegy: "))\nj2 = int(input("2. jegy: "))\nj3 = int(input("3. jegy: "))\nszo = input("Kedvenc szó: ")\nprint(f"Név: {nev.upper()}")\nprint(f"Életkor 2030-ban: {2030 - szuletes}")\nprint(f"Átlag: {round((j1 + j2 + j3) / 3, 2)}")\nprint(f"Legjobb jegy: {max(j1, j2, j3)}")\nprint(f"Legrosszabb jegy: {min(j1, j2, j3)}")\nprint(f"A szó hossza: {len(szo)}")\nprint(f"Első betű: {szo[0]}, utolsó betű: {szo[-1]}")\nprint(f"Háromszor: {szo * 3}")',
+      ex: "A leghosszabb feladat, de minden sora olyan, amit már ismersz. Haladj sorban: előbb mindent bekérsz, aztán soronként egy kiírás." }
+  ];
+/*@/ORIG*/
+
+/*@OUTS*/
+  const OUTS = {"1":{"segs":[["p","Hány éves vagy? "],["i","15\n"],["o","5 év múlva 20 éves leszel.\n"]],"err":"","line":0},"2":{"segs":[["p","Mennyi zsebpénzed van most? "],["i","2500\n"],["p","Mennyit szeretnél még kapni? "],["i","1500\n"],["o","Összesen 4000 Ft-od lesz.\n"]],"err":"","line":0},"3":{"segs":[["p","A kenyér ára: "],["i","650\n"],["p","A rizs ára: "],["i","899\n"],["p","A tészta ára: "],["i","480\n"],["o","Fizetendő: 2029 Ft\n"]],"err":"","line":0},"4":{"segs":[["p","Az a oldal: "],["i","5\n"],["p","A b oldal: "],["i","3\n"],["o","A kerület: 16.0\nA terület: 15.0\n"]],"err":"","line":0},"5":{"segs":[["p","Adj meg egy egész számot: "],["i","4\n"],["o","A négyzete: 16\nA köbe: 64\n"]],"err":"","line":0},"6":{"segs":[["p","Adj meg egy egész számot: "],["i","17\n"],["o","A kettővel való osztás maradéka: 1\n(Ha 0, a szám páros; ha 1, páratlan.)\n"]],"err":"","line":0},"7":{"segs":[["p","Mekkora összeget osztanak el? "],["i","10000\n"],["o","Fejenként: 3333.33 Ft\n"]],"err":"","line":0},"8":{"segs":[["p","Hőmérséklet Celsius-fokban: "],["i","25\n"],["o","25.0 °C = 77.0 °F\n"]],"err":"","line":0},"9":{"segs":[["p","Adj meg egy egész számot: "],["i","20\n"],["o","A végeredmény: 27\n"]],"err":"","line":0},"10":{"segs":[["p","1. jegy: "],["i","5\n"],["p","2. jegy: "],["i","4\n"],["p","3. jegy: "],["i","4\n"],["o","Az átlag: 4.33\n"]],"err":"","line":0},"11":{"segs":[["p","A termék ára (Ft): "],["i","12000\n"],["p","A kedvezmény (%): "],["i","15\n"],["o","A kedvezmény: 1800.0 Ft\nA kedvezményes ár: 10200.0 Ft\n"]],"err":"","line":0},"12":{"segs":[["p","1. szám: "],["i","12\n"],["p","2. szám: "],["i","45\n"],["p","3. szám: "],["i","7\n"],["p","4. szám: "],["i","30\n"],["o","A legnagyobb: 45\n"]],"err":"","line":0},"13":{"segs":[["p","1. szám: "],["i","3.5\n"],["p","2. szám: "],["i","-1.25\n"],["p","3. szám: "],["i","7\n"],["p","4. szám: "],["i","0.5\n"],["p","5. szám: "],["i","2\n"],["o","A legkisebb: -1.25\n"]],"err":"","line":0},"14":{"segs":[["p","Az első (kisebb) szám: "],["i","3\n"],["p","A második (nagyobb) szám: "],["i","10\n"],["o","A különbség abszolút értéke: 7\n"]],"err":"","line":0},"15":{"segs":[["p","Adj meg egy számot: "],["i","-12.5\n"],["o","A nullától való távolság: 12.5\n"]],"err":"","line":0},"16":{"segs":[["p","Adj meg egy valós számot: "],["i","3.14159\n"],["o","Egészre: 3\nEgy tizedesre: 3.1\nHárom tizedesre: 3.142\n"]],"err":"","line":0},"17":{"segs":[["p","1. nap: "],["i","12.5\n"],["p","2. nap: "],["i","15\n"],["p","3. nap: "],["i","9.5\n"],["p","4. nap: "],["i","17\n"],["p","5. nap: "],["i","14\n"],["o","Leghidegebb: 9.5 °C\nLegmelegebb: 17.0 °C\nKülönbség: 7.5 °C\n"]],"err":"","line":0},"18":{"segs":[["p","1. ár: "],["i","1200\n"],["p","2. ár: "],["i","950\n"],["p","3. ár: "],["i","1490\n"],["p","4. ár: "],["i","1100\n"],["o","Ennyit spórolhatunk: 540 Ft\n"]],"err":"","line":0},"19":{"segs":[["p","1. szám: "],["i","-7\n"],["p","2. szám: "],["i","12\n"],["p","3. szám: "],["i","-3\n"],["o","A legkisebb távolság: 3\n"]],"err":"","line":0},"20":{"segs":[["p","1. versenyző: "],["i","78\n"],["p","2. versenyző: "],["i","92\n"],["p","3. versenyző: "],["i","86\n"],["o","Legnagyobb: 92\nLegkisebb: 78\nÁtlag: 85.33\n"]],"err":"","line":0},"21":{"segs":[["p","Vezetéknév: "],["i","Kovács\n"],["p","Keresztnév: "],["i","Anna\n"],["o","A teljes név: Kovács Anna\n"]],"err":"","line":0},"22":{"segs":[["p","Hogy hívnak? "],["i","Bence\n"],["o","Szia, Bence! Örülök, hogy itt vagy!\n"]],"err":"","line":0},"23":{"segs":[["p","Egy szó: "],["i","hip\n"],["p","Hányszor? "],["i","3\n"],["o","hiphiphip\n"]],"err":"","line":0},"24":{"segs":[["p","Hány csillag legyen? "],["i","8\n"],["o","********\n"]],"err":"","line":0},"25":{"segs":[["p","Adj meg egy nevet: "],["i","Kovács Anna\n"],["o","A név 11 karakterből áll.\n"]],"err":"","line":0},"26":{"segs":[["p","Adj meg egy szót: "],["i","alma\n"],["o","Az első karakter: a\nAz utolsó karakter: a\n"]],"err":"","line":0},"27":{"segs":[["p","Adj meg egy szót: "],["i","kutya\n"],["o","uk\n"]],"err":"","line":0},"28":{"segs":[["p","Adj meg egy szót: "],["i","Python\n"],["o","A kód: Pyn\n"]],"err":"","line":0},"29":{"segs":[["p","Egy mondat: "],["i","Ma Python dolgozatot írunk\n"],["p","A keresett szó: "],["i","Python\n"],["o","Szerepel-e a mondatban: True\n"]],"err":"","line":0},"30":{"segs":[["p","E-mail-cím: "],["i","kovacs.anna@gmail.com\n"],["o","A hossza: 21\nVan benne @: True\n"]],"err":"","line":0},"31":{"segs":[["p","Adj meg egy szót: "],["i","Python\n"],["o","**********\n* Python *\n**********\n"]],"err":"","line":0},"32":{"segs":[["p","Vezetéknév: "],["i","Kovács\n"],["p","Keresztnév: "],["i","Anna\n"],["o","A monogram: K.A.\n"]],"err":"","line":0},"33":{"segs":[["p","Egy mondat: "],["i","Holnap Python dolgozatot írunk.\n"],["o","HOLNAP PYTHON DOLGOZATOT ÍRUNK.\n"]],"err":"","line":0},"34":{"segs":[["p","Egy nagybetűs mondat: "],["i","EZ EGY CSUPA NAGYBETŰS MONDAT.\n"],["o","ez egy csupa nagybetűs mondat.\n"]],"err":"","line":0},"35":{"segs":[["p","Adj meg egy nevet: "],["i","   Kiss Péter  \n"],["o","A megtisztított név: [Kiss Péter]\n"]],"err":"","line":0},"36":{"segs":[["p","E-mail-cím: "],["i"," TESZT@GMAIL.COM \n"],["o","teszt@gmail.com\n"]],"err":"","line":0},"37":{"segs":[["p","Egy szó: "],["i","banana\n"],["p","Egy betű: "],["i","a\n"],["o","Ennyiszer szerepel: 3\n"]],"err":"","line":0},"38":{"segs":[["p","Egy mondat: "],["i","Az alma piros, az almafa alatt almát szedek.\n"],["o","Az alma ennyiszer fordul elő: 2\n"]],"err":"","line":0},"39":{"segs":[["p","Egy szó: "],["i","banana\n"],["o","benene\n"]],"err":"","line":0},"40":{"segs":[["p","Egy mondat: "],["i","A macska alszik, a macska játszik.\n"],["p","A régi szó: "],["i","macska\n"],["p","Az új szó: "],["i","kutya\n"],["o","A kutya alszik, a kutya játszik.\n"]],"err":"","line":0},"41":{"segs":[["p","Egy szó: "],["i","programozas\n"],["o","Magánhangzók száma: 4\n"]],"err":"","line":0},"42":{"segs":[["p","Egy mondat: "],["i","Ma este Pythonban programozunk\n"],["o","M@ 3st3 Pythonb@n progr@mozunk\n"]],"err":"","line":0},"43":{"segs":[["p","Egy mondat: "],["i","Alma, alma, ALMA!\n"],["p","A keresett részlet: "],["i","Alma\n"],["o","Ennyiszer szerepel: 3\n"]],"err":"","line":0},"44":{"segs":[["p","Egy szöveg: "],["i"," SZIA VILÁG \n"],["o","szia-világ\nA hossza: 10\n"]],"err":"","line":0},"45":{"segs":[["p","1. termék neve: "],["i","tej\n"],["p","1. termék ára: "],["i","420\n"],["p","2. termék neve: "],["i","kenyér\n"],["p","2. termék ára: "],["i","650\n"],["p","3. termék neve: "],["i","sajt\n"],["p","3. termék ára: "],["i","1890\n"],["o","tej: 420 Ft\nkenyér: 650 Ft\nsajt: 1890 Ft\nÖsszesen: 2960 Ft\n"]],"err":"","line":0},"46":{"segs":[["p","A diák neve: "],["i","Kiss Bence\n"],["p","1. jegy: "],["i","5\n"],["p","2. jegy: "],["i","4\n"],["p","3. jegy: "],["i","3\n"],["p","4. jegy: "],["i","5\n"],["p","5. jegy: "],["i","4\n"],["o","Név: KISS BENCE\nÁtlag: 4.2\nLegjobb jegy: 5\nLegrosszabb jegy: 3\n"]],"err":"","line":0},"47":{"segs":[["p","E-mail-cím: "],["i","  Kiss.Bence@Gmail.com \n"],["o","A cím: kiss.bence@gmail.com\nKarakterek száma: 20\nVan benne @: True\nGmail-es cím: True\n"]],"err":"","line":0},"48":{"segs":[["p","Egy mondat: "],["i","Holnap dolgozatot írunk Pythonból.\n"],["o","A hossza: 34\nAz első karakter: H\nAz utolsó karakter: .\nSzóközök száma: 3\n"]],"err":"","line":0},"49":{"segs":[["p","Név: "],["i","Kiss Bence\n"],["p","Életkor: "],["i","15\n"],["p","Város: "],["i","Debrecen\n"],["p","Kedvenc tantárgy: "],["i","informatika\n"],["o","Név:              Kiss Bence\nÉletkor:          15 év\nVáros:            Debrecen\nKedvenc tantárgy: informatika\n"]],"err":"","line":0},"50":{"segs":[["p","Egy pizza ára (Ft): "],["i","3290\n"],["p","Hány pizza? "],["i","3\n"],["p","Szállítási díj (Ft): "],["i","990\n"],["p","Kedvezmény (%): "],["i","10\n"],["o","A pizzák ára: 9870 Ft\nA kedvezmény: 987.0 Ft\nFizetendő: 9873.0 Ft\n"]],"err":"","line":0},"51":{"segs":[["p","Egy mondat: "],["i","Ez egy titkos uzenet\n"],["o","A titkosított mondat: 3z_3gy_t1tk0s_uz3n3t\n"]],"err":"","line":0},"52":{"segs":[["p","Név: "],["i","Kiss Bence\n"],["p","Születési év: "],["i","2011\n"],["p","1. jegy: "],["i","5\n"],["p","2. jegy: "],["i","4\n"],["p","3. jegy: "],["i","5\n"],["p","Kedvenc szó: "],["i","python\n"],["o","Név: KISS BENCE\nÉletkor 2030-ban: 19\nÁtlag: 4.67\nLegjobb jegy: 5\nLegrosszabb jegy: 4\nA szó hossza: 6\nElső betű: p, utolsó betű: n\nHáromszor: pythonpythonpython\n"]],"err":"","line":0}};
+/*@/OUTS*/
+
+  /* ---------- Hero: futtató ---------- */
+  const play = pyEd($("#play"), { code: ORIG[21].code, inputs: ORIG[21].ins, primary: true });
+  const tryCode = (code, ins) => { play.set(code, ins || []); $("#play").scrollIntoView({ behavior: "smooth", block: "center" }); play.run(); };
+
+  /* ---------- Levezetések ---------- */
+  const srcHtml = (src, ln) => '<div class="src">' + src.map((l, i) => '<div class="' + (ln === i + 1 ? "cur" : "") + '"><span class="ln">' + (i + 1) + "</span>" + esc(l) + "</div>").join("") + "</div>";
+  const varTbl = v => { const ks = Object.keys(v); return ks.length ? '<div class="ptwrap" style="margin-top:8px"><table class="pt">' + "<tr>" + ks.map(k => "<th>" + k + "</th>").join("") + "</tr><tr>" + ks.map(k => "<td>" + esc(v[k]) + "</td>").join("") + "</tr></table></div>" : ""; };
+  const idxHtml = (arr, hl) => '<div class="idx">' + arr.map((x, i) => '<span class="' + (hl && hl.includes(i) ? "hl" : "") + '"><small>' + i + "</small>" + (x === " " ? "<span class='sp'>␣</span>" : esc(x)) + "<small>" + (i - arr.length) + "</small></span>").join("") + "</div>";
+  const vis = s => '"' + esc(s).replace(/ /g, "<span class='sp'>·</span>") + '"';
+  function atlagFrames(){
+    const src = ['j1 = int(input("1. jegy: "))', 'j2 = int(input("2. jegy: "))', 'j3 = int(input("3. jegy: "))', "atlag = (j1 + j2 + j3) / 3", 'print(f"Az átlag: {round(atlag, 2)}")'];
+    const F = [{ cap: "Három jegy átlaga, két tizedesre. Sorról sorra követjük: a sárga sor fut, alatta a változók.", html: srcHtml(src, 0) }];
+    F.push({ cap: "Az első sor kiírja a kérdést, és vár. Beírjuk: 5. Az input ezt szövegként adja vissza: \"5\". Ezzel még nem lehet számolni!", html: srcHtml(src, 1) + '<p class="big" style="margin-top:8px">input(…) → <span class="cur">"5"</span> (szöveg)</p>' });
+    F.push({ cap: "Az int a szövegből számot csinál: 5. Ez kerül a j1 változóba.", html: srcHtml(src, 1) + varTbl({ j1: 5 }) });
+    F.push({ cap: "Ugyanígy a második jegy: 4.", html: srcHtml(src, 2) + varTbl({ j1: 5, j2: 4 }) });
+    F.push({ cap: "És a harmadik: 5.", html: srcHtml(src, 3) + varTbl({ j1: 5, j2: 4, j3: 5 }) });
+    F.push({ cap: "Előbb a zárójel: 5 + 4 + 5 = 14. Utána az osztás: 14 / 3 = 4.666666666666667. Zárójel nélkül csak a j3 osztódna el!", html: srcHtml(src, 4) + varTbl({ j1: 5, j2: 4, j3: 5, atlag: "4.666666666666667" }) });
+    F.push({ cap: "A round két tizedesre kerekít: 4.67. Az f-string a kapcsos zárójel helyére ezt teszi.", html: srcHtml(src, 5) + '<p class="big" style="margin-top:8px">round(4.666…, 2) = <span class="cur">4.67</span></p>' });
+    F.push({ cap: "A kimenet: Az átlag: 4.67.", html: srcHtml(src, 5) + '<p class="led" style="margin-top:8px">Az átlag: 4.67</p>' });
+    return F;
+  }
+  function osztFrames(){
+    const code = '<pre class="code">osszeg = 1000\nprint(osszeg / 3)\nprint(osszeg // 3)\nprint(osszeg % 3)\nprint(round(osszeg / 3, 2))</pre>';
+    return [
+      { cap: "Három barát elosztja az 1000 forintot. Pythonban háromféle osztás van, nézzük mindet.", html: code },
+      { cap: "A per jel a rendes osztás. Az eredménye mindig tizedes tört: 1000 / 3 = 333.3333333333333.", html: '<p class="big">1000 / 3 = <span class="cur">333.3333333333333</span></p>' },
+      { cap: "A dupla per jel az egész osztás: hányszor van meg benne, lefelé kerekítve. Egész forintban fejenként 333 jut.", html: '<p class="big">1000 // 3 = <span class="cur">333</span></p>' },
+      { cap: "A százalékjel a maradék: 1000 = 333 · 3 + 1, tehát 1 forint marad.", html: '<p class="big">1000 % 3 = <span class="cur">1</span></p>' },
+      { cap: "Ha két tizedes kell, a round segít: round(1000 / 3, 2) = 333.33.", html: '<p class="big">round(1000 / 3, 2) = <span class="cur">333.33</span></p>' },
+      { cap: "Összefoglalva: a / tizedes tört, a // egész hányados, a % a maradék.", html: '<p class="big">/ → 333.333… &nbsp; // → 333 &nbsp; % → 1</p>' }
+    ];
+  }
+  function indexFrames(){
+    const s = "Python".split("");
+    return [
+      { cap: "A szöveg minden karakterének sorszáma van, ez az index. Fent a pozitív index, 0-tól. Lent a negatív, hátulról.", html: '<pre class="code">szo = "Python"</pre>' + idxHtml(s) },
+      { cap: "szo[0] az első karakter: P. Az index 0-tól indul, nem 1-től!", html: idxHtml(s, [0]) + '<p class="big led">szo[0] → P</p>' },
+      { cap: "szo[1] a második karakter: y.", html: idxHtml(s, [1]) + '<p class="big led">szo[1] → y</p>' },
+      { cap: "A len a szöveg hossza: len(szo) = 6. Az utolsó index ennél eggyel kisebb: 5.", html: idxHtml(s, [5]) + '<p class="big led">len(szo) = 6</p>' },
+      { cap: "Az utolsó karakter: szo[len(szo) - 1], vagyis szo[5]: n. Rövidebben: szo[-1].", html: idxHtml(s, [5]) + '<p class="big led">szo[len(szo) - 1] = szo[-1] → n</p>' },
+      { cap: "A kód a 28. feladatban: első, második és utolsó karakter összefűzve: P + y + n = Pyn.", html: idxHtml(s, [0, 1, 5]) + '<p class="big led">szo[0] + szo[1] + szo[-1] → Pyn</p>' },
+      { cap: "Vigyázz: szo[6] már nincs! Ez IndexError, mert a 6 karakteres szó indexei 0-tól 5-ig mennek.", html: idxHtml(s) + '<p class="big" style="color:#ff8a7d">szo[6] → IndexError</p>' }
+    ];
+  }
+  function lancFrames(){
+    const box = (s, note) => '<p class="big">' + vis(s) + "</p>" + (note ? '<p class="dim">' + note + "</p>" : "");
+    return [
+      { cap: "A 44. feladat: a szöveg két szélén szóközök vannak. A pontok most a szóközöket mutatják.", html: '<pre class="code">szoveg = "  SZIA VILÁG  "</pre>' + box("  SZIA VILÁG  ", "hossza: 14") },
+      { cap: "A strip leveszi a szélső szóközöket. A két szó közötti szóköz marad!", html: '<pre class="code">szoveg = szoveg.strip()</pre>' + box("SZIA VILÁG", "hossza: 10") },
+      { cap: "A lower kisbetűssé alakít minden betűt, az ékezeteseket is.", html: '<pre class="code">szoveg = szoveg.lower()</pre>' + box("szia világ") },
+      { cap: "A replace minden szóközt kötőjelre cserél.", html: '<pre class="code">szoveg = szoveg.replace(" ", "-")</pre>' + box("szia-világ") },
+      { cap: "A len a végső hossz: 10. Kiírva: szia-világ, és a hossza 10.", html: '<p class="big led">szia-világ · 10</p>' },
+      { cap: "Fontos: a metódus nem a régi szöveget módosítja, hanem újat ad. Ezért kell az értékadás: szoveg = szoveg.strip(). Egy sorban is írható: szoveg.strip().lower().replace(\" \", \"-\").", html: '<pre class="code">szoveg = szoveg.strip().lower().replace(" ", "-")</pre>' }
+    ];
+  }
+  const MET = { atlag: "input → int → átlag", oszt: "/ , // és %", index: "Index: Python → Pyn", lanc: "strip, lower, replace" };
+  const MF = { atlag: atlagFrames, oszt: osztFrames, index: indexFrames, lanc: lancFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "atlag" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const TRY = [];
+  const ex = (code, ins) => { TRY.push([code, ins || []]); return '<pre class="code">' + esc(code) + "</pre><p><button class='btn' data-try='" + (TRY.length - 1) + "'>▶ Kipróbálom</button></p>"; };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+  const init = el => {
+    el.querySelectorAll("[data-try]").forEach(b => b.addEventListener("click", () => { const t = TRY[+b.dataset.try]; tryCode(t[0], t[1]); }));
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "A program váza: bekérés, számolás, kiírás", h:
+      "<p>Minden dolgozatfeladat ugyanígy épül fel:</p><ol><li><b>Bekérés:</b> <code>input()</code>, ha kell, típusváltással.</li><li><b>Számolás:</b> az eredményt változóba teszed.</li><li><b>Kiírás:</b> <code>print(f\"…\")</code>.</li></ol>" +
+      ex('nev = input("Hogy hívnak? ")\nkor = int(input("Hány éves vagy? "))\njovore = kor + 1\nprint(f"Szia, {nev}! Jövőre {jovore} éves leszel.")', ["Bence", "15"]) +
+      "<div class='note'><b>A futtatóban:</b> a bemeneteket soronként egy írd a „Bemenetek” mezőbe, mintha a billentyűzeten gépelnéd. Kékkel látszik, mit „gépelt be” a gép.</div>" },
+    { k: "Változók", t: "Változók és típusok", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Típus</th><th>Mi ez?</th><th>Példa</th></tr><tr><td>int</td><td>egész szám</td><td>15, -3, 0</td></tr><tr><td>float</td><td>valós szám (tizedes tört)</td><td>3.5, -0.25, 2.0</td></tr><tr><td>str</td><td>szöveg</td><td>\"alma\", \"15\"</td></tr><tr><td>bool</td><td>igaz vagy hamis</td><td>True, False</td></tr></table></div>" +
+      "<ul><li>Értékadás: <code>kor = 15</code>. A bal oldalon a változó neve, a jobb oldalon az érték.</li><li>A változónévben ne legyen szóköz és ékezet, és ne számmal kezdődjön: <code>uj_ar</code>, <code>j1</code>, <code>osszeg</code>.</li><li>A kis- és nagybetű számít: a <code>Nev</code> és a <code>nev</code> két külön változó.</li><li>A tizedesjel <b>pont</b>: 3.5.</li></ul>" },
+    { k: "Bemenet", t: "Az input mindig szöveget ad", h:
+      ex('a = input("Első szám: ")\nb = input("Második szám: ")\nprint(f"Szövegként: {a + b}")\nprint(f"Számként: {int(a) + int(b)}")', ["5", "3"]) +
+      "<ul><li><code>\"5\" + \"3\"</code> = <b>53</b> (összefűzés), de <code>5 + 3</code> = <b>8</b>.</li><li>Egész számhoz: <code>int(input(…))</code>. Tizedes törthöz: <code>float(input(…))</code>. Szöveghez (név, szó, mondat, e-mail): csak <code>input(…)</code>.</li><li>Az <code>int(\"3.5\")</code> hiba (ValueError): tizedes törthöz <code>float()</code> kell.</li></ul>" },
+    { k: "Kiírás", t: "f-string: így írd ki az eredményt", h:
+      ex('ar = 350\ndb = 4\nprint(f"{db} darab ára: {ar * db} Ft")\nprint(f"Az átlag: {round(17 / 3, 2)}")', []) +
+      "<ul><li>Az <b>f</b> betű a nyitó idézőjel <b>elé</b> kerül: <code>f\"…\"</code>.</li><li>A kapcsos zárójelbe változó, számolás, függvény vagy metódus is kerülhet: <code>{a + b}</code>, <code>{len(szo)}</code>, <code>{nev.upper()}</code>.</li><li>Ha az f kimarad, a gép betű szerint kiírja: <code>{a + b}</code>.</li><li>Az f-string belsejében szimpla idézőjelet használj: <code>f\"{'*' * 5}\"</code>.</li><li>Több sor: több <code>print</code>, vagy <code>\\n</code> a szövegben.</li></ul>" },
+    { k: "Műveletek", t: "Műveletek: + − * / // % **", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Mit csinál?</th><th>Példa</th><th>Eredmény</th></tr><tr><td>+ − *</td><td>összeadás, kivonás, szorzás</td><td>3 + 4 * 2</td><td>11</td></tr><tr><td>/</td><td>osztás (mindig tizedes tört)</td><td>17 / 5</td><td>3.4</td></tr><tr><td>//</td><td>egész osztás</td><td>17 // 5</td><td>3</td></tr><tr><td>%</td><td>maradék</td><td>17 % 5</td><td>2</td></tr><tr><td>**</td><td>hatványozás</td><td>2 ** 5</td><td>32</td></tr></table></div>" +
+      "<p>Sorrend: előbb a hatvány, aztán a szorzás és az osztás, végül az összeadás és a kivonás. A zárójel mindent megelőz: <code>(a + b) / 2</code>.</p>" +
+      ex('print(17 / 5)\nprint(17 // 5)\nprint(17 % 5)\nprint(8 / 2)\nprint(2 ** 5)', []) + playBtn("oszt") },
+    { k: "Rövidítések", t: "+= és −=", h:
+      ex('szam = int(input("Egy szám: "))\nszam += 10      # ugyanaz: szam = szam + 10\nszam -= 3       # ugyanaz: szam = szam - 3\nprint(f"A végeredmény: {szam}")', ["20"]) +
+      "<ul><li>A <code>#</code> utáni rész megjegyzés: a gép nem futtatja.</li><li>A változó régi értéke elvész, az új kerül a helyére.</li><li>Van még <code>*=</code> és <code>/=</code> is, ugyanígy működnek.</li></ul>" },
+    { k: "Kerekítés", t: "round(): kerekítés", h:
+      ex('x = 3.14159\nprint(f"{round(x)}")      # 3\nprint(f"{round(x, 1)}")   # 3.1\nprint(f"{round(x, 3)}")   # 3.142\natlag = (5 + 4 + 4) / 3\nprint(f"{round(atlag, 2)}")', []) +
+      "<ul><li><code>round(x)</code>: egészre. <code>round(x, 2)</code>: két tizedesre.</li><li>A 2 a round zárójelén <b>belül</b> van: <code>round(atlag, 2)</code>, nem <code>round(atlag), 2</code>.</li><li>Érdekesség: a pont fél értéket a Python a páros felé kerekíti: <code>round(2.5)</code> = 2, <code>round(3.5)</code> = 4.</li></ul>" + playBtn("atlag") },
+    { k: "Függvények", t: "max, min, abs", h:
+      ex('print(max(12, 45, 7, 30))     # 45\nprint(min(3.5, -1.25, 7))     # -1.25\nprint(abs(-12))               # 12\nprint(abs(3 - 10))            # 7\nprint(min(abs(-7), abs(12), abs(-3)))   # 3', []) +
+      "<ul><li>A <code>max()</code> és a <code>min()</code> akárhány értéket kaphat, vesszővel.</li><li>Az <code>abs()</code> az abszolút érték: a nullától való távolság. Két szám különbségének abszolút értéke a távolságuk: <code>abs(a - b)</code>.</li><li>Függvény függvényben: belülről kifelé számol.</li></ul>" },
+    { k: "Szöveg", t: "Szöveg-műveletek: + * len", h:
+      ex('vez = "Kovács"\nker = "Anna"\nprint(f"{vez + \' \' + ker}")   # összefűzés szóközzel\nprint(f"{\'ha\' * 3}")             # ismétlés: hahaha\nprint(f"{len(vez + \' \' + ker)}")   # hossz: 11', []) +
+      "<ul><li>A <code>+</code> két szöveget szóköz nélkül fűz össze: a szóközt neked kell beletenni.</li><li>A <code>*</code> egész számmal ismétel: <code>\"*\" * 10</code>.</li><li>A <code>len()</code> a karakterek száma, a szóköz is karakter.</li><li>Szöveghez számot <code>+</code>-szal nem fűzhetsz: <code>\"Kor: \" + 15</code> hiba. Ezért jó az f-string.</li></ul>" },
+    { k: "Index", t: "Indexelés: s[0], s[-1], s[len(s) - 1]", h:
+      ex('szo = "kutya"\nprint(szo[0])              # k  (első)\nprint(szo[1])              # u  (második)\nprint(szo[-1])             # a  (utolsó)\nprint(szo[len(szo) - 1])   # a  (utolsó, a hosszal)\nprint(szo[1] + szo[0])     # uk', []) +
+      "<ul><li>Az index <b>0-tól</b> indul.</li><li>Az utolsó index <code>len(szo) - 1</code>; a <code>szo[len(szo)]</code> IndexError.</li><li>A negatív index hátulról számol: <code>-1</code> az utolsó, <code>-2</code> az utolsó előtti.</li></ul>" + playBtn("index") },
+    { k: "Keresés", t: "Az in operátor", h:
+      ex('mondat = "Ma Python dolgozatot írunk"\nprint(f"{\'Python\' in mondat}")   # True\nprint(f"{\'python\' in mondat}")   # False\nemail = "anna@gmail.com"\nprint(f"Van benne @: {\'@\' in email}")', []) +
+      "<ul><li>Az <code>in</code> eredménye <code>True</code> (igaz) vagy <code>False</code> (hamis).</li><li>Szövegrészletet keres: a <code>\"ma\"</code> benne van a <code>\"mama\"</code>-ban is.</li><li>A kis- és nagybetű számít. Ha nem akarod, előbb alakítsd kisbetűssé mindkettőt.</li></ul>" },
+    { k: "Metódusok", t: "upper, lower, strip, count, replace", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Metódus</th><th>Mit ad?</th><th>Példa → eredmény</th></tr><tr><td>s.upper()</td><td>nagybetűs</td><td>\"Alma\" → \"ALMA\"</td></tr><tr><td>s.lower()</td><td>kisbetűs</td><td>\"ALMA\" → \"alma\"</td></tr><tr><td>s.strip()</td><td>a szélső szóközök nélkül</td><td>\"  Anna \" → \"Anna\"</td></tr><tr><td>s.count(x)</td><td>hányszor van benne x</td><td>\"banana\".count(\"a\") → 3</td></tr><tr><td>s.replace(a, b)</td><td>minden a helyett b</td><td>\"banana\".replace(\"a\", \"e\") → \"benene\"</td></tr></table></div>" +
+      "<div class='mistake'><b>A metódus nem módosítja a változót</b>, hanem új szöveget ad. <code>nev.strip()</code> egymagában semmit nem változtat: <code>nev = nev.strip()</code> kell.</div>" +
+      ex('email = "  Kiss.Anna@GMAIL.com "\nemail = email.strip().lower()\nprint(f"[{email}]")\nprint(f"{\'banana\'.count(\'a\')}")', []) + playBtn("lanc") },
+    { k: "Összetett", t: "Egy hosszú feladat lépésről lépésre", h:
+      "<p>A 46. feladat: név és 5 jegy → név nagybetűvel, átlag két tizedesre, legjobb és legrosszabb jegy.</p><ol><li><b>Mit kérek be, és milyen típus?</b> A név szöveg, a jegyek int.</li><li><b>Mit számolok?</b> Átlag: (összeg) / 5.</li><li><b>Mit írok ki?</b> Négy sor, mindegyik f-stringgel.</li></ol>" +
+      ex('nev = input("Név: ")\nj1 = int(input("1. jegy: "))\nj2 = int(input("2. jegy: "))\nj3 = int(input("3. jegy: "))\nj4 = int(input("4. jegy: "))\nj5 = int(input("5. jegy: "))\natlag = (j1 + j2 + j3 + j4 + j5) / 5\nprint(f"Név: {nev.upper()}")\nprint(f"Átlag: {round(atlag, 2)}")\nprint(f"Legjobb: {max(j1, j2, j3, j4, j5)}")\nprint(f"Legrosszabb: {min(j1, j2, j3, j4, j5)}")', ["Kiss Bence", "5", "4", "3", "5", "4"]) },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Kimaradt az int():</b> <code>kor = input(…)</code>, majd <code>kor + 1</code> → TypeError. A bemenet szöveg!</div>" +
+      "<div class='mistake'><b>Kimaradt az f:</b> <code>print(\"{nev}\")</code> betű szerint kiírja a kapcsos zárójelet.</div>" +
+      "<div class='mistake'><b>Zárójel az átlagnál:</b> <code>a + b + c / 3</code> csak a c-t osztja el. Helyesen: <code>(a + b + c) / 3</code>.</div>" +
+      "<div class='mistake'><b>/ és //:</b> a <code>7 / 2</code> 3.5, a <code>7 // 2</code> 3. Egész forinthoz, indexhez a // kell.</div>" +
+      "<div class='mistake'><b>Index:</b> az első karakter <code>s[0]</code>, az utolsó <code>s[-1]</code>; a <code>s[len(s)]</code> IndexError.</div>" +
+      "<div class='mistake'><b>A strip() csak a széleket</b> tisztítja, és el kell menteni: <code>s = s.strip()</code>.</div>" +
+      "<div class='mistake'><b>Tizedesvessző:</b> <code>1,8</code> helyett <code>1.8</code>. Beíráskor is ponttal: 3.5.</div>" +
+      "<div class='mistake'><b>Nagybetűs metódus:</b> <code>Upper()</code> helyett <code>upper()</code>, és a zárójel nem maradhat el.</div>" },
+    { k: "Trükkök", t: "Tanácsok a dolgozatra", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Olvasd el kétszer</span><span>Húzd alá: mit kell bekérni, mit kiszámolni, mit kiírni. Hány input lesz?</span></div>" +
+      "<div class='trick'><span class='t'>Típus a bekérésnél</span><span>Szám → int vagy float. „Valós szám” → float. Név, szó, mondat → semmi.</span></div>" +
+      "<div class='trick'><span class='t'>Próbáld ki fejben</span><span>Adj meg egy egyszerű bemenetet (például 5 és 3), és számold ki, mit kellene kiírnia.</span></div>" +
+      "<div class='trick'><span class='t'>Mindig f-string</span><span>Minden eredményt <code>print(f\"…{…}…\")</code> alakban írj ki, ezt kéri a dolgozat.</span></div>" +
+      "<div class='trick'><span class='t'>Kérdező szöveg</span><span>Az input zárójelébe írd, mit vársz: <code>input(\"Hány éves vagy? \")</code>. A végére tegyél szóközt.</span></div>" +
+      "<div class='trick'><span class='t'>Ha kérik a függvényt</span><span>„a ** operátorral”, „a .strip()-pel”, „az in operátorral”: akkor azt használd, még ha máshogy is menne.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Az eredeti 52 feladat ---------- */
+  const OS = { ch: 0 };
+  const origTerm = n => { const o = OUTS[n]; return o ? term(o.segs, o.err, o.line) : '<pre class="term"><span class="dim">(a minta kimenete a futtatással látható)</span></pre>'; };
+  function origList(){
+    const f = FEJ[OS.ch];
+    $$("#otabs .tab").forEach((b, i) => b.setAttribute("aria-selected", String(i === OS.ch)));
+    $("#olist").innerHTML = '<div class="ch-head"><h3>' + (OS.ch + 1) + ". " + f[0] + "</h3><p>A feladatsor " + f[1] + "–" + f[2] + ". feladata.</p></div>" +
+      ORIG.filter(o => o.n >= f[1] && o.n <= f[2]).map(o =>
+        '<div class="ot" data-n="' + o.n + '"><div class="oq"><span class="on">' + o.n + ".</span>" + esc(o.q) + "</div>" + (o.qx || "") +
+        '<div class="row"><button class="btn" data-o="work">✎ Megoldom itt</button><button class="btn" data-o="sol">Mintamegoldás</button></div>' +
+        '<div class="owork" hidden></div><div class="osol" hidden></div></div>').join("");
+  }
+  $("#otabs").innerHTML = FEJ.map((f, i) => '<button class="tab" data-ch="' + i + '">' + (i + 1) + ". " + f[0] + "</button>").join("");
+  $("#otabs").addEventListener("click", e => { const b = e.target.closest("[data-ch]"); if (!b) return; OS.ch = +b.dataset.ch; origList(); });
+  $("#olist").addEventListener("click", async e => {
+    const b = e.target.closest("[data-o]"); if (!b) return;
+    const card = b.closest(".ot"), o = ORIG.find(x => x.n === +card.dataset.n);
+    if (b.dataset.o === "sol"){
+      const s = $(".osol", card); s.hidden = !s.hidden;
+      if (!s.innerHTML) s.innerHTML = '<span class="lbl">Mintamegoldás</span><pre class="code">' + esc(o.code) + '</pre><span class="lbl">Így fut (a kék a begépelt bemenet)</span>' + origTerm(o.n) + "<p>" + o.ex + "</p>";
+      b.textContent = s.hidden ? "Mintamegoldás" : "Mintamegoldás elrejtése";
+    } else if (b.dataset.o === "work"){
+      const w = $(".owork", card); w.hidden = !w.hidden;
+      if (!w.dataset.ok){
+        w.dataset.ok = "1";
+        w.innerHTML = '<div class="ed-host"></div><div class="row"><button class="btn" data-o="cmp">Összevetés a mintával</button></div><div class="cmpres"></div>';
+        card._ed = pyEd($(".ed-host", w), { code: "# " + o.n + ". feladat\n", inputs: o.ins });
+      }
+      b.textContent = w.hidden ? "✎ Megoldom itt" : "✎ Elrejtés";
+    } else if (b.dataset.o === "cmp"){
+      const box = $(".cmpres", card), ins = card._ed.inputs() === "" ? [] : card._ed.inputs().replace(/\r/g, "").split("\n");
+      box.innerHTML = '<p class="dim">Fut…</p>';
+      const mine = await PY.run(card._ed.get(), ins), ref = await PY.run(o.code, ins);
+      if (mine.fail){ box.innerHTML = "<p>" + esc(failMsg) + "</p>"; return; }
+      box.innerHTML = '<div class="cmp"><div><span class="lbl">A te programod</span>' + term(mine.segs, mine.err, mine.line) + '</div><div><span class="lbl">A mintamegoldás</span>' + term(ref.segs, ref.err, ref.line) + "</div></div>" +
+        "<p>Ugyanazok a számok és szövegek jöttek ki? A mondat lehet más, az érték legyen ugyanaz. Próbáld ki más bemenettel is!</p>";
+    }
+  });
+  origList();
+
+  /* ---------- Gyakorlás ---------- */
+  const { VALT, FV, STR, MET: METH, KOMP, KIIR, HIBA, cmpOut, fstr } = LOGIC;
+  const fmtE = e => typeof e === "number" ? String(e) : '"' + e + '"';
+  const stripCom = LOGIC.stripCom;
+  async function pyCheck(t, raw){
+    const code = String(raw.code || "");
+    if (!stripCom(code).trim()) return { ok: false, msg: "Még nincs program. Írd meg a kódmezőbe, és nyomd meg újra az Ellenőrzést." };
+    let first = null;
+    for (let k = 0; k < t.tests.length; k++){
+      const T = t.tests[k], r = await PY.run(code, T.ins);
+      if (r.fail) return { ok: false, msg: esc(failMsg) + " Hasonlítsd össze a programodat a mintamegoldással (Megoldás lépésenként)." };
+      if (!first) first = r;
+      const shown = "Bemenet: " + T.ins.map(x => '"' + x + '"').join(", ");
+      if (r.err) return { ok: false, msg: "A program hibával állt le." + term(r.segs, r.err, r.line) };
+      if (r.used < T.ins.length) return { ok: false, msg: "A programod csak " + r.used + " adatot kért be az input()-tal, de " + T.ins.length + " kellene." + term(r.segs) };
+      const miss = cmpOut(r.out, T.exp);
+      if (miss.length){
+        const m = miss[0];
+        const why = /\{[^{}\n]+\}/.test(r.out) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a print idézőjele elől? Helyesen: print(f\"… {valtozo} …\")."
+          : typeof m.e === "number" && T.ins.length > 1 && r.out.includes(T.ins.join("")) ? "A számokat összefűzte, nem összeadta: kimaradt az int() vagy a float() az input() körül?"
+          : m.extra ? m.extra : m.near != null ? "Ezt az értéket vártam: " + fmtE(m.e) + ", de ezt írta ki: " + m.near + ". Nézd meg a számolást vagy a kerekítést!" : m.line ? "Ezt a sort vártam (pontosan így, előtte legfeljebb egy címke szóközzel): " + esc(fmtE(m.e)) : "Ezt nem találom a kimenetben: " + esc(fmtE(m.e));
+        return { ok: false, msg: (k ? "Az első próbabemenetre jó volt, de a másodikra nem. " : "") + why + " (" + esc(shown) + ")" + term(r.segs) };
+      }
+    }
+    const src = stripCom(code);
+    for (const [re, m] of (t.must || [])) if (!re.test(src)) return { ok: false, msg: "Az eredmény jó, de a feladat ezt kéri: " + esc(m) };
+    if (!fstr.test(src)) return { ok: false, msg: "Az eredmény jó, de a dolgozatban f-stringgel kell kiírni: print(f\"… {valtozo} …\")." };
+    return { ok: true, msg: "Helyes! Két különböző bemenetre is jó eredményt adott." + term(first.segs) };
+  }
+  const STARTER = "# Írd ide a programot\n";
+  function pyTask(tpl, title){
+    const T = tpl();
+    return { q: T.q, kind: "py", title,
+      mount: (el) => pyEd(el, { code: STARTER, inputs: T.tests[0].ins }),
+      answer: '<pre class="code">' + esc(T.code) + "</pre>",
+      sol: "<p>" + esc(T.ex) + "</p><p>Próbabemenet: " + T.tests[0].ins.map(x => "<code>" + esc(x) + "</code>").join(" ") + "</p><p>Egy jó megoldás (a kiírt mondat lehet más is):</p>",
+      check: raw => pyCheck(T, raw) };
+  }
+  const pyType = (id, name, BANK) => ({ id, name, gen: l => pyTask(pick(BANK[l - 1]), name) });
+  const choice = (q, good, others, sol, bad) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const normO = v => String(v).trim().replace(/[“”„]/g, '"').replace(/^["']|["']$/g, "");
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen(l){
+      const t = pick(KIIR[l - 1])();
+      return { q: "Mit ír ki ez a program?<pre class='code'>" + esc(t.code) + "</pre>", kind: "input", answer: esc(t.ans), sol: "<p>" + esc(t.sol) + "</p>",
+        check: v => { const s = String(v).trim(); if (s === t.ans || normO(s) === t.ans) return { ok: true, msg: "Helyes!" }; if (s === t.ans.replace(/\.0$/, "")) return { ok: false, msg: "Majdnem: a / osztás eredménye mindig tizedes tört, ezért .0 is van a végén." }; if (s.toLowerCase() === t.ans.toLowerCase()) return { ok: false, msg: "Nézd meg a kis- és nagybetűket!" }; return { ok: false, msg: "Nem jó. Kövesd sorról sorra, mit csinál a gép." }; } };
+    } },
+    pyType("valt", "Írd meg: változók, műveletek", VALT),
+    pyType("fv", "Írd meg: max, min, abs, round", FV),
+    pyType("str", "Írd meg: szövegek, index", STR),
+    pyType("met", "Írd meg: metódusok", METH),
+    pyType("komp", "Írd meg: összetett", KOMP),
+    { id: "hiba", name: "Hibakereső", gen(l){
+      const b = pick(HIBA[l - 1]), good = b[2] + ". sor", others = b[1].map((_, i) => (i + 1) + ". sor").filter(x => x !== good);
+      if (others.length < 2) others.push("Egyik sem, a program jó");
+      return choice("<b>Feladat:</b> " + esc(b[0]) + "<br>Melyik sort kell kijavítani, hogy jól működjön?<pre class='code'>" + b[1].map((s, i) => (i + 1) + "  " + esc(s)).join("\n") + "</pre>", good, others.slice(0, 3), "<p>" + esc(b[3]) + "</p>", "Nem ez. Nézd meg a típusokat (int, float), a zárójeleket, az f-et és az indexeket.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "python-dolgozat", types, play: playTo, examN: 10 });
+
+  /* ---------- Feladatlap (próbadolgozat) ---------- */
+  function sheet(){
+    const lv = +$("#dlvl").value, L = () => lv || rnd(1, 3);
+    const banks = [["Változók és műveletek", VALT], ["Matematikai függvények", FV], ["Szövegek", STR], ["Metódusok", METH], ["Összetett feladatok", KOMP]];
+    const items = []; banks.forEach(([nm, B]) => { const ts = shuffle(B[L() - 1]).concat(shuffle(B[L() - 1])); const a = ts[0](); let b = ts[1](), g = 0; while (b.q === a.q && g++ < 10) b = pick(B[L() - 1])(); items.push([nm, a], [nm, b]); });
+    $("#dsheet").innerHTML = items.map((it, i) => '<div class="ot" data-i="' + i + '"><div class="oq"><span class="on">' + (i + 1) + ".</span>" + it[1].q + ' <span class="tag">' + it[0] + "</span></div>" +
+      '<div class="row"><button class="btn" data-d="work">✎ Megoldom itt</button><button class="btn" data-d="sol">Mintamegoldás</button></div><div class="owork" hidden></div><div class="osol" hidden></div></div>').join("");
+    $("#dsheet")._items = items;
+  }
+  $("#dnew").addEventListener("click", sheet);
+  $("#dsheet").addEventListener("click", async e => {
+    const b = e.target.closest("[data-d]"); if (!b) return;
+    const card = b.closest(".ot"), T = $("#dsheet")._items[+card.dataset.i][1];
+    if (b.dataset.d === "sol"){
+      const s = $(".osol", card); s.hidden = !s.hidden;
+      if (!s.innerHTML) s.innerHTML = '<span class="lbl">Mintamegoldás</span><pre class="code">' + esc(T.code) + "</pre><p>" + esc(T.ex) + "</p>";
+      b.textContent = s.hidden ? "Mintamegoldás" : "Mintamegoldás elrejtése";
+    } else if (b.dataset.d === "work"){
+      const w = $(".owork", card); w.hidden = !w.hidden;
+      if (!w.dataset.ok){ w.dataset.ok = "1"; w.innerHTML = '<div class="ed-host"></div><div class="row"><button class="btn primary" data-d="check">Ellenőrzés</button></div><div class="dfb"></div>'; card._ed = pyEd($(".ed-host", w), { code: STARTER, inputs: T.tests[0].ins }); }
+      b.textContent = w.hidden ? "✎ Megoldom itt" : "✎ Elrejtés";
+    } else if (b.dataset.d === "check"){
+      const fb = $(".dfb", card); b.disabled = true; fb.innerHTML = '<p class="dim">Ellenőrzés…</p>';
+      const r = await pyCheck(T, card._ed.raw()); b.disabled = false;
+      fb.innerHTML = '<div class="feedback ' + (r.ok ? "ok" : "bad") + '">' + (r.ok ? "✓ " : "") + r.msg + "</div>";
+    }
+  });
+  sheet();
+
+  /* ---------- Puska ---------- */
+  const rows = [["x = input(\"…\")", "bekérés: mindig szöveg"], ["int(…) · float(…) · str(…)", "egész szám · valós szám · szöveg"], ["print(f\"Összeg: {a + b}\")", "kiírás f-stringgel"], ["+ − * / // % **", "műveletek (/ tizedes tört, // egész osztás, % maradék, ** hatvány)"], ["x += 5 · x -= 3", "x = x + 5 · x = x − 3"], ["round(x) · round(x, 2)", "kerekítés egészre · két tizedesre"], ["max(a, b, c) · min(a, b, c)", "legnagyobb · legkisebb"], ["abs(x) · abs(a - b)", "abszolút érték · két szám távolsága"], ["s + t · s * 3 · len(s)", "összefűzés · ismétlés · hossz"], ["s[0] · s[1] · s[-1] · s[len(s) - 1]", "első · második · utolsó · utolsó"], ["\"x\" in s", "benne van-e: True / False"], ["s.upper() · s.lower()", "nagybetűs · kisbetűs"], ["s.strip()", "szélső szóközök nélkül"], ["s.count(\"a\")", "hányszor van benne"], ["s.replace(\"a\", \"e\")", "minden a helyett e"], ["s = s.strip().lower()", "láncolás, és mentsd el!"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

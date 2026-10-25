@@ -25,6 +25,8 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tizenhatos-szamrendszer.html`, `logikai-muveletek.html`, `szoveg-es-kep.html`, `html-alapok.html`, `css-alapok.html`, `git-alapok.html` | A 2026. 10. 22-i leckék (kész). **A forrásuk a `tools/lessons/*.src.html`**, ne a kimenetet szerkeszd. |
 | A 2026. 10. 23-i (éjszakai) leckék | 26 új lecke, a listájuk és a sorrend indoka: [`docs/leckek-terv.md`](docs/leckek-terv.md), a kezdőlapon csoportokban. Forrásuk szintén `tools/lessons/*.src.html`. |
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
+| `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
+| `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
 | `docs/leckek-terv.md`, `docs/tanrend-10.md` | A leckék sorrendje és indoka; a 10. évfolyam tanrend-vázlata (lecke nélkül). |
 | `version.json` | Az aktuális verzió-időbélyeg. Az oldalak ebből tudják, hogy van-e újabb változat. **Kézzel ne írd**, a pre-commit hook állítja. |
@@ -133,6 +135,31 @@ gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek
 - **Kezdőlap:** csoportok: Előkészítés · Első félév · Második félév · Matek, 9. évfolyam · Gondolkodás · Digitális kultúra.
 - **Push:** reggel Endi jóváhagyta (a pulton át), élesben van (`928b1e6`).
 
+### Python-dolgozat (2026. 10. 25., a pult briefje alapján)
+
+Endi (a pulton át): „Pythonból írnak dolgozatot, itt van hozzá a gyakorló feladatsor. Ezt a feladatsort kérlek, hogy tedd be a
+tanulás részbe, és még ehhez hasonló feladatokat csináljál, meg magyarázó, oktató részt is csinálj ehhez […] teljes tananyagot
+kérek ehhez.” A forrás: `C:\KOVRAT\20261025\PYTHON DOLGOZAT GYAKORLÓ.docx` (**52 feladat**, nincs a repóban). Ebből derült ki,
+hogy **a Mechwartban már a 9.-ben Python van** (a programtanterv a 10.-re teszi). A mellette lévő órai docx Word-formázás, nem Python.
+
+- **Lecke:** `python-dolgozat` — futtató a hero-ban; 15 dia (a dolgozat témái + tipikus hibák + tanácsok, „▶ Kipróbálom” gombbal);
+  4 levezetés; **az 52 eredeti feladat** fejezetenként, szó szerint (egy elírás javítva: „Íd ki” → „Írd ki”), mindegyiknél
+  mintamegoldás, példafutás, magyarázat, „✎ Megoldom itt” szerkesztő és „Összevetés a mintával”; 7 gyakorlótípus × 3 szint
+  (Mit ír ki?, 5 × „Írd meg”, Hibakereső), összesen 60 „Írd meg” sablon (néhány több változattal); feladatlap-generátor (témánként 2 feladat); puska.
+- **Python-futtató: Pyodide 0.27.7** (jsDelivr), egy blob-URL-es **Web Workerben**, lustán (az első „Futtatás”/„Ellenőrzés”-kor).
+  A Python-keret (`HARNESS`) az `input()`-ot a megadott bemenetekből szolgálja ki, a prompt + begépelt értéket külön jelöli
+  (kékkel látszik), és az ellenőrzés **csak a print kimenetét** nézi. 6 mp időkorlát (a worker újraindul). Ha nem tölt be,
+  a lecke használható marad (példafutások, Mit ír ki?, Hibakereső, mintamegoldások).
+- **Gépi ellenőrzés („Írd meg”):** a diák programja **két különböző bemenettel** fut; a várt értékek (szám tűréssel, szöveg,
+  egész sor) benne vannak-e a kimenetben (`cmpOut`), a kiírt mondat szabad. Utána: a feladat kért eszköze (`must`: `**`, `round`,
+  `strip`…) és az **f-string** kötelező. Célzott üzenetek: kimaradt `int()` (összefűzött számok), kimaradt `f` (kapcsos zárójel a
+  kimenetben), kerekítés, magyar hibatipp minden Python-hibához.
+- **Ellenőrizve:** `py-check.js --verify 40` (4800 futás + 760 „Mit ír ki?” a helyi CPython 3.12-vel, mind jó); `lesson-test.js
+  python-dolgozat 40` (840/840, a kiinduló kód sehol nem megy át, 390 px, sötét téma, JS-hiba nincs); célzott Playwright-próba:
+  az 52 minta Pyodide-ban betűre ugyanazt adja, mint CPythonban; feladatlap 10/10; CDN nélkül is használható.
+- **A közös készlet bővült:** `kit.js` egyedi feladatfajta (`task.mount(el) → { raw() }`), visszafelé kompatibilis (két régi
+  lecke újraépítve, tesztelve); `lesson-test.js` megvárja a lassú aszinkron ellenőrzést (`data-busy`, legfeljebb 90 mp).
+
 ## Döntések és indokaik
 
 | Döntés | Miért |
@@ -177,6 +204,9 @@ gyereknek kell. Akár logikai feladatok, minden.” Kovrat válaszai nem jöttek
   `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
+- **Python-dolgozat (2026-10-25):** kész, helyben commitolva, **push Endi igenjére vár**. Mivel az iskolában már a 9.-ben Python
+  van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
+  ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).
 
 ## Munkastílus Endivel
 

@@ -46,7 +46,8 @@ const SHOTS = "C:/xampp/htdocs/Kovrat/.playwright-mcp/";
     const pr = document.querySelector(".practice");
     if (!pr) return out;
     const box = pr.querySelector(".task");
-    const waitFb = async () => { for (let i = 0; i < 100; i++) { const f = box.querySelector(".fb .feedback"); if (f) return f; await sleep(30); } return null; };
+    // amíg az aszinkron ellenőrzés fut (a gomb data-busy: pl. a Python-futtató első betöltése), legfeljebb 90 mp-ig vár
+    const waitFb = async () => { for (let i = 0; i < 3000; i++) { const f = box.querySelector(".fb .feedback"); if (f) return f; if (i >= 100 && !box.querySelector('[data-busy="1"]')) break; await sleep(30); } return null; };
     const tabs = [...pr.querySelectorAll(".tabs .tab")], chips = [...pr.querySelectorAll(".chip")];
     for (const tab of tabs) {
       const st = out.types[tab.textContent] = { n: 0, ok: 0, starterPass: 0, code: 0 };
@@ -97,7 +98,7 @@ const SHOTS = "C:/xampp/htdocs/Kovrat/.playwright-mcp/";
         const o = box.querySelector(".opt"), fm = box.querySelector("form"), chk = box.querySelector('[data-a="check"]');
         if (o) o.click(); else if (fm) fm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true })); else if (chk) chk.click();
         // aszinkron ellenőrzés (JS-futtató): amíg a gomb tiltva, a feladat még fut
-        for (let i = 0; i < 150 && chk && chk.isConnected && chk.disabled; i++) await sleep(20);
+        for (let i = 0; i < 4500 && chk && chk.isConnected && chk.disabled; i++) await sleep(20);
         for (let i = 0; i < 60; i++) { await sleep(20); if (!box.querySelector(".fb .feedback")) break; }
         await sleep(40);
       }

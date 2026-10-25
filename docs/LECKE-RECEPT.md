@@ -350,6 +350,27 @@ megnyitott megoldásnál méri a vízszintes túllógást (a bűnös elemekkel);
 - **A `grep -c "a(z)"` hamis találatot ad** a kódra (`extra(z)`): ilyenkor nevezd át a változót.
 - **„Jó válasz” `<` jellel:** `esc()`-kel add meg (`x &lt; 5`).
 - **SVG-felirat a szélen:** a `text-anchor="middle"` kilóg a viewBoxból; a széleken `start`/`end`. A tesztelő ezt nem látja.
+### A 2026. 10. 25-i Python-dolgozat lecke buktatói (Pyodide)
+
+- **Python-futtató = Pyodide egy blob-URL-es Web Workerben** (`importScripts` a jsDelivr-ről, `indexURL` ugyanoda). A workert
+  le lehet állítani (`terminate`), így a végtelen ciklus nem fagyasztja le az oldalt; utána újra kell tölteni a Pyodide-ot
+  (a böngésző gyorsítótárából gyors). Lusta betöltés: csak az első futtatáskor. Ha nem tölt be, minden statikus rész menjen.
+- **Egy Python-keret két helyen:** a `HARNESS` (`String.raw` sablon, a Pythonban `chr(10)`, nem `\n`) fut a Pyodide-ban és a
+  `py-check.js`-ben a helyi Pythonnal, így a példafutások (OUTS) és a böngészős futás betűre egyeznek (52/52 igazolva).
+- **A logika jelölt blokkokban** (`/*@HARNESS*/`, `/*@LOGIC*/`, `/*@ORIG*/`, `/*@OUTS*/`): a `py-check.js` ezeket Node-ban
+  kiértékeli. A `LOGIC` ne használjon DOM-ot; amit kívülről kap (`rnd, pick, shuffle, esc`), azt a szkript is megadja.
+- **Kimenet-ellenőrzésnél a bemenet visszhangja ne számítson:** a `max`-os feladatnál a legnagyobb szám a beírt értékek között is
+  ott van. Ezért a keret külön gyűjti a print kimenetét és a prompt + begépelt értéket.
+- **Rövid szöveg (1–3 karakter) a kimenetben** csak önálló szóként számít (különben az „a” betű minden címkében megvan);
+  ismétléses / csillagos sor egész sorként (`line`), különben a hosszabb sor is „tartalmazza”; strip-feladatnál tiltott minta
+  (két szóköz előtte, egy utána), mert a címke utáni egy szóköz rendben van.
+- **A megjegyzés levágása** (`#`) ne vágja el a szöveget: `'#' * 5`. Idézőjelet követő szűrő kell (`stripCom`).
+- **Kerekítési határ:** a generált tizedes törtek jegyei között nincs 0 és 5, így egyik kerekítés sem esik ,5-re; a számolt
+  értékeknél `tie()`-vel újrasorsolunk. A `round(x, k)` egész értéknél Pythonban `4.0`: a „Mit ír ki?” válasza `pyF`-fel.
+- **Két különböző próbabemenet:** listából két `pick` gyakran egyforma; `two(lista)` (keverés, első kettő).
+- **A gépi tesztelő** a Pyodide első betöltése miatt megvárja a foglalt (`data-busy`) Ellenőrzés gombot (legfeljebb 90 mp).
+- **Telefonon a kódmező ne tördeljen** (`wrap="off"`): Pythonban a tördelt sor új sornak látszik.
+
 - **Független ellenőrzés:** a Python `round()` párosra kerekít (4312,5 → 4312), a JS `Math.round` felfelé; adj tűrést a .5-ös
   határra. Számkiolvasásnál a `[\d,]+` a felsorolás vesszőjét is elnyeli: `\d+(?:,\d+)?`; a számot tartalmazó neveket (MP3, 4K)
   előbb töröld. Ha a rajz és a válasz ugyanabból a fából készül, a rajzot ez nem igazolja: azt nézd, egyedi-e a jó gomb.

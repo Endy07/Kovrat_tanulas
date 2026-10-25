@@ -41,6 +41,9 @@ aztán a matek és a gondolkodás, végül a 10.-es előzetesek.
 | 25 | Informatikai angol | `informatikai-angol` | minden eszköz, hibaüzenet és leírás angolul van | Digitális kultúra |
 | 26 | Fájlok, mappák és a Windows | `windows-fajlkezeles` | a „Windows telepítése és konfigurációja” (15 óra) gépen gyakorolható része | Második félév |
 
+**2026-10-25:** Python-dolgozat: felkészülés (`python-dolgozat`, Első félév, a lista elején) — Kovrat októberi Python-dolgozata
+miatt, a gyakorló feladatsor alapján; böngészőben futó Pythonnal (Pyodide). Ebből tudjuk, hogy a Python az iskolában már a 9.-ben van.
+
 Az 1–25. leckét a végén négy friss szemű lektor is átnézte (nyelv, szakmai és matematikai helyesség); a javítások
 a `d6e7a7a` commitban vannak.
 

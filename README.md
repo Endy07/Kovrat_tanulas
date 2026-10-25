@@ -40,6 +40,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [IT-biztonság alapjai](it-biztonsag.html) | Linkvizsgáló (valódi domain, aldomain-, hasonló betű-, @- és IP-trükk), kártevők, támadások, helyzetgyakorlatok, XOR-titkosítás, nyilvános kulcs, paritásbit, Luhn-ellenőrzés, jelszó, digitális lábnyom |
 | [Linux parancssor](linux-parancssor.html) | Fájlrendszer-fa, abszolút és relatív útvonal, navigáció, fájlműveletek, jogosultságok (rwx, chmod), sudo, apt; játék-terminál élő mappafával |
 | [JavaScript-bevezető](javascript-bevezeto.html) | `<script>` és külső fájl, `console.log`, `alert`, változók, szöveg és szám, `prompt`, `if`, `for`, DOM, gombnyomás; elszigetelt JS-játszótér (`sandbox="allow-scripts"`, postMessage), a kódolós feladatok tényleg lefutnak |
+| [Python-dolgozat: felkészülés](python-dolgozat.html) | A 9.-es Python-dolgozat gyakorló feladatsora (52 feladat, szó szerint, mintamegoldással, példafutással); tananyag (input és int, f-string, / // % **, +=, round, max, min, abs, szöveg-operátorok, index, in, metódusok); **a Python a böngészőben fut** (Pyodide, Web Workerben, lustán töltve); új „Írd meg” feladatok, amelyeket a gép két bemenettel lefuttat és ellenőriz; feladatlap és próbadolgozat |
 | [Python-előzetes: kódolvasás](python-elozetes.html) | A 10.-es Python alapjai olvasva (futtató nélkül): típusok, osztások, input, if, for/range, while, lista, szelet, függvény; sorról sorra léptető változótáblával; a generált feladatokat valódi Python igazolta |
 | [Elektronika alapjai](elektronika-alapjai.html) | Feszültség, áram, ellenállás, Ohm-törvény, teljesítmény, villanyszámla, soros és párhuzamos kapcsolás, színkód, LED előtét-ellenállása; áramkör csúszkákkal és biztosítékkal |
 | [Virtualizáció és felhő](virtualizacio-felho.html) | Virtuális gép, hipervizor, pillanatkép, konténer, IaaS/PaaS/SaaS, felhő vagy saját szerver, 3-2-1 mentés, jelszóerősség, kétlépcsős azonosítás; VM-építő és jelszómérő |
@@ -49,12 +50,14 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
-## Hol tartunk (2026. 10. 23.)
+## Hol tartunk (2026. 10. 25.)
+
+- **Új (2026. 10. 25.): Python-dolgozat lecke.** Kovrat Pythonból dolgozatot ír; a gyakorló feladatsor mind az 52 feladata bekerült, tananyaggal, új feladatokkal és böngészőben futó Pythonnal (Pyodide). Ebből tudjuk: **az iskolában már a 9.-ben, októberben Python van** (az országos programtanterv a 10.-re teszi).
 
 - Kész: az **éves tanrend** (`docs/tanrend-9.md`, `tanrend.html`) az országos programtanterv alapján, és a **10. évfolyam vázlata** (`docs/tanrend-10.md`). Biztos: tantárgyak, óraszámok, témák. Becslés: a hónapokra bontás (az iskola tanmenete nem nyilvános).
 - Kész: a fenti leckék, mind felolvasós levezetéssel, 3 szintű, véletlen generált feladatokkal és próbadolgozattal. A 9.-es tanrend összes programozási és informatikai témája le van fedve (a tantermi gyakorlatok kivételével), mellette 8–9.-es matek, fejtörők, projektmunka, táblázatkezelés, informatikai angol és 10.-es előzetesek. A sorrend és az indok: `docs/leckek-terv.md`.
 - Kész: automatikus frissítés (`version.json` + pre-commit hook; új klónnál `git config core.hooksPath .githooks`), gépi leckeellenőrző (`node tools/lessons/lesson-test.js <név>`).
-- A **programtanterv szerint a 9.-ben nincs Python**: játékos kódolás, HTML, CSS, Git, reszponzív oldal, JavaScript-bevezető. A Python a 10. évfolyamon jön (addig: Python-előzetes, kódolvasás).
+- A **programtanterv szerint a 9.-ben nincs Python**, de **a Mechwartban van**: 2026 októberében Python-dolgozat (változók, műveletek, beépített függvények, szövegek; elágazás és ciklus még nincs benne). Erre készít a Python-dolgozat lecke.
 - Következő: Kovrat válaszai alapján igazítjuk a tanrendet (mit használnak programozásórán, mi a tanár sorrendje, van-e táblázatkezelés). A 10.-re Python-leckék futtatóval.
 
 ## Dokumentáció

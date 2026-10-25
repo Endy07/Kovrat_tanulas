@@ -73,6 +73,13 @@ buborékrendezés, függvények, sztringek, tuple, szótár, modulok, fájlkezel
 > játékos kódolás (blokkos), majd **HTML/CSS/JavaScript**, és a Python csak a 10.-ben jön. A C# a szoftverfejlesztő
 > szakirányban (11–13. évf.) szokott megjelenni ⚠️. A Mechwart eltérhet; ezt Kovrat tudja megmondani.
 
+✅ **Frissítés (2026-10-25): a Mechwart eltér, már a 9.-ben Python van.** Endi elküldte a „PYTHON DOLGOZAT GYAKORLÓ”
+feladatsort (52 feladat, 4 oldal): Kovrat októberben Pythonból ír dolgozatot. Témái: változók, `input()`, `int()`/`float()`,
+alapműveletek (`+ - * / // % **`, `+=`, `-=`), `round`, `max`, `min`, `abs`, szöveg-operátorok (összefűzés, `*`, `len`,
+index, `in`), szöveg-metódusok (`upper`, `lower`, `strip`, `count`, `replace`), összetett feladatok; az eredményt mindig
+**f-stringgel** kell kiírni. **Elágazás és ciklus még nincs benne.** Lecke: `python-dolgozat.html`. A forrás docx nincs a
+repóban (`C:\KOVRAT\20261025`). A mellette lévő órai docx (2026-10-19) Word-formázási feladat, nem Python.
+
 ## Hónapokra bontva (⚠️ becslés)
 
 A tanév 2026. szeptember 1-jétől; az első félév ~január közepéig. A sorrend a tanterv sorrendje és Kovrat füzete

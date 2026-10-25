@@ -366,7 +366,8 @@ const K = (function(){
   /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
      cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
      task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
-              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint }
+     egyedi fajta: task.mount(el, vizsga) → { raw() } (a .code-ed dobozba szerel, az Ellenőrzés gomb a készleté) */
   function practice(root, cfg){
     const key = "kovrat-" + cfg.id;
     const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
@@ -402,7 +403,7 @@ const K = (function(){
     function inputHtml(t){
       if (t.kind === "choice")
         return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
-      if (t.kind === "code" || t.kind === "js")
+      if (t.kind === "code" || t.kind === "js" || t.mount)
         return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
       return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
     }
@@ -411,7 +412,7 @@ const K = (function(){
       let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
       if (S.exam){
         h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
-        if (t.kind === "code" || t.kind === "js") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+        if (t.kind === "code" || t.kind === "js" || t.mount) h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
       } else {
         h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
           (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
@@ -420,6 +421,8 @@ const K = (function(){
       box.innerHTML = h;
       if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
       else if (t.kind === "js") S.ed = jseditor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows, html: t.html, prompt: !!(t.inputs && t.inputs.length), inputs: t.inputs });
+      // egyedi feladatfajta (pl. Python-futtató): a feladat maga szereli fel a szerkesztőt, a raw() adja az ellenőrizendőt
+      else if (t.mount) S.ed = t.mount($(".code-ed", box), !!S.exam);
       const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
     }
     function newTask(){
@@ -429,6 +432,7 @@ const K = (function(){
       const t = S.task;
       if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
       if (t.kind === "js") return { code: S.ed.get(), run: o => S.ed.run(o) };
+      if (t.mount) return S.ed.raw();
       const i = $("input", box); return i ? i.value : "";
     }
     function feedback(res){
