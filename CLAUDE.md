@@ -204,7 +204,7 @@ hogy **a Mechwartban már a 9.-ben Python van** (a programtanterv a 10.-re teszi
   `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
-- **Python-dolgozat (2026-10-25):** kész, helyben commitolva, **push Endi igenjére vár**. Mivel az iskolában már a 9.-ben Python
+- **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).
 
