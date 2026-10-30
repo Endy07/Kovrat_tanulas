@@ -10,6 +10,8 @@ Technikumban**, programozás (szoftverfejlesztő és -tesztelő) szakon, az info
 - **Helyi mappa:** `C:\xampp\htdocs\Kovrat` → http://localhost/Kovrat/
 - **claude.ai artifact (privát előnézet, csak az 1. leckéhez):** https://claude.ai/artifact/73Srdce3jbkXjNaefdA8Gk
 
+**Belépési pont (hol tartunk, mivel folytatunk):** [`KOVETKEZO-SESSION.md`](KOVETKEZO-SESSION.md).
+
 **Új leckénél először olvasd el:** [`docs/LECKE-RECEPT.md`](docs/LECKE-RECEPT.md). Abban van a
 lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 
@@ -179,7 +181,7 @@ alján ott a pontok listája.
   többjegyű betű, j/ly, egybe-/különírás, kis/nagybetű, írásjel, kimaradt/fölösleges szó), linkkel a leckére; „▶ A javítás
   lejátszva”. 12 szöveg (3 × 3 + 3 vegyes), a `tollbamondasok.html` nyomtathatóan is mutatja Endinek.
 - **Ellenőrizve:** `helyesiras-check.js` (227 eset: az AkH saját elválasztási és ábécérendi példái, hibatípusok, összevetés,
-  mondatforma); `lesson-test.js` mindhárom leckén 40-nel (1440/1440, 390 px, sötét téma, JS-hiba nincs); a tollbamondás-felület
+  mondatforma); `lesson-test.js` mindhárom leckén 40-nel (1560/1560: 600 + 480 + 480, 390 px, sötét téma, JS-hiba nincs); a tollbamondás-felület
   szándékosan hibás begépeléssel; nyomtatási nézet sötét témájú gépen is. A magyar szövegeket egy friss szemű lektor is átnézte.
 - **Kovrat saját hibái (később):** Endi a Facebook-csevegést a `C:\KOVRAT\chat\` mappába teszi (2026-10-30-án még üres).
   Ha megjön: hibastatisztika hibatípusonként a `docs/helyesiras-hibak.md`-be (a `H.classify` Node-ban is fut), a sorrend és
