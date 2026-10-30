@@ -185,7 +185,7 @@ alján ott a pontok listája.
   Ha megjön: hibastatisztika hibatípusonként a `docs/helyesiras-hibak.md`-be (a `H.classify` Node-ban is fut), a sorrend és
   a tollbamondások ehhez igazítva. **A csevegés és belőle szó szerinti mondat nem kerülhet a repóba** (nyilvános), és a
   `C:\KOVRAT\` mappán kívülre sem.
-- **Push nincs** Endi igene nélkül (a brief szerint); helyben commitolva.
+- **Élesben** 2026-10-30-án (Endi igenjével a pulton át: push `3cfe37a..62ac1c0`, élő version.json egyezik).
 
 ## Döntések és indokaik
 
@@ -231,7 +231,7 @@ alján ott a pontok listája.
   `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
-- **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, helyben commitolva, **push Endi igenjére vár**. Következő:
+- **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`). Következő:
   a 4. lecke (j/ly), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
