@@ -23,7 +23,9 @@ for (const n of names) {
   // a <title> a forrásban van; a head-blokk a title után kerül be
   s = s.replace("<!--@HEAD-->", () => head)
        .replace("<!--@KITJS-->", () => "<script>\n" + js + "</script>")
-       .replace("<!--@UPDATE-->", () => "<script>\n" + upd + "</script>");
+       .replace("<!--@UPDATE-->", () => "<script>\n" + upd + "</script>")
+       // helyesírás-leckék: a közös helyesírás-készlet (betűk, elválasztás, ábécérend, tollbamondás)
+       .replace("<!--@HJS-->", () => "<style>\n" + rd("helyesiras.css") + "</style>\n<script>\n" + rd("helyesiras.js") + "</script>");
   fs.writeFileSync(path.join(root, n + ".html"), s);
   console.log("kész:", n + ".html", Math.round(s.length / 1024) + " KB");
 }

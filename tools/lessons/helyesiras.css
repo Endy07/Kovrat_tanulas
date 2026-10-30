@@ -1,0 +1,53 @@
+/* Helyesírás-leckék közös stílusa (a kit.css mellé) */
+.dict{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.dict-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dict-chk{display:flex;gap:6px;align-items:center;font-size:.92rem;color:var(--muted)}
+.dict-stat{font-family:var(--mono);font-size:.9rem;color:var(--muted);min-height:1.4em}
+.dict-in{width:100%;min-height:170px;resize:vertical;font-family:var(--body);font-size:1.15rem;line-height:1.6;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.dict-res{display:flex;flex-direction:column;gap:12px}
+.dict-text{font-size:1.15rem;line-height:2;overflow-wrap:anywhere}
+.dict-text mark{background:var(--bad-bg);color:var(--bad);font-weight:700;border-radius:5px;padding:1px 4px}
+.dict-text mark u{text-decoration-thickness:3px;text-underline-offset:3px}
+.dict-text mark.miss{background:transparent;border:2px dashed var(--bad)}
+.dict-text del{color:var(--muted)}
+.dict-text .was{font-size:.75em;color:var(--muted);text-decoration:line-through;margin-left:3px}
+.dict-cat{border-left:4px solid var(--bad);background:var(--bad-bg);border-radius:0 10px 10px 0;padding:8px 12px;display:flex;flex-direction:column;gap:4px}
+.dict-pairs{font-family:var(--mono);font-size:.92rem;overflow-wrap:anywhere}
+.dict-pairs s{color:var(--muted)}
+.dict-show{background:var(--accent-soft);border-radius:12px;padding:12px 16px;font-size:1.1rem;line-height:1.7}
+
+.hw-row{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}
+.hw{font-family:var(--body);font-weight:700;font-size:clamp(1.5rem,7vw,2.3rem);color:#fff;overflow-wrap:anywhere}
+.hw u{color:var(--led);text-decoration-thickness:4px;text-underline-offset:6px}
+.hw.bad{color:#F2796C;text-decoration:line-through;text-decoration-thickness:2px}
+.pb-stage .dim{font-family:var(--mono);font-size:.85rem}
+
+/* betűcsempék: a többjegyű betű egy csempe */
+.tiles{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end}
+.tile{min-width:40px;text-align:center;border:1.5px solid #3A4656;border-radius:10px;padding:6px 8px;font-family:var(--body);font-weight:700;font-size:1.35rem;background:#151B23;color:#DCE3EC}
+.tile.v{border-color:var(--led);color:#FFB01F}
+.tile.m{border-color:#72A6F2;color:#9CC2FF}
+.tile.sep{border:0;background:none;color:#8C99AA;min-width:auto;padding:6px 2px}
+.tile small{display:block;font-family:var(--mono);font-weight:400;font-size:.62rem;color:#8C99AA}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--panel-muted)}
+.legend b.v{color:#FFB01F}.legend b.m{color:#9CC2FF}
+.abc{display:flex;flex-wrap:wrap;gap:4px}
+.abc span{font-family:var(--body);font-weight:700;border:1.5px solid #3A4656;border-radius:7px;padding:2px 7px;font-size:1rem}
+.abc span.m{border-color:#72A6F2;color:#9CC2FF}
+.abc span.v{border-color:var(--led);color:#FFB01F}
+.panel textarea{width:100%;min-height:90px;font-family:var(--body);font-size:1.05rem;padding:8px 10px;border-radius:10px;border:1.5px solid #3A4656;background:#0A0E13;color:#DCE3EC;resize:vertical}
+
+/* szópárok (rövid/hosszú) a hero-ban */
+.pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.pairbtn{background:#151B23;border:1.5px solid #3A4656;border-radius:14px;color:#DCE3EC;padding:12px;display:flex;flex-direction:column;gap:4px;text-align:left}
+.pairbtn .w{font-weight:700;font-size:1.5rem;color:#fff}
+.pairbtn .w u{color:#FFB01F;text-decoration-thickness:3px;text-underline-offset:5px}
+.pairbtn .m{font-size:.9rem;color:#8C99AA}
+.pairbtn:hover{border-color:#FFB01F}
+
+.gap{display:inline-block;min-width:1.4em;border-bottom:3px solid var(--accent);text-align:center;color:var(--accent)}
+.sent{font-size:1.2rem}
+.sent b{color:var(--accent)}
+.rule{border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:4px}
+.rule .ex{font-family:var(--body);font-weight:700}
+.src{font-size:.85rem;color:var(--muted)}

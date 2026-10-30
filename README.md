@@ -47,11 +47,16 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Mesterséges intelligencia alapjai](mesterseges-intelligencia.html) | Szabály vagy tanulás, tanítóadat, k-NN, mesterséges neuron és logikai kapuk, perceptron-tanulás, nyelvi modellek, hallucináció, torzítás, felelős használat; tanítható alma–körte sík |
 | [Ethernet, kapcsoló és IPv6](ethernet-ipv6.html) | Ethernet-keret, MAC-cím, a kapcsoló tanulása és elárasztása, ARP, VLAN, IPv6 rövidítése és kibontása, címtípusok; tanuló kapcsoló négy géppel; az IPv6-feladatokat a Python ipaddress modulja igazolta |
 | [Hálózatok alapjai](halozatok-alapjai.html) | IP-cím kettesben, maszk és prefix, hálózati és szórási cím, egy hálózatban vannak-e (ÉS a maszkkal), eszközök, DHCP, DNS, NAT, portok, letöltési idő, a dolgok internete |
+| [Magyar helyesírás 1.: betűk, ábécé, elválasztás](helyesiras-betuk-elvalasztas.html) | Többjegyű betűk, a 40 betűs ábécé, ábécérend (AkH 14.), elválasztás szótagolással és összetett szavaknál; betűbontó, ábécérendező, lejátszott elválasztás, tollbamondás |
+| [Magyar helyesírás 2.: magánhangzók hossza](helyesiras-maganhangzok.html) | i/í, o/ó, ö/ő, u/ú, ü/ű: megtanulandó szavak, mindig hosszú és mindig rövid toldalékok, rövidülő tövek (tíz – tizedik, víz – vizet), szópárok, tollbamondás |
+| [Magyar helyesírás 3.: mássalhangzók hossza](helyesiras-massalhangzok.html) | Kettőzés, hosszú többjegyű betűk, összetett szó határa (jegygyűrű, észszerű), múlt idő, középfok, névutók, három egyforma betű (tollal), -val/-vel; tollbamondás |
+| [Tollbamondások](tollbamondasok.html) | 12 szöveg: felolvasás mondatonként, összevetés hibatípusokkal (hossz, kettőzés, többjegyű betű, egybeírás, írásjel…), nyomtatható változat |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
-## Hol tartunk (2026. 10. 25.)
+## Hol tartunk (2026. 10. 30.)
 
+- **Új (2026. 10. 30.): magyar helyesírás.** Endi kérésére helyesírás-tananyag az alapoktól, az AkH 12 szerint: terv 10 leckével (`docs/helyesiras-terv.md`), az első 3 lecke kész, és 12 tollbamondás (a gép felolvassa, összeveti, megmondja a szabályt; nyomtatható is). Ha megjön Kovrat chatje, hibastatisztika alapján igazítjuk a sorrendet (a chat nem kerül a repóba).
 - **Új (2026. 10. 25.): Python-dolgozat lecke.** Kovrat Pythonból dolgozatot ír; a gyakorló feladatsor mind az 52 feladata bekerült, tananyaggal, új feladatokkal és böngészőben futó Pythonnal (Pyodide). Ebből tudjuk: **az iskolában már a 9.-ben, októberben Python van** (az országos programtanterv a 10.-re teszi).
 
 - Kész: az **éves tanrend** (`docs/tanrend-9.md`, `tanrend.html`) az országos programtanterv alapján, és a **10. évfolyam vázlata** (`docs/tanrend-10.md`). Biztos: tantárgyak, óraszámok, témák. Becslés: a hónapokra bontás (az iskola tanmenete nem nyilvános).
@@ -69,6 +74,7 @@ Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: bön
 | [`docs/tanrend-9.md`](docs/tanrend-9.md) | Az éves tanrend forrásokkal (biztos / feltételezés) |
 | [`docs/tanrend-10.md`](docs/tanrend-10.md) | A 10. évfolyam vázlata (lecke nélkül) |
 | [`docs/leckek-terv.md`](docs/leckek-terv.md) | A leckék sorrendje és indoka |
+| [`docs/helyesiras-terv.md`](docs/helyesiras-terv.md) | A helyesírás-leckesor terve, sorrendje és forrásai |
 | [`PROJEKT-KONTEXTUS.md`](PROJEKT-KONTEXTUS.md), [`PROJEKT-RESZLETES.md`](PROJEKT-RESZLETES.md) | A Könyvjelzők-elemzőnek (projekt-besorolás) |
 
 ## Új lecke hozzáadása

@@ -374,3 +374,25 @@ megnyitott megoldásnál méri a vízszintes túllógást (a bűnös elemekkel);
 - **Független ellenőrzés:** a Python `round()` párosra kerekít (4312,5 → 4312), a JS `Math.round` felfelé; adj tűrést a .5-ös
   határra. Számkiolvasásnál a `[\d,]+` a felsorolás vesszőjét is elnyeli: `\d+(?:,\d+)?`; a számot tartalmazó neveket (MP3, 4K)
   előbb töröld. Ha a rajz és a válasz ugyanabból a fából készül, a rajzot ez nem igazolja: azt nézd, egyedi-e a jó gomb.
+
+### A 2026. 10. 30-i helyesírás-leckék: a közös modul és a buktatók
+
+**Helyesírás-modul:** `tools/lessons/helyesiras.js` + `helyesiras.css`. A forrásban a `<!--@HJS-->` jelölő (a `<!--@HEAD-->` és a
+`<style>` után) hozza be, csak a helyesírás-leckékbe. Tartalma: `H.letters` (betűkre bontás, a dzs egy betű, az ssz két fél),
+`H.hyph` (elválasztás, AkH 226–227.), `H.wrongHyphs` (tipikus rossz elválasztások), `H.sortAbc` (ábécérend, AkH 14.),
+`H.classify` (hibatípus egy szón belül), `H.align` (szövegösszevetés szavanként, egybe-/különírással), `H.TEXTS` (a
+tollbamondások, **egy helyen**), `H.dictation(el, {texts, player, print})` (a tollbamondás-felület), és a közös feladatfajták:
+`H.gapTask(["t[í]z", magyarázat])`, `H.sentChoice` / `H.sentFix(["A {helyes|rossz} …", magyarázat])`, `H.choiceTask`.
+Ellenőrzés: `node tools/lessons/helyesiras-check.js` (az AkH saját példáin; DOM nélkül fut).
+
+- **A `const K` nem kerül a `window`-ra.** A modulban `window.K` helyett közvetlenül `K` (futáskor már létezik).
+- **Részleges tollbamondás:** ha a diák csak két mondatot írt be, a szöveg végi pont a szöveg végi ponthoz illeszkedik, és a
+  hiányzó mondatok a közepére kerülnek „kimaradt szó”-ként. Megoldás: csak az eddig felolvasott mondatokkal vetünk össze, és
+  azzal a mondatszámmal, amelyiknél a legkevesebb az eltérés; a hiányzó vég megjegyzés, nem hiba.
+- **Nyomtatás sötét témájú gépen:** a kit sötét változói (`:root:not([data-theme="light"])`) erősebbek a `@media print`
+  `:root`-jánál, a dobozok sötétek maradnak. A nyomtatási szabályokban `!important`-tal kell fehér hátteret és fekete betűt adni.
+  Kipróbálás: Playwright `emulateMedia({ media: "print" })` sötét `colorScheme`-mel, képernyőkép.
+- **A szólisták magyar adatai:** egy szót se írj fejből „biztos” példának. Elsőre az „öcs” kettőzött példaként került be (helyesen
+  öcs, de öccse). Kétes szónál a https://helyesiras.mta.hu, és a végén friss szemű lektor (AkH-szöveggel) nézze át.
+- **Hiánypótlásnál a gép képzi a rossz párt** (í ↔ i, ll ↔ l, ssz ↔ sz): olyan szót ne adj, ahol a pár is létező, jó szó
+  (hal/hall, kel/kell, megy/meggy, öt/őt) — ezek a szópár-feladatba valók, mondattal.

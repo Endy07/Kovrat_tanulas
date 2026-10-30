@@ -1,0 +1,336 @@
+<!--@HEAD-->
+<title>Betűk, ábécé, elválasztás</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.hy{font-family:var(--body);font-weight:700;font-size:clamp(1.6rem,7vw,2.4rem);color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+.hy .cut{color:#FFB01F;padding:0 2px}
+.out{display:flex;flex-direction:column;gap:6px}
+.out .k{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA}
+.sorted{font-family:var(--body);font-size:1.1rem;color:#fff;overflow-wrap:anywhere}
+.sorted b{color:#FFB01F}
+#note{font-family:var(--body);font-size:.95rem}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 1. lecke</span>
+  <h1>Betűk, ábécé, elválasztás</h1>
+  <p class="lead">Minden helyesírás a betűkkel kezdődik. Megnézzük, mitől egy betű a <b>cs</b> vagy a <b>dzs</b>, hogyan kell ábécérendbe tenni a szavakat, és hol lehet elválasztani egy szót a sor végén.</p>
+  <div class="panel">
+    <span class="eyebrow">Betűbontó: írj be egy szót</span>
+    <div class="row"><input type="text" id="w" value="poggyász" aria-label="Egy szó" autocapitalize="off" spellcheck="false"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="legend"><span><b class="v">sárga</b> = magánhangzó</span><span><b class="m">kék</b> = többjegyű betű (egy betűnek számít)</span></div>
+    <div class="readout">
+      <div class="out"><span class="k">Betűk száma</span><span class="big led" id="cnt"></span></div>
+      <div class="out"><span class="k">Elválasztás</span><span class="hy" id="hy"></span></div>
+      <span class="expr" id="note"></span>
+    </div>
+    <span class="eyebrow">Ábécérendező: írj be több szót (szóközzel vagy vesszővel)</span>
+    <textarea id="sortin" aria-label="Szavak ábécérendezéshez" spellcheck="false">csiga cukor cica Csaba szív sajt gyerek gomba</textarea>
+    <div class="sorted" id="sorted"></div>
+    <span class="eyebrow">A magyar ábécé 40 betűje</span>
+    <div class="abc" id="abc"></div>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Elválasztás lépésenként</h2>
+  <p>A lejátszó megmutatja, hogyan gondolkodj: megkeresi a magánhangzókat, megnézi, mi van köztük, és eldönti, hol a határ.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="tanito" aria-selected="true">Egy mássalhangzó: tanító</button>
+    <button class="tab" data-m="templom" aria-selected="false">Több mássalhangzó: templom</button>
+    <button class="tab" data-m="asszony" aria-selected="false">Hosszú kettős betű: asszony</button>
+    <button class="tab" data-m="vasut" aria-selected="false">Összetett szó: vasút</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Öt feladattípus, három szint. Az elválasztásnál a szót <b>minden</b> lehetséges helyen válaszd el kötőjellel, például: <span class="mono">ta-ní-tó</span>. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja, mit írtál másképp, és melyik szabályhoz tartozik. Ezekben a szövegekben sok a többjegyű betű (cs, gy, ny, sz, zs, dz, dzs) és a hosszú kettős betű (ssz, ggy, lly).</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Többjegyű betűk</span><span>cs, dz, gy, ly, ny, sz, ty, zs (kétjegyű) · dzs (háromjegyű). Egy betűnek számítanak: nem vágjuk szét őket.</span></div>
+    <div class="trick"><span class="t">Hosszú kettős betű</span><span>ssz = sz + sz, ggy = gy + gy… Elválasztáskor mindkét fele teljes: hosz-szú, pogy-gyász.</span></div>
+    <div class="trick"><span class="t">Ábécérend</span><span>c előbb, mint cs · s előbb, mint sz · a és á egyenrangú, de ha csak ebben különbözik: kerek, kerék.</span></div>
+    <div class="trick"><span class="t">Összetett szó</span><span>A szóhatáron választjuk el: vas-út, rend-őr, dél-után, szem-üveg.</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 3–15. és 223–238. pont · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+
+  /* ---------- Hero: betűbontó, ábécérendező, ábécé ---------- */
+  const tilesHtml = w => H.letters(w).map(x => {
+    if (!/[a-záéíóöőúüű]/i.test(x.l)) return '<span class="tile sep">' + esc(x.t) + "</span>";
+    const cls = x.v ? "v" : x.l.length > 1 ? "m" : "";
+    return '<span class="tile ' + cls + '">' + esc(x.long === 1 ? x.t + "·" : x.t) + (x.long ? "<small>" + esc(x.l) + "</small>" : "") + "</span>";
+  }).join("");
+  const hyHtml = w => esc(H.hyph(w)).replace(/-/g, '<span class="cut">-</span>');
+  function bontas(){
+    const w = $("#w").value.trim().split(/\s+/)[0] || "";
+    if (!w){ $("#tiles").innerHTML = ""; $("#cnt").textContent = "–"; $("#hy").textContent = "–"; $("#note").textContent = ""; return; }
+    $("#tiles").innerHTML = tilesHtml(w);
+    $("#cnt").textContent = H.letterCount(w);
+    const sy = H.syllables(w);
+    $("#hy").innerHTML = sy.length < 2 ? esc(w) : hyHtml(w);
+    const L = H.letters(w), lng = L.some(x => x.long);
+    $("#note").textContent = sy.length < 2 ? "Egy magánhangzó, egy szótag: ezt a szót nem választjuk el." :
+      (lng ? "A hosszú kettős betű (pl. ssz) két betűnek számít, és elválasztáskor mindkét fele teljes lesz. " : "") +
+      "Ha a szó összetett (pl. vasút, rendőr), a szóhatár dönt: vas-út. Ezt a gép nem tudja, neked kell észrevenned.";
+  }
+  $("#w").addEventListener("input", bontas); bontas();
+  function rendez(){
+    const W = $("#sortin").value.split(/[\s,;]+/).filter(Boolean);
+    $("#sorted").innerHTML = W.length ? H.sortAbc(W).map((x, i) => (i ? " · " : "") + "<b>" + (i + 1) + ".</b> " + esc(x)).join("") : "";
+  }
+  $("#sortin").addEventListener("input", rendez); rendez();
+  $("#abc").innerHTML = H.ABC40.map(l => '<span class="' + (H.isV(l) ? "v" : l.length > 1 ? "m" : "") + '">' + l + "</span>").join("");
+
+  /* ---------- Lejátszó: elválasztás lépésenként ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  function stage(L, cuts, hl, extra){
+    return '<div class="tiles">' + L.map((x, i) => (cuts.has(i) ? '<span class="tile sep">-</span>' : "") +
+      '<span class="tile ' + (x.v ? "v" : x.l.length > 1 ? "m" : "") + (hl.includes(i) ? " cur" : "") + '"' + (hl.includes(i) ? ' style="outline:3px solid #FFB01F"' : "") + ">" + esc(x.t) + (x.long ? "<small>" + esc(x.l) + "</small>" : "") + "</span>").join("") + "</div>" + (extra || "");
+  }
+  function hyFrames(w){
+    const L = H.letters(w), vi = [];
+    L.forEach((x, i) => { if (x.v) vi.push(i); });
+    const F = [], cuts = new Set();
+    F.push({ cap: "A szó: " + w + ". Először a betűket nézzük. A többjegyű betű egy betű, ezért egy kockába kerül.", html: stage(L, cuts, []) });
+    F.push({ cap: "Megkeressük a magánhangzókat. Ennyi van: " + vi.length + ". Ahány magánhangzó, annyi szótag.", html: stage(L, cuts, vi) });
+    for (let k = 0; k < vi.length - 1; k++){
+      const a = vi[k], b = vi[k + 1], mid = []; for (let i = a + 1; i < b; i++) mid.push(i);
+      let cap, at;
+      if (!mid.length){ at = b; cap = "Két magánhangzó egymás mellett: a határ közéjük kerül."; }
+      else if (mid.length === 1){ at = b - 1; cap = "A két magánhangzó között egy mássalhangzó van: " + L[mid[0]].l + ". Az egy mássalhangzó átmegy a következő sorba."; }
+      else {
+        at = b - 1;
+        const lng = L[b - 1].long === 2;
+        cap = "A két magánhangzó között több mássalhangzó van: " + mid.map(i => L[i].l).join(", ") + ". Csak az utolsó megy át a következő sorba." +
+          (lng ? " Ez egy hosszú " + L[b - 1].l + ": a sor végén és a következő sor elején is teljes " + L[b - 1].l + " lesz." : "");
+      }
+      F.push({ cap, html: stage(L, cuts, mid.length ? mid : [a, b]) });
+      cuts.add(at);
+      F.push({ cap: "Ide kerül a határ.", html: stage(L, cuts, [at]) });
+    }
+    F.push({ cap: "Kész. Így választjuk el: " + H.hyph(w).split("-").join(", kötőjel, ") + ".", html: stage(L, cuts, []) + '<div class="hy" style="margin-top:12px">' + hyHtml(w) + "</div>" });
+    return F;
+  }
+  const vasut = () => {
+    const L = H.letters("vasút");
+    return [
+      { cap: "A szó: vasút. A szótagolás szerint va, sút lenne, mert az egy mássalhangzó átmegy.", html: stage(L, new Set([2]), [2]) },
+      { cap: "De a vasút összetett szó: vas és út. Ma is érezzük, hogy két szóból áll.", html: '<div class="hy">vas <span class="cut">+</span> út</div>' },
+      { cap: "Az összetett szót a szóhatáron választjuk el, akkor is, ha az nem esik a szótaghatárra.", html: stage(L, new Set([3]), [3]) },
+      { cap: "Tehát: vas, kötőjel, út. Ugyanígy: rend-őr, dél-után, szem-üveg, fel-ad, meg-áll.", html: '<div class="hy">vas<span class="cut">-</span>út</div><div class="dim" style="margin-top:10px">rend-őr · dél-után · szem-üveg · fel-ad · meg-áll</div>' }
+    ];
+  };
+  const MF = { tanito: () => hyFrames("tanító"), templom: () => hyFrames("templom"), asszony: () => hyFrames("asszony"), vasut };
+  const MET = { tanito: "Elválasztás: tanító", templom: "Elválasztás: templom", asszony: "Elválasztás: asszony", vasut: "Összetett szó: vasút" };
+  const PB = { m: "tanito" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Betű és hang", h:
+      "<p>A <b>hang</b> az, amit kimondunk, a <b>betű</b> az, amivel leírjuk. A legtöbb hangot egy betű jelöli, de vannak betűk, amelyek két vagy három jegyből állnak.</p>" +
+      tbl(["fajta", "betűk"], [["egyjegyű", "a, á, b, c, d, e, …, z"], ["kétjegyű (8)", "<b>cs, dz, gy, ly, ny, sz, ty, zs</b>"], ["háromjegyű (1)", "<b>dzs</b>"]]) +
+      "<div class='note'><b>Fontos:</b> a <b>gy</b> egyetlen betű, nem g + y. A <b>gyöngy</b> szóban 4 betű van: gy, ö, ny, gy.</div>" },
+    { k: "Ábécé", t: "A magyar ábécé: 40 betű", h:
+      "<p class='eq'>a á b c cs d dz dzs e é f g gy h i í j k l ly m n ny o ó ö ő p r s sz t ty u ú ü ű v z zs</p>" +
+      "<ul><li><b>14 magánhangzó:</b> 7 rövid (a, e, i, o, ö, u, ü) és 7 hosszú (á, é, í, ó, ő, ú, ű).</li><li><b>26 mássalhangzó:</b> 17 egyjegyű, 8 kétjegyű, 1 háromjegyű.</li>" +
+      "<li>A <b>q, w, x, y</b> nem tartozik a 40 közé, de idegen szavakban előfordul. Helyük: p, q, r … v, w, x, y, z.</li></ul>" },
+    { k: "Nagybetű", t: "Nagybetű a többjegyű betűknél", h:
+      "<ul><li>Szó elején csak az <b>első jegy</b> nagy: <b>Cs</b>aba, <b>Gy</b>ula, <b>Sz</b>olnok, <b>Zs</b>olt, <b>Dzs</b>ingisz.</li>" +
+      "<li>Csupa nagybetűs írásban minden jegy nagy: <b>ENSZ</b>, <b>CSOMAGMEGŐRZŐ</b>.</li>" +
+      "<li>A nagybetűre is ki kell tenni az ékezetet: <b>Ö</b>dön, <b>Á</b>zsia, <b>Í</b>rország. Csak a rövid nagy <b>I</b>-n nincs pont.</li></ul>" },
+    { k: "Ábécérend", t: "Ábécérend: az első eltérő betű dönt", h:
+      "<p>Az első betű szerint rendezünk; ha az egyezik, a másodikat nézzük, és így tovább.</p>" +
+      "<ul><li>Az egyjegyű betű <b>mindig előbb</b> jön, mint a vele kezdődő többjegyű: <b>c</b> előbb, mint <b>cs</b>; <b>s</b> előbb, mint <b>sz</b>; <b>d</b>, <b>dz</b>, <b>dzs</b>.</li>" +
+      "<li>Példa: cukor, cica, Csaba, csiga → <b>cica, cukor, Csaba, csiga</b>.</li>" +
+      "<li>A kis- és nagybetű nem számít; ha csak ebben különbözik két szó, a kisbetűs jön előbb: jácint, Jácint.</li></ul>" },
+    { k: "Ábécérend", t: "Rövid és hosszú magánhangzó", h:
+      "<p>Ábécérendben az <b>a – á</b>, <b>e – é</b>, <b>i – í</b>, <b>o – ó</b>, <b>ö – ő</b>, <b>u – ú</b>, <b>ü – ű</b> <b>egyenrangú</b>. Ezért lehet ez a sorrend:</p>" +
+      "<p class='eq'>ír, Irak, iram, Irán, írandó, iránt, író, iroda, irónia</p>" +
+      "<p>Ha két szó <b>csak</b> a magánhangzó hosszában különbözik, a rövid jön előbb: <b>kerek, kerék</b> · <b>Eger, egér</b>.</p>" },
+    { k: "Hosszú betű", t: "A hosszú kettős betű két betű", h:
+      "<p>A hosszú mássalhangzót kettőzéssel jelöljük. A többjegyű betűnél csak az <b>első jegyet</b> írjuk kétszer:</p>" +
+      tbl(["hosszú", "valójában", "példa"], [["ssz", "sz + sz", "asszony, hosszú"], ["ggy", "gy + gy", "meggy, poggyász"], ["nny", "ny + ny", "könnyű, mennyi"], ["lly", "ly + ly", "gally, osztállyal"], ["tty", "ty + ty", "hattyú"], ["ccs", "cs + cs", "loccsan"], ["zzs", "zs + zs", "rizzsel"], ["ddz, ddzs", "dz + dz, dzs + dzs", "eddzük, briddzsel"]]) +
+      "<p>Betűszámláláskor és ábécérendben is két betűnek számít: az <b>asszony</b> 5 betű (a, sz, sz, o, ny).</p><p>Összetett szó határán viszont teljes a kettőzés: <b>jegygyűrű</b> (jegy + gyűrű), <b>díszszemle</b>.</p>" },
+    { k: "Elválasztás", t: "Elválasztás: a szótag a kulcs", h:
+      "<ul><li>Ha a szó nem fér ki a sor végén, egy részét átvisszük a következő sorba. Ez az <b>elválasztás</b>, és a <b>szótagolás</b> az alapja.</li>" +
+      "<li><b>Ahány magánhangzó, annyi szótag.</b> A ta-ní-tó szóban három van.</li>" +
+      "<li>Az <b>egy magánhangzós</b> szót nem választjuk el: föld, part, nyolc, strand, sztrájk.</li></ul>" + playBtn("tanito"), init: playInit },
+    { k: "Elválasztás", t: "Mi kerül át a következő sorba?", h:
+      tbl(["a két magánhangzó között", "szabály", "példa"], [
+        ["egy mássalhangzó", "az átmegy", "ko-sár, ka-sza, ró-zsa, Gyu-la"],
+        ["két különböző", "az első marad, a második átmegy", "ás-vány, mor-zsa, tarisz-nya"],
+        ["kettőzött egyjegyű", "egyik marad, másik átmegy", "ber-reg, ton-na, ember-rel"],
+        ["kettőnél több", "csak az utolsó megy át", "temp-lom, cent-rum, lajst-rom"]]) +
+      "<div class='note'><b>A többjegyű betűt soha nem vágjuk szét:</b> ma-gyar (nem mag-yar), ku-tya (nem kut-ya).</div>" + playBtn("templom"), init: playInit },
+    { k: "Elválasztás", t: "Hosszú kettős betű, dz és dzs", h:
+      "<ul><li>A hosszú kettős betűnél mindkét sorba <b>teljes</b> betű kerül: <b>hosz-szú</b>, <b>asz-szony</b>, <b>meny-nyi</b>, <b>pogy-gyász</b>, <b>locs-csan</b>. (Nem hos-szú!)</li>" +
+      "<li>A <b>dz</b> és a <b>dzs</b> egy betű, akkor is, ha hosszan ejtjük: <b>bo-dza</b>, <b>ma-dzag</b>, <b>lán-dzsa</b>, <b>me-ne-dzser</b>; mássalhangzó előtt: <b>edz-het</b>.</li>" +
+      "<li>Ha a dz kettőzve van: <b>edz-dzük</b>.</li></ul>" + playBtn("asszony"), init: playInit },
+    { k: "Elválasztás", t: "Magánhangzók egymás mellett", h:
+      "<ul><li>Két magánhangzó közé is kerülhet határ: <b>fi-ók</b>, <b>vi-asz</b>, <b>mo-za-ik</b>.</li>" +
+      "<li>Az egymagában szótagot alkotó magánhangzó maradhat is, mehet is: <b>dia-dal</b> vagy <b>di-adal</b>.</li>" +
+      "<li>A szó <b>elején és végén</b> egy magánhangzót nem hagyunk egyedül: nem írjuk, hogy a-lap, Á-ron, emóci-ó.</li></ul>" },
+    { k: "Összetett szó", t: "Összetett szó: a szóhatár dönt", h:
+      "<p>Ha érezzük, hogy a szó két szóból áll, a <b>szóhatáron</b> választjuk el, akkor is, ha a szótagolás mást mondana:</p>" +
+      "<p class='eq'>vas-út · rend-őr · dél-után · szem-üveg · tűz-oltó · nagy-apa</p>" +
+      "<ul><li>Az igekötős igék is: <b>fel-ad</b>, <b>meg-áll</b>, <b>szét-üt</b>.</li><li>A jelentés is dönthet: <b>me-gint</b> (újra), de <b>meg-int</b> (figyelmeztet).</li></ul>" + playBtn("vasut"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>mag-yar</b> → ma-gyar. A gy egy betű, nem vágjuk szét.</div>" +
+      "<div class='mistake'><b>hos-szú</b> → hosz-szú. A hosszú ssz-nél mindkét sorba teljes sz kerül.</div>" +
+      "<div class='mistake'><b>bod-za</b> → bo-dza. A dz egy betű, egy mássalhangzó: átmegy.</div>" +
+      "<div class='mistake'><b>va-sút</b> → vas-út. Összetett szó: a szóhatáron választjuk el.</div>" +
+      "<div class='mistake'><b>a-lap</b> → nem választjuk el így: a szó elején egy magánhangzót nem hagyunk egyedül.</div>" +
+      "<div class='mistake'><b>csiga, cica</b> sorrend → cica, csiga. A c előbb van, mint a cs.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Számold a magánhangzókat</span><span>Ahány magánhangzó, annyi szótag, és eggyel kevesebb kötőjel.</span></div>" +
+      "<div class='trick'><span class='t'>Az utolsó megy át</span><span>A magánhangzók közötti mássalhangzókból mindig csak az utolsó kerül a következő sorba.</span></div>" +
+      "<div class='trick'><span class='t'>Mondd ki lassan</span><span>Tapsold el a szót: ta-ní-tó. A taps a szótag.</span></div>" +
+      "<div class='trick'><span class='t'>Számítógépen</span><span>A szövegszerkesztő magától is elválaszt, de ha kézzel írsz (dolgozat!), neked kell.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  // egyszerű (nem összetett) szavak; a gép választja el őket (a helyesiras-check.js az AkH példáin igazolja)
+  const W1 = ["kutya", "macska", "asztal", "ceruza", "tanár", "pálya", "labda", "kapus", "játék", "barát", "szoba", "ablak", "kabát", "lecke", "füzet", "radír", "virág", "madár", "cipő", "kenyér", "körte", "szilva", "tükör", "sapka", "mozi", "zene", "fagyi", "csiga", "gyerek", "nyuszi", "zsiráf", "szeder", "tanító", "kapu", "csoki", "torta", "csizma"];
+  const W2 = ["templom", "asszony", "hosszú", "poggyász", "bodza", "madzag", "dzsungel", "lándzsa", "menedzser", "dzseki", "hattyú", "könnyű", "mennyi", "kesztyű", "billentyű", "szekrény", "osztály", "ország", "padló", "erkély", "király", "folyosó", "gólya", "konzol", "monitor", "dinnye", "játszik", "gyöngyös", "torony", "kocsi"];
+  const W3 = ["program", "processzor", "billentyűzet", "lajstrom", "centrum", "kasszák", "asszonnyal", "hosszabb", "loccsan", "eddzük", "poggyásszal", "bizottság", "osztállyal", "könnyebb", "mennyiség", "kesztyűje", "hattyúval", "menedzserek", "dzsungelben", "templomban"];
+  const usable = w => { const s = H.syllables(w); return s.length > 1 && !/^[aáeéiíoóöőuúüű]$/i.test(s[0]) && !/^[aáeéiíoóöőuúüű]$/i.test(s[s.length - 1]) && !/[aáeéiíoóöőuúüű]{2}/i.test(w); };
+  const WL = [W1, W2, W3].map(L => L.filter(usable));
+  // összetett szavak: a szóhatáron választjuk el (AkH 234–236.); a rossz változat a szótagolás szerinti
+  const COMP = [["vasút", "vas-út", "va-sút"], ["rendőr", "rend-őr", "ren-dőr"], ["délután", "dél-után", "dé-lután"], ["szemüveg", "szem-üveg", "sze-müveg"],
+    ["tűzoltó", "tűz-oltó", "tű-zoltó"], ["nagyapa", "nagy-apa", "na-gyapa"], ["felad", "fel-ad", "fe-lad"], ["megáll", "meg-áll", "me-gáll"],
+    ["kisasszony", "kis-asszony", "ki-sasszony"], ["hónalj", "hón-alj", "hó-nalj"], ["karóra", "kar-óra", "ka-róra"], ["mindegy", "mind-egy", "min-degy"],
+    ["vagyis", "vagy-is", "va-gyis"], ["mégis", "még-is", "mé-gis"], ["tölgyerdő", "tölgy-erdő", "töl-gyerdő"], ["hétéves", "hét-éves", "hé-téves"],
+    ["kölcsönad", "kölcsön-ad", "kölcsö-nad"], ["Nyíregyháza", "Nyír-egyháza", "Nyí-regyháza"], ["csalétek", "csal-étek", "csa-létek"], ["csakis", "csak-is", "csa-kis"]];
+  // ábécérend: csoportok, ahol a többjegyű betű a csapda; és azonos kezdetű szólisták a 2–3. szintre
+  const ABG = [[["cukor", "cica", "cél", "cipő", "citrom"], ["csiga", "csoki", "cseresznye", "csapat", "Csaba"]],
+    [["sajt", "sün", "sapka", "sárkány", "Sanyi"], ["szív", "szoba", "szilva", "szék", "Szeged"]],
+    [["gomba", "gép", "gitár", "golyó", "Gábor"], ["gyertya", "gyár", "gyöngy", "gyerek", "Gyula"]],
+    [["nap", "nadrág", "némi", "nulla", "Nóra"], ["nyúl", "nyár", "nyak", "nyomtató", "Nyíregyháza"]],
+    [["zene", "zokni", "zebra", "zászló", "Zoltán"], ["zsák", "zsiráf", "zsemle", "zseb", "Zsolt"]],
+    [["dal", "dió", "doboz", "dinnye", "Dóra"], ["dzsungel", "dzseki", "dzsem", "dzsúdó", "dzsessz"]],
+    [["tábla", "tej", "tigris", "toll", "Tamás"], ["tyúk", "tyúkól", "tyúkleves", "tyúkszem", "Tyukod"]]];
+  const ABL2 = [["kacsa", "kagyló", "kakaó", "kalap", "kanál", "kapu", "kard", "kása", "kasza"], ["mese", "meccs", "medve", "meggy", "mellény", "menü", "mező"],
+    ["sor", "sorozat", "sors", "sótartó", "sólyom", "soha"], ["pad", "padló", "pálya", "papír", "paprika", "páros", "pasztell"], ["tanár", "tanya", "táska", "tál", "tag", "tartó"]];
+  const ABL3 = [["kerek", "kerék", "keres", "kérés", "kereszt"], ["kor", "kór", "kora", "korcsolya", "kórus"], ["ír", "Irak", "író", "iroda", "irány"],
+    ["egér", "Eger", "egy", "egyes", "éjjel"], ["cukor", "csukló", "cucli", "Csaba", "cumi"], ["öt", "őt", "ötös", "őz", "öltöny"],
+    ["hal", "hall", "hallgat", "halas", "hála"], ["kas", "kassza", "kasza", "kaszinó", "kastély"]];
+  const choice = (q, good, others, sol, bad) => {
+    const opts = shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
+  };
+  const hyOk = s => String(s).trim().replace(/\s*[-–]\s*/g, "-");
+  const types = [
+    { id: "elv", name: "Válaszd el!", gen(l){
+      const w = pick(WL[l - 1]), good = H.hyph(w), L = H.letters(w), lng = L.some(x => x.long);
+      return { q: "Válaszd el a szót minden lehetséges helyen, kötőjellel: <span class='num'>" + esc(w) + "</span>", kind: "input", ph: "pl. ta-ní-tó", answer: good, frames: hyFrames(w), title: "Elválasztás: " + w,
+        sol: "<p>Magánhangzók: " + L.filter(x => x.v).map(x => "<b>" + esc(x.t) + "</b>").join(", ") + ". Ahány magánhangzó, annyi szótag: " + H.syllables(w).length + ".</p>" +
+          (lng ? "<p>A hosszú kettős betű mindkét sorba teljes betűként kerül.</p>" : "") + "<p>" + esc(good) + "</p>",
+        check: v => {
+          const s = hyOk(v);
+          if (s === good) return { ok: true, msg: "Helyes!" };
+          if (s.replace(/-/g, "") !== w.replace(/-/g, "") && s.replace(/-/g, "") !== good.replace(/-/g, "")) return { ok: false, msg: "A betűk nem egyeznek a szóval. Írd le pontosan, és tegyél kötőjelet a határokra." };
+          const n = (s.match(/-/g) || []).length, want = (good.match(/-/g) || []).length;
+          if (n !== want) return { ok: false, msg: "Ennyi szótag van: " + (want + 1) + " (ahány magánhangzó). Ennyi kötőjel kell: " + want + "." };
+          if (lng && s.replace(/-/g, "") === w) return { ok: false, msg: "A hosszú kettős betű elválasztásakor mindkét sorba teljes betű kerül (hosz-szú, nem hos-szú)." };
+          if (H.wrongHyphs(w).includes(s) && /(c-s|d-z|g-y|l-y|n-y|s-z|t-y|z-s)/i.test(s)) return { ok: false, msg: "Egy többjegyű betűt vágtál szét. A cs, dz, dzs, gy, ly, ny, sz, ty, zs egy betű." };
+          return { ok: false, msg: "Nem jó. A magánhangzók közötti mássalhangzókból csak az utolsó megy át a következő sorba." };
+        } };
+    } },
+    { id: "melyik", name: "Melyik a jó?", gen(l){
+      if (l === 3 && Math.random() < 0.6){
+        const c = pick(COMP);
+        return choice("Melyik a jó elválasztás a sor végén? <span class='num'>" + esc(c[0]) + "</span>", c[1], [c[2]],
+          "<p>A <b>" + esc(c[0]) + "</b> összetett szó (vagy igekötős ige): a szóhatáron választjuk el, akkor is, ha a szótagolás mást mondana.</p>", "Nem jó. Ez összetett szó: a szóhatáron kell elválasztani.");
+      }
+      const w = pick(WL[Math.min(l, 3) - 1].filter(x => H.wrongHyphs(x).length >= 2)), good = H.hyph(w);
+      return choice("Melyik a helyes elválasztás? <span class='num'>" + esc(w) + "</span>", good, shuffle(H.wrongHyphs(w)).slice(0, 3),
+        "<p>" + esc(good) + ". A magánhangzók közötti mássalhangzókból csak az utolsó megy át; a többjegyű betűt nem vágjuk szét.</p>", "Nem ez. Keresd meg a magánhangzókat, és nézd meg, mi van köztük.");
+    } },
+    { id: "rossz", name: "Melyik a rossz?", gen(l){
+      const P = WL[Math.min(l, 3) - 1], ws = shuffle(P).slice(0, 4), bad = ws[0];
+      const wr = pick(H.wrongHyphs(bad));
+      const good = ws.slice(1).map(H.hyph);
+      return choice("Három szó jól van elválasztva, egy rosszul. Melyik a <b>rossz</b>?", wr, good,
+        "<p>A rossz: <b>" + esc(wr) + "</b>. Helyesen: <b>" + esc(H.hyph(bad)) + "</b>.</p>", "Ez jó elválasztás. Keresd tovább a rosszat.");
+    } },
+    { id: "betu", name: "Hány betű?", gen(l){
+      const P = l === 1 ? ["csiga", "gyerek", "nyuszi", "szoba", "zsiráf", "kutya", "pálya", "király", "madzag", "dzseki", "bodza", "lándzsa", "gyöngy", "szilva", "torony"] :
+        l === 2 ? ["asszony", "hosszú", "meggy", "könnyű", "hattyú", "kesztyű", "osztály", "billentyű", "dinnye", "poggyász", "mennyi", "dzsungel", "menedzser"] :
+        ["asszonnyal", "osztállyal", "poggyásszal", "loccsan", "eddzük", "jegygyűrű", "kulcscsomó", "billentyűzet", "gyönyörű", "hosszabb", "díszszemle"];
+      const w = pick(P), n = H.letterCount(w), L = H.letters(w);
+      const list = L.map(x => x.l).join(", ");
+      return { q: "Hány betűből áll ez a szó? <span class='num'>" + esc(w) + "</span>", kind: "input", mode: "numeric", ph: "szám", answer: String(n),
+        sol: "<p>A betűk: <b>" + esc(list) + "</b>. A többjegyű betű egy betű; a hosszú kettős betű (pl. ssz) kettő.</p>",
+        check: v => {
+          const k = Number(String(v).trim());
+          if (k === n) return { ok: true, msg: "Helyes!" };
+          if (k === w.length) return { ok: false, msg: "A jegyeket számoltad. De a cs, gy, ny, sz, zs, dz, dzs… egy-egy betű." };
+          if (L.some(x => x.long) && k === n - L.filter(x => x.long === 1).length) return { ok: false, msg: "Majdnem. A hosszú kettős betű (pl. ssz = sz + sz) két betűnek számít." };
+          return { ok: false, msg: "Nem jó. Írd le a betűket egymás alá: a többjegyű betű egy sor." };
+        } };
+    } },
+    { id: "abc", name: "Ábécérend", gen(l){
+      let W;
+      if (l === 1){ const g = pick(ABG); W = shuffle(shuffle(g[0]).slice(0, rnd(1, 2)).concat(shuffle(g[1]).slice(0, 2))).slice(0, 3); }
+      else W = shuffle(pick(l === 2 ? ABL2 : ABL3)).slice(0, l === 2 ? 3 : 4);
+      const S = H.sortAbc(W), last = l === 3 && Math.random() < 0.4, good = last ? S[S.length - 1] : S[0];
+      return choice("Melyik szó áll <b>" + (last ? "utolsónak" : "elsőnek") + "</b> ábécérendben?", good, W.filter(x => x !== good),
+        "<p>A sorrend: <b>" + S.map(esc).join(", ") + "</b>.</p><p>Az első eltérő betű dönt. A c előbb van, mint a cs (s, sz; g, gy; n, ny; z, zs; d, dz, dzs). A rövid és a hosszú magánhangzó egyenrangú; ha csak ebben különbözik a szó, a rövid jön előbb.</p>",
+        "Nem ez. Nézd meg betűnként, hol tér el először a két szó.");
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-betuk", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.betuk, player: pb, print: "tollbamondasok.html#betuk" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Szabály</th><th>Példa</th></tr>" + [
+    ["Ahány magánhangzó, annyi szótag", "ta-ní-tó"], ["Egy magánhangzós szót nem választunk el", "föld, sztrájk"],
+    ["Egy mássalhangzó a magánhangzók között: átmegy", "ko-sár, ka-sza, ma-gyar"], ["Több mássalhangzó: csak az utolsó megy át", "ás-vány, temp-lom"],
+    ["Kettőzött betű: egyik marad, másik átmegy", "ber-reg, ton-na"], ["Hosszú kettős betű: mindkét sorba teljes", "hosz-szú, pogy-gyász"],
+    ["dz, dzs egy betű", "bo-dza, lán-dzsa, edz-het"], ["Összetett szó: a szóhatáron", "vas-út, dél-után"],
+    ["Szó eleji, szó végi egy magánhangzót nem hagyunk egyedül", "nem: a-lap, emóci-ó"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

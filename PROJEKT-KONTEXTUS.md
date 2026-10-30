@@ -1,8 +1,8 @@
 ---
 slug: kovrat
 nev: Kovrat tanulás — interaktív tanulási segédlet egy 9.-es programozás szakos diáknak
-frissitve: 2026-10-25
-aliasok: kovrat tanulás, kovrat_tanulas, unokaöcsém tanulás
+frissitve: 2026-10-30
+aliasok: kovrat tanulás, kovrat_tanulas, unokaöcsém tanulás, kovrat helyesírás, tollbamondás
 ---
 
 ## Egy mondatban
@@ -15,7 +15,7 @@ Böngészőben futó interaktív leckék és gyakorlófeladatok Kovratnak, a fel
 - Telefonon is, telepítés nélkül, egy linkről
 
 ## Amit használunk (kulcsszavak — ezekre kell találnia)
-HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · GitHub Actions · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · hármas, ötös, hatos, hetes számrendszer · tizenhatos számrendszer · helyiérték-táblázat · logikai műveletek · ASCII, Unicode, UTF-8 · képméret, színmélység · Caesar-kód · HTML és CSS élő szerkesztővel · Git és GitHub alapok · éves tanrend · 8. osztályos ismétlés · cache busting · git hook · Playwright böngészős teszt · programozás-oktatás kezdőknek · középiskolai informatika · Python a 9.-ben (iskolai dolgozat), f-string, input, round, max, min, abs, szöveg-metódusok · Pyodide (Python a böngészőben, Web Worker) · hálózatok, IP-cím, alhálózati maszk, IPv6, Ethernet · elektronika, Ohm-törvény · mikroprocesszor, a számítógép felépítése · virtualizáció, felhő · IT-biztonság, adathalászat · Linux parancssor · mesterséges intelligencia, k-NN, perceptron · algoritmusok, folyamatábra, programozási tételek, buborékrendezés, bináris keresés · JavaScript-futtató sandbox iframe-ben · Python-kódolvasás · halmazok, algebra, egyenletek, függvények, geometria, valószínűség, oszthatóság, statisztika · logikai fejtörők · projektmunka, Gantt, kritikus út · táblázatkezelés, Excel-képletek · informatikai angol · hang és videó digitalizálása · digitális áramkörök, összeadó
+HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pages · GitHub Actions · Web Speech API (speechSynthesis, magyar felolvasás) · interaktív tananyag · oktatási feladatgenerátor · számrendszerek · kettes számrendszer · hármas, ötös, hatos, hetes számrendszer · tizenhatos számrendszer · helyiérték-táblázat · logikai műveletek · ASCII, Unicode, UTF-8 · képméret, színmélység · Caesar-kód · HTML és CSS élő szerkesztővel · Git és GitHub alapok · éves tanrend · 8. osztályos ismétlés · cache busting · git hook · Playwright böngészős teszt · programozás-oktatás kezdőknek · középiskolai informatika · Python a 9.-ben (iskolai dolgozat), f-string, input, round, max, min, abs, szöveg-metódusok · Pyodide (Python a böngészőben, Web Worker) · hálózatok, IP-cím, alhálózati maszk, IPv6, Ethernet · elektronika, Ohm-törvény · mikroprocesszor, a számítógép felépítése · virtualizáció, felhő · IT-biztonság, adathalászat · Linux parancssor · mesterséges intelligencia, k-NN, perceptron · algoritmusok, folyamatábra, programozási tételek, buborékrendezés, bináris keresés · JavaScript-futtató sandbox iframe-ben · Python-kódolvasás · halmazok, algebra, egyenletek, függvények, geometria, valószínűség, oszthatóság, statisztika · logikai fejtörők · projektmunka, Gantt, kritikus út · táblázatkezelés, Excel-képletek · informatikai angol · hang és videó digitalizálása · digitális áramkörök, összeadó · magyar helyesírás, AkH 12, tollbamondás, elválasztás, ábécérend, magánhangzók és mássalhangzók hossza, hibatípus-felismerés
 
 ## Ami kész
 - Kettes számrendszer lecke: kapcsolótábla, 9 dia, levezetés-lejátszó felolvasással, 5 feladattípus 3 szinten
@@ -24,10 +24,12 @@ HTML · CSS · vanilla JavaScript · önálló egyfájlos weboldal · GitHub Pag
 - Nyolc új lecke 2026-10-22-én: tizenhatos számrendszer, logikai műveletek, szöveg és kép kódolása, HTML alapok (élő szerkesztő), CSS alapok, Git és GitHub alapok, reszponzív weboldalak, 8. osztályos visszatekintés; mind felolvasós levezetéssel, 3 szintű feladatokkal, próbadolgozattal
 - 2026-10-23 éjjel még 26 lecke (a végén lektorálva): a 9.-es tanrend összes programozási és informatikai témája (hálózatok, elektronika, számítógép felépítése, digitális áramkörök, hang és videó, Windows és fájlkezelés, virtualizáció, IT-biztonság, algoritmusok, programozási tételek, JavaScript elszigetelt futtatóval, projektmunka), 10.-es előzetesek (Ethernet és IPv6, Linux, MI, Python-kódolvasás), 8–9.-es matek (oszthatóság, koordináták, halmazok, algebra, egyenletek, geometria, valószínűség), logikai fejtörők, táblázatkezelés, informatikai angol; gépi, néma leckeellenőrző
 - 2026-10-25: Python-dolgozat lecke: a 9.-es gyakorló feladatsor mind az 52 feladata mintamegoldással, tananyag, böngészőben futó Python (Pyodide), gépileg ellenőrzött „Írd meg” feladatok, feladatlap, próbadolgozat
+- 2026-10-30: magyar helyesírás az alapoktól (AkH 12): terv 10 leckével, az első 3 lecke (betűk/ábécé/elválasztás, magánhangzók hossza, mássalhangzók hossza) és 12 tollbamondás, amelyet a gép felolvas, összevet és hibatípusonként kiértékel; nyomtatható változat
 - Automatikus frissítés: az oldal mobilon is mindig a legfrissebb változatot tölti be
 - Kezdőlap szakaszokra bontva, a tanrend-oldallal; nyilvános GitHub Pages oldal
 
 ## Ami hátra van / most ezen dolgozunk
+- Helyesírás: a 4–10. lecke (j/ly, hasonulások, felszólító mód, egybe- és különírás, nagybetű, vessző, gyakori tévesztések); Kovrat saját chathibáinak statisztikája, ha megjön a csevegés
 - Kovrat válaszai: mit használnak programozásórán, a tanár sorrendje (a tanrend becslés)
 - További Python-leckék (elágazás, ciklus, listák), ha az iskola odaér; a Python-futtató már kész (Pyodide), IT-biztonság bővítése
 

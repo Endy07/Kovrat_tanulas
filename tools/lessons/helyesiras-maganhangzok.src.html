@@ -1,0 +1,253 @@
+<!--@HEAD-->
+<title>Magánhangzók hossza</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 2. lecke</span>
+  <h1>Magánhangzók hossza: i vagy í, u vagy ú?</h1>
+  <p class="lead">Egy ékezet, és más lesz a szó: <b>öt</b> vagy <b>őt</b>, <b>kor</b> vagy <b>kór</b>. Megtanulod, mikor hosszú és mikor rövid a magánhangzó, és melyik toldaléknál nem kell gondolkodni, mert mindig ugyanolyan.</p>
+  <div class="panel">
+    <span class="eyebrow">Szópárok: kattints a szóra, és nézd meg a párját</span>
+    <div class="pairs" id="pairs"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem">A két szó csak a magánhangzó hosszában különbözik, mégis mást jelent. Ha be van kapcsolva a felolvasás, a gép ki is mondja.</p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <p>Egy-egy szó végiggondolva: melyik betűnél melyik szabály segít.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="tanito" aria-selected="true">tanítóból</button>
+    <button class="tab" data-m="magyarul" aria-selected="false">háromszor magyarul</button>
+    <button class="tab" data-m="husz" aria-selected="false">húsz és huszadik</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. szavak, amelyeket meg kell tanulni · 2. toldalékok és képzők szabályai · 3. a rövidülő szavak (tíz – tizedik, víz – vizet). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj a hosszú és rövid magánhangzókra: -ból, -ról, -tól, -ul, -ül, -szor, -kor, -ig.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Mindig hosszú</span><span>-ít (tanít) · -ból, -ből · -ról, -ről · -tól, -től · alól, mellől · melléknév végén ú, ű (hosszú, könnyű)</span></div>
+    <div class="trick"><span class="t">Mindig rövid</span><span>-ul, -ül (magyarul, végül) · nélkül, belül (de: túl) · -szor, -szer, -ször · -kor · -ig · toldalék végén i (esti, írni)</span></div>
+    <div class="trick"><span class="t">Rövidülő szavak</span><span>tíz – tizedik · húsz – huszadik · ír – iroda · úszik – uszoda · víz – vizet · út – utat · tűz – tüzet</span></div>
+    <div class="trick"><span class="t">Meg kell tanulni</span><span>fiú, tanú, betű, gyűrű, kesztyű (hosszú) · kapu, falu, áru, hamu, menü (rövid) · mindig (rövid i)</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 4–6., 20–24., 27., 31., 34–35. pont · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, shuffle, esc } = K;
+
+  /* ---------- Hero: szópárok (AkH 6. és saját példák) ---------- */
+  const PAIRS = [[["kor", "időszak", 1], ["kór", "betegség", 1]], [["öt", "szám", 0], ["őt", "azt a személyt", 0]], [["bal", "nem jobb", 1], ["bál", "táncos mulatság", 1]],
+    [["irt", "kipusztít", 0], ["írt", "leírt valamit", 0]], [["szel", "vág (kenyeret)", 2], ["szél", "mozgó levegő", 2]], [["kar", "testrész", 1], ["kár", "veszteség", 1]],
+    [["hat", "szám", 1], ["hát", "testrész", 1]], [["kerek", "gömbölyű", 3], ["kerék", "a bicikli része", 3]], [["akar", "szeretne", 2], ["akár", "esetleg, akár … is", 2]],
+    [["kemény", "nem puha", 1], ["kémény", "a füst útja a tetőn", 1]]];
+  const pw = (w, i) => esc(w.slice(0, i)) + "<u>" + esc(w[i]) + "</u>" + esc(w.slice(i + 1));
+  const side = PAIRS.map(() => 0);
+  function drawPairs(){
+    $("#pairs").innerHTML = PAIRS.map((p, k) => { const x = p[side[k]], y = p[1 - side[k]];
+      return '<button class="pairbtn" data-p="' + k + '"><span class="w">' + pw(x[0], x[2]) + '</span><span class="m">' + esc(x[1]) + '</span><span class="m">párja: ' + esc(y[0]) + "</span></button>"; }).join("");
+  }
+  $("#pairs").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; const k = Number(b.dataset.p); side[k] = 1 - side[k]; drawPairs(); if (K.tts.on && K.tts.ok) K.tts.say(PAIRS[k][side[k]][0]); });
+  drawPairs();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    tanito: () => [
+      { cap: "A szó: tanítóból. Három helyen kell eldönteni a hosszt: az í, az ó és a második ó.", html: W("tan<u>í</u>t<u>ó</u>b<u>ó</u>l") },
+      { cap: "A tő: tanít. Az -ít képző mindig hosszú, ugyanígy: épít, segít, javít.", html: W("tan<u>ít</u>", "-ít képző: mindig hosszú") },
+      { cap: "Tanító. Az -ó, -ő képző hosszú: író, futó, olvasó.", html: W("tanít<u>ó</u>", "író · futó · olvasó") },
+      { cap: "A -ból rag mindig hosszú. Ugyanígy a -ről és a -tól: honnan? kérdésre felel.", html: W("tanító<u>ból</u>", "-ból, -ből · -ról, -ről · -tól, -től: mindig hosszú") },
+      { cap: "Kész: tanítóból. Három hosszú magánhangzó, mind szabályból.", html: W("tanítóból") }
+    ],
+    magyarul: () => [
+      { cap: "Két szó: háromszor magyarul. Itt minden kérdéses magánhangzó rövid.", html: W("hároms<u>zo</u>r magyar<u>u</u>l") },
+      { cap: "A -szor, -szer, -ször rag mindig rövid: háromszor, hétszer, ötször.", html: W("három<u>szor</u>", "-szor, -szer, -ször: mindig rövid") },
+      { cap: "Az -ul, -ül rag is mindig rövid: magyarul, angolul, végül, például.", html: W("magyar<u>ul</u>", "-ul, -ül: mindig rövid") },
+      { cap: "A névutóknál is rövid: nélkül, belül, közül. Egyetlen kivétel: túl, hosszú ú-val.", html: W("nélk<u>ü</u>l · bel<u>ü</u>l · t<u>ú</u>l", "a túl a kivétel") },
+      { cap: "Ugyanígy rövid a -kor és az -ig: hatkor, holnapig.", html: W("hat<u>kor</u> · holnap<u>ig</u>") }
+    ],
+    husz: () => [
+      { cap: "A húsz szóban hosszú ú van: húsz, húszat, húszan, húszas.", html: W("h<u>ú</u>sz", "húszat · húszan · húszas") },
+      { cap: "A sorszámnévben és az összetett számnévben viszont rövid: huszadik, huszonegy.", html: W("h<u>u</u>szadik · h<u>u</u>szonegy") },
+      { cap: "Ugyanígy a tíz: tíz, tízes, de tizedik, tizenegy.", html: W("t<u>í</u>z · t<u>í</u>zes · t<u>i</u>zedik · t<u>i</u>zenegy") },
+      { cap: "És a kéz mintájára: víz, vízben, de vizet, vizes. Út, de utat. Tűz, de tüzet.", html: W("v<u>í</u>z → v<u>i</u>zet · <u>ú</u>t → <u>u</u>tat · t<u>ű</u>z → t<u>ü</u>zet", "mint: kéz → kezet") },
+      { cap: "Ha bizonytalan vagy, mondd ki a kéz szóval: kézben, tehát vízben. Kezet, tehát vizet.", html: W("kézben → vízben · kezet → vizet") }
+    ]
+  };
+  const MET = { tanito: "tanítóból", magyarul: "háromszor magyarul", husz: "húsz és huszadik" };
+  const PB = { m: "tanito" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Hét rövid, hét hosszú", h:
+      tbl(["rövid", "a", "e", "i", "o", "ö", "u", "ü"], [["<b>hosszú</b>", "á", "é", "í", "ó", "ő", "ú", "ű"]]) +
+      "<p>A hossz <b>más szót</b> csinál: kor – kór, öt – őt, bal – bál, irt – írt, kemény – kémény. A legtöbb hiba az <b>i/í, o/ó, ö/ő, u/ú, ü/ű</b> pároknál van.</p>" +
+      "<div class='note'><b>Az ö és az ő</b> nem ugyanaz a betű pöttyökkel: az ő hosszú, két vesszővel. Az ű ugyanígy. Kézírásban is látszódjon a különbség!</div>" },
+    { k: "Alap", t: "Kimondás és szabály", h:
+      "<ul><li>Sok szóban mondjuk is a különbséget: <b>kor</b> és <b>kór</b> másképp hangzik.</li>" +
+      "<li>Néhány szónál a kiejtés ingadozik (az i, u, ü és í, ú, ű). Ilyenkor nem a fül dönt, hanem a <b>szabály</b> vagy a szótár.</li>" +
+      "<li>Három fajta tudás kell: <b>szavak</b>, amelyeket meg kell tanulni; <b>toldalékok</b>, amelyek mindig ugyanolyanok; és a <b>rövidülő tövek</b> (víz – vizet).</li></ul>" },
+    { k: "Szótő", t: "Minden alakjában hosszú", h:
+      "<p>Ezekben a szavakban a hosszú magánhangzó <b>mindig megmarad</b>, akármit teszünk utánuk:</p>" +
+      "<p class='eq'>íz, ízes · szín, színes, színész · szív, szíves, szívből · hús, húsos · súly, súlyos · új, újság, újra · gyűjt, gyűjtemény · tű, tűvel</p>" },
+    { k: "Szó vége", t: "A szó végén: i, ú, ű", h:
+      "<ul><li>A szó végi <b>i</b> legtöbbször rövid: kocsi, kifli, néni, bácsi, Peti. (Kivétel például: sí.)</li>" +
+      "<li>Egy szótagú főnév végén <b>hosszú</b> ú, ű: fű, tű, mű, bú, szú.</li>" +
+      "<li>Hosszú a végén: fiú, tanú, háború, ágyú, búcsú, betű, gyűrű, kesztyű, fésű, hegedű, billentyű.</li>" +
+      "<li>Rövid a végén: kapu, falu, áru, hamu, daru, satu, menü, eskü; és a becézés: anyu, apu, Icu.</li></ul>" },
+    { k: "Melléknév", t: "Melléknév végén mindig hosszú", h:
+      "<p>Ha a szó <b>melléknév</b> (milyen?) és ú-ra, ű-re végződik, az <b>mindig hosszú</b>:</p>" +
+      "<p class='eq'>hosszú · szomorú · savanyú · domború · könnyű · gyönyörű · keserű · szörnyű · nagyszerű</p>" +
+      "<p>Ugyanígy az -ú, -ű képző: kék szem<b>ű</b>, négylá<b>bú</b>, jószív<b>ű</b>.</p>" },
+    { k: "Mindig hosszú", t: "Toldalékok, amelyek mindig hosszúak", h:
+      tbl(["toldalék", "példa"], [["-ít, -dít, -sít (képző)", "tan<b>ít</b>, ép<b>ít</b>, segít, mozd<b>ít</b>"], ["-ból, -ből", "iskolá<b>ból</b>, kert<b>ből</b>"], ["-ról, -ről", "asztal<b>ról</b>, hegy<b>ről</b>"], ["-tól, -től", "Péter<b>től</b>, anyá<b>tól</b>"], ["-ól, -ől névutó", "al<b>ól</b>, mell<b>ől</b>, el<b>ől</b>"]]) +
+      "<p>A -ból, -ról, -tól a <b>honnan?</b> kérdésre felel. A honnan hosszú, és ezek is.</p>" + playBtn("tanito"), init: playInit },
+    { k: "Mindig rövid", t: "Toldalékok, amelyek mindig rövidek", h:
+      tbl(["toldalék", "példa"], [["-ul, -ül", "magyar<b>ul</b>, vég<b>ül</b>, gyógy<b>ul</b>, ker<b>ül</b>"], ["névutók, határozószók -ul, -ül végződése", "alul, belül, nélkül, közül, keresztül (<b>de: túl</b>)"], ["-szor, -szer, -ször", "három<b>szor</b>, hét<b>szer</b>, öt<b>ször</b>"], ["-kor", "hat<b>kor</b>, éjfél<b>kor</b>"], ["-ig", "holnap<b>ig</b>, kedd<b>ig</b>"], ["toldalék végén i", "est<b>i</b>, debrecen<b>i</b>, írn<b>i</b>, kérd<b>i</b>"]]) + playBtn("magyarul"), init: playInit },
+    { k: "Rövidülő tő", t: "tíz – tizedik, ír – iroda", h:
+      "<p>Néhány szóban a hosszú magánhangzó <b>bizonyos alakokban</b> rövid lesz:</p>" +
+      tbl(["hosszú", "rövid"], [["tíz, tízes, tízen", "tizedik, tized, tizenegy"], ["húsz, húszas, húszan", "huszadik, huszad, huszonegy"], ["ír, írás, írat", "irat, iroda, irodalom"], ["úszik, úszkál", "uszoda, uszony, uszály"], ["tűr, tűrt", "türelem"], ["zsír, zsíros", "zsiradék"]]) + playBtn("husz"), init: playInit },
+    { k: "Rövidülő tő", t: "víz – vizet: a kéz a minta", h:
+      "<p>A <b>híd, nyíl, víz, kút, nyúl, út, úr, tűz</b> ugyanott rövidül, ahol a <b>kéz</b>:</p>" +
+      tbl(["kéz", "víz", "út", "tűz"], [["kézben", "vízben", "útban", "tűzben"], ["kézre", "vízre", "útra", "tűzre"], ["<b>kezet</b>", "<b>vizet</b>", "<b>utat</b>", "<b>tüzet</b>"], ["<b>kezek</b>", "<b>vizek</b>", "<b>utak</b>", "<b>tüzek</b>"], ["<b>kezes</b>", "<b>vizes</b>", "<b>utas</b>", "<b>tüzes</b>"]]) +
+      "<div class='note'><b>Kivétel:</b> hídja, kútja, útja (hosszú marad).</div>" },
+    { k: "-l képző", t: "derű – derül", h:
+      "<p>Ezek a szavak ú-ra, ű-re végződnek, de az <b>-l</b> képzős alakjukban rövid az u, ü:</p>" +
+      "<p class='eq'>ború → borul · derű → derül · fésű → fésül · hegedű → hegedül · lassú → lassul · köszörű → köszörül</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>magyarúl, végűl</b> → magyarul, végül. Az -ul, -ül mindig rövid.</div>" +
+      "<div class='mistake'><b>tanitó, segit</b> → tanító, segít. Az -ít képző mindig hosszú.</div>" +
+      "<div class='mistake'><b>mindíg</b> → mindig. Rövid i.</div>" +
+      "<div class='mistake'><b>iskolábol, kertböl</b> → iskolából, kertből. A -ból, -ből hosszú.</div>" +
+      "<div class='mistake'><b>húszadik, tízenegy</b> → huszadik, tizenegy. Itt rövid.</div>" +
+      "<div class='mistake'><b>hosszu, könnyü</b> → hosszú, könnyű. Melléknév végén hosszú.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Honnan? Hosszú.</span><span>-ból, -ről, -tól: a honnan? kérdésre felelnek, és mind hosszúak.</span></div>" +
+      "<div class='trick'><span class='t'>-ul, -ül: rövid</span><span>Toldalékként mindig rövid (magyarul, végül, nélkül), a kivétel: túl. Ha a tő része, lehet hosszú: hűl, nyúl.</span></div>" +
+      "<div class='trick'><span class='t'>Kéz-próba</span><span>Vizet vagy vízet? Kezet, tehát vizet. Kézben, tehát vízben.</span></div>" +
+      "<div class='trick'><span class='t'>Ékezet a végén</span><span>Írás után nézd át csak az ékezeteket: egy kört csak erre szánj.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const G = [
+    [["sz[í]v", "Minden alakjában hosszú: szív, szíves, szívből."], ["sz[í]n", "Minden alakjában hosszú: szín, színes, színész."], ["[ú]j", "Minden alakjában hosszú: új, újság, újra."],
+     ["h[ú]s", "Minden alakjában hosszú: hús, húsos."], ["s[ú]ly", "Minden alakjában hosszú: súly, súlyos."], ["t[ű]", "Egy szótagú főnév végén hosszú: tű, fű, mű."],
+     ["f[ű]", "Egy szótagú főnév végén hosszú: fű, tű, mű."], ["bet[ű]", "Hosszú ű a végén: betű, gyűrű, kesztyű."], ["gy[ű]r[ű]", "Hosszú ű mindkét helyen: gyűrű."],
+     ["keszty[ű]", "Hosszú ű a végén: kesztyű."], ["fi[ú]", "Hosszú ú a végén: fiú, tanú."], ["tan[ú]", "Hosszú ú a végén: tanú, fiú."], ["kap[u]", "Rövid u a végén: kapu, falu, áru."],
+     ["ham[u]", "Rövid u a végén: hamu, kapu, falu."], ["sat[u]", "Rövid u a végén: satu."], ["men[ü]", "Rövid ü a végén: menü, eskü."], ["kocs[i]", "A szó végi i legtöbbször rövid: kocsi, kifli."],
+     ["kifl[i]", "A szó végi i legtöbbször rövid."], ["b[ú]tor", "Hosszú ú: bútor."], ["c[u]kor", "Rövid u: cukor."], ["k[u]tya", "Rövid u: kutya."], ["t[ü]kör", "Rövid ü: tükör."],
+     ["sz[ü]net", "Rövid ü: szünet."], ["v[i]rág", "Rövid i: virág."], ["k[i]rály", "Rövid i: király."], ["m[i]nd[i]g", "Rövid i mindkét helyen: mindig."], ["h[ű]t[ő]", "Hosszú ű és hosszú ő: hűtő."],
+     ["cip[ő]", "Hosszú ő a végén: cipő."], ["aut[ó]", "Hosszú ó a végén: autó."], ["isk[o]la", "Rövid o: iskola."], ["k[ö]nyv", "Rövid ö: könyv."], ["f[ö]ld", "Rövid ö: föld."],
+     ["b[ő]r", "Hosszú ő: bőr."], ["t[o]ll", "Rövid o: toll."], ["s[ó]", "Hosszú ó: só."]],
+    [["tan[í]t", "Az -ít képző mindig hosszú: tanít, épít, segít."], ["ép[í]t", "Az -ít képző mindig hosszú."], ["seg[í]t", "Az -ít képző mindig hosszú."], ["jav[í]t", "Az -ít képző mindig hosszú."],
+     ["tan[í]tó", "Az -ít képző hosszú marad: tanító."], ["iskoláb[ó]l", "A -ból, -ből mindig hosszú."], ["kertb[ő]l", "A -ból, -ből mindig hosszú."], ["asztalr[ó]l", "A -ról, -ről mindig hosszú."],
+     ["hegyr[ő]l", "A -ról, -ről mindig hosszú."], ["Pétert[ő]l", "A -tól, -től mindig hosszú."], ["anyát[ó]l", "A -tól, -től mindig hosszú."], ["mell[ő]l", "A honnan? névutó -ól, -ől végződése hosszú: alól, mellől."],
+     ["al[ó]l", "A honnan? névutó -ól, -ől végződése hosszú."], ["magyar[u]l", "Az -ul, -ül rag mindig rövid."], ["angol[u]l", "Az -ul, -ül rag mindig rövid."], ["vég[ü]l", "Az -ul, -ül mindig rövid."],
+     ["példá[u]l", "Az -ul, -ül mindig rövid: például."], ["gyógy[u]l", "Az -ul, -ül képző rövid: gyógyul, kerül."], ["ker[ü]l", "Az -ul, -ül képző rövid."], ["ford[u]l", "Az -ul, -ül képző rövid."],
+     ["nélk[ü]l", "A névutók -ul, -ül végződése rövid: nélkül, belül, közül."], ["bel[ü]l", "A névutók -ul, -ül végződése rövid."], ["köz[ü]l", "A névutók -ul, -ül végződése rövid."],
+     ["t[ú]l", "Kivétel! A túl hosszú ú-val írandó."], ["háromsz[o]r", "A -szor, -szer, -ször rövid."], ["ötsz[ö]r", "A -szor, -szer, -ször rövid."], ["hatk[o]r", "A -kor rövid: hatkor, éjfélkor."],
+     ["éjfélk[o]r", "A -kor rövid."], ["holnap[i]g", "Az -ig rövid: holnapig, keddig."], ["kedd[i]g", "Az -ig rövid."], ["est[i]", "A toldalékos szó végi i rövid: esti, debreceni."],
+     ["debrecen[i]", "A toldalékos szó végi i rövid."], ["olvasn[i]", "A -ni végén rövid i: olvasni, írni."], ["hossz[ú]", "Melléknév végén mindig hosszú ú, ű."], ["szomor[ú]", "Melléknév végén mindig hosszú ú, ű."],
+     ["savany[ú]", "Melléknév végén mindig hosszú ú, ű."], ["könny[ű]", "Melléknév végén mindig hosszú ú, ű."], ["gyönyör[ű]", "Melléknév végén mindig hosszú ú, ű."], ["szörny[ű]", "Melléknév végén mindig hosszú ú, ű."],
+     ["négyláb[ú]", "Az -ú, -ű képző hosszú: négylábú, kék szemű."], ["der[ü]l", "derű, de derül: az -l képzős alakban rövid."], ["lass[u]l", "lassú, de lassul."], ["fés[ü]l", "fésű, de fésül."]],
+    [["t[í]z", "tíz: hosszú í."], ["t[i]zedik", "tíz, de tizedik: itt rövid."], ["t[i]zenegy", "tíz, de tizen-: rövid."], ["t[í]zes", "tízes: hosszú marad."],
+     ["h[ú]sz", "húsz: hosszú ú."], ["h[u]szadik", "húsz, de huszadik."], ["h[u]szonöt", "húsz, de huszon-: rövid."], ["h[ú]szas", "húszas: hosszú marad."],
+     ["v[í]z", "víz: hosszú."], ["v[i]zet", "víz, de vizet (mint kéz – kezet)."], ["v[i]zes", "víz, de vizes (mint kezes)."], ["v[í]zben", "vízben: hosszú marad (mint kézben)."],
+     ["[ú]t", "út: hosszú."], ["[u]tat", "út, de utat (mint kéz – kezet)."], ["[u]tas", "út, de utas."], ["[ú]tja", "Kivétel: útja (hosszú marad), ugyanígy hídja, kútja."],
+     ["t[ű]z", "tűz: hosszú."], ["t[ü]zet", "tűz, de tüzet."], ["t[ü]zes", "tűz, de tüzes."], ["t[ű]zre", "tűzre: hosszú marad (mint kézre)."],
+     ["h[í]d", "híd: hosszú."], ["h[i]dak", "híd, de hidak."], ["h[í]dja", "Kivétel: hídja."], ["k[ú]t", "kút: hosszú."], ["k[u]tak", "kút, de kutak."],
+     ["ny[í]l", "nyíl: hosszú."], ["ny[i]lak", "nyíl, de nyilak."], ["ny[ú]l", "nyúl: hosszú."], ["ny[u]lak", "nyúl, de nyulak."],
+     ["[í]r", "ír: hosszú."], ["[í]rás", "írás: hosszú marad."], ["[i]roda", "ír, de iroda: rövid."], ["[i]rodalom", "ír, de irodalom."],
+     ["[ú]szik", "úszik: hosszú."], ["[u]szoda", "úszik, de uszoda."], ["[u]szony", "úszik, de uszony."], ["t[ű]r", "tűr: hosszú."], ["t[ü]relem", "tűr, de türelem."],
+     ["b[ú]jócska", "bújik, bújócska: hosszú."], ["b[u]jkál", "bújik, de bujkál."], ["zs[í]r", "zsír: hosszú."], ["zs[i]radék", "zsír, de zsiradék."]]
+  ];
+  const S = [
+    [["A {tanító|tanitó} néni új verset hozott.", "Az -ít képző hosszú: tanít, tanító."], ["Ma {húsz|husz} percet késett a busz.", "húsz: hosszú ú."], ["Este a {tűz|tüz} mellett ültünk.", "tűz: hosszú ű (de: tüzet)."],
+     ["A {fiú|fiu} gyorsan elfutott a labdáért.", "fiú: hosszú ú a végén."], ["Vettem egy {új|uj} egeret a géphez.", "új: minden alakjában hosszú."], ["A {hűtőben|hütőben} van még üdítő.", "hűtő: hosszú ű."],
+     ["Bence {szívesen|szivesen} segít a többieknek.", "szív, szíves: minden alakjában hosszú."], ["Az öltözőben felejtettem a {kesztyűmet|kesztyümet}.", "kesztyű: hosszú ű a végén."],
+     ["A ház előtt van egy nagy {kapu|kapú}.", "kapu: rövid u a végén."], ["A {betűket|betüket} szépen kell leírni.", "betű: hosszú ű."], ["Az {iskola|iskóla} mögött van a focipálya.", "iskola: rövid o."],
+     ["Nálunk a {szünet|szűnet} tíz percig tart.", "szünet: rövid ü."], ["Ő {mindig|mindíg} késik az edzésről.", "mindig: rövid i (gyakori hiba)."]],
+    [["Ma {magyarul|magyarúl} írtunk dolgozatot.", "Az -ul, -ül rag mindig rövid."], ["A labda {végül|végűl} a hálóban kötött ki.", "Az -ul, -ül mindig rövid."], ["A meccs {hatkor|hatkór} kezdődik.", "A -kor rag rövid."],
+     ["{Háromszor|Háromszór} is elrontottam a jelszavamat.", "A -szor, -szer, -ször rövid."], ["Az edző {tanítja|tanitja} a cselt.", "Az -ít képző hosszú."], ["Az öcsém az {iskolából|iskolábol} jövet beugrott a boltba.", "A -ból, -ből hosszú."],
+     ["{Holnapig|Holnapíg} be kell adnom a projektet.", "Az -ig rövid."], ["Ez egy {hosszú|hosszu} film volt.", "Melléknév végén mindig hosszú ú, ű."], ["A feladat {könnyű|könnyü} volt.", "Melléknév végén mindig hosszú ű."],
+     ["Kabát {nélkül|nélkűl} ne menj ki a hidegbe.", "A névutó -ül végződése rövid."], ["A labda a {kapufáról|kapufárol} pattant vissza.", "A -ról, -ről hosszú."], ["A szomszéd {fiútól|fiútol} kaptam kölcsön a töltőt.", "A -tól, -től hosszú."],
+     ["Az új számítógép {gyönyörű|gyönyörü}.", "Melléknév végén hosszú ű."], ["A sebem gyorsan {gyógyul|gyógyúl}.", "Az -ul, -ül képző rövid."], ["{Például|Példáúl} a foci is jó sport.", "Az -ul rag rövid: például."]],
+    [["A {tizedik|tízedik} percben lőttük az első gólt.", "tíz, de tizedik."], ["Kedden megyünk az {uszodába|úszodába}.", "úszik, de uszoda."], ["Ő lett a {huszadik|húszadik} jelentkező.", "húsz, de huszadik."],
+     ["Kérek egy pohár {vizet|vízet}.", "víz, de vizet (mint kéz – kezet)."], ["Az {utat|útat} lezárták a meccs miatt.", "út, de utat."], ["A tűzoltók gyorsan eloltották a {tüzet|tűzet}.", "tűz, de tüzet."],
+     ["A {hídon|hidon} sok autó állt.", "híd, hídon: hosszú marad (mint kézen)."], ["Apa egy {irodában|íródában} dolgozik.", "ír, de iroda."], ["Nagy {türelemmel|tűrelemmel} magyarázta el a feladatot.", "tűr, de türelem."],
+     ["A {nyulak|nyúlak} a fűben ugráltak.", "nyúl, de nyulak."], ["Az {útja|utja} az iskolába tíz percig tart.", "Kivétel: útja, hídja, kútja: hosszú marad."], ["{Tizenegy|Tízenegy} játékos van a pályán.", "tíz, de tizen-."],
+     ["{Huszonöt|Húszonöt} pontot szereztem.", "húsz, de huszon-."], ["Ebben a {vízben|vizben} nem szabad úszni.", "víz, vízben: hosszú marad (mint kézben)."], ["A {tízes|tizes} busszal megyünk.", "tízes: hosszú marad."]]
+  ];
+  const P = [
+    ["Ma {öt|őt} gólt rúgtunk.", "öt = szám; őt = azt a személyt.", 1], ["Láttad {őt|öt} a meccsen?", "őt = azt a személyt; öt = szám.", 1],
+    ["A {bal|bál} lábammal rúgtam.", "bal = nem jobb; bál = táncos mulatság.", 1], ["A farsangi {bálon|balon} sokat táncoltunk.", "bál = táncos mulatság.", 1],
+    ["Erős {szél|szel} fúj.", "szél = mozgó levegő; szel = vág.", 1], ["Anya kenyeret {szel|szél}.", "szel = vág; szél = mozgó levegő.", 1],
+    ["Fáj a {hátam|hatam} az edzés után.", "hát = testrész; hat = szám.", 1], ["Ma {hat|hát} órám van, holnap csak öt.", "hat = szám; hát = testrész.", 1],
+    ["Ebben a {korban|kórban} még nem volt internet.", "kor = időszak; kór = betegség.", 2], ["A nagymamámat a {kórházba|korházba} vitték.", "kórház: a kór betegséget jelent.", 2],
+    ["Anya üzenetet {írt|irt} nekem.", "írt = leírt valamit; irt = kipusztít.", 2], ["A kertész gyomot {irt|írt}.", "irt = kipusztít; írt = leírt valamit.", 2],
+    ["Megütöttem a {karomat|káromat}.", "kar = testrész; kár = veszteség.", 2], ["{Kár|Kar}, hogy kikaptunk.", "kár = sajnálatos dolog; kar = testrész.", 2],
+    ["A labda {kerek|kerék}.", "kerek = gömbölyű; kerék = a jármű része.", 3], ["Ez a jég nagyon {kemény|kémény}.", "kemény = nem puha; kémény = a füst útja.", 3],
+    ["A {kéményből|keményből} füst száll fel.", "kémény = a füst útja a tetőn.", 3], ["Nem {akar|akár} velünk jönni.", "akar = szeretne; akár = esetleg.", 3], ["{Akár|Akar} holnap is kezdhetünk.", "akár = akár … is, esetleg.", 3]
+  ];
+  const types = [
+    { id: "hiany", name: "Hiányzó betű", gen: l => H.gapTask(pick(G[l - 1])) },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) },
+    { id: "par", name: "Szópárok", gen: l => H.sentChoice(pick(P.filter(p => p[2] <= l))) }
+  ];
+  K.practice($("#practice"), { id: "h-magan", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.maganhangzok, player: pb, print: "tollbamondasok.html#maganhangzok" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Mikor?</th><th>Hossz</th><th>Példa</th></tr>" + [
+    ["-ít, -dít, -sít képző", "hosszú", "tanít, épít, mozdít"], ["-ból, -ből · -ról, -ről · -tól, -től", "hosszú", "iskolából, asztalról, anyától"],
+    ["-ól, -ől névutó", "hosszú", "alól, mellől, elől"], ["melléknév végén ú, ű", "hosszú", "hosszú, könnyű, szomorú"], ["-ú, -ű képző", "hosszú", "kék szemű, négylábú"],
+    ["-ul, -ül (rag, képző, névutó)", "rövid", "magyarul, végül, gyógyul, nélkül (de: túl)"], ["-szor, -szer, -ször · -kor · -ig", "rövid", "háromszor, hatkor, holnapig"],
+    ["toldalékos szó végén i", "rövid", "esti, debreceni, írni"], ["tíz, húsz, ír, úszik, tűr, zsír", "rövidül", "tizedik, huszadik, iroda, uszoda, türelem, zsiradék"],
+    ["víz, út, tűz, híd, kút, nyíl, nyúl", "mint a kéz", "vizet, utat, tüzet (de: vízben, hídja)"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'>" + r[1] + "</td><td class='l'><b>" + r[2] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

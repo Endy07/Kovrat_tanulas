@@ -27,6 +27,9 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
+| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · a 12 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
+| `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
+| `docs/helyesiras-terv.md` | A helyesírás-leckesor terve (10 lecke), sorrend és indok, ✅/⚠️. |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
 | `docs/leckek-terv.md`, `docs/tanrend-10.md` | A leckék sorrendje és indoka; a 10. évfolyam tanrend-vázlata (lecke nélkül). |
 | `version.json` | Az aktuális verzió-időbélyeg. Az oldalak ebből tudják, hogy van-e újabb változat. **Kézzel ne írd**, a pre-commit hook állítja. |
@@ -160,6 +163,30 @@ hogy **a Mechwartban már a 9.-ben Python van** (a programtanterv a 10.-re teszi
 - **A közös készlet bővült:** `kit.js` egyedi feladatfajta (`task.mount(el) → { raw() }`), visszafelé kompatibilis (két régi
   lecke újraépítve, tesztelve); `lesson-test.js` megvárja a lassú aszinkron ellenőrzést (`data-busy`, legfeljebb 90 mp).
 
+### Magyar helyesírás (2026. 10. 30., a pult briefje alapján)
+
+Endi (a pulton át): „Kovratnak helyesírást kellene tanítani. […] Teljesen az alapoktól. És tollbamondás szöveget is írjon.”
+A szabályok forrása **A magyar helyesírás szabályai, 12. kiadás (AkH 12, 2015)**, https://helyesiras.mta.hu; minden lecke
+alján ott a pontok listája.
+
+- **Terv** (`docs/helyesiras-terv.md`): 10 lecke, alap → gyakori hiba → összetett szabály. Kész az **1–3.**: betűk, ábécé,
+  elválasztás · magánhangzók hossza · mássalhangzók hossza. Tervezett: j/ly, hasonulások, felszólító mód, egybe-/különírás,
+  nagybetű, vessző, gyakori tévesztések.
+- **Leckék:** hero (betűbontó + ábécérendező, ill. szópárok), 12–13 dia, lejátszó, 4–5 gyakorlótípus × 3 szint (hiánypótlás,
+  „Melyik a jó?”, hibás szó a mondatban, elválasztás, ábécérend, betűszám, szópárok, toldalékolás), tollbamondás, puska.
+- **Tollbamondás:** mondatonként felolvas (újra, darabonként; az írásjeleket kimondja, mert a vesszőt még nem tanulta),
+  Kovrat begépeli, a végén szavanként összeveti, kiemeli az eltérést, és hibatípusonként csoportosít (hossz, ékezet, kettőzés,
+  többjegyű betű, j/ly, egybe-/különírás, kis/nagybetű, írásjel, kimaradt/fölösleges szó), linkkel a leckére; „▶ A javítás
+  lejátszva”. 12 szöveg (3 × 3 + 3 vegyes), a `tollbamondasok.html` nyomtathatóan is mutatja Endinek.
+- **Ellenőrizve:** `helyesiras-check.js` (227 eset: az AkH saját elválasztási és ábécérendi példái, hibatípusok, összevetés,
+  mondatforma); `lesson-test.js` mindhárom leckén 40-nel (1440/1440, 390 px, sötét téma, JS-hiba nincs); a tollbamondás-felület
+  szándékosan hibás begépeléssel; nyomtatási nézet sötét témájú gépen is. A magyar szövegeket egy friss szemű lektor is átnézte.
+- **Kovrat saját hibái (később):** Endi a Facebook-csevegést a `C:\KOVRAT\chat\` mappába teszi (2026-10-30-án még üres).
+  Ha megjön: hibastatisztika hibatípusonként a `docs/helyesiras-hibak.md`-be (a `H.classify` Node-ban is fut), a sorrend és
+  a tollbamondások ehhez igazítva. **A csevegés és belőle szó szerinti mondat nem kerülhet a repóba** (nyilvános), és a
+  `C:\KOVRAT\` mappán kívülre sem.
+- **Push nincs** Endi igene nélkül (a brief szerint); helyben commitolva.
+
 ## Döntések és indokaik
 
 | Döntés | Miért |
@@ -204,6 +231,8 @@ hogy **a Mechwartban már a 9.-ben Python van** (a programtanterv a 10.-re teszi
   `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
+- **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, helyben commitolva, **push Endi igenjére vár**. Következő:
+  a 4. lecke (j/ly), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).

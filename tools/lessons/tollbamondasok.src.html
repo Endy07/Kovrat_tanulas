@@ -1,0 +1,85 @@
+<!--@HEAD-->
+<title>Tollbamondások</title>
+<style>
+.tb{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.tb h3{font-size:1.15rem}
+.tb .meta{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.tb p.txt{font-size:1.15rem;line-height:1.75;max-width:70ch}
+.grp{display:flex;flex-direction:column;gap:12px}
+.howto ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:70ch}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#999}
+  body{background:#fff!important;color:#000!important;padding:0;font-size:13pt}
+  .noprint{display:none!important}
+  .wrap{gap:14px;max-width:none}
+  .tb{break-inside:avoid;border:1px solid #999;border-radius:6px;padding:10px 12px}
+  .tb p.txt{font-size:13.5pt;line-height:1.6}
+  h2{font-size:16pt;break-after:avoid}
+  .grp{gap:10px}
+  a{color:#000;text-decoration:none}
+  .tb,.tb *,h1,h2,h3,li,p{background:#fff!important;color:#000!important}
+  .eyebrow,.src,.tb .meta{color:#333!important}
+}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back noprint" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · tollbamondások</span>
+  <h1>Tollbamondások</h1>
+  <p class="lead noprint">Minden helyesírás-lecke tollbamondás-szövege egy helyen, és vegyes, ismétlő szövegek. Gyakorolhatsz a géppel (felolvassa, te begépeled), vagy kinyomtathatod: Endi felolvassa, te kézzel írod a füzetedbe.</p>
+  <div class="row noprint"><button class="btn primary" id="print">🖨 Nyomtatás</button><a class="btn" href="#szovegek">A szövegek ↓</a></div>
+</header>
+
+<section class="section-head noprint">
+  <span class="eyebrow">1. rész</span><h2>Gyakorlás géppel</h2>
+  <div class="tabs" id="grp"></div>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head howto">
+  <span class="eyebrow">Endinek</span><h2>Hogyan diktáld?</h2>
+  <ol>
+    <li>Olvasd fel egyszer az egész szöveget. Kovrat most csak figyel.</li>
+    <li>Mondatonként: egyszer egészben, aztán lassan, 3–4 szavas darabokban. Az írásjeleket mondd ki („vessző”, „pont”): a vesszőt még nem tanulta.</li>
+    <li>A végén olvasd fel még egyszer az egészet; Kovrat közben átnézi, amit írt.</li>
+    <li>Javítás: hasonlítsátok össze a szöveggel. Minden hibás szót írjon le háromszor helyesen, és keresse meg a leckében a szabályát.</li>
+  </ol>
+</section>
+
+<section class="section-head" id="szovegek">
+  <span class="eyebrow">2. rész</span><h2>A szövegek</h2>
+  <div id="all" class="grp"></div>
+  <p class="src">A szövegek A magyar helyesírás szabályai 12. kiadása (2015) szerint készültek, kétszer ellenőrizve.</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, esc } = K;
+  const FOCUS = { betuk: "Többjegyű betűk (cs, gy, ny, sz, zs, dz, dzs), hosszú kettős betűk (ssz, ggy, lly).", maganhangzok: "-ból, -ről, -tól (hosszú) · -ul, -ül, -szor, -kor, -ig (rövid) · -ít (hosszú) · rövidülő tövek.",
+    massalhangzok: "Múlt idő (-tt, -t), középfok (-bb), névutók (alatt, előtt), hosszú többjegyű betűk, kettőzött szavak (itt, akkor, éppen).", vegyes: "Az 1–3. lecke szabályai vegyesen." };
+  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html" };
+  const keys = Object.keys(H.TEXTS);
+  // nyomtatható lista
+  $("#all").innerHTML = keys.map(g => '<h2 id="' + g + '">' + esc(H.GROUPS[g]) + "</h2>" +
+    '<p class="src">Figyelj: ' + esc(FOCUS[g]) + (LINK[g] ? ' <a class="noprint" href="' + LINK[g] + '">A lecke →</a>' : "") + "</p>" +
+    H.TEXTS[g].map((x, i) => {
+      const words = x.s.join(" ").split(/\s+/).length;
+      return '<div class="tb"><h3>' + (i + 1) + ". " + esc(x.t) + '</h3><span class="meta">' + x.s.length + " mondat · " + words + " szó</span>" + '<p class="txt">' + x.s.map(esc).join(" ") + "</p></div>";
+    }).join("")).join("");
+  // gyakorlás: csoport választása
+  const S = { g: location.hash && H.TEXTS[location.hash.slice(1)] ? location.hash.slice(1) : "vegyes" };
+  $("#grp").innerHTML = keys.map(g => '<button class="tab" data-g="' + g + '">' + esc(H.GROUPS[g]) + "</button>").join("");
+  function show(){
+    $$("#grp .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.g === S.g)));
+    H.dictation($("#dict"), { texts: H.TEXTS[S.g] });
+  }
+  $("#grp").addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (b){ S.g = b.dataset.g; show(); } });
+  show();
+  $("#print").addEventListener("click", () => window.print());
+})();
+</script>
+<!--@UPDATE-->

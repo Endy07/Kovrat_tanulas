@@ -1,0 +1,261 @@
+<!--@HEAD-->
+<title>Mássalhangzók hossza</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 3. lecke</span>
+  <h1>Mássalhangzók hossza: egy betű vagy kettő?</h1>
+  <p class="lead"><b>Itt</b> vagy <b>it</b>? <b>Lesz</b> vagy <b>lessz</b>? <b>Kisebb</b> vagy <b>kissebb</b>? Megtanulod, mikor kell kettőzni, hogyan kettőzzük a cs-t, a gy-t vagy az sz-t, és mi történik, ha három egyforma betű kerülne egymás mellé.</p>
+  <div class="panel">
+    <span class="eyebrow">Szópárok: kattints a szóra, és nézd meg a párját</span>
+    <div class="pairs" id="pairs"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem">Egy betű különbség, és más a jelentés. A hosszú mássalhangzót kettőzéssel jelöljük.</p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="nezett" aria-selected="true">nézett vagy kért?</button>
+    <button class="tab" data-m="kisebb" aria-selected="false">kisebb</button>
+    <button class="tab" data-m="tollal" aria-selected="false">tollal</button>
+    <button class="tab" data-m="jegy" aria-selected="false">jegygyűrű</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. szavak, amelyeket meg kell tanulni (itt, akkor, mellett, lesz) · 2. toldalékok: múlt idő, középfok, névutók, tárgyrag · 3. hosszú többjegyű betűk, összetett szavak, három egyforma betű, -val/-vel. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj a kettőzött betűkre: hozott, mellett, éppen, legjobb, hosszú, mindannyian.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Hosszú többjegyű betű</span><span>Csak az első jegyet kettőzzük: ssz, ggy, nny, lly, tty, ccs, zzs (asszony, meggy, könnyű).</span></div>
+    <div class="trick"><span class="t">Összetett szó határán</span><span>Teljes kettőzés: jegygyűrű, díszszemle, kulcscsomó, észszerű.</span></div>
+    <div class="trick"><span class="t">Három egyforma helyett kettő</span><span>toll + -val = tollal · hall + -lak = hallak · de tulajdonnévnél kötőjel: Bükk-kel.</span></div>
+    <div class="trick"><span class="t">Gyakori hibák</span><span>lesz (nem lessz) · kisebb (nem kissebb) · utca · egyszer · de: itt, ott, akkor, mellett, együtt, éppen</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 7., 9., 36–38., 46., 59., 87., 92–93. pont · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, shuffle, esc } = K;
+
+  /* ---------- Hero: szópárok (AkH 9. és saját példák) ---------- */
+  const PAIRS = [[["hal", "úszik a vízben", 2, 1], ["hall", "a fülével érzékel", 2, 2]], [["kel", "felkel", 2, 1], ["kell", "szükséges", 2, 2]],
+    [["szál", "vékony fonal", 3, 1], ["száll", "repül", 3, 2]], [["megy", "halad", 2, 2], ["meggy", "gyümölcs", 2, 3]], [["eset", "történet", 3, 1], ["esett", "leesett", 3, 2]],
+    [["kasza", "fűvágó eszköz", 2, 2], ["kassza", "pénztár", 2, 3]], [["tol", "nyom maga előtt", 2, 1], ["toll", "írószer", 2, 2]], [["ál", "hamis", 1, 1], ["áll", "nem ül", 1, 2]]];
+  const pw = x => esc(x[0].slice(0, x[2])) + "<u>" + esc(x[0].substr(x[2], x[3])) + "</u>" + esc(x[0].slice(x[2] + x[3]));
+  const side = PAIRS.map(() => 0);
+  function drawPairs(){
+    $("#pairs").innerHTML = PAIRS.map((p, k) => { const x = p[side[k]], y = p[1 - side[k]];
+      return '<button class="pairbtn" data-p="' + k + '"><span class="w">' + pw(x) + '</span><span class="m">' + esc(x[1]) + '</span><span class="m">párja: ' + esc(y[0]) + "</span></button>"; }).join("");
+  }
+  $("#pairs").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; const k = Number(b.dataset.p); side[k] = 1 - side[k]; drawPairs(); if (K.tts.on && K.tts.ok) K.tts.say(PAIRS[k][side[k]][0]); });
+  drawPairs();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    nezett: () => [
+      { cap: "Múlt idő: egy t vagy két t? Az dönt, mi áll előtte.", html: W("néz<u>ett</u> · kér<u>t</u>") },
+      { cap: "Néz: a múlt idő jele elé magánhangzó kerül, az e. Magánhangzó után két t: nézett.", html: W("néz + e + <u>tt</u> = nézett", "magánhangzó után: tt") },
+      { cap: "Kér: a jel közvetlenül az r után jön. Mássalhangzó után egy t: kért.", html: W("kér + <u>t</u> = kért", "mássalhangzó után: t") },
+      { cap: "Ugyanígy: dobott, olvasott, futott, de tanult, írt, várt.", html: W("dob<u>ott</u> · olvas<u>ott</u> · tanul<u>t</u> · ír<u>t</u>") },
+      { cap: "Ugyanez a szabály a névutóknál: alatt, fölött, között, mögött, de szerint. Kivétel: át, egy t.", html: W("ala<u>tt</u> · mögö<u>tt</u> · szerin<u>t</u> · á<u>t</u>") }
+    ],
+    kisebb: () => [
+      { cap: "Kisebb. Két helyen lehet hibázni: az s-nél és a b-nél.", html: W("ki<u>s</u>e<u>bb</u>") },
+      { cap: "A tő: kis. Egy s van benne, ezért a kisebb szóban is egy s marad. A kissebb hibás.", html: W("ki<u>s</u> → ki<u>s</u>ebb", "nem: kissebb") },
+      { cap: "A középfok jele magánhangzó után -bb: kis, e, bb. Ezért két b.", html: W("kis + e + <u>bb</u>", "szebb · jobb · nagyobb · gyorsabb") },
+      { cap: "Kész: kisebb. Egy s, két b.", html: W("kisebb") }
+    ],
+    tollal: () => [
+      { cap: "Toll és a -val rag. A -val v-je hasonul az előtte álló mássalhangzóhoz: l lesz belőle.", html: W("toll + val → toll + lal") },
+      { cap: "Így három l kerülne egymás mellé. Ilyenkor csak kettőt írunk.", html: W("tol<u>lll</u>al → to<u>ll</u>al", "három azonos betű helyett kettő") },
+      { cap: "Ugyanígy: sakk + kal = sakkal, hall + lak = hallak, fütty + tyel = füttyel, meggy + gyel = meggyel.", html: W("sakkal · hallak · füttyel · meggyel") },
+      { cap: "De a tulajdonnévnél nem egyszerűsítünk, hanem kötőjelet teszünk: Bükk-kel, Széll-lel, Mariann-nal.", html: W("Bükk-kel · Széll-lel · Mariann-nal", "tulajdonnév: kötőjel") }
+    ],
+    jegy: () => [
+      { cap: "Jegygyűrű. Két szóból áll: jegy és gyűrű.", html: W("jegy + gyűrű") },
+      { cap: "Egy szón belül a hosszú gy-t egyszerűsítve írjuk: meggy, poggyász, jeggyel.", html: W("me<u>ggy</u> · po<u>ggy</u>ász · je<u>ggy</u>el", "egy szón belül: ggy") },
+      { cap: "De az összetett szó határán mindkét szót teljesen kiírjuk: jegy, gyűrű.", html: W("je<u>gygy</u>űrű", "összetett szó határán: teljes kettőzés") },
+      { cap: "Ugyanígy: díszszemle, kulcscsomó, és a 12. kiadás óta: észszerű.", html: W("dí<u>szsz</u>emle · kul<u>cscs</u>omó · é<u>szsz</u>erű") }
+    ]
+  };
+  const MET = { nezett: "nézett vagy kért?", kisebb: "kisebb", tollal: "tollal", jegy: "jegygyűrű" };
+  const PB = { m: "nezett" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Rövid és hosszú mássalhangzó", h:
+      "<p>A mássalhangzó is lehet rövid vagy hosszú, és ez más szót csinál:</p>" +
+      "<p class='eq'>hal – hall · kel – kell · szál – száll · megy – meggy · eset – esett · kasza – kassza</p>" +
+      "<p>A hosszú mássalhangzót <b>kettőzéssel</b> jelöljük: bb, cc, dd, ff, gg, kk, ll, mm, nn, pp, rr, ss, tt, zz…</p>" },
+    { k: "Többjegyű", t: "Hosszú cs, gy, sz: csak az első jegy", h:
+      "<p>A többjegyű betűt nem írjuk le kétszer egészen, csak az <b>első jegyét</b> kettőzzük:</p>" +
+      tbl(["hosszú", "példa"], [["ccs", "loccsan, kulccsal"], ["ggy", "meggy, poggyász, jeggyel"], ["lly", "gally, osztállyal"], ["nny", "könnyű, mennyi, asszonnyal"], ["ssz", "asszony, hosszú, vissza, össze"], ["tty", "hattyú, fütty"], ["zzs", "rizzsel"], ["ddz, ddzs", "eddzük, briddzsel"]]) +
+      "<div class='note'><b>Elválasztáskor</b> viszont mindkét sorba teljes betű kerül: hosz-szú, pogy-gyász (1. lecke).</div>" },
+    { k: "Összetett szó", t: "A szóhatáron teljes kettőzés", h:
+      "<p>Ha egy összetett szóban a két szó határán találkozik két egyforma többjegyű betű, <b>mindkettőt teljesen</b> kiírjuk:</p>" +
+      "<p class='eq'>jegy + gyűrű = jegygyűrű · dísz + szemle = díszszemle · kulcs + csomó = kulcscsomó · ész + szerű = észszerű</p>" +
+      "<div class='note'><b>Új szabály:</b> a 2015-ös 12. kiadás óta <b>észszerű</b> a helyes. Régebben ésszerű volt, ezért régi könyvekben még így látod.</div>" + playBtn("jegy"), init: playInit },
+    { k: "Toldalék", t: "Magánhangzó után kettő, mássalhangzó után egy", h:
+      tbl(["toldalék", "magánhangzó után", "mássalhangzó után"], [["múlt idő jele", "dob<b>ott</b>, néz<b>ett</b>, olvas<b>ott</b>", "kér<b>t</b>, tanul<b>t</b>, ír<b>t</b>"], ["középfok jele", "szebb, jobb, nagyo<b>bb</b>, gyorsa<b>bb</b>", "–"], ["névutók végén", "ala<b>tt</b>, fölö<b>tt</b>, közö<b>tt</b>, mögö<b>tt</b>", "szerin<b>t</b>, irán<b>t</b>"]]) +
+      "<p>Kivétel a névutóknál: <b>át</b> és <b>hosszat</b>, egy t-vel.</p>" + playBtn("nezett"), init: playInit },
+    { k: "Mindig egy, mindig kettő", t: "A tárgyrag és a -képpen", h:
+      "<ul><li>A <b>tárgyrag</b> (mit? kit?) mindig <b>egy t</b>: hajót, könyvet, labdát, valakit, nyolcat.</li>" +
+      "<li>A <b>-képp, -képpen</b> mindig <b>két p</b>: másképp, ekképp, tulajdonképpen.</li>" +
+      "<li>A <b>kisebb</b> egy s-sel: a kis szóban is egy s van. (A kissebb hibás.)</li></ul>" + playBtn("kisebb"), init: playInit },
+    { k: "Három egyforma", t: "Három egyforma betű helyett kettő", h:
+      "<p>Ha a toldalék miatt <b>három egyforma</b> betű kerülne egymás mellé, csak kettőt írunk:</p>" +
+      tbl(["így lenne", "így írjuk"], [["toll + lal", "<b>tollal</b>"], ["sakk + kal", "<b>sakkal</b>"], ["hall + lak", "<b>hallak</b>"], ["fütty + tyel", "<b>füttyel</b>"], ["meggy + gyel", "<b>meggyel</b>"], ["orr + ra", "<b>orra</b>"]]) +
+      "<p><b>De:</b> tulajdonnévnél és összetett szónál kötőjel: <b>Bükk-kel</b>, <b>Széll-lel</b>, <b>Mariann-nal</b>, <b>sakk-kör</b>.</p>" + playBtn("tollal"), init: playInit },
+    { k: "-val, -vel", t: "A -val, -vel v-je hasonul", h:
+      "<p>Mássalhangzó után a -val, -vel <b>v</b>-je olyan lesz, mint az előtte álló mássalhangzó. Ezért lesz hosszú:</p>" +
+      "<p class='eq'>busz + val = busszal · jegy + vel = jeggyel · kulcs + val = kulccsal · osztály + val = osztállyal · ház + zal = házzal</p>" +
+      "<p>A hasonulásról az 5. leckében (készül) még több lesz.</p>" },
+    { k: "Kiejtés ≠ írás", t: "Röviden mondjuk, mégis kettőzzük", h:
+      "<p>Mássalhangzó mellett a hosszú mássalhangzót sokszor <b>röviden</b> ejtjük, de írásban megmarad:</p>" +
+      tbl(["kiejtés", "írás"], [["[jobra]", "<b>jobbra</b>"], ["[othon]", "<b>otthon</b>"], ["[vart]", "<b>varrt</b>"], ["[viszhang]", "<b>visszhang</b>"], ["[arcal]", "<b>arccal</b>"]]) +
+      "<p>A szó <b>tövét</b> nézd: jobb + ra, ott + hon, varr + t.</p>" },
+    { k: "benn, bent", t: "benn vagy bent? edző vagy eddző?", h:
+      "<ul><li><b>Két n:</b> benn, fenn, kinn, lenn.</li><li><b>Egy n:</b> bent, fent, kint, lent. Mindkét alak helyes, csak ne keverd: <b>bennt</b> nincs.</li>" +
+      "<li>A <b>dz</b> és a <b>dzs</b> akkor sem kettőzött, ha hosszan ejtjük: bodza, edző, madzag, lándzsa.</li></ul>" },
+    { k: "Megtanulandó", t: "Szavak, amelyeket meg kell tanulni", h:
+      tbl(["két betű", "egy betű"], [["itt, ott, akkor, mellett, együtt", "lesz, utca, egyszer"], ["éppen, össze, vissza, hosszú", "kisebb (egy s), máskor"], ["ennyi, annyi, mennyi, asszony", "talál, szalad, tanul"], ["reggel, kedd, illat, otthon", "barát, bolt, szerda"]]) },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>lessz</b> → lesz. Egy sz.</div>" +
+      "<div class='mistake'><b>kissebb</b> → kisebb. A kis szóban egy s van.</div>" +
+      "<div class='mistake'><b>it, akor, melett, együt</b> → itt, akkor, mellett, együtt.</div>" +
+      "<div class='mistake'><b>buszal, osztályal, jegyel</b> → busszal, osztállyal, jeggyel.</div>" +
+      "<div class='mistake'><b>tolllal</b> → tollal. Három egyforma betű helyett kettő.</div>" +
+      "<div class='mistake'><b>jeggyűrű</b> → jegygyűrű. Összetett szó határán teljes kettőzés.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Nézd meg a tövet</span><span>kis → kisebb (egy s) · jobb → jobbra (bb) · toll → tollal (ll)</span></div>" +
+      "<div class='trick'><span class='t'>Előtte mi áll?</span><span>Magánhangzó után kettő (dobott, alatt), mássalhangzó után egy (kért, szerint).</span></div>" +
+      "<div class='trick'><span class='t'>Szóhatár?</span><span>Ha két szóból áll, mindkettőt teljesen írd ki: jegy + gyűrű = jegygyűrű.</span></div>" +
+      "<div class='trick'><span class='t'>Mondd ki lassan</span><span>A szótagokra bontva hallod a hosszút: it-tas, ak-kor, mel-lett.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const G = [
+    [["a[kk]or", "akkor: két k."], ["i[tt]", "itt: két t (mint az ott)."], ["o[tt]", "ott: két t."], ["me[ll]ett", "mellett: két l és két t."], ["együ[tt]", "együtt: két t a végén."],
+     ["ö[ssz]e", "össze: hosszú sz (ssz)."], ["vi[ssz]a", "vissza: hosszú sz."], ["ho[ssz]ú", "hosszú: hosszú sz."], ["a[ssz]ony", "asszony: hosszú sz."],
+     ["e[nny]i", "ennyi: hosszú ny (nny)."], ["a[nny]i", "annyi: hosszú ny."], ["me[nny]i", "mennyi: hosszú ny."], ["ke[tt]ő", "kettő: két t."], ["va[nn]ak", "vannak: két n."],
+     ["le[sz]", "lesz: egy sz! (Gyakori hiba: lessz.)"], ["re[gg]el", "reggel: két g."], ["ke[dd]", "kedd: két d."], ["i[ll]at", "illat: két l."],
+     ["u[t]ca", "utca: egy t."], ["o[tt]hon", "otthon: két t (ott + hon)."], ["ha[ll]gat", "hallgat: két l."], ["e[gy]szer", "egyszer: egy gy."], ["sza[l]ad", "szalad: egy l."],
+     ["ta[l]ál", "talál: egy l."], ["ta[n]ul", "tanul: egy n."], ["ba[r]át", "barát: egy r."], ["bo[l]t", "bolt: egy l."]],
+    [["tanul[t]", "Mássalhangzó után egy t a múlt idő jele: tanult, kért."], ["kér[t]", "Mássalhangzó után egy t: kért."], ["hozo[tt]", "Magánhangzó után két t: hozott, nézett."],
+     ["olvaso[tt]", "Magánhangzó után két t: olvasott."], ["futo[tt]", "Magánhangzó után két t: futott."], ["segíte[tt]", "Magánhangzó után két t: segített."], ["játszo[tt]", "Magánhangzó után két t: játszott."],
+     ["jo[bb]", "A középfok jele -bb: jobb, szebb."], ["sze[bb]", "A középfok jele -bb."], ["nagyo[bb]", "A középfok jele -bb."], ["ki[s]ebb", "kisebb: egy s! (Gyakori hiba: kissebb.)"],
+     ["gyorsa[bb]", "A középfok jele -bb."], ["okosa[bb]", "A középfok jele -bb."], ["ala[tt]", "A névutók végén két t: alatt, fölött, között."], ["fölö[tt]", "A névutók végén két t."],
+     ["közö[tt]", "A névutók végén két t."], ["mögö[tt]", "A névutók végén két t."], ["elő[tt]", "A névutók végén két t."], ["á[t]", "Kivétel: át, egy t."], ["szerin[t]", "Mássalhangzó után egy t: szerint."],
+     ["hajó[t]", "A tárgyrag mindig egy t: hajót, könyvet."], ["könyve[t]", "A tárgyrag mindig egy t."], ["valaki[t]", "A tárgyrag mindig egy t."], ["labdá[t]", "A tárgyrag mindig egy t."],
+     ["máské[pp]", "A -képp, -képpen két p-vel."], ["tulajdonké[pp]en", "A -képp, -képpen két p-vel."]],
+    [["po[ggy]ász", "poggyász: hosszú gy (ggy)."], ["lo[ccs]an", "loccsan: hosszú cs (ccs)."], ["fü[tty]", "fütty: hosszú ty (tty)."], ["e[ddz]ük", "eddzük: hosszú dz (ddz)."],
+     ["ha[tty]ú", "hattyú: hosszú ty."], ["kö[nny]ű", "könnyű: hosszú ny."], ["ga[lly]", "gally: hosszú ly."], ["je[gygy]űrű", "Összetett szó (jegy + gyűrű): a határon teljes a kettőzés."],
+     ["kul[cscs]omó", "Összetett szó (kulcs + csomó): teljes kettőzés."], ["dí[szsz]emle", "Összetett szó (dísz + szemle): teljes kettőzés."], ["é[szsz]erű", "észszerű (ész + szerű): a 12. kiadás óta teljes kettőzéssel."],
+     ["to[ll]al", "toll + -val = tollal: három l helyett kettő."], ["sa[kk]al", "sakk + -val = sakkal: három k helyett kettő."],
+     ["bu[ssz]al", "busz + -val = busszal: a v hasonul, hosszú sz."], ["je[ggy]el", "jegy + -vel = jeggyel."], ["osztá[lly]al", "osztály + -val = osztállyal."], ["kul[ccs]al", "kulcs + -val = kulccsal."],
+     ["be[nn]", "benn, fenn, kinn, lenn: két n."], ["be[n]t", "bent, fent, kint, lent: egy n."], ["ki[n]t", "kint: egy n (de: kinn)."],
+     ["bo[dz]a", "A dz-t nem kettőzzük, akkor sem, ha hosszan ejtjük: bodza."], ["e[dz]ő", "A dz-t nem kettőzzük: edző."]]
+  ];
+  const S = [
+    [["{Akkor|Akor} indulunk, amikor véget ér az óra.", "akkor: két k."], ["A labda a kapu {mellett|melett} ment el.", "mellett: két l, két t."], ["{Itt|It} van a füzeted, a pad alatt.", "itt: két t."],
+     ["Ma {együtt|együt} megyünk haza.", "együtt: két t."], ["{Vissza|Visza} kell mennem a tolltartómért.", "vissza: hosszú sz (ssz)."], ["Ez a játék {jobb|job}, mint a tavalyi.", "jobb: két b."],
+     ["{Ennyi|Enyi} pontot még senki sem szerzett.", "ennyi: hosszú ny (nny)."], ["Nem tudom, {mennyi|menyi} az idő.", "mennyi: hosszú ny."], ["Kedden {reggel|regel} edzés lesz.", "reggel: két g."],
+     ["Ez a pálya sokkal {szebb|szeb}.", "szebb: két b."], ["Este {otthon|othon} maradok.", "otthon: két t."], ["Ki {lesz|lessz} a csapatkapitány?", "lesz: egy sz (gyakori hiba)."],
+     ["Az {utca|uttca} végén van a bolt.", "utca: egy t."], ["{Egyszer|Eggyszer} már nyertünk ellenük.", "egyszer: egy gy."]],
+    [["Tegnap két órát {tanultam|tanulttam} a dolgozatra.", "Mássalhangzó után egy t: tanult."], ["A kapus {védett|védet} egy tizenegyest.", "Magánhangzó után két t: védett."],
+     ["A táskám a pad {alatt|alat} van.", "A névutók végén két t: alatt, fölött."], ["A meccs {előtt|előt} bemelegítettünk.", "előtt: két t."], ["Kérek egy {könyvet|könyvett} a polcról.", "A tárgyrag mindig egy t."],
+     ["A mi csapatunk a {legjobb|legjob}.", "jobb, legjobb: két b."], ["Ezt most {másképp|máskép} oldom meg.", "A -képp, -képpen két p-vel."], ["Az új monitor {nagyobb|nagyob} a réginél.", "A középfok jele -bb."],
+     ["Ő a busz {mögött|mögöt} állt.", "mögött: két t."], ["Mindenki {átment|áttment} a dolgozaton.", "Kivétel: át, egy t."], ["Ez a doboz {kisebb|kissebb}, mint az enyém.", "kisebb: egy s, két b."],
+     ["A kutya a {labdát|labdátt} hozta vissza.", "A tárgyrag mindig egy t."], ["Az edző {szerint|szerintt} jól játszottunk.", "Mássalhangzó után egy t: szerint."], ["Tegnap sokat {olvastam|olvasttam}.", "Mássalhangzó után egy t: olvastam."]],
+    [["A nagybátyám {jegygyűrűt|jeggyűrűt} vett a menyasszonyának.", "Összetett szó (jegy + gyűrű): a határon teljes a kettőzés."], ["A {poggyászunkat|pogyászunkat} a csomagtartóba tettük.", "poggyász: hosszú gy (ggy)."],
+     ["Ez {észszerű|ésszerű} megoldás volt.", "észszerű: összetett szó (ész + szerű), a 12. kiadás óta így."], ["{Tollal|Tolllal} kell írni a dolgozatot.", "toll + -val: három l helyett kettő."],
+     ["{Busszal|Buszal} megyünk a meccsre.", "busz + -val = busszal."], ["Az edző egy hosszú {füttyel|fütytyel} jelezte a végét.", "fütty + -vel: három ty helyett kettő."],
+     ["A szekrényt egy kis {kulccsal|kulcsal} nyitottuk ki.", "kulcs + -val = kulccsal."], ["Az {osztállyal|osztályal} kirándulni megyünk.", "osztály + -val = osztállyal."],
+     ["Nem {hallak|halllak}, mert nagy a zaj.", "hall + -lak: három l helyett kettő."], ["Ezt {benn|ben} hagytam az osztályban.", "benn: két n (de: bent)."],
+     ["A labda {bent|bennt} volt a kapuban.", "bent: egy n (de: benn)."], ["A kulcsokat egy {kulcscsomón|kulccsomón} tartom.", "Összetett szó (kulcs + csomó): teljes kettőzés."], ["Az {edző|eddző} ma új gyakorlatot hozott.", "A dz-t nem kettőzzük: edző."]]
+  ];
+  const T = [
+    [["olvas", "múlt idő, ő", "olvasott", ["olvasot", "olvassott"], "Magánhangzó (o) után két t: olvasott."], ["fut", "múlt idő, mi", "futottunk", ["futotunk", "futtottunk"], "Magánhangzó után két t: futottunk."],
+     ["ír", "múlt idő, ő", "írt", ["írtt", "írrt"], "Mássalhangzó (r) után egy t: írt."], ["dob", "múlt idő, ő", "dobott", ["dobot", "dobbott"], "Magánhangzó után két t: dobott."],
+     ["tanul", "múlt idő, én", "tanultam", ["tanulttam", "tanulam"], "Mássalhangzó (l) után egy t: tanultam."], ["néz", "múlt idő, ő", "nézett", ["nézet", "nézzett"], "Magánhangzó után két t: nézett. (A nézet más szó: vélemény.)"],
+     ["kér", "múlt idő, te", "kértél", ["kérttél", "kérrtél"], "Mássalhangzó után egy t: kértél."], ["segít", "múlt idő, ő", "segített", ["segítet"], "Magánhangzó után két t: segített."],
+     ["játszik", "múlt idő, mi", "játszottunk", ["játszotunk", "játsszottunk"], "Magánhangzó után két t: játszottunk."]],
+    [["szép", "középfok", "szebb", ["szeb", "szépebb"], "Középfok: szebb (két b)."], ["nagy", "középfok", "nagyobb", ["nagyob", "naggyobb"], "nagyobb: két b."],
+     ["kicsi", "középfok", "kisebb", ["kissebb", "kisseb"], "kisebb: egy s, két b."], ["könnyű", "középfok", "könnyebb", ["könyebb", "könnyeb"], "könnyebb: hosszú ny, két b."],
+     ["jó", "középfok", "jobb", ["job", "jóbb"], "jobb: rövid o, két b."], ["gyors", "középfok", "gyorsabb", ["gyorsab", "gyorssabb"], "gyorsabb: két b."],
+     ["hajó", "tárgyrag", "hajót", ["hajótt"], "A tárgyrag mindig egy t."], ["könyv", "tárgyrag", "könyvet", ["könyvett", "könyvvet"], "A tárgyrag mindig egy t."],
+     ["más", "-képpen", "másképpen", ["másképen", "mássképpen"], "A -képp, -képpen két p-vel."]],
+    [["toll", "-val", "tollal", ["tolllal", "tolal"], "Három l helyett kettőt írunk: tollal."], ["hall", "-lak (én téged)", "hallak", ["halllak", "halak"], "Három l helyett kettő: hallak."],
+     ["fütty", "-vel", "füttyel", ["fütytyel", "fütyel"], "Három ty helyett kettő: füttyel."], ["meggy", "-vel", "meggyel", ["meggygyel", "megyel"], "Három gy helyett kettő: meggyel."],
+     ["busz", "-val", "busszal", ["buszal", "buszszal"], "A -val v-je hasonul: busszal."], ["jegy", "-vel", "jeggyel", ["jegyel", "jegygyel"], "A -vel v-je hasonul: jeggyel."],
+     ["osztály", "-val", "osztállyal", ["osztályal", "osztálylyal"], "A -val v-je hasonul: osztállyal."], ["kulcs", "-val", "kulccsal", ["kulcsal", "kulcscsal"], "A -val v-je hasonul: kulccsal."],
+     ["Bükk (hegység)", "-kel", "Bükk-kel", ["Bükkel", "Bükkkel"], "Tulajdonnévnél nem egyszerűsítünk: kötőjellel kapcsoljuk."], ["Széll (családnév)", "-lel", "Széll-lel", ["Széllel", "Szélllel"], "Tulajdonnévnél kötőjel: Széll-lel."],
+     ["Mariann", "-nal", "Mariann-nal", ["Mariannal", "Mariannnal"], "Tulajdonnévnél kötőjel: Mariann-nal."], ["jegy + gyűrű", "összetett szó", "jegygyűrű", ["jeggyűrű", "jegyűrű"], "Összetett szó határán teljes kettőzés."],
+     ["kulcs + csomó", "összetett szó", "kulcscsomó", ["kulccsomó", "kulcsomó"], "Összetett szó határán teljes kettőzés."], ["ész + szerű", "összetett szó", "észszerű", ["ésszerű", "észerű"], "A 12. kiadás óta: észszerű."],
+     ["sakk + kör", "összetett szó", "sakk-kör", ["sakkör", "sakkkör"], "Összetett szónál három azonos betű helyett kötőjel: sakk-kör."]]
+  ];
+  const types = [
+    { id: "hiany", name: "Egy vagy kettő?", gen: l => H.gapTask(pick(G[l - 1])) },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) },
+    { id: "told", name: "Toldalékkal", gen(l){
+      const t = pick(T[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span> + " + esc(t[1]), t[2], t[3], "<p><b>" + esc(t[2]) + "</b>. " + t[4] + "</p>", "Nem ez. " + t[4]);
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-massal", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.massalhangzok, player: pb, print: "tollbamondasok.html#massalhangzok" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Szabály</th><th>Példa</th></tr>" + [
+    ["Hosszú mássalhangzó: kettőzés", "itt, akkor, mellett, reggel"], ["Többjegyű: csak az első jegy kettőzve", "asszony, meggy, könnyű, hattyú"],
+    ["Összetett szó határán teljes kettőzés", "jegygyűrű, kulcscsomó, észszerű"], ["Múlt idő: magánhangzó után tt, mássalhangzó után t", "dobott, nézett · kért, tanult"],
+    ["Középfok: -bb", "szebb, jobb, nagyobb, kisebb"], ["Névutók végén tt (de: át, szerint)", "alatt, fölött, között, mögött"],
+    ["Tárgyrag: mindig egy t", "hajót, könyvet"], ["-képp, -képpen: két p", "másképp, tulajdonképpen"],
+    ["Három egyforma helyett kettő", "tollal, sakkal, hallak, füttyel"], ["Tulajdonnév, összetett szó: kötőjel", "Bükk-kel, Széll-lel, sakk-kör"],
+    ["-val, -vel: a v hasonul", "busszal, jeggyel, kulccsal, osztállyal"], ["benn, fenn, kinn, lenn · bent, fent, kint, lent", "dz, dzs: nem kettőzzük (edző)"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
