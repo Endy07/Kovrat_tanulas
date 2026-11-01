@@ -396,3 +396,28 @@ Ellenőrzés: `node tools/lessons/helyesiras-check.js` (az AkH saját példáin;
   öcs, de öccse). Kétes szónál a https://helyesiras.mta.hu, és a végén friss szemű lektor (AkH-szöveggel) nézze át.
 - **Hiánypótlásnál a gép képzi a rossz párt** (í ↔ i, ll ↔ l, ssz ↔ sz): olyan szót ne adj, ahol a pár is létező, jó szó
   (hal/hall, kel/kell, megy/meggy, öt/őt) — ezek a szópár-feladatba valók, mondattal.
+
+### A 2026. 11. 01-i 4. helyesírás-lecke (j vagy ly): felhős futtatás és buktatók
+
+**Gépi teszt felhős (Linux) környezetben:** a `lesson-test.js` már nem csak Windowson fut. A Playwrightot helyben keresi
+(`require("playwright")`), és ha nincs `%LOCALAPPDATA%\ms-playwright`, a saját Chromiumát indítja. A címet és a képek helyét
+környezeti változó adja:
+
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1 &      # a repó gyökeréből
+KOVRAT_URL=http://127.0.0.1:8765/ node tools/lessons/lesson-test.js helyesiras-j-ly 40
+```
+
+Eredmény (2026. 11. 01.): `helyesiras-j-ly` 600/600 (5 típus × 3 szint × 40), 14 dia, 17 lejátszó-kocka, 390 px-en nincs túllógás,
+JS-hiba nincs. A közös modul változása miatt újrafuttatva: `helyesiras-betuk-elvalasztas` 600/600, `helyesiras-maganhangzok` 480/480,
+`helyesiras-massalhangzok` 480/480, `tollbamondasok` JS-hiba nélkül; `helyesiras-check.js` 293 ellenőrzés, hiba nélkül. Tollbamondás-próba
+szándékos hibákkal (tavaj, korcsojapálya, ojan, hejet, mosojjal, fojtatta, muszály): mind a 7 a „j vagy ly” csoportba került.
+
+- **A hiánypótlás párja j/ly-nál kézzel kell:** az `altOf("j")` a kettőzést adná (jj), az `altOf("ly")` az lly-t. Ezért minden elem
+  `[ly|j]` vagy `[j|ly]` alakú; a toldalékosaknál `[lj|jj]`, `[lly|jj]`, `[tj|tty]`.
+- **Létező szó rossz párként:** hely → hej (indulatszó), fogja/foglya, fejel (a fejjel rossz párjaként). Ezek nem kerültek a hiánypótlásba
+  és a gombok közé; a „hely” csak mondatban szerepel.
+- **Betűszám:** a gally 4 betű (g, a, ly, ly), mert az lly két ly (AkH 14. b), mint az ssz.
+- **A `H.classify` j/ly-ágát a régi `ly → j` csere nem fedte le** (tanujj, fojjon): most az lj, lly, ly → j, majd a jj → j. A kettőzési hiba
+  (bajal) továbbra is „mássalhangzó hossza”, mert a kettőzés-normalizálás előbb próbálkozik.
+- **Kakukktojás-feladat:** a gombok szövege a hiányos szó („fo_ik”); egyedinek kell lennie, ezért a sorsoló kiszűri az egyforma alakot.

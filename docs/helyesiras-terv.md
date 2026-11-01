@@ -30,14 +30,14 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 1 | **Betűk, ábécé, elválasztás** | 3–15., 223–238. | Alap: mi számít egy betűnek (cs, dzs), ábécérend, szótag. Az elválasztás a kézzel írt dolgozatban kell. | ✅ kész |
 | 2 | **Magánhangzók hossza** (i/í, o/ó, ö/ő, u/ú, ü/ű) | 4–6., 20–24., 27., 31., 34–35. | A leggyakoribb hiba (ékezet), és jól tanítható: sok toldalék mindig hosszú vagy mindig rövid. | ✅ kész |
 | 3 | **Mássalhangzók hossza** | 7., 9., 36–38., 46., 59., 87., 92–93. | Itt, akkor, lesz, kisebb: chatben is sokat tévesztett szavak; a hosszú többjegyű betű az 1. leckére épül. | ✅ kész |
-| 4 | **j vagy ly** | 88. + szólista | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | tervezett |
+| 4 | **j vagy ly** | 88., 51., 56–57., 92–93. | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | ✅ kész (2026. 11. 01.) |
 | 5 | **Kiejtés és szóelemzés: hasonulások** | 17–19., 48–60., 82–83. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | tervezett |
 | 6 | **Igék: felszólító mód és tárgyas ragozás** | 42–43., 54–57., 80–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | tervezett |
 | 7 | **Egybe- és különírás** | 99–138. (válogatva) | Igekötő (megcsinálom, de meg is csinálom), összetett szavak, jelentésváltozás, számok (kétezerig egybe). Chatben valószínűleg ez a sok hiba. ⚠️ | tervezett |
 | 8 | **Nagy kezdőbetű és tulajdonnevek** | 139–205. (válogatva) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
 | 9 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
 | 10 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ indul (3 × 3 + 3 vegyes) |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 4 × 3 + 4 vegyes = 16 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -65,6 +65,19 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
 | A tollbamondás-szövegek **egy helyen** (`H.TEXTS`) | A lecke, a gyűjtőoldal és a nyomtatható változat ugyanazt mutatja; egy javítás mindenhol érvényes. |
 | **észszerű** (nem ésszerű) | A 12. kiadás (2015) óta így helyes (AkH 92.). A leckében jelezzük, hogy régi könyvekben még ésszerű áll. |
 | Az ábécérendben a **rövid és a hosszú magánhangzó egyenrangú** | AkH 14. c); a gép az AkH saját példasoraival ellenőrizve. |
+
+## A 4. lecke (j vagy ly), 2026. 11. 01.
+
+- ✅ A fogódzók az AkH 88. pontjából, szó szerint ellenőrizve (helyesiras.mta.hu): a) szó elején csak a lyuk és rokonai;
+  b) egy szótagú szó végén ly csak néhányban (boly, foly(ik), hely, mély, moly, súly, süly, gally), a névmásokban ly (ilyen, olyan,
+  milyen, amely); több szótagú szó végén legtöbbször ly (kivétel: lakáj, muszáj, papagáj), de az -aj, -ej végűek többsége j (kivétel:
+  karvaly, pehely, tavaly, zsindely); c) -lya, -lye végű szavak (kivétel: bója, cserje, héja, perje).
+- ✅ A toldalék j-je: AkH 51. (tanulja, állj, ítéljük, beszéljetek) és 56–57. (partja, látja, adja, hordja). ⚠️ Az 51. pont számát a
+  szabályzat oldalának kivonatából olvastuk ki, a táblázat egyezik.
+- ✅ -val/-vel: osztállyal, hellyel (92.), gally + val = gallyal (93.). Elválasztás: süly-lyed, osz-tály-lyal (226. f, a gép számolja).
+- Gyakorlótípusok: j vagy ly? (hiánypótlás, a pár mindig kézzel, egyik rossz alak sem létező szó) · Melyik a jó? · Hibás szó a
+  mondatban · Szócsalád, toldalék · Kakukktojás (négy hiányos szóból egybe más betű kerül). Tollbamondás: j1–j3 és a vegyes v4.
+- A `H.classify` j/ly-normalizálója bővült: az lj és a jj is egy alakra kerül (tanujj ~ tanulj, fojjon ~ folyjon, osztájjal ~ osztállyal).
 
 ## Ellenőrzés
 

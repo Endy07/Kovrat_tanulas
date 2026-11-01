@@ -1,5 +1,23 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-01 (felhős próbafutás)
+
+**Kész a `claude/dreamy-hopper-52jouj` ágon (nincs a `main`-ben, élesítésre vár):** a 4. helyesírás-lecke
+(`helyesiras-j-ly.html`, forrás `tools/lessons/helyesiras-j-ly.src.html`) és 4 új tollbamondás (`H.TEXTS.jly` j1–j3, `vegyes` v4;
+összesen 16). A közös modulban a `CAT.jly` a leckére mutat, a j/ly-normalizáló az lj/jj alakot is kezeli.
+
+**Tesztek (2026-11-01):** `helyesiras-check.js` 293/293 · `lesson-test.js helyesiras-j-ly 40` 600/600, 390 px rendben, JS-hiba nincs ·
+újrafuttatva a régiek: betűk 600/600, magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan · tollbamondás-próba
+szándékos j/ly-hibákkal: 7/7 a jó csoportba.
+
+**Döntésre vár:** a `claude/dreamy-hopper-52jouj` ág beolvasztása a `main`-be (Endi igene a pulton át); utána élőben ellenőrizni
+(`version.json`, a lecke és a tollbamondások linkje).
+
+**Javasolt folytatás:** a 5. lecke (hasonulások), vagy ha megjött a chat, előbb a hibastatisztika. A felhőben a tesztelő:
+`python3 -m http.server 8765 --bind 127.0.0.1 &` és `KOVRAT_URL=http://127.0.0.1:8765/ node tools/lessons/lesson-test.js <név> 40`.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-10-30
 
 **Javasolt folytatás:** ha Endi kitette a Facebook-csevegést a `C:\KOVRAT\chat\` mappába, előbb a hibastatisztika
