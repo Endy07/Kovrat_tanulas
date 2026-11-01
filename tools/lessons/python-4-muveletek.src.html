@@ -1,0 +1,429 @@
+<!--@HEAD-->
+<title>Python 4: műveletek</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-tab{display:flex;gap:16px;background:#252526;padding:4px 12px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#9da5b4;border-top:1px solid #3c3c3c}
+.vs-tab b{color:#e7e7e7;border-bottom:1px solid #e7e7e7}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.5;font-family:var(--mono)}
+.vs .ps{color:#9da5b4}
+.vs .ty{color:#7fb8ff}
+.vs .er{color:#f48771}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.osz{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.osz span{width:1.6em;height:1.6em;border-radius:50%;background:var(--accent);display:inline-block}
+.osz span.m{background:var(--led)}
+.osz .g{display:flex;gap:3px;padding:4px;border:1.5px dashed var(--line);border-radius:8px}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 4. lecke</span>
+  <h1>Műveletek és beépített függvények</h1>
+  <p class="lead">A Python hét számolási műveletet ismer: <code>+ - * / // % **</code>. Ebben a leckében megtanulod az egész osztást (<code>//</code>), a maradékot (<code>%</code>) és a hatványt (<code>**</code>), a műveleti sorrendet, a rövidített értékadást (<code>+=</code>), és négy hasznos beépített függvényt: <code>round</code>, <code>abs</code>, <code>max</code>, <code>min</code>.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: a bemeneteket a „Bemenetek” mezőbe írd, soronként egyet</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az <a href="python-3-input.html">3. lecke</a> (<code>input</code>, <code>int(input())</code>, a program váza). <b>Ebben a leckében:</b> <code>/ // % **</code>, műveleti sorrend, <code>+= -= *=</code>, <code>round</code>, <code>abs</code>, <code>max</code>, <code>min</code>, és a VS Code termináljában a Python mint számológép.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát, és le is futtatja. Írd át a számokat, és futtasd újra!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="maradek" aria-selected="true">17 // 5 és 17 % 5</button>
+    <button class="tab" data-m="sorrend" aria-selected="false">Műveleti sorrend</button>
+    <button class="tab" data-m="perc" aria-selected="false">Perc → óra és perc</button>
+    <button class="tab" data-m="vs" aria-selected="false">Számológép a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. A „Mit ír ki?” feladatnál a <code>print</code> kimenetét írd be. Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép <b>két különböző bemenettel</b> is lefuttatja a programodat, és megnézi, jó-e az eredmény; az eredményt f-stringgel írd ki. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Három osztás</span><span class="mono">17 / 5 = 3.4 · 17 // 5 = 3 · 17 % 5 = 2</span></div>
+    <div class="trick"><span class="t">Sorrend</span><span>zárójel → <code>**</code> → <code>* / // %</code> → <code>+ -</code>. Ha bizonytalan vagy, tegyél zárójelet.</span></div>
+    <div class="trick"><span class="t">% a gyakorlatban</span><span><code>n % 2</code>: 0, ha páros · <code>n % 10</code>: az utolsó számjegy · <code>perc % 60</code>: a maradék perc.</span></div>
+    <div class="trick"><span class="t">Hatvány</span><span><code>2 ** 3</code> = 8. A <code>^</code> jel Pythonban <b>nem</b> hatvány!</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-3-input.html">← 3. lecke: input</a>
+    <a class="btn primary" href="python-dolgozat.html">Gyakorolj a dolgozat-leckén is →</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s\/\/\s/g, " egész osztva "], [/\s%\s/g, " maradéka "], [/\s\/\s/g, " osztva "], [/\*\*/g, " a hatványon "], [/\s\*\s/g, " szorozva "], [/\+=/g, " plusz egyenlő "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    const INT = has(/int\s*\(/, "a számot alakítsd át: int(input(…)).");
+    const VEL = { 2: "2-vel", 3: "3-mal", 4: "4-gyel", 5: "5-tel", 6: "6-tal", 7: "7-tel", 8: "8-cal", 9: "9-cel", 10: "10-zel", 12: "12-vel", 60: "60-nal" };
+    const fl = Math.floor;
+    const distinct = (f, n) => { const a = []; let g = 0; while (a.length < n && g++ < 500){ const x = f(); if (!a.includes(x)) a.push(x); } return a; };
+    const T2 = (i1, i2, f) => { let g = 0; while (i1.join("|") === i2.join("|") && g++ < 20) i2 = i2.map((x, k) => S(+x + 1 + k)); return [{ ins: i1, exp: f(i1) }, { ins: i2, exp: f(i2) }]; };
+    // Python round() egészre: a pont fél értéknél a páros felé
+    const pyRound0 = x => { const f = fl(x), d = x - f; if (Math.abs(d - 0.5) < 1e-12) return f % 2 === 0 ? f : f + 1; return Math.round(x); };
+    // k jegyű tizedes tört szövegként, a jegyei között nincs 0 és 5 (a kerekítés nem esik határra)
+    const dec = (lo, hi, k) => rnd(lo, hi) + "." + Array.from({ length: k }, () => pick([1, 2, 3, 4, 6, 7, 8, 9])).join("");
+    const rnd2 = (x, k) => Math.round(x * Math.pow(10, k)) / Math.pow(10, k);
+    const tie = (x, k) => { const y = Math.abs(x) * Math.pow(10, k); return Math.abs(y - fl(y) - 0.5) < 1e-6; };
+
+    /* ---- A diák példái (a py-check lefuttatja) ---- */
+    const EX = {
+      hero: { code: J('perc = int(input("Hány perc? "))', "ora = perc // 60", "maradek = perc % 60", 'print(f"{perc} perc = {ora} óra {maradek} perc")'), ins: ["135"] },
+      negy: { code: J("print(7 + 5)", "print(7 - 5)", "print(7 * 5)", "print(7 / 5)", "print(10 / 2)") },
+      oszt: { code: J("print(17 / 5)    # osztás: 3.4", "print(17 // 5)   # egész osztás: 3", "print(17 % 5)    # maradék: 2", "print(20 % 5)    # maradék nélkül: 0") },
+      paros: { code: J('n = int(input("Egy egész szám: "))', 'print(f"Maradék 2-vel osztva: {n % 2}")', 'print(f"Utolsó számjegye: {n % 10}")', 'print(f"Utolsó nélkül: {n // 10}")'), ins: ["347"] },
+      hatv: { code: J("print(2 ** 3)", "print(5 ** 2)", "print(10 ** 6)", "print(2 ** 0.5)", "print(2 ^ 3)    # NEM hatvány!") },
+      sorrend: { code: J("print(2 + 3 * 4)", "print((2 + 3) * 4)", "print(2 * 3 ** 2)", "print(20 - 6 / 2)", "print((20 - 6) / 2)", "print(-2 ** 2)") },
+      rovid: { code: J("pont = 10", "pont += 5     # pont = pont + 5", "pont -= 3     # pont = pont - 3", "pont *= 2     # pont = pont * 2", "print(pont)", "pont //= 5", "print(pont)") },
+      round: { code: J("x = 3.14159", "print(round(x))", "print(round(x, 2))", "print(round(2.675, 1))", "print(round(2.5), round(3.5))") },
+      fv: { code: J("print(abs(-7))", "print(abs(3 - 10))", "print(max(12, 45, 7))", "print(min(3.5, -1, 7))", "print(max(abs(-8), 5))") },
+      atlag: { code: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'c = int(input("3. jegy: "))', "atlag = (a + b + c) / 3", 'print(f"Átlag: {round(atlag, 2)}")', 'print(f"Legjobb: {max(a, b, c)}, leggyengébb: {min(a, b, c)}")'), ins: ["5", "4", "4"] },
+      hibaZ: { code: J("db = 0", "print(10 / db)"), err: "ZeroDivisionError" },
+      hibaR: { code: J("x = 3.14159", 'print(f"{round(x), 2}")') }
+    };
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const a = rnd(10, 60), b = rnd(2, 9); return pick([
+          { code: "print(" + a + " // " + b + ")", ans: S(fl(a / b)), sol: a + " = " + fl(a / b) + " · " + b + " + " + a % b + ". A // a hányados: hányszor van meg benne." },
+          { code: "print(" + a + " % " + b + ")", ans: S(a % b), sol: a + " = " + fl(a / b) + " · " + b + " + " + a % b + ". A % a maradék." }]); },
+        () => { const b = pick([2, 4, 5]), k = rnd(2, 15); return pick([
+          { code: "print(" + b * k + " / " + b + ")", ans: C.pyF(k), sol: "A / mindig tizedes törtet (float) ad, maradék nélkül is: " + k + ".0." },
+          { code: "print(" + b * k + " // " + b + ")", ans: S(k), sol: "A // két egész számra egészet ad: " + k + "." }]); },
+        () => { const a = rnd(2, 5), b = rnd(2, 4); return { code: "print(" + a + " ** " + b + ")", ans: S(Math.pow(a, b)), sol: "Hatvány: " + Array(b).fill(a).join(" · ") + " = " + Math.pow(a, b) + "." }; },
+        () => { const a = rnd(20, 99), b = rnd(3, 9); return { code: "print(" + a + " // " + b + ", " + a + " % " + b + ")", ans: fl(a / b) + " " + a % b, sol: a + " = " + fl(a / b) + " · " + b + " + " + a % b + ": a hányados és a maradék." }; },
+        () => { const n = rnd(100, 999); return pick([
+          { code: "print(" + n + " % 10)", ans: S(n % 10), sol: "A 10-zel osztás maradéka az utolsó számjegy." },
+          { code: "print(" + n + " // 10)", ans: S(fl(n / 10)), sol: "A 10-zel egész osztás levágja az utolsó számjegyet." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 5), c = rnd(2, 3); return pick([
+          { code: "print(" + a + " + " + b + " ** " + c + ")", ans: S(a + Math.pow(b, c)), sol: "Előbb a hatvány: " + b + " ** " + c + " = " + Math.pow(b, c) + ", aztán az összeadás." },
+          { code: "print(" + a + " * " + b + " ** 2)", ans: S(a * b * b), sol: "Előbb a hatvány (" + b * b + "), aztán a szorzás." },
+          { code: "print((" + a + " + " + b + ") ** 2)", ans: S((a + b) * (a + b)), sol: "A zárójel előbb: " + (a + b) + ", ennek a négyzete." }]); },
+        () => { const x = rnd(5, 30), p = rnd(2, 9), m = rnd(2, 4), q = rnd(1, 9); return { code: J("x = " + x, "x += " + p, "x *= " + m, "x -= " + q, "print(x)"), ans: S((x + p) * m - q), sol: "Sorról sorra: " + x + " → " + (x + p) + " → " + (x + p) * m + " → " + ((x + p) * m - q) + "." }; },
+        () => { const s = dec(1, 30, 2), k = pick([0, 1]); return { code: k ? "print(round(" + s + ", 1))" : "print(round(" + s + "))", ans: k ? C.pyF(rnd2(+s, 1)) : S(Math.round(+s)), sol: k ? "round(x, 1): egy tizedesre kerekít." : "round(x): egészre kerekít, és egész számot (int) ad." }; },
+        () => { const a = distinct(() => rnd(-20, 40), 3); return pick([
+          { code: "print(max(" + a.join(", ") + "))", ans: S(Math.max(...a)), sol: "A legnagyobb érték." },
+          { code: "print(min(" + a.join(", ") + "))", ans: S(Math.min(...a)), sol: "A legkisebb érték (a negatív kisebb, mint a 0)." },
+          { code: "print(abs(" + a[0] + " - " + a[1] + "))", ans: S(Math.abs(a[0] - a[1])), sol: a[0] + " − (" + a[1] + ") = " + (a[0] - a[1]) + ", ennek az abszolút értéke (a távolságuk)." }]); },
+        () => { const a = rnd(20, 60), b = pick([2, 4]); return { code: "print(" + a + " - " + 2 * b + " / " + b + ")", ans: C.pyF(a - 2), sol: "Előbb az osztás: " + 2 * b + " / " + b + " = 2.0, aztán a kivonás. A / miatt az eredmény float." }; }
+      ],
+      [
+        () => { const k = rnd(1, 9); return { code: "print(round(" + k + ".5))", ans: S(pyRound0(k + 0.5)), sol: "Pontosan a felénél a Python a páros szám felé kerekít: round(2.5) = 2, round(3.5) = 4." }; },
+        () => { const a = rnd(2, 5); return pick([
+          { code: "print(-" + a + " ** 2)", ans: S(-a * a), sol: "A hatvány előbb számolódik, mint az előjel: -(" + a + " ** 2) = " + (-a * a) + ". A negatív szám négyzetéhez zárójel kell: (-" + a + ") ** 2." },
+          { code: "print((-" + a + ") ** 2)", ans: S(a * a), sol: "Zárójellel a negatív szám négyzete: " + a * a + "." }]); },
+        () => { const a = rnd(10, 99), b = rnd(2, 9); return { code: "print(" + a + " // " + b + " * " + b + " + " + a + " % " + b + ")", ans: S(a), sol: "A hányados szorozva az osztóval, plusz a maradék: mindig az eredeti szám (" + a + ")." }; },
+        () => { const x = rnd(20, 99), d = rnd(2, 5), p = rnd(2, 3); return { code: J("x = " + x, "x //= " + d, "x **= " + p, "print(x)"), ans: S(Math.pow(fl(x / d), p)), sol: "x //= " + d + " → " + fl(x / d) + ", aztán x **= " + p + " → " + Math.pow(fl(x / d), p) + "." }; },
+        () => { const a = distinct(() => rnd(-30, 30), 4); return { code: "print(abs(min(" + a[0] + ", " + a[1] + ") - max(" + a[2] + ", " + a[3] + ")))", ans: S(Math.abs(Math.min(a[0], a[1]) - Math.max(a[2], a[3]))), sol: "Belülről kifelé: min = " + Math.min(a[0], a[1]) + ", max = " + Math.max(a[2], a[3]) + ", a különbség abszolút értéke." }; },
+        () => { const a = pick([10, 14, 18, 22]); return { code: "print(" + a + " / 4 * 2)", ans: C.pyF(a / 2), sol: "Az osztás és a szorzás egyenrangú: balról jobbra. " + a + " / 4 = " + a / 4 + ", aztán · 2." }; },
+        () => { const t = rnd(3600, 9999); return { code: J("mp = " + t, "print(mp // 3600, mp % 3600 // 60, mp % 60)"), ans: fl(t / 3600) + " " + fl(t % 3600 / 60) + " " + t % 60, sol: "Óra: mp // 3600. Perc: ami az órák után marad (mp % 3600), abból // 60. Másodperc: mp % 60." }; }
+      ]
+    ];
+
+    /* ---- „Milyen típusú?” (int vagy float) ---- */
+    const TN = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai érték)" };
+    const TIPUS = [
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return pick([{ expr: a * b + " / " + b, type: "float", why: "A / mindig float-ot ad." }, { expr: a * b + " // " + b, type: "int", why: "Két egész szám egész osztása egész." }, { expr: (a * b + 1) + " % " + b, type: "int", why: "Két egész szám maradéka egész." }, { expr: a + " ** " + b, type: "int", why: "Egész szám egész kitevőjű (nem negatív) hatványa egész." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9); return pick([{ expr: "round(" + a + ".7)", type: "int", why: "A round(x) egy argumentummal egész számot (int) ad." }, { expr: "round(" + a + ".76, 1)", type: "float", why: "A round(x, 1) tizedes törtet (float) ad." }, { expr: "abs(-" + a + ")", type: "int", why: "Egész szám abszolút értéke egész." }, { expr: "max(" + a + ", " + (a + 1) + ".5)", type: "float", why: "A max a nagyobbik értéket adja vissza, és az itt float." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9); return pick([{ expr: a + ".0 // 2", type: "float", why: "Ha az egyik szám float, a // eredménye is float (például 3.0)." }, { expr: "2 ** -1", type: "float", why: "Negatív kitevőnél törtet kapunk (0.5): float." }, { expr: a + " * 1.0", type: "float", why: "Egész szorozva float-tal: float." }, { pre: "x = " + a, expr: "x // 2 + x % 2", type: "int", why: "Csak egész számokkal dolgozik: int." }]); }
+      ]
+    ];
+
+    /* ---- „Melyik művelet kell?” (fogalmi kérdés) ---- */
+    const OPS = { div: "/", idiv: "//", mod: "%", pow: "**" };
+    const MELYIK = [
+      [["Hány teljes dobozt tölt meg 50 tojás, ha egy dobozba 6 fér?", "idiv", "Teljes dobozok: egész osztás, 50 // 6 = 8."], ["Hány tojás marad ki, ha 50 tojást 6-os dobozokba teszünk?", "mod", "A maradék: 50 % 6 = 2."], ["Mennyi egy 7 cm oldalú négyzet területe?", "pow", "a négyzete: 7 ** 2 = 49."], ["Mennyi pénz jut egy főre, ha 1000 Ft-ot hárman osztanak el, pontosan, tizedes törttel?", "div", "Pontos osztás, tizedes törttel: 1000 / 3."]],
+      [["Egy szám páros-e? (Mit vizsgálsz meg 2-vel?)", "mod", "A páros szám 2-vel osztva 0 maradékot ad: n % 2."], ["Mi egy szám utolsó számjegye?", "mod", "A 10-zel osztás maradéka: n % 10."], ["Hány teljes óra 135 perc?", "idiv", "135 // 60 = 2."], ["Mennyi 2 a 10. hatványon (hány bájt egy kilobájt)?", "pow", "2 ** 10 = 1024."], ["Mennyi az átlag, ha az összeg 13 és 3 jegy van?", "div", "Az átlag tizedes tört: 13 / 3."]],
+      [["Hány perc marad a teljes órák után 135 percből?", "mod", "135 % 60 = 15."], ["Egy szám levágva az utolsó számjegye nélkül (347-ből 34)?", "idiv", "347 // 10 = 34."], ["Egy kocka térfogata, ha az éle 4?", "pow", "4 ** 3 = 64."], ["Hányadik héten van az év 45. napja (0-tól számolva)?", "idiv", "Egy hét 7 nap: 45 // 7 = 6."], ["A hét melyik napja lesz 45 nap múlva, ha ma hétfő (0) van?", "mod", "A hét napjai körben járnak: 45 % 7 = 3, vagyis csütörtök."]]
+    ];
+
+    /* ---- „Írd meg!” (két bemenettel) ---- */
+    const WRITE = [
+      [
+        () => ({ q: "Kérj be két egész számot, és írd ki f-stringgel az első és a második egész osztásának eredményét (//) és a maradékot (%)!",
+          code: J('a = int(input("Az osztandó: "))', 'b = int(input("Az osztó: "))', 'print(f"Hányados: {a // b}")', 'print(f"Maradék: {a % b}")'), tests: T2([S(rnd(20, 99)), S(rnd(2, 9))], [S(rnd(100, 500)), S(rnd(11, 19))], i => [fl(i[0] / i[1]), i[0] % i[1]]),
+          must: [INP, INT, has(/\/\//, "használd a // jelet."), has(/%/, "használd a % jelet.")], fstr: true, ex: "17 // 5 = 3 (hányszor van meg benne), 17 % 5 = 2 (ennyi marad)." }),
+        () => ({ q: "Kérj be egy egész számot, és írd ki f-stringgel a négyzetét és a köbét! Használd a ** jelet!",
+          code: J('n = int(input("Egy egész szám: "))', 'print(f"A négyzete: {n ** 2}")', 'print(f"A köbe: {n ** 3}")'), tests: T2([S(rnd(2, 12))], [S(rnd(13, 30))], i => [i[0] * i[0], i[0] * i[0] * i[0]]), must: [INP, INT, has(/\*\*/, "használd a ** jelet (hatvány).")], fstr: true, ex: "n ** 2 a négyzet, n ** 3 a köb." }),
+        () => ({ q: "Kérj be egy legalább kétjegyű egész számot, és írd ki f-stringgel az utolsó számjegyét (% 10)!",
+          code: J('n = int(input("Egy egész szám: "))', 'print(f"Az utolsó számjegye: {n % 10}")'), tests: T2([S(rnd(10, 99))], [S(rnd(100, 9999))], i => [i[0] % 10]), must: [INP, INT, has(/%\s*10/, "a 10-zel osztás maradéka kell: % 10.")], fstr: true, ex: "A 10-zel osztás maradéka mindig az utolsó számjegy." })
+      ],
+      [
+        () => ({ q: "Kérd be, hány percig tartott egy film, és írd ki f-stringgel, hány óra és hány perc ez! (Használd a // és a % jelet.)",
+          code: J('perc = int(input("A film hossza percben: "))', "ora = perc // 60", "maradek = perc % 60", 'print(f"{ora} óra {maradek} perc")'), tests: T2([S(rnd(61, 179))], [S(rnd(181, 299))], i => [fl(i[0] / 60), i[0] % 60]), must: [INP, INT, has(/\/\//, "használd a // jelet."), has(/%/, "használd a % jelet.")], fstr: true, ex: "Egy órában 60 perc: a // 60 adja az órákat, a % 60 a maradék perceket." }),
+        () => ({ q: "Kérj be két egész számot, és írd ki f-stringgel, milyen messze vannak egymástól a számegyenesen! Használd az abs() függvényt!",
+          code: J('a = int(input("Az első szám: "))', 'b = int(input("A második szám: "))', 'print(f"A távolságuk: {abs(a - b)}")'), tests: T2([S(rnd(-20, 10)), S(rnd(11, 50))], [S(rnd(60, 99)), S(rnd(-30, 5))], i => [Math.abs(i[0] - i[1])]), must: [INP, INT, has(/abs\s*\(/, "használd az abs() függvényt.")], fstr: true, ex: "A távolság a különbség abszolút értéke: abs(a - b)." }),
+        () => ({ q: "Kérj be három egész számot, és írd ki f-stringgel a legnagyobbat és a legkisebbet! Használd a max() és a min() függvényt!",
+          code: J('a = int(input("1. szám: "))', 'b = int(input("2. szám: "))', 'c = int(input("3. szám: "))', 'print(f"A legnagyobb: {max(a, b, c)}")', 'print(f"A legkisebb: {min(a, b, c)}")'), tests: T2(distinct(() => S(rnd(-20, 99)), 3), distinct(() => S(rnd(100, 999)), 3), i => [Math.max(...i.map(Number)), Math.min(...i.map(Number))]), must: [INP, INT, has(/max\s*\(/, "használd a max() függvényt."), has(/min\s*\(/, "használd a min() függvényt.")], fstr: true, ex: "A max() és a min() akárhány értéket kaphat, vesszővel." }),
+        () => { const p = pick([5, 8, 10, 12]), q = pick([2, 3, 4]); return { q: "Kérj be egy egész számot! Növeld meg " + VEL[p] + " a += jellel, aztán szorozd meg " + VEL[q] + " a *= jellel, és írd ki f-stringgel az eredményt!",
+          code: J('szam = int(input("Egy egész szám: "))', "szam += " + p, "szam *= " + q, 'print(f"Az eredmény: {szam}")'), tests: T2([S(rnd(1, 50))], [S(rnd(100, 300))], i => [(+i[0] + p) * q]), must: [INP, INT, has(/\+=/, "használd a += jelet."), has(/\*=/, "használd a *= jelet.")], fstr: true, ex: "szam += " + p + " ugyanaz, mint szam = szam + " + p + "." }; }
+      ],
+      [
+        () => { let i1, i2, g = 0; const mk = () => [S(rnd(1, 5)), S(rnd(1, 5)), S(rnd(1, 5))]; do { i1 = mk(); i2 = mk(); } while ((tie(i1.reduce((p, q) => p + +q, 0) / 3, 2) || tie(i2.reduce((p, q) => p + +q, 0) / 3, 2)) && g++ < 30);
+          return { q: "Kérj be három dolgozatjegyet, és írd ki f-stringgel az átlagukat két tizedesre kerekítve (round)!",
+          code: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'c = int(input("3. jegy: "))', "atlag = (a + b + c) / 3", 'print(f"Az átlag: {round(atlag, 2)}")'), tests: T2(i1, i2, i => [rnd2((+i[0] + +i[1] + +i[2]) / 3, 2)]), must: [INP, INT, has(/round\s*\(/, "kerekíts a round() függvénnyel.")], fstr: true, ex: "Zárójel kell: (a + b + c) / 3, és a 2 a round zárójelén belül: round(atlag, 2)." }; },
+        () => ({ q: "Kérj be egy kétjegyű egész számot, és írd ki f-stringgel a számjegyeinek összegét! (Az első jegy: n // 10, a második: n % 10.)",
+          code: J('n = int(input("Egy kétjegyű szám: "))', 'print(f"A számjegyek összege: {n // 10 + n % 10}")'), tests: T2([S(rnd(10, 49))], [S(rnd(50, 99))], i => [fl(i[0] / 10) + i[0] % 10]), must: [INP, INT, has(/\/\/\s*10/, "az első jegyhez // 10 kell."), has(/%\s*10/, "a második jegyhez % 10 kell.")], fstr: true, ex: "47 // 10 = 4, 47 % 10 = 7, összesen 11." }),
+        () => ({ q: "Kérd be, hány másodperc telt el, és írd ki f-stringgel, hány óra, hány perc és hány másodperc ez!",
+          code: J('mp = int(input("Másodperc: "))', "ora = mp // 3600", "perc = mp % 3600 // 60", "masodperc = mp % 60", 'print(f"{ora} óra {perc} perc {masodperc} másodperc")'), tests: T2([S(rnd(3700, 9999))], [S(rnd(10000, 50000))], i => [fl(i[0] / 3600), fl(i[0] % 3600 / 60), i[0] % 60]), must: [INP, INT, has(/\/\//, "használd a // jelet."), has(/%/, "használd a % jelet.")], fstr: true, ex: "Egy óra 3600 másodperc. Ami az órák után marad: mp % 3600; ebből a perc: // 60. A másodperc: mp % 60." }),
+        () => { const n = pick([3, 4, 6, 8]); return { q: "Egy pizzát " + n + " szeletre vágnak. Kérd be, hány ember eszik, és mindenki egyformán hány szeletet kap! Írd ki f-stringgel, hány pizzát kell rendelni (felfelé kerekítve: (szelet - 1) // " + n + " + 1)!",
+          code: J('emberek = int(input("Hány ember? "))', 'fejenkent = int(input("Hány szelet jut egy főre? "))', "szelet = emberek * fejenkent", "pizza = (szelet - 1) // " + n + " + 1", 'print(f"Szelet: {szelet}, pizza: {pizza}")'), tests: T2([S(rnd(3, 9)), S(rnd(1, 3))], [S(rnd(10, 30)), S(rnd(2, 4))], i => [i[0] * i[1], fl((i[0] * i[1] - 1) / n) + 1]), must: [INP, INT, has(/\/\//, "a pizzák számához // kell.")], fstr: true, ex: "Az egész osztás lefelé kerekít; a (szelet - 1) // " + n + " + 1 felfelé, mert a megmaradt szeletekhez is kell egy pizza." }; }
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const a = rnd(10, 99); return pick([
+          { code: "print(" + a + " // 0)", err: "ZeroDivisionError", fix: "print(" + a + " // 2)", sol: "Nullával az egész osztás sem megy." },
+          { code: "print(" + a + " % 0)", err: "ZeroDivisionError", fix: "print(" + a + " % 2)", sol: "A maradékhoz is osztani kell, nullával nem lehet." },
+          { code: "print(" + a + " % 2)", err: "", sol: "Hibátlan: a maradék " + a % 2 + "." }]); },
+        () => { const a = rnd(2, 9); return pick([
+          { code: 'print("' + a + '" ** 2)', err: "TypeError", fix: "print(" + a + " ** 2)", sol: "Szöveget nem lehet hatványozni. Idézőjel nélkül szám." },
+          { code: "print(" + a + " ** 2)", err: "", sol: "Hibátlan: " + a * a + "." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9); return pick([
+          { code: J("x = " + a, "x =+ 3", "print(x)"), err: "", sol: "Nincs hibaüzenet, de csapda: az =+ nem a +=! Az x = +3 sor az x-et 3-ra állítja. Helyesen: x += 3." },
+          { code: J("x += 3", "print(x)"), err: "NameError", fix: J("x = " + a, "x += 3", "print(x)"), sol: "Az x += 3 az x régi értékéből számol, de az x-nek még nincs értéke." },
+          { code: J("x = " + a, "x += 3", "print(x)"), err: "", sol: "Hibátlan: " + (a + 3) + "." }]); },
+        () => { const a = rnd(2, 9); return pick([
+          { code: "print(" + a + " +* 2)", err: "SyntaxError", fix: "print(" + a + " * 2)", sol: "Két műveleti jel egymás után (+*): a Python nem érti." },
+          { code: 'print(abs("-' + a + '"))', err: "TypeError", fix: "print(abs(-" + a + "))", sol: "Az abs() számot vár, nem szöveget." },
+          { code: "print(max())", err: "TypeError", fix: "print(max(" + a + ", 3))", sol: "A max()-nak legalább egy értéket meg kell adni." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9); return pick([
+          { code: J("x = 3.14159", 'print(round(x, "2"))'), err: "TypeError", fix: J("x = 3.14159", "print(round(x, 2))"), sol: "A tizedesjegyek száma szám legyen, ne szöveg: round(x, 2)." },
+          { code: J("x = 3.14159", "print(round(x), 2)"), err: "", sol: "Nincs hibaüzenet, de rossz: a 2 a round zárójelén kívül van, ezért két külön értéket ír ki: 3 2. Helyesen: round(x, 2)." },
+          { code: "print(2 ^ " + a + ")", err: "", sol: "Nincs hibaüzenet, de a ^ Pythonban nem hatvány (hanem egy bitművelet), ezért furcsa számot ír ki. Hatvány: 2 ** " + a + "." }]); },
+        () => { const a = rnd(10, 99); return pick([
+          { code: J('db = int(input("Hány részre? "))', "print(" + a + " // db)"), ins: ["0"], err: "ZeroDivisionError", sol: "A felhasználó 0-t írt be, és nullával nem lehet osztani. (Ezt később egy feltétellel (if) lehet majd kivédeni.)" },
+          { code: J('db = input("Hány részre? ")', "print(" + a + " // db)"), ins: ["3"], err: "TypeError", fix: J('db = int(input("Hány részre? "))', "print(" + a + " // db)"), sol: "Kimaradt az int(): számot szöveggel nem lehet osztani." },
+          { code: J('db = int(input("Hány részre? "))', "print(" + a + " // db)"), ins: ["3"], err: "", sol: "Hibátlan: " + fl(a / 3) + "." }]); }
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "TypeError", "ZeroDivisionError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => ({ q: "Ennek a programnak egy szám köbét kellene kiírnia (például 2 → 8), de nem a jót írja ki. Javítsd ki!",
+          starter: J('n = int(input("Egy szám: "))', 'print(f"A köbe: {n ^ 3}")') + "\n", code: J('n = int(input("Egy szám: "))', 'print(f"A köbe: {n ** 3}")'), tests: T2([S(rnd(2, 9))], [S(rnd(10, 20))], i => [Math.pow(+i[0], 3)]), must: [has(/\*\*/, "a hatvány jele **.")], fstr: true, ex: "A ^ nem hatvány! Hatvány: n ** 3." }),
+        () => ({ q: "Ennek a programnak ki kellene írnia, hány teljes 6-os doboz telik meg a tojásokkal, de tizedes törtet ír ki. Javítsd ki!",
+          starter: J('tojas = int(input("Hány tojás? "))', 'print(f"Teljes dobozok: {tojas / 6}")') + "\n", code: J('tojas = int(input("Hány tojás? "))', 'print(f"Teljes dobozok: {tojas // 6}")'), tests: T2([S(rnd(7, 59))], [S(rnd(61, 200))], i => [fl(i[0] / 6)]).map(t => (t.ins[0] % 6 === 0 ? (t.ins = [S(+t.ins[0] + 1)], t.exp = [fl(t.ins[0] / 6)]) : 0, t)), must: [has(/\/\//, "a teljes dobozokhoz egész osztás (//) kell.")], fstr: true, ex: "A / tizedes törtet ad; a teljes dobozok számát a // adja." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak két jegy átlagát kellene kiírnia, de rosszul számol. Javítsd ki!",
+          starter: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'print(f"Átlag: {a + b / 2}")') + "\n", code: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'print(f"Átlag: {(a + b) / 2}")'), tests: T2([S(rnd(1, 5)), S(rnd(2, 5))], [S(rnd(2, 5)), S(rnd(1, 5))], i => [(+i[0] + +i[1]) / 2]), fstr: true, ex: "Zárójel nélkül csak a b osztódik el 2-vel. Helyesen: (a + b) / 2." }),
+        () => { const p = pick([5, 8, 10, 12]); return { q: "Ennek a programnak " + VEL[p] + " kellene növelnie a beírt számot, de nem azt csinálja. Javítsd ki!",
+          starter: J('x = int(input("Egy szám: "))', "x =+ " + p, 'print(f"Az eredmény: {x}")') + "\n", code: J('x = int(input("Egy szám: "))', "x += " + p, 'print(f"Az eredmény: {x}")'), tests: T2([S(rnd(20, 50))], [S(rnd(100, 300))], i => [+i[0] + p]), fstr: true, ex: "Az =+ nem a +=. Az x =+ " + p + " azt jelenti: x = +" + p + ". Helyesen: x += " + p + "." }; },
+        () => { let a, b, g = 0; do { a = dec(1, 9, 3); b = dec(10, 50, 3); } while ((tie(+a, 2) || tie(+b, 2)) && g++ < 20); return { q: "Ennek a programnak két tizedesre kerekítve kellene kiírnia a beírt számot, de nem azt írja ki. Javítsd ki!",
+          starter: J('x = float(input("Egy szám: "))', 'print(f"Kerekítve: {round(x), 2}")') + "\n", code: J('x = float(input("Egy szám: "))', 'print(f"Kerekítve: {round(x, 2)}")'), tests: T2([a], [b], i => [rnd2(+i[0], 2)]), fstr: true, ex: "A 2 a round zárójelén belül kell: round(x, 2). Kívül két külön érték lesz belőle." }; }
+      ],
+      [
+        () => ({ q: "Ennek a programnak a perceket óra és perc alakban kellene kiírnia (például 135 → 2 óra 15 perc), de két hiba is van benne. Javítsd ki!",
+          starter: J('perc = int(input("Perc: "))', "ora = perc / 60", "marad = perc // 60", 'print(f"{ora} óra {marad} perc")') + "\n", code: J('perc = int(input("Perc: "))', "ora = perc // 60", "marad = perc % 60", 'print(f"{ora} óra {marad} perc")'), tests: T2([S(rnd(61, 179))], [S(rnd(181, 400))], i => [fl(i[0] / 60), i[0] % 60]).map(t => (t.ins[0] % 60 === 0 ? (t.ins = [S(+t.ins[0] + 7)], t.exp = [fl(t.ins[0] / 60), t.ins[0] % 60]) : 0, t)), fstr: true, ex: "Az órához egész osztás (//) kell, a maradék perchez a %." }),
+        () => ({ q: "Ennek a programnak egy négyzet területét (a ** 2) és két négyzet területének különbségét (abszolút értékben) kellene kiírnia. Két hiba van benne. Javítsd ki!",
+          starter: J('a = int(input("Az első négyzet oldala: "))', 'b = int(input("A második négyzet oldala: "))', 'print(f"Az első területe: {a * 2}")', 'print(f"A különbség: {a ** 2 - b ** 2}")') + "\n", code: J('a = int(input("Az első négyzet oldala: "))', 'b = int(input("A második négyzet oldala: "))', 'print(f"Az első területe: {a ** 2}")', 'print(f"A különbség: {abs(a ** 2 - b ** 2)}")'),
+          tests: T2([S(rnd(2, 6)), S(rnd(8, 15))], [S(rnd(20, 30)), S(rnd(3, 9))], i => [i[0] * i[0], Math.abs(i[0] * i[0] - i[1] * i[1])]), must: [has(/abs\s*\(/, "a különbséghez abs() kell.")], fstr: true, ex: "A terület a ** 2 (a * 2 a kétszerese lenne), és a különbség abszolút értéke: abs(…)." })
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "tipus", kind: "tipus", L: TIPUS },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, TIPUS, TN, OPS, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, TIPUS, TN, OPS, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+
+  /* ---------- Hero: futtató ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: EX.hero.ins, rows: 5 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- VS Code-terminál rajza (a 3. leckéből) ---------- */
+  const vs = (rows, file) => '<div class="vs"><div class="vs-bar"><span>' + esc(file || "Terminal") + ' — VS Code</span></div><div class="vs-tab"><span>Problems</span><span>Output</span><b>Terminal</b></div><pre>' +
+    rows.map(r => r[0] === "p" ? '<span class="ps">PS C:\\Kovrat&gt;</span> ' + esc(r[1]) : r[0] === "r" ? '<span class="ps">&gt;&gt;&gt;</span> ' + (r[1] == null ? '<span class="cur"> </span>' : '<span class="ty">' + esc(r[1]) + "</span>") : r[0] === "e" ? '<span class="er">' + esc(r[1]) + "</span>" : r[0] === "c" ? '<span class="ps">PS C:\\Kovrat&gt;</span> <span class="cur"> </span>' : esc(r[1])).join("\n") + "</pre></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  const dots = (n, b) => { const g = Math.floor(n / b), m = n % b; let h = '<div class="osz">'; for (let i = 0; i < g; i++) h += '<div class="g">' + '<span></span>'.repeat(b) + "</div>"; h += '<div class="g">' + '<span class="m"></span>'.repeat(m) + "</div></div>"; return h; };
+  function maradekFrames(){
+    return [
+      { cap: "17 cukorkát osztunk szét 5 gyerek között, egyformán, egészben. Hány cukor jut egynek, és hány marad?", html: '<div class="osz"><div class="g">' + '<span></span>'.repeat(17) + "</div></div>" },
+      { cap: "Ötösével csoportosítjuk: három teljes csoport lesz. Ezt adja a dupla per jel, az egész osztás: 17 // 5 = 3.", html: dots(17, 5) + '<p class="big">17 // 5 = <span class="led">3</span></p>' },
+      { cap: "Kettő marad ki, ez a maradék. Ezt adja a százalékjel: 17 % 5 = 2.", html: dots(17, 5) + '<p class="big">17 % 5 = <span class="led">2</span></p>' },
+      { cap: "Ellenőrzés: 3 · 5 + 2 = 17. A hányados szorozva az osztóval, plusz a maradék, mindig az eredeti szám.", html: '<p class="big">3 · 5 + 2 = 17</p>' },
+      { cap: "A sima per jel a pontos osztás, tizedes törttel: 17 / 5 = 3.4. Ez mindig float.", html: '<p class="big">17 / 5 = <span class="led">3.4</span></p>' },
+      { cap: "Ha nincs maradék, a százalékjel nullát ad: 20 % 5 = 0. Így derül ki, hogy egy szám osztható-e egy másikkal.", html: dots(20, 5) + '<p class="big">20 % 5 = <span class="led">0</span></p>' }
+    ];
+  }
+  function sorrendFrames(){
+    return [
+      { cap: "Mennyi 2 + 3 · 4 a négyzeten? A Python ugyanazt a sorrendet követi, mint a matek.", html: '<p class="big">2 + 3 * 4 ** 2</p>' },
+      { cap: "Először a hatvány: 4 a négyzeten 16.", html: '<p class="big">2 + 3 * <span class="led">16</span></p>' },
+      { cap: "Utána a szorzás: 3 · 16 = 48.", html: '<p class="big">2 + <span class="led">48</span></p>' },
+      { cap: "Végül az összeadás: 2 + 48 = 50.", html: '<p class="big"><span class="led">50</span></p>' },
+      { cap: "Zárójellel más lesz: (2 + 3) · 4 a négyzeten. A zárójel mindent megelőz: 5 · 16 = 80.", html: '<p class="big">(2 + 3) * 4 ** 2 = 5 * 16 = <span class="led">80</span></p>' },
+      { cap: "A sorrend: zárójel, hatvány, aztán szorzás, osztás, egész osztás és maradék, végül összeadás és kivonás. Az egyenrangúak balról jobbra.", html: '<div class="ptwrap"><table class="pt"><tr><th>1.</th><td>( )</td></tr><tr><th>2.</th><td>**</td></tr><tr><th>3.</th><td>* / // %</td></tr><tr><th>4.</th><td>+ -</td></tr></table></div>' }
+    ];
+  }
+  function percFrames(){
+    const src = EX.hero.code.split("\n");
+    return [
+      { cap: "Egy film 135 perces. Hány óra és hány perc ez? A program bekéri a perceket.", html: srcHtml(src, 1) + varTbl({ perc: 135 }) },
+      { cap: "Egy órában 60 perc van. A 60 kétszer van meg a 135-ben, ezért ora = 135 // 60 = 2.", html: srcHtml(src, 2) + varTbl({ perc: 135, ora: 2 }) },
+      { cap: "A két óra 120 perc, a maradék 15. Ezt adja a százalékjel: 135 % 60 = 15.", html: srcHtml(src, 3) + varTbl({ perc: 135, ora: 2, maradek: 15 }) },
+      { cap: "A kiírás: 135 perc = 2 óra 15 perc.", html: srcHtml(src, 4) + outBox("135 perc = 2 óra 15 perc") }
+    ];
+  }
+  function vsFrames(){
+    return [
+      { cap: "A VS Code termináljában a Python számológépnek is jó. Írd be a terminálba: python, és nyomj Entert.", html: vs([["p", "python"]]) },
+      { cap: "Megjelenik a három kacsacsőr. Ez a Python saját parancssora: amit ide írsz, azonnal kiszámolja, print nélkül is.", html: vs([["p", "python"], ["o", "Python 3.12.7 (…) on win32"], ["r", null]]) },
+      { cap: "Írd be: 17 // 5, Enter. Az eredmény: 3.", html: vs([["p", "python"], ["r", "17 // 5"], ["o", "3"], ["r", null]]) },
+      { cap: "Így gyorsan kipróbálhatod a műveleteket: 17 % 5 = 2, 2 ** 10 = 1024.", html: vs([["p", "python"], ["r", "17 // 5"], ["o", "3"], ["r", "17 % 5"], ["o", "2"], ["r", "2 ** 10"], ["o", "1024"], ["r", null]]) },
+      { cap: "Kilépés: írd be, hogy exit(), és Enter. A terminál újra a szokásos parancsra vár. A programodat továbbra is a .py fájlban írd, és a háromszöggel futtasd.", html: vs([["r", "exit()"], ["c"]]) }
+    ];
+  }
+  const MET = { maradek: "17 // 5 és 17 % 5", sorrend: "Műveleti sorrend", perc: "Perc → óra és perc", vs: "Számológép a VS Code-ban" };
+  const MF = { maradek: maradekFrames, sorrend: sorrendFrames, perc: percFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "maradek" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "A négy alapművelet (ismétlés)", h:
+      ex("negy") + "<ul><li><code>+ - *</code>: összeadás, kivonás, szorzás (a szorzás jele a csillag).</li><li>A <code>/</code> eredménye <b>mindig tizedes tört</b> (float), akkor is, ha maradék nélkül megy: <code>10 / 2</code> → 5.0.</li></ul>" },
+    { k: "// és %", t: "Egész osztás és maradék", h:
+      ex("oszt") +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Neve</th><th>17 és 5</th><th>Mit ad?</th></tr><tr><td>/</td><td style='font-family:var(--body)'>osztás</td><td>3.4</td><td style='font-family:var(--body)'>pontos eredmény, float</td></tr><tr><td>//</td><td style='font-family:var(--body)'>egész osztás</td><td>3</td><td style='font-family:var(--body)'>hányszor van meg benne</td></tr><tr><td>%</td><td style='font-family:var(--body)'>maradék</td><td>2</td><td style='font-family:var(--body)'>mennyi marad</td></tr></table></div>" +
+      "<p>Mindig igaz: <code>17 == 17 // 5 * 5 + 17 % 5</code>, vagyis 3 · 5 + 2 = 17. A <code>%</code> itt nem a százalék!</p>" + playBtn("maradek") },
+    { k: "% a gyakorlatban", t: "Mire jó a maradék?", h:
+      ex("paros") +
+      "<ul><li><code>n % 2</code>: 0, ha a szám <b>páros</b>, 1, ha páratlan. (Hogy ebből döntést hozzon a program, azt az 5. leckében, az <code>if</code>-nél tanulod.)</li><li><code>n % 10</code>: az <b>utolsó számjegy</b>; <code>n // 10</code>: a szám az utolsó jegye nélkül.</li><li><code>perc // 60</code> és <code>perc % 60</code>: óra és maradék perc.</li><li>Osztható-e? Ha <code>a % b</code> nulla, akkor igen.</li></ul>" + playBtn("perc") },
+    { k: "**", t: "Hatványozás", h:
+      ex("hatv") +
+      "<ul><li><code>2 ** 3</code> = 2 · 2 · 2 = 8. A <code>**</code> két csillag, szóköz nélkül.</li><li>A <code>2 ** 0.5</code> a négyzetgyök.</li><li><b>A <code>^</code> jel Pythonban nem hatvány!</b> Egy egészen más műveletet (bitműveletet) jelent, hibaüzenet nélkül, ezért különösen alattomos: <code>2 ^ 3</code> = 1.</li></ul>" },
+    { k: "Sorrend", t: "Műveleti sorrend", h:
+      ex("sorrend") +
+      "<ol><li><b>Zárójel</b></li><li><b>Hatvány</b>: <code>**</code></li><li><b>Szorzás-osztás</b>: <code>* / // %</code> (egymás közt balról jobbra)</li><li><b>Összeadás-kivonás</b>: <code>+ -</code></li></ol>" +
+      "<div class='mistake'><b>Csapda:</b> a <code>-2 ** 2</code> eredménye -4, mert előbb a hatvány számolódik. A negatív szám négyzete: <code>(-2) ** 2</code> = 4.</div>" + playBtn("sorrend") },
+    { k: "Rövidítés", t: "Rövidített értékadás: += -= *=", h:
+      ex("rovid") +
+      "<ul><li><code>pont += 5</code> ugyanaz, mint <code>pont = pont + 5</code>. Ugyanígy: <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>//=</code>, <code>%=</code>, <code>**=</code>.</li><li>A változónak előtte már kell, hogy legyen értéke, különben NameError.</li></ul>" +
+      "<div class='mistake'><b>Csapda:</b> az <code>x =+ 5</code> nem hiba, de mást jelent: <code>x = +5</code>, vagyis az x 5 lesz. A jel sorrendje: előbb a művelet, aztán az egyenlőségjel: <code>+=</code>.</div>" },
+    { k: "round", t: "Kerekítés: round()", h:
+      ex("round") +
+      "<ul><li><code>round(x)</code>: egészre kerekít, és egész számot (int) ad.</li><li><code>round(x, 2)</code>: két tizedesre kerekít. A 2 a round <b>zárójelén belül</b> van!</li><li>Pontosan a felénél (2.5, 3.5) a Python a <b>páros</b> szám felé kerekít: <code>round(2.5)</code> = 2, <code>round(3.5)</code> = 4. Ez nem hiba, ez a szabálya.</li><li>A tizedes törteket a gép kettes számrendszerben tárolja, ezért a <code>round(2.675, 1)</code> is meglepő lehet. A dolgozatban ilyen határeset ritkán van.</li></ul>" + ex("hibaR") + "<p>Itt a 2 a zárójelen kívülre került: a gép két értéket ír ki (3, 2). Helyesen: <code>round(x, 2)</code>.</p>" },
+    { k: "abs, max, min", t: "abs, max, min", h:
+      ex("fv") +
+      "<ul><li><code>abs(x)</code>: az <b>abszolút érték</b>, a nullától való távolság. Két szám távolsága: <code>abs(a - b)</code>.</li><li><code>max(…)</code> és <code>min(…)</code>: a legnagyobb és a legkisebb érték; akárhány értéket kaphatnak, vesszővel.</li><li>Függvény függvényben is lehet: <code>max(abs(-8), 5)</code> → 8. Belülről kifelé számolódik.</li></ul>" },
+    { k: "Egy program", t: "Minden együtt: jegyek", h:
+      ex("atlag") + "<p>Bekérés (három <code>int(input(…))</code>), számolás (az átlag zárójellel), kiírás f-stringgel, kerekítve. Ilyen a dolgozat sok feladata is.</p>" },
+    { k: "VS Code", t: "Számológép a VS Code termináljában", h:
+      vs([["p", "python"], ["r", "17 // 5"], ["o", "3"], ["r", "17 % 5"], ["o", "2"], ["r", "exit()"], ["c"]]) +
+      "<ul><li>A terminálba írd be: <code>python</code>, Enter. Megjelenik a <code>&gt;&gt;&gt;</code> jel: itt minden sort azonnal kiszámol, <code>print</code> nélkül is.</li><li>Gyors kipróbálásra jó: mennyi <code>-2 ** 2</code>? Mit ad a <code>round(2.5)</code>?</li><li>Kilépés: <code>exit()</code>. A programot továbbra is a <code>.py</code> fájlba írd.</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
+      [["a + b / 2", "csak a b osztódik el (hibaüzenet nincs)", "(a + b) / 2"],
+       ["2 ^ 3", "1 lesz, nem 8 (hibaüzenet nincs)", "2 ** 3"],
+       ["tojas / 6 (teljes dobozok)", "tizedes tört", "tojas // 6"],
+       ["round(x), 2", "két érték: 3 2", "round(x, 2)"],
+       ["x =+ 5", "x = 5 lesz", "x += 5"],
+       ["10 / 0, 10 % 0", "ZeroDivisionError", "ne nullával ossz"],
+       ["-2 ** 2", "-4", "(-2) ** 2"],
+       ["abs(\"-5\")", "TypeError", "abs(-5)"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaZ") + "<p>Figyeld meg: a legtöbb hiba ebben a leckében <b>nem ad hibaüzenetet</b>, csak rossz számot. Ezért mindig ellenőrizd az eredményt egy egyszerű példán!</p>" },
+    { k: "Trükkök", t: "Tanácsok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Tegyél zárójelet</span><span>Ha nem vagy biztos a sorrendben, zárójelezz. Nem baj, ha fölösleges.</span></div>" +
+      "<div class='trick'><span class='t'>Számolj fejben egy példát</span><span>17 és 5: mennyi a //? mennyi a %? Ha a program mást ír ki, keresd a hibát.</span></div>" +
+      "<div class='trick'><span class='t'>Melyik osztás?</span><span>Pontos érték, tizedes törttel → <code>/</code>. Hány teljes? → <code>//</code>. Mennyi marad? → <code>%</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Próbáld ki a terminálban</span><span><code>python</code>, aztán a kifejezés: azonnal látod, mit ad.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const TL = ["int", "float", "str", "bool"];
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "melyik", name: "Melyik művelet?", gen(l){
+      const it = pick(MELYIK[l - 1]);
+      return P.choice(esc(it[0]) + " Melyik művelet adja meg?", OPS[it[1]], Object.keys(OPS).filter(k => k !== it[1]).map(k => OPS[k]), "<p>" + esc(it[2]) + "</p>",
+        "Nem ez. Pontos érték → /, hány teljes → //, mennyi marad → %, hatvány → **.");
+    } },
+    { id: "tipus", name: "int vagy float?", gen(l){
+      const t = pick(TIPUS[l - 1])();
+      return P.choice((t.pre ? "A program eleje:<pre class='code'>" + esc(t.pre) + "</pre>Milyen típusú ez: <code>" + esc(t.expr) + "</code>?" : "Milyen típusú ennek az eredménye?<pre class='code'>" + esc(t.expr) + "</pre>"),
+        TN[t.type], [t.type === "int" ? TN.float : TN.int, TN.str],
+        "<p>A <code>type(" + esc(t.expr) + ")</code> eredménye: <code>&lt;class '" + t.type + "'&gt;</code>. " + esc(t.why) + "</p>",
+        "Nem ez. A / mindig float; a // és a % két egész számra egész; a round(x) egész, a round(x, 2) float.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen(l){
+      const t = pick(HIBA[l - 1])(); const h = P.hiba(t, HPOOL, "Nézd meg: osztás nullával? Szöveg a számolásban? Két műveleti jel egymás után? Van-e értéke a változónak?");
+      if (t.ins) h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?");
+      return h;
+    } },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-4-muveletek", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["+  -  *  /", "összeadás, kivonás, szorzás, osztás (a / mindig float)"], ["17 // 5  →  3", "egész osztás: hányszor van meg benne"], ["17 % 5  →  2", "maradék"], ["2 ** 3  →  8", "hatvány (a ^ NEM hatvány)"], ["( ) → ** → * / // % → + -", "műveleti sorrend"], ["x += 5", "x = x + 5 (ugyanígy -= *= /= //=)"], ["round(x) · round(x, 2)", "egészre (int) · két tizedesre (float)"], ["abs(x)", "abszolút érték; távolság: abs(a - b)"], ["max(a, b, c) · min(a, b, c)", "a legnagyobb · a legkisebb"], ["n % 2 · n % 10 · n // 10", "páros-e (0) · utolsó jegy · a többi jegy"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
