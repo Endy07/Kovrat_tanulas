@@ -127,7 +127,7 @@ const H = (function(){
     egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő közvetlenül az ige előtt: megcsinálom, elment; összetett szó: délután, bableves, kétéves; lásd a 7. és a 8. leckét).", href: "helyesiras-igekotok.html" },
     kulon:  { n: "Különírás", d: "Ezt két szóba kell írni (pl. igekötő az ige után vagy ha szó van közte: csináld meg, meg is csinálom, meg fogom írni; nem tudom).", href: "helyesiras-igekotok.html" },
     kotojel:{ n: "Kötőjel", d: "Kötőjel kell: ismételt igekötő (meg-megáll), mellérendelés (ide-oda, piros-fehér), tulajdonnév vagy betűszó + köznév (Petőfi-szobor, tv-műsor), hosszú összetett szó (labdarúgó-bajnokság), szám kétezer fölött (kétezer-egy).", href: "helyesiras-osszetett.html" },
-    irasjel:{ n: "Írásjel", d: "Pont, vessző, kérdőjel. A mondat végére írásjel kell; a vessző a tagmondatok közé (a két tagmondatot összekötő és, de, mert, hogy elé is); a két szót összekötő és elé nem kell.", href: "" },
+    irasjel:{ n: "Írásjel", d: "Pont, vessző, kérdőjel. A mondat végére írásjel kell; a vessző a tagmondatok közé (a két tagmondatot összekötő és, de, mert, hogy elé is); a két szót összekötő és elé nem kell.", href: "helyesiras-vesszo.html" },
     hiany:  { n: "Kimaradt szó", d: "Ez a szó kimaradt. Ha nem hallottad jól, hallgasd meg újra a mondatot.", href: "" },
     tobblet:{ n: "Fölösleges szó", d: "Ez a szó nincs a szövegben.", href: "" },
     eliras: { n: "Egyéb elírás", d: "Más betű került a szóba. Olvasd el lassan, betűnként.", href: "" }
@@ -500,6 +500,26 @@ const H = (function(){
         "Este a Nagyerdőn sétáltunk, és fagyit ettünk.",
         "Vasárnap reggel a debreceni vasútállomásról indult haza." ] }
     ],
+    vesszo: [
+      { id: "k1", t: "A meccs után", s: [
+        "Amikor véget ért a meccs, mindenki az öltözőbe sietett.",
+        "Peti azt mondta, hogy ma ő volt a legjobb játékos.",
+        "Az edző megdicsért minket, és megígérte, hogy jövő héten pizzázni megyünk.",
+        "Hazafelé Annával és Gergővel beszélgettem, mert ők is a mi utcánkban laknak.",
+        "Otthon gyorsan lezuhanyoztam, megvacsoráztam, és lefeküdtem aludni." ] },
+      { id: "k2", t: "Levél a barátomnak", s: [
+        "Kedves Bence, nagyon örültem a levelednek.",
+        "Képzeld, a hétvégén meglátogattuk a nagymamámat, aki most is palacsintát sütött.",
+        "Ettem túrósat, lekvárosat és kakaósat is.",
+        "Jaj, a végén annyit ettem, hogy alig tudtam felállni!",
+        "Írj nekem minél hamarabb, mert nagyon kíváncsi vagyok, mi van veled!" ] },
+      { id: "k3", t: "A kirándulás", s: [
+        "Szombaton nemcsak az osztályunk, hanem a párhuzamos osztály is kirándulni ment.",
+        "Az út elején a tanárnő megszámolt minket, mert senkit sem akart otthon felejteni.",
+        "Gyalog mentünk fel a hegyre, de visszafelé már busszal jöttünk.",
+        "Olyan magasra másztunk, mint még soha.",
+        "Fent megettük a szendvicseinket, és gyönyörködtünk a kilátásban." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -554,10 +574,16 @@ const H = (function(){
         "A műsorban egy kilencedikes lány elszavalta a Nemzeti dalt.",
         "Utána a kórus népdalokat énekelt, és mindannyian felálltunk.",
         "Az igazgató azt mondta, hogy legyünk büszkék a magyar történelemre.",
-        "Hazafelé megbeszéltük, hogy jövőre mi is szerepelni fogunk." ] }
+        "Hazafelé megbeszéltük, hogy jövőre mi is szerepelni fogunk." ] },
+      { id: "v10", t: "Séta a kutyával", s: [
+        "Tegnap délután, amikor hazaértem, a kutyánk az ajtóban várt.",
+        "Azonnal kivittem sétálni, mert egész nap egyedül volt.",
+        "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
+        "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
+        "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vesszo: "A vessző", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");
@@ -579,14 +605,14 @@ const H = (function(){
   function dictation(root, o){
     const esc = K.esc, $ = K.$, $$ = K.$$;
     const list = o.texts, player = o.player;
-    const S = { k: 0, n: -1, punct: true };
+    const S = { k: 0, n: -1, punct: o.punct !== false };   // a 10. (vessző) leckétől alapból nem mondja ki az írásjeleket
     root.innerHTML =
       '<div class="dict">' +
       '<div class="tabs" role="tablist" aria-label="Szöveg">' + list.map((x, i) => '<button class="tab" data-d="' + i + '">' + (i + 1) + ". " + esc(x.t) + "</button>").join("") + "</div>" +
       '<div class="dict-bar"><button class="btn primary" data-a="say">▶ Első mondat</button><button class="btn" data-a="again" disabled>↺ Újra ezt</button>' +
       '<button class="btn" data-a="slow" disabled>🐢 Darabonként</button>' +
       '<select data-a="rate" aria-label="Tempó"><option value=".7">Lassú</option><option value=".85" selected>Normál</option><option value="1">Gyorsabb</option></select>' +
-      '<label class="dict-chk"><input type="checkbox" data-a="punct" checked> Az írásjeleket is mondja</label></div>' +
+      '<label class="dict-chk"><input type="checkbox" data-a="punct"' + (S.punct ? " checked" : "") + '> Az írásjeleket is mondja</label></div>' +
       '<div class="dict-stat" aria-live="polite"></div>' +
       '<p class="warn" hidden style="color:var(--bad)">Ezen az eszközön nincs magyar felolvasó hang. Edge böngészőben biztosan működik, vagy Endi felolvassa a nyomtatható lapról.</p>' +
       '<textarea class="dict-in" rows="7" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" aria-label="Ide írd a tollbamondást" placeholder="Ide írd, amit hallasz. Mondatonként halad: ha végeztél egy mondattal, nyomd meg a „Következő mondat” gombot."></textarea>' +

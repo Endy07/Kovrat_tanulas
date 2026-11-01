@@ -80,6 +80,10 @@ eq(sum7("Jövő Hétfőn dolgozatot írunk.", "Jövő hétfőn dolgozatot írunk
 eq(sum7("A Petőfi Utcában lakunk.", "A Petőfi utcában lakunk."), ["sub:Utcában>utcában:kis"], "align Utcában");
 eq(sum7("Nyáron a balatonnál voltunk.", "Nyáron a Balatonnál voltunk."), ["sub:balatonnál>Balatonnál:kis"], "align balatonnál");
 
+// vessző (10. lecke)
+eq(sum7("Azt mondta hogy jön.", "Azt mondta, hogy jön."), ["del:>,:irasjel"], "align hiányzó vessző");
+eq(sum7("Almát, és körtét vettem.", "Almát és körtét vettem."), ["ins:,>:irasjel"], "align fölösleges vessző");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");
