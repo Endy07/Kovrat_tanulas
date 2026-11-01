@@ -487,3 +487,14 @@ helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 534
 - **A mondat eleji szó elfedi a szabályt:** a tollbamondásban a hónap és a nap ne a mondat elején álljon (ott úgyis nagy).
 - **Friss közigazgatási változás:** a „vármegye” 2026. október 1-jétől újra „megye”. Elsőre kihagytuk a megyés példát, mert a 2023-as
   állapotra emlékeztünk; Endi javította. Ami a tudásunk lezárása után változhatott (nevek, intézmények, szabályok), azt nézd meg frissen.
+
+### A 2026. 11. 01-i 10. helyesírás-lecke (a vessző)
+
+Eredmény: `helyesiras-vesszo` 480/480, 11 dia, 13 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 9 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 576 ellenőrzés. Célzott próba: a vesszőrakó jó és rossz
+megoldásra; a tollbamondás két kihagyott vesszője az „Írásjel” csoportba került; az írásjel-kimondás a vessző-csoportnál ki, máshol be.
+
+- **Ugyanazon az oldalon a # váltás nem tölt újra** (Playwright `goto` csak hash-változásnál): a gyűjtőoldal próbájánál új lap kell.
+- **A választható vesszőt** (értelmező után, 249. b) ne tedd tollbamondásba: a gép a jó megoldást is hibának számolná.
+- **A mintamondatot is ellenőrizd a saját szabályoddal:** „Anna, gyere ide és segíts!” elsőre hibásan került a vesszőrakóba (két
+  tagmondat: …ide, és segíts!).

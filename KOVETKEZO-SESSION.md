@@ -1,6 +1,16 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 hajnal
+## 🧭 BELÉPÉSI PONT — 2026-11-01 reggel
+
+**A PR #2-ben (beolvasztásra vár):** az 5–10. lecke, legutóbb a **10. (a vessző,** `helyesiras-vesszo.html`**)**, 24 új tollbamondás
+(összesen 40). Tesztek: a 10 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 576/576.
+
+**Következő:** a 11. lecke, gyakori tévesztések (muszáj, egyelőre / egyenlőre, mindig, kíváncsi, eggyel, stb., pl., az -e kérdőszó).
+Ha megjött Kovrat chatje, előbb a hibastatisztika, és a 11. lecke abból épüljön.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 hajnal
 
 **A PR #2-ben (beolvasztásra vár):** az 5–9. lecke, legutóbb a **9. (kis- és nagybetű,** `helyesiras-nagybetu.html`**)**, 20 új
 tollbamondás (összesen 36). Tesztek: a 9 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 534/534.

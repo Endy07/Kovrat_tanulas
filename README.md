@@ -56,13 +56,14 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Magyar helyesírás 7.: igekötők](helyesiras-igekotok.html) | Egybe vagy külön: közvetlenül az ige előtt egybe (megcsinálom), utána külön (csináld meg), ha szó van közte külön (meg is, meg fogom, meg kell), ismételt igekötő (meg-megáll), igekötő vagy határozószó (abbahagyta ↔ abba tette), a nem (nem tudom, nemsokára); tollbamondás |
 | [Magyar helyesírás 8.: összetett szavak és számok](helyesiras-osszetett.html) | Egybe, külön vagy kötőjel: gyors írás ↔ gyorsírás, kéményseprő, délután, ide-oda, Petőfi-szobor, tv-műsor, kétéves, sötétzöld, labdarúgó-bajnokság (6 szótag); számok betűvel (kétezer-egy, évszám: kétezerhuszonhat), számíróval; tollbamondás |
 | [Magyar helyesírás 9.: kis- és nagybetű](helyesiras-nagybetu.html) | Tulajdonnevek: személy- és állatnevek, földrajzi nevek (Kelet-Európa, Csendes-óceán, Duna-part, Petőfi utca), az -i képzős alak (debreceni, kelet-európai), intézmények, címek (A Pál utcai fiúk, Nemzeti Sport); kisbetűs: napok, hónapok, ünnepek, népek; tollbamondás |
-| [Tollbamondások](tollbamondasok.html) | 36 szöveg: felolvasás mondatonként, összevetés hibatípusokkal (hossz, kettőzés, többjegyű betű, egybeírás, írásjel…), nyomtatható változat |
+| [Magyar helyesírás 10.: a vessző](helyesiras-vesszo.html) | Tagmondatok között mindig; az és előtt csak ha tagmondatot köt; felsorolás, de, sőt, mint, páros kötőszók; megszólítás, indulatszó, közbevetés, értelmező; mondatvégi írásjel; vesszőrakó; tollbamondás az írásjelek kimondása nélkül |
+| [Tollbamondások](tollbamondasok.html) | 40 szöveg: felolvasás mondatonként, összevetés hibatípusokkal (hossz, kettőzés, többjegyű betű, egybeírás, írásjel…), nyomtatható változat |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
 ## Hol tartunk (2026. 11. 01.)
 
-- **Új (2026. 11. 01., délután): helyesírás 5. lecke (hasonulások), 6. lecke (felszólító mód), 7. (igekötők), 8. (összetett szavak, számok) és 9. lecke (kis- és nagybetű)**, 20 új tollbamondással (összesen 36).
+- **Új (2026. 11. 01., délután): helyesírás 5. lecke (hasonulások), 6. lecke (felszólító mód), 7. (igekötők), 8. (összetett szavak, számok), 9. (kis- és nagybetű) és 10. lecke (vessző)**, 24 új tollbamondással (összesen 40).
 - **Új (2026. 11. 01.): helyesírás 4. lecke, j vagy ly**, és 4 új tollbamondás (3 j/ly-os, 1 vegyes). Élesben (PR #1, `25ed352`).
 - **Új (2026. 10. 30.): magyar helyesírás.** Endi kérésére helyesírás-tananyag az alapoktól, az AkH 12 szerint: terv 10 leckével (`docs/helyesiras-terv.md`), az első 3 lecke kész, és 12 tollbamondás (a gép felolvassa, összeveti, megmondja a szabályt; nyomtatható is). Ha megjön Kovrat chatje, hibastatisztika alapján igazítjuk a sorrendet (a chat nem kerül a repóba).
 - **Új (2026. 10. 25.): Python-dolgozat lecke.** Kovrat Pythonból dolgozatot ír; a gyakorló feladatsor mind az 52 feladata bekerült, tananyaggal, új feladatokkal és böngészőben futó Pythonnal (Pyodide). Ebből tudjuk: **az iskolában már a 9.-ben, októberben Python van** (az országos programtanterv a 10.-re teszi).
