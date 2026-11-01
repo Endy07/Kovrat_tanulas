@@ -1,0 +1,415 @@
+<!--@HEAD-->
+<title>Python 5: if, elif, else</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs pre{margin:0;padding:8px 0;white-space:pre;overflow-x:auto;line-height:1.55;font-family:var(--mono)}
+.vs .ln{display:inline-block;width:2.4em;text-align:right;padding-right:.8em;color:#6e7681;user-select:none}
+.vs .kw{color:#c586c0}
+.vs .gd{color:#404040}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.vs .hl{background:#264f78}
+.vs-st{display:flex;justify-content:flex-end;gap:14px;background:#007acc;color:#fff;font-size:.72rem;padding:2px 10px}
+.flow{display:flex;flex-direction:column;gap:6px;font-family:var(--mono);max-width:46ch}
+.flow .q{border:2px solid var(--accent);border-radius:10px;padding:6px 10px}
+.flow .y{border-left:4px solid var(--ok);padding:4px 10px;margin-left:18px}
+.flow .n{border-left:4px solid var(--bad);padding:4px 10px;margin-left:18px}
+.flow .on{background:var(--accent-soft);font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 5. lecke</span>
+  <h1>Feltételek: <code>if</code>, <code>elif</code>, <code>else</code></h1>
+  <p class="lead">Eddig a program minden sort végrehajtott, fentről lefelé. Most megtanul <b>dönteni</b>: ha egy feltétel igaz, ezt csinálja, ha nem, azt. A feltétel értéke mindig <code>True</code> (igaz) vagy <code>False</code> (hamis), és a <b>behúzás</b> mutatja meg, mely sorok tartoznak a döntés alá.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írj be más számot a „Bemenetek” mezőbe, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> a <a href="python-3-input.html">3.</a> és a <a href="python-4-muveletek.html">4. lecke</a> (<code>int(input())</code>, <code>%</code>). <b>Ebben a leckében:</b> összehasonlítás (<code>== != &lt; &gt; &lt;= &gt;=</code>), <code>True</code> és <code>False</code>, <code>if</code>, a kettőspont és a behúzás, <code>else</code>, <code>elif</code>, <code>and</code>, <code>or</code>, <code>not</code>, és a behúzás a VS Code-ban.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát; utána írj be más bemenetet, és nézd meg, melyik ág fut le!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A sárga sor fut éppen. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="ifelse" aria-selected="true">if és else</button>
+    <button class="tab" data-m="elif" aria-selected="false">elif: jegy a pontszámból</button>
+    <button class="tab" data-m="behuz" aria-selected="false">Mi tartozik az if alá?</button>
+    <button class="tab" data-m="vs" aria-selected="false">Behúzás a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép <b>több bemenettel</b> is lefuttatja a programodat, hogy minden ágat kipróbáljon; a kiírt mondatod lehet más, de a kért szó vagy szám legyen benne, és f-stringgel (vagy egyszerű <code>print("…")</code>-tel) írd ki. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">= vagy ==?</span><span><code>x = 5</code> értékadás. <code>x == 5</code> kérdés: egyenlő-e? Az <code>if</code> után mindig kérdés áll.</span></div>
+    <div class="trick"><span class="t">Kettőspont + behúzás</span><span><code>if</code>, <code>elif</code>, <code>else</code> sor végén kettőspont, alatta 4 szóközzel (Tab) beljebb.</span></div>
+    <div class="trick"><span class="t">elif-sorrend</span><span>Csak az <b>első</b> igaz ág fut. Ezért a szigorúbb feltétel (például <code>&gt;= 85</code>) jön előre.</span></div>
+    <div class="trick"><span class="t">Több feltétel</span><span><code>and</code>: mindkettő igaz · <code>or</code>: legalább az egyik · <code>not</code>: megfordítja. Intervallum: <code>10 &lt;= x &lt;= 20</code>.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-4-muveletek.html">← 4. lecke: műveletek</a>
+    <a class="btn" href="python-dolgozat.html">A Python-dolgozat leckéje</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s==\s/g, " egyenlő-e "], [/\s!=\s/g, " nem egyenlő "], [/\s&lt;=\s|\s<=\s/g, " kisebb vagy egyenlő "], [/\s&gt;=\s|\s>=\s/g, " nagyobb vagy egyenlő "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s%\s/g, " maradéka "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const PY = b => b ? "True" : "False";
+    const has = (re, m) => [re, m];
+    const IF = has(/\bif\b/, "a döntéshez if kell.");
+    const ELSE = has(/\belse\s*:/, "használj else ágat is.");
+    const ELIF = has(/\belif\b/, "használj elif ágat.");
+    const NEV = ["Kovrat", "Anna", "Bence", "Lili", "Máté", "Réka", "Dani", "Petra"];
+    const distinct = (f, n) => { const a = []; let g = 0; while (a.length < n && g++ < 500){ const x = f(); if (!a.includes(x)) a.push(x); } return a; };
+    // próbák: { ins, exp, not }; a kimenetben az exp szavai legyenek benne, a not szavai ne
+    const P1 = (ins, yes, no, nums) => ({ ins, exp: (nums || []).concat(yes.map(s => ({ s }))), not: no });
+    const jegy = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 55 ? 3 : p >= 40 ? 2 : 1;
+    const JEGYKOD = J('pont = int(input("Pontszám (0-100): "))', "if pont >= 85:", I('print("Jeles (5)")'), "elif pont >= 70:", I('print("Jó (4)")'), "elif pont >= 55:", I('print("Közepes (3)")'), "elif pont >= 40:", I('print("Elégséges (2)")'), "else:", I('print("Elégtelen (1)")'));
+    const JEGYNEV = { 5: "Jeles (5)", 4: "Jó (4)", 3: "Közepes (3)", 2: "Elégséges (2)", 1: "Elégtelen (1)" };
+
+    /* ---- A diák példái (a py-check lefuttatja) ---- */
+    const EX = {
+      hero: { code: J('szam = int(input("Adj meg egy egész számot: "))', "if szam % 2 == 0:", I('print(f"{szam} páros.")'), "else:", I('print(f"{szam} páratlan.")'), 'print("Kész.")'), ins: ["7"] },
+      hasonlit: { code: J("print(5 > 3)", "print(5 < 3)", "print(5 == 5)", "print(5 != 5)", "print(4 >= 4)", 'print("alma" == "Alma")') },
+      if1: { code: J('kor = int(input("Hány éves vagy? "))', "if kor >= 18:", I('print("Nagykorú vagy.")'), I('print("Szavazhatsz.")'), 'print("Viszlát!")'), ins: ["15"] },
+      ifelse: { code: J('pont = int(input("Pontszám: "))', "if pont >= 50:", I('print("Sikerült!")'), "else:", I('print("Most nem sikerült.")'), 'print("Vége.")'), ins: ["42"] },
+      elif: { code: JEGYKOD, ins: ["73"] },
+      homerseklet: { code: J('t = int(input("Hány fok van? "))', "if t < 0:", I('print("Fagy van.")'), "elif t < 15:", I('print("Hideg van.")'), "elif t < 25:", I('print("Kellemes.")'), "else:", I('print("Meleg van.")')), ins: ["18"] },
+      logika: { code: J('kor = int(input("Kor: "))', 'jegy = int(input("Jegy: "))', "if kor >= 14 and jegy >= 4:", I('print("Mehetsz a versenyre.")'), "if jegy == 1 or jegy == 2:", I('print("Gyakorolj még!")'), "if not kor >= 18:", I('print("Még nem vagy nagykorú.")'), "if 10 <= kor <= 19:", I('print("Tinédzser vagy.")')), ins: ["15", "5"] },
+      szoveg: { code: J('jelszo = input("Jelszó: ")', 'if jelszo == "python123":', I('print("Belépés engedélyezve.")'), "else:", I('print("Hibás jelszó!")')), ins: ["Python123"] },
+      bool: { code: J("x = 7", "paros = x % 2 == 0", "print(paros)", "print(type(paros))", "if not paros:", I('print("A szám páratlan.")')) },
+      egymasban: { code: J('kor = int(input("Kor: "))', "if kor >= 14:", I("if kor >= 18:"), I(I('print("Felnőtt jegy kell.")')), I("else:"), I(I('print("Diákjegy kell.")')), "else:", I('print("Gyerekjegy kell.")')), ins: ["16"] },
+      hibaEq: { code: J("x = 5", "if x = 5:", I('print("öt")')), err: "SyntaxError" },
+      hibaKp: { code: J("x = 5", "if x == 5", I('print("öt")')), err: "SyntaxError" },
+      hibaBe: { code: J("x = 5", "if x == 5:", 'print("öt")'), err: "IndentationError" }
+    };
+
+    /* ---- „Igaz vagy hamis?” (választós; a py-check a print(…) kimenetét veti össze) ---- */
+    const IGAZ = [
+      [
+        () => { const a = rnd(1, 20), b = rnd(1, 20), op = pick(["<", ">", "==", "!=", "<=", ">="]); const v = { "<": a < b, ">": a > b, "==": a === b, "!=": a !== b, "<=": a <= b, ">=": a >= b }[op]; return { code: "print(" + a + " " + op + " " + b + ")", ans: PY(v), sol: a + " " + op + " " + b + ": ez " + (v ? "igaz" : "hamis") + "." }; },
+        () => { const a = rnd(1, 9); return pick([{ code: "print(" + a + " <= " + a + ")", ans: "True", sol: "A <= azt jelenti: kisebb vagy egyenlő. Egyenlő, tehát igaz." }, { code: "print(" + a + " < " + a + ")", ans: "False", sol: "Egyenlő, de nem kisebb: hamis." }]); }
+      ],
+      [
+        () => { const a = rnd(10, 60), b = pick([2, 3, 5]); return { code: "print(" + a + " % " + b + " == 0)", ans: PY(a % b === 0), sol: a + " % " + b + " = " + a % b + "; ez " + (a % b === 0 ? "" : "nem ") + "nulla, tehát " + (a % b === 0 ? "igaz: osztható." : "hamis: nem osztható.") }; },
+        () => { const w = pick(["alma", "Python", "kutya"]); return pick([{ code: 'print("' + w + '" == "' + w + '")', ans: "True", sol: "Ugyanaz a szöveg." }, { code: 'print("' + w + '" == "' + w.toUpperCase() + '")', ans: "False", sol: "A kis- és nagybetű számít." }, { code: 'print("5" == 5)', ans: "False", sol: "A \"5\" szöveg, az 5 szám: nem egyenlők." }]); },
+        () => { const x = rnd(1, 30); return { code: J("x = " + x, "print(10 <= x <= 20)"), ans: PY(x >= 10 && x <= 20), sol: "Az x = " + x + " " + (x >= 10 && x <= 20 ? "" : "nem ") + "esik 10 és 20 közé (a határok is benne vannak)." }; }
+      ],
+      [
+        () => { const x = rnd(1, 30), y = rnd(1, 30); return pick([
+          { code: J("x = " + x, "y = " + y, "print(x > 10 and y > 10)"), ans: PY(x > 10 && y > 10), sol: "and: mindkettőnek igaznak kell lennie. x > 10: " + PY(x > 10) + ", y > 10: " + PY(y > 10) + "." },
+          { code: J("x = " + x, "y = " + y, "print(x > 10 or y > 10)"), ans: PY(x > 10 || y > 10), sol: "or: elég, ha az egyik igaz. x > 10: " + PY(x > 10) + ", y > 10: " + PY(y > 10) + "." },
+          { code: J("x = " + x, "print(not x > 10)"), ans: PY(!(x > 10)), sol: "x > 10: " + PY(x > 10) + "; a not megfordítja." }]); },
+        () => { const x = rnd(1, 9); return pick([{ code: J("x = " + x, "print(x == 1 or x == 2)"), ans: PY(x === 1 || x === 2), sol: "Mindkét oldalon teljes összehasonlítás áll: x == 1 vagy x == 2." }, { code: J("x = " + x, "print(x % 2 == 0 and x > 5)"), ans: PY(x % 2 === 0 && x > 5), sol: "Páros-e (" + PY(x % 2 === 0) + ") és nagyobb-e 5-nél (" + PY(x > 5) + ")." }]); }
+      ]
+    ];
+
+    /* ---- „Melyik ág fut?” (választós; a py-check a kimenetet veti össze) ---- */
+    const AG = [
+      [
+        () => { const k = rnd(10, 25); return { code: J("kor = " + k, "if kor >= 18:", I('print("felnőtt")'), "else:", I('print("diák")')), ans: k >= 18 ? "felnőtt" : "diák", opts: ["felnőtt", "diák"], sol: k + " >= 18: " + PY(k >= 18) + ", ezért " + (k >= 18 ? "az if ága fut." : "az else ága fut.") }; },
+        () => { const n = rnd(1, 40); return { code: J("n = " + n, "if n % 2 == 0:", I('print("páros")'), "else:", I('print("páratlan")')), ans: n % 2 ? "páratlan" : "páros", opts: ["páros", "páratlan"], sol: n + " % 2 = " + n % 2 + "." }; }
+      ],
+      [
+        () => { const p = rnd(0, 100); return { code: JEGYKOD.replace('pont = int(input("Pontszám (0-100): "))', "pont = " + p), ans: JEGYNEV[jegy(p)], opts: Object.values(JEGYNEV), sol: "Fentről lefelé az első igaz feltétel ága fut. " + p + " pont: " + JEGYNEV[jegy(p)] + "." }; },
+        () => { const t = rnd(-10, 35); const a = t < 0 ? "fagy" : t < 15 ? "hideg" : t < 25 ? "kellemes" : "meleg"; return { code: J("t = " + t, "if t < 0:", I('print("fagy")'), "elif t < 15:", I('print("hideg")'), "elif t < 25:", I('print("kellemes")'), "else:", I('print("meleg")')), ans: a, opts: ["fagy", "hideg", "kellemes", "meleg"], sol: "Az első igaz feltétel számít: t = " + t + "." }; }
+      ],
+      [
+        () => { const p = rnd(40, 100); const a = p >= 55 ? "közepes vagy jobb" : p >= 85 ? "jeles" : "gyenge"; return { code: J("p = " + p, "if p >= 55:", I('print("közepes vagy jobb")'), "elif p >= 85:", I('print("jeles")'), "else:", I('print("gyenge")')), ans: a, opts: ["közepes vagy jobb", "jeles", "gyenge"], sol: "Csapda: a jeles ága sosem fut le, mert a 85 fölötti szám a >= 55 feltételnek is megfelel, és az előbb van. A szigorúbb feltétel kell előre!" }; },
+        () => { const k = rnd(8, 25); const a = k >= 14 ? (k >= 18 ? "felnőtt" : "diák") : "gyerek"; return { code: J("kor = " + k, "if kor >= 14:", I("if kor >= 18:"), I(I('print("felnőtt")')), I("else:"), I(I('print("diák")')), "else:", I('print("gyerek")')), ans: a, opts: ["felnőtt", "diák", "gyerek"], sol: "Egymásba ágyazott if: előbb a külső feltétel (kor >= 14: " + PY(k >= 14) + ")" + (k >= 14 ? ", aztán a belső (kor >= 18: " + PY(k >= 18) + ")." : ".") }; },
+      ]
+    ];
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const x = rnd(1, 20); return { code: J("x = " + x, "if x > 10:", I('print("nagy")'), 'print("vége")'), ans: x > 10 ? J("nagy", "vége") : "vége", sol: "A „vége” nincs behúzva, ezért mindig lefut. A „nagy” csak akkor, ha x > 10 (most: " + PY(x > 10) + ")." }; },
+        () => { const x = rnd(-9, 9); return { code: J("x = " + x, "if x < 0:", I('print("negatív")'), "else:", I('print("nem negatív")')), ans: x < 0 ? "negatív" : "nem negatív", sol: "x < 0: " + PY(x < 0) + "." }; }
+      ],
+      [
+        () => { const x = rnd(1, 20); return { code: J("x = " + x, "if x > 10:", I('print("nagy")'), I('print("nagyon")'), 'print("vége")'), ans: x > 10 ? J("nagy", "nagyon", "vége") : "vége", sol: "Mindkét behúzott sor az if alá tartozik: együtt futnak, vagy egyik sem." }; },
+        () => { const t = rnd(-5, 30); return { code: J("t = " + t, "if t < 0:", I('print("fagy")'), "elif t < 20:", I('print("hűvös")'), "else:", I('print("meleg")'), 'print("Ennyi.")'), ans: J(t < 0 ? "fagy" : t < 20 ? "hűvös" : "meleg", "Ennyi."), sol: "Pontosan egy ág fut le, aztán a nem behúzott sor." }; },
+        () => { const a = rnd(1, 9); return { code: J('x = input()', 'if x == "' + a + '":', I('print("egyezik")'), "else:", I('print("nem egyezik")')), ins: [S(a)], ans: "egyezik", sol: "Az input szöveget ad, és itt szöveggel hasonlítjuk össze: \"" + a + "\" == \"" + a + "\", igaz." }; }
+      ],
+      [
+        () => { const x = rnd(1, 30); return { code: J("x = " + x, "if x > 5:", I('print("A")'), "if x > 15:", I('print("B")'), "else:", I('print("C")')), ans: [x > 5 ? "A" : null, x > 15 ? "B" : "C"].filter(Boolean).join("\n"), sol: "Két külön if! Az első magában áll; az else a második if-hez tartozik. x = " + x + "." }; },
+        () => { const x = rnd(1, 30); return { code: J("x = " + x, "if x > 5:", I('print("A")'), "elif x > 15:", I('print("B")'), "else:", I('print("C")')), ans: x > 5 ? "A" : "C", sol: "Egy if–elif–else lánc: csak az első igaz ág fut. Ha x > 5, a B-t már meg sem nézi." }; },
+        () => { const k = rnd(10, 20), j = rnd(1, 5); return { code: J("kor = " + k, "jegy = " + j, "if kor >= 14 and jegy >= 4:", I('print("verseny")'), "if jegy == 1 or jegy == 2:", I('print("gyakorolj")'), 'print("kész")'), ans: [k >= 14 && j >= 4 ? "verseny" : null, j <= 2 ? "gyakorolj" : null, "kész"].filter(Boolean).join("\n"), sol: "Két külön if, mindkettőt megnézi. and: mindkét feltétel kell; or: elég az egyik." }; }
+      ]
+    ];
+
+    /* ---- „Írd meg!” (minden ágat kipróbálja) ---- */
+    const WRITE = [
+      [
+        () => { const a = distinct(() => rnd(1, 99), 2); const odd = a.find(x => x % 2) || 7, even = a.find(x => x % 2 === 0) || 8; return { q: "Kérj be egy egész számot, és írd ki, hogy <b>páros</b> vagy <b>páratlan</b>!",
+          code: J('szam = int(input("Egy egész szám: "))', "if szam % 2 == 0:", I('print(f"{szam} páros")'), "else:", I('print(f"{szam} páratlan")')), tests: [P1([S(even)], ["páros"], ["páratlan"]), P1([S(odd)], ["páratlan"], ["páros"])], must: [IF, ELSE], ex: "A páros szám 2-vel osztva 0 maradékot ad: szam % 2 == 0." }; },
+        () => ({ q: "Kérd be a felhasználó életkorát, és ha legalább 18, írd ki: <b>nagykorú</b>, különben: <b>kiskorú</b>!",
+          code: J('kor = int(input("Hány éves vagy? "))', "if kor >= 18:", I('print("nagykorú")'), "else:", I('print("kiskorú")')), tests: [P1([S(rnd(19, 70))], ["nagykorú"], ["kiskorú"]), P1([S(rnd(5, 17))], ["kiskorú"], ["nagykorú"]), P1(["18"], ["nagykorú"], ["kiskorú"])], must: [IF, ELSE], ex: "„Legalább 18”: kor >= 18 (a 18 is benne van; a gép a 18-at is kipróbálja)." }),
+        () => ({ q: "Kérj be egy számot, és ha negatív, írd ki: <b>negatív</b>! Ha nem negatív, a program ne írjon ki semmit.",
+          code: J('x = int(input("Egy szám: "))', "if x < 0:", I('print("negatív")')), tests: [P1([S(-rnd(1, 50))], ["negatív"], []), { ins: [S(rnd(0, 50))], exp: [], not: ["negatív"] }], must: [IF], ex: "Ha nincs else, és a feltétel hamis, egyszerűen nem történik semmi." })
+      ],
+      [
+        () => ({ q: "Kérj be egy számot, és írd ki, hogy <b>pozitív</b>, <b>negatív</b> vagy <b>nulla</b>! Használj elif-et!",
+          code: J('x = int(input("Egy szám: "))', "if x > 0:", I('print("pozitív")'), "elif x < 0:", I('print("negatív")'), "else:", I('print("nulla")')), tests: [P1([S(rnd(1, 99))], ["pozitív"], ["negatív", "nulla"]), P1([S(-rnd(1, 99))], ["negatív"], ["pozitív", "nulla"]), P1(["0"], ["nulla"], ["pozitív", "negatív"])], must: [IF, ELIF, ELSE], ex: "Három eset: if, elif, else. Pontosan egy fut le." }),
+        () => { const p = [rnd(85, 100), rnd(70, 84), rnd(55, 69), rnd(40, 54), rnd(0, 39)]; return { q: "Kérd be a dolgozat pontszámát (0–100), és írd ki a jegyet számmal! Határok: 85-től 5, 70-től 4, 55-től 3, 40-től 2, alatta 1.",
+          code: J('pont = int(input("Pontszám: "))', "if pont >= 85:", I("jegy = 5"), "elif pont >= 70:", I("jegy = 4"), "elif pont >= 55:", I("jegy = 3"), "elif pont >= 40:", I("jegy = 2"), "else:", I("jegy = 1"), 'print(f"A jegyed: {jegy}")'), tests: shuffle(p).slice(0, 3).concat([85]).map(x => ({ ins: [S(x)], exp: [jegy(x)] })), must: [IF, ELIF], ex: "A legszigorúbb feltétel kerül előre (>= 85), mert csak az első igaz ág fut. A gép a 85-öt (határ) is kipróbálja." }; },
+        () => { const j = pick(["python", "kovrat", "jelszo123"]); return { q: "Kérj be egy jelszót, és ha pontosan <code>" + j + "</code>, írd ki: <b>Belépés engedélyezve</b>, különben: <b>Hibás jelszó</b>!",
+          code: J('jelszo = input("Jelszó: ")', 'if jelszo == "' + j + '":', I('print("Belépés engedélyezve")'), "else:", I('print("Hibás jelszó")')), tests: [P1([j], ["Belépés engedélyezve"], ["Hibás jelszó"]), P1([j.toUpperCase()], ["Hibás jelszó"], ["Belépés engedélyezve"]), P1(["alma"], ["Hibás jelszó"], ["Belépés engedélyezve"])], must: [IF, ELSE], ex: "Szöveget szöveggel hasonlítunk: idézőjel kell, és a kis- és nagybetű számít (a gép a nagybetűs változatot is kipróbálja)." }; }
+      ],
+      [
+        () => ({ q: "Kérj be egy egész számot, és ha <b>10 és 20 között</b> van (a határokat is beleértve), írd ki: <b>benne van</b>, különben: <b>kívül esik</b>!",
+          code: J('x = int(input("Egy szám: "))', "if 10 <= x <= 20:", I('print("benne van")'), "else:", I('print("kívül esik")')), tests: [P1([S(rnd(11, 19))], ["benne van"], ["kívül esik"]), P1(["10"], ["benne van"], ["kívül esik"]), P1(["20"], ["benne van"], ["kívül esik"]), P1([S(pick([rnd(-5, 9), rnd(21, 40)]))], ["kívül esik"], ["benne van"])], must: [IF, ELSE], ex: "10 <= x <= 20, vagy: x >= 10 and x <= 20. A gép a két határt is kipróbálja." }),
+        () => ({ q: "Kérd be egy év számát, és írd ki, hogy <b>szökőév</b> vagy <b>nem szökőév</b>! Szabály: szökőév, ha osztható 4-gyel, de nem osztható 100-zal; vagy ha osztható 400-zal.",
+          code: J('ev = int(input("Év: "))', "if (ev % 4 == 0 and ev % 100 != 0) or ev % 400 == 0:", I('print("szökőév")'), "else:", I('print("nem szökőév")')), tests: [P1([S(pick([2024, 2028, 2012, 1996]))], ["szökőév"], ["nem szökőév"]), P1([S(pick([2025, 2026, 2027, 2019]))], ["nem szökőév"], []), P1([S(pick([1900, 2100, 1800]))], ["nem szökőév"], []), P1(["2000"], ["szökőév"], ["nem szökőév"])], must: [IF, ELSE], ex: "A zárójel segít: (osztható 4-gyel és nem osztható 100-zal) vagy osztható 400-zal. A gép a 1900-at és a 2000-et is kipróbálja." }),
+        () => ({ q: "Kérj be két egész számot, és írd ki f-stringgel a nagyobbat! Ha egyenlők, írd ki: <b>egyenlők</b>. (Most ne a max()-ot használd, hanem if-et!)",
+          code: J('a = int(input("Az első szám: "))', 'b = int(input("A második szám: "))', "if a > b:", I('print(f"A nagyobb: {a}")'), "elif b > a:", I('print(f"A nagyobb: {b}")'), "else:", I('print("egyenlők")')), tests: (() => { const [x, y] = distinct(() => rnd(1, 99), 2); const k = rnd(1, 99); return [{ ins: [S(Math.max(x, y)), S(Math.min(x, y))], exp: [Math.max(x, y)], not: ["egyenlők"] }, { ins: [S(Math.min(x, y)), S(Math.max(x, y))], exp: [Math.max(x, y)], not: ["egyenlők"] }, { ins: [S(k), S(k)], exp: [{ s: "egyenlők" }] }]; })(), must: [IF, ELIF], mustNot: [has(/max\s*\(/, "most if-fel döntsd el, ne a max()-szal.")], ex: "Három eset: a nagyobb, b nagyobb, egyenlők." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const x = rnd(1, 9); return pick([
+          { code: J("x = " + x, "if x = " + x + ":", I('print("egyezik")')), err: "SyntaxError", fix: J("x = " + x, "if x == " + x + ":", I('print("egyezik")')), sol: "Az if után kérdés kell: x == " + x + ". Az egy = értékadás, itt nem lehet." },
+          { code: J("x = " + x, "if x == " + x, I('print("egyezik")')), err: "SyntaxError", fix: J("x = " + x, "if x == " + x + ":", I('print("egyezik")')), sol: "Hiányzik a kettőspont a feltétel végéről." },
+          { code: J("x = " + x, "if x == " + x + ":", I('print("egyezik")')), err: "", sol: "Hibátlan." }]); },
+        () => { const x = rnd(1, 9); return pick([
+          { code: J("x = " + x, "if x > 0:", 'print("pozitív")'), err: "IndentationError", fix: J("x = " + x, "if x > 0:", I('print("pozitív")')), sol: "A kettőspont utáni sort be kell húzni (4 szóköz)." },
+          { code: J("x = " + x, "if x > 0:", I('print("pozitív")'), I('  print("!")')), err: "IndentationError", fix: J("x = " + x, "if x > 0:", I('print("pozitív")'), I('print("!")')), sol: "Az egy blokkba tartozó sorok pontosan ugyanannyira legyenek behúzva (itt 4 és 6 szóköz)." }]); }
+      ],
+      [
+        () => { const k = S(rnd(10, 20)); return pick([
+          { code: J('kor = input("Kor: ")', "if kor >= 18:", I('print("felnőtt")')), ins: [k], err: "TypeError", fix: J('kor = int(input("Kor: "))', "if kor >= 18:", I('print("felnőtt")')), sol: "Az input szöveget ad: szöveget és számot nem lehet a >=-vel összehasonlítani. int(input(…)) kell." },
+          { code: J('kor = int(input("Kor: "))', "if kor >= 18:", I('print("felnőtt")')), ins: [k], err: "", sol: "Hibátlan." }]); },
+        () => { const x = rnd(1, 9); return pick([
+          { code: J("x = " + x, "if x > 5:", I('print("nagy")'), "else if x > 2:", I('print("közepes")')), err: "SyntaxError", fix: J("x = " + x, "if x > 5:", I('print("nagy")'), "elif x > 2:", I('print("közepes")')), sol: "Pythonban nincs „else if”: elif a neve." },
+          { code: J("x = " + x, "else:", I('print("valami")')), err: "SyntaxError", fix: J("x = " + x, "if x > 5:", I('print("nagy")'), "else:", I('print("valami")')), sol: "Az else csak egy if után állhat." },
+          { code: J("x = " + x, "If x > 5:", I('print("nagy")')), err: "SyntaxError", fix: J("x = " + x, "if x > 5:", I('print("nagy")')), sol: "Az if kisbetűs. Az If-et a Python nem ismeri fel, ezért nem érti a sort." }]); }
+      ],
+      [
+        () => { const x = rnd(1, 9); return pick([
+          { code: J("x = " + x, "if x == 1 or 2:", I('print("egy vagy kettő")')), err: "", sol: "Nincs hibaüzenet, de csapda: az „or 2” mindig igaznak számít, ezért mindig kiírja. Helyesen: x == 1 or x == 2." },
+          { code: J("x = " + x, "if x > 5:", I('print("nagy")'), "else:", I('print("kicsi")'), "elif x == 3:", I('print("három")')), err: "SyntaxError", fix: J("x = " + x, "if x > 5:", I('print("nagy")'), "elif x == 3:", I('print("három")'), "else:", I('print("kicsi")')), sol: "Az else mindig az utolsó; utána már nem jöhet elif." },
+          { code: J("x = " + x, "if x > 5:", I("pass"), "else:", I('print("kicsi")')), err: "", sol: "Hibátlan: a pass azt jelenti, „itt nem csinálunk semmit”. Üres blokk nem lehet, ezért kell." }]); },
+        () => { const n = pick(NEV); return pick([
+          { code: J('nev = input("Neved: ")', "if nev == " + n + ":", I('print("Szia!")')), ins: [n], err: "NameError", fix: J('nev = input("Neved: ")', 'if nev == "' + n + '":', I('print("Szia!")')), sol: "A szöveg idézőjel nélkül változónévnek számít (" + n + "), és ilyen változó nincs." },
+          { code: J('nev = input("Neved: ")', 'if nev == "' + n + '":', I('print("Szia!")')), ins: [n], err: "", sol: "Hibátlan." }]); }
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "IndentationError", "TypeError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => ({ q: "Ennek a programnak ki kellene írnia, hogy a szám páros vagy páratlan, de hibás. Javítsd ki!",
+          starter: J('szam = int(input("Szám: "))', "if szam % 2 = 0", I('print("páros")'), "else:", I('print("páratlan")')) + "\n", code: J('szam = int(input("Szám: "))', "if szam % 2 == 0:", I('print("páros")'), "else:", I('print("páratlan")')), tests: [P1([S(rnd(1, 40) * 2)], ["páros"], ["páratlan"]), P1([S(rnd(1, 40) * 2 + 1)], ["páratlan"], ["páros"])], ex: "Két hiba: == kell (nem =), és a feltétel végére kettőspont." }),
+        () => ({ q: "Ennek a programnak csak akkor kellene kiírnia a „Gratulálok!” szót, ha a pontszám legalább 50, de mindig kiírja. Javítsd ki!",
+          starter: J('pont = int(input("Pont: "))', "if pont >= 50:", I('print("Sikerült.")'), 'print("Gratulálok!")') + "\n", code: J('pont = int(input("Pont: "))', "if pont >= 50:", I('print("Sikerült.")'), I('print("Gratulálok!")')), tests: [P1([S(rnd(50, 100))], ["Sikerült.", "Gratulálok!"], []), P1([S(rnd(0, 49))], [], ["Gratulálok!", "Sikerült."])], ex: "A „Gratulálok!” sort is be kell húzni, hogy az if alá tartozzon." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak a jegyet kellene kiírnia (85-től 5, 70-től 4, 55-től 3, 40-től 2, alatta 1), de 90 pontra is 2-est ad. Javítsd ki!",
+          starter: J('pont = int(input("Pont: "))', "if pont >= 40:", I("jegy = 2"), "elif pont >= 55:", I("jegy = 3"), "elif pont >= 70:", I("jegy = 4"), "elif pont >= 85:", I("jegy = 5"), "else:", I("jegy = 1"), 'print(f"Jegy: {jegy}")') + "\n",
+          code: J('pont = int(input("Pont: "))', "if pont >= 85:", I("jegy = 5"), "elif pont >= 70:", I("jegy = 4"), "elif pont >= 55:", I("jegy = 3"), "elif pont >= 40:", I("jegy = 2"), "else:", I("jegy = 1"), 'print(f"Jegy: {jegy}")'), tests: [rnd(85, 100), rnd(70, 84), rnd(55, 69), rnd(40, 54), rnd(0, 39)].map(x => ({ ins: [S(x)], exp: [jegy(x)] })), ex: "Csak az első igaz ág fut: a >= 40 minden jobb pontszámra is igaz. A szigorúbb feltétel kell előre: >= 85, aztán >= 70…" }),
+        () => ({ q: "Ennek a programnak „felnőtt” vagy „diák” szót kellene kiírnia az életkor alapján (18-tól felnőtt), de hibával leáll. Javítsd ki!",
+          starter: J('kor = input("Kor: ")', "if kor >= 18:", I('print("felnőtt")'), "else:", I('print("diák")')) + "\n", code: J('kor = int(input("Kor: "))', "if kor >= 18:", I('print("felnőtt")'), "else:", I('print("diák")')), tests: [P1([S(rnd(18, 60))], ["felnőtt"], ["diák"]), P1([S(rnd(6, 17))], ["diák"], ["felnőtt"])], ex: "Az input szöveget ad; számmal csak int() után lehet összehasonlítani." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak akkor kellene „hétvége” szót kiírnia, ha a nap száma 6 vagy 7, különben „hétköznap”. De minden napra „hétvégét” ír. Javítsd ki!",
+          starter: J('nap = int(input("A nap száma (1-7): "))', "if nap == 6 or 7:", I('print("hétvége")'), "else:", I('print("hétköznap")')) + "\n", code: J('nap = int(input("A nap száma (1-7): "))', "if nap == 6 or nap == 7:", I('print("hétvége")'), "else:", I('print("hétköznap")')), tests: [P1(["6"], ["hétvége"], ["hétköznap"]), P1(["7"], ["hétvége"], ["hétköznap"]), P1([S(rnd(1, 5))], ["hétköznap"], ["hétvége"])], ex: "Az „or 7” magában mindig igaznak számít. Mindkét oldalra teljes összehasonlítás kell: nap == 6 or nap == 7 (vagy: nap >= 6)." }),
+        () => ({ q: "Ennek a programnak két szám közül a nagyobbat kellene kiírnia (egyenlőnél „egyenlők”), de két hiba is van benne. Javítsd ki!",
+          starter: J('a = int(input("a: "))', 'b = int(input("b: "))', "if a > b:", I('print(f"Nagyobb: {a}")'), "else if b > a:", I('print(f"Nagyobb: {b}")'), "else", I('print("egyenlők")')) + "\n",
+          code: J('a = int(input("a: "))', 'b = int(input("b: "))', "if a > b:", I('print(f"Nagyobb: {a}")'), "elif b > a:", I('print(f"Nagyobb: {b}")'), "else:", I('print("egyenlők")')), tests: (() => { const [x, y] = distinct(() => rnd(1, 99), 2); const k = rnd(1, 99); return [{ ins: [S(Math.max(x, y)), S(Math.min(x, y))], exp: [Math.max(x, y)], not: ["egyenlők"] }, { ins: [S(Math.min(x, y)), S(Math.max(x, y))], exp: [Math.max(x, y)], not: ["egyenlők"] }, { ins: [S(k), S(k)], exp: [{ s: "egyenlők" }] }]; })(), ex: "„else if” helyett elif, és az else után kettőspont." })
+      ]
+    ];
+
+    const banks = [
+      { id: "igaz", kind: "kiir", L: IGAZ },
+      { id: "ag", kind: "kiir", L: AG },
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { IGAZ, AG, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, JEGYKOD, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { IGAZ, AG, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, JEGYKOD } = LOGIC;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: EX.hero.ins, rows: 6 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + " — írj be mást is!</p>" : "");
+
+  /* ---------- VS Code-szerkesztő rajza: sorszám, behúzás-vezetővonal ---------- */
+  const vsEd = (lines, hl, cur) => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span></div><pre>' +
+    lines.map((l, i) => { const m = /^( *)(.*)$/.exec(l), ind = m[1].length; const guides = ind ? '<span class="gd">' + "│   ".repeat(ind / 4) + "</span>" : ""; const body = esc(m[2]).replace(/^(if|elif|else|and|or|not)\b/, '<span class="kw">$1</span>'); return '<span class="' + (hl === i + 1 ? "hl" : "") + '"><span class="ln">' + (i + 1) + "</span>" + guides + body + (cur === i + 1 ? '<span class="cur"> </span>' : "") + "</span>"; }).join("\n") + '</pre><div class="vs-st"><span>Spaces: 4</span><span>Python</span></div></div>';
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function ifelseFrames(){
+    const src = EX.ifelse.code.split("\n");
+    return [
+      { cap: "A program bekér egy pontszámot, és dönt: ha legalább 50, gratulál, ha nem, mást ír. Először 42 pontot írunk be.", html: srcHtml(src, 1) + varTbl({ pont: 42 }) },
+      { cap: "Az if után a feltétel: pont nagyobb vagy egyenlő, mint 50. A 42 esetén ez hamis, False.", html: srcHtml(src, 2) + '<p class="big">42 &gt;= 50 → <span style="color:var(--bad)">False</span></p>' },
+      { cap: "Hamis, ezért a gép átugorja az if alá behúzott sort, és az else ágát hajtja végre.", html: srcHtml(src, 5) + outBox("Most nem sikerült.") },
+      { cap: "A Vége sor nincs behúzva, nem tartozik egyik ághoz sem: mindig lefut.", html: srcHtml(src, 6) + outBox("Most nem sikerült.\nVége.") },
+      { cap: "Most 73 pontot írunk be. 73 nagyobb vagy egyenlő, mint 50: igaz, True.", html: srcHtml(src, 2) + '<p class="big">73 &gt;= 50 → <span class="led">True</span></p>' },
+      { cap: "Igaz, ezért az if ága fut, az else ágát átugorja. Utána a Vége sor.", html: srcHtml(src, 3) + outBox("Sikerült!\nVége.") },
+      { cap: "Az if és az else közül mindig pontosan az egyik fut le, sosem mindkettő.", html: '<div class="flow"><div class="q">pont &gt;= 50 ?</div><div class="y">True → Sikerült!</div><div class="n">False → Most nem sikerült.</div><div class="q">Vége. (mindig)</div></div>' }
+    ];
+  }
+  function elifFrames(){
+    const src = JEGYKOD.split("\n");
+    const fl = on => '<div class="flow">' + [["pont >= 85", "5"], ["pont >= 70", "4"], ["pont >= 55", "3"], ["pont >= 40", "2"], ["különben", "1"]].map((x, i) => '<div class="q' + (i === on ? " on" : "") + '">' + x[0] + " → " + x[1] + "</div>").join("") + "</div>";
+    return [
+      { cap: "Jegy a pontszámból, öt lehetőséggel. Ehhez az elif kell: azt jelenti, különben, ha. 73 pontot írunk be.", html: srcHtml(src, 1) + varTbl({ pont: 73 }) },
+      { cap: "Első kérdés: 73 nagyobb vagy egyenlő, mint 85? Nem, hamis. Megy tovább a következő feltételre.", html: srcHtml(src, 2) + fl(-1) },
+      { cap: "Második kérdés: 73 nagyobb vagy egyenlő, mint 70? Igen! Ez az ág fut: Jó, négyes.", html: srcHtml(src, 5) + fl(1) + outBox("Jó (4)") },
+      { cap: "És itt vége: a többi elif-et és az else-t már meg sem nézi, pedig a 73 nagyobb az 55-nél is. Csak az első igaz ág fut.", html: srcHtml(src, 0) + fl(1) },
+      { cap: "Ezért fontos a sorrend: a szigorúbb feltétel, a 85, kerül előre. Ha a 40 lenne az első, 90 pontra is kettest adna!", html: '<pre class="code">if pont &gt;= 40:   # 90-re is igaz!\n    jegy = 2\nelif pont &gt;= 85:  # ide sosem jut el\n    jegy = 5</pre>' }
+    ];
+  }
+  function behuzFrames(){
+    const a = ["x = 3", "if x > 10:", '    print("nagy")', '    print("nagyon")', 'print("vége")'];
+    return [
+      { cap: "Mely sorok tartoznak az if alá? Azok, amelyek a kettőspont után beljebb kezdődnek: a nagy és a nagyon.", html: srcHtml(a, 0) },
+      { cap: "Az x most 3, a feltétel hamis. Mindkét behúzott sort átugorja.", html: srcHtml(a, 2) + '<p class="big">3 &gt; 10 → False</p>' },
+      { cap: "A vége nincs behúzva: ez már nem az if része, mindig lefut. A kimenet csak egy sor: vége.", html: srcHtml(a, 5) + outBox("vége") },
+      { cap: "Ha a vége sort is behúznánk, az is az if alá kerülne, és most nem íródna ki semmi. A behúzás tehát nem díszítés: jelentése van!", html: srcHtml(["x = 3", "if x > 10:", '    print("nagy")', '    print("nagyon")', '    print("vége")'], 5) + outBox("") }
+    ];
+  }
+  function vsFrames(){
+    const L = ['pont = int(input("Pont: "))', "if pont >= 50:"];
+    return [
+      { cap: "A VS Code-ban beírod az if sort, a végén a kettősponttal.", html: vsEd(L, 0, 2) },
+      { cap: "Entert nyomsz, és a VS Code magától beljebb kezdi a következő sort, négy szóközzel. Ezért fontos a kettőspont: enélkül nem húzna be.", html: vsEd(L.concat(["    "]), 3, 3) },
+      { cap: "Beírod a print sort. A halvány függőleges vonal mutatja, hogy ez a sor az if alá tartozik.", html: vsEd(L.concat(['    print("Sikerült!")']), 3) },
+      { cap: "Ha vissza akarsz lépni a sor elejére, az else-hez, nyomd meg a Shift és Tab billentyűt, vagy a Backspace-t.", html: vsEd(L.concat(['    print("Sikerült!")', "else:"]), 4, 4) },
+      { cap: "A kész program. A jobb alsó sarokban a Spaces: 4 azt jelenti, hogy a Tab négy szóközt tesz. Ha egy sor nem illeszkedik, a VS Code pirossal aláhúzza.", html: vsEd(L.concat(['    print("Sikerült!")', "else:", '    print("Most nem sikerült.")', 'print("Vége.")'])) }
+    ];
+  }
+  const MET = { ifelse: "if és else", elif: "elif: jegy a pontszámból", behuz: "Mi tartozik az if alá?", vs: "Behúzás a VS Code-ban" };
+  const MF = { ifelse: ifelseFrames, elif: elifFrames, behuz: behuzFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "ifelse" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "A program dönt", h:
+      "<p>A mindennapokban is így döntünk: <i>ha esik az eső, viszek esernyőt, különben nem.</i> A program ugyanígy: megvizsgál egy <b>feltételt</b>, és attól függően más-más sorokat hajt végre.</p>" + ex("hero") +
+      "<p>Futtasd a 7-tel, aztán írj be a Bemenetek mezőbe 8-at, és futtasd újra: más sor fut le!</p>" },
+    { k: "Összehasonlítás", t: "Összehasonlítás: True vagy False", h:
+      ex("hasonlit") +
+      "<div class='ptwrap'><table class='pt'><tr><th>Jel</th><th>Jelentése</th><th>Példa</th></tr><tr><td>==</td><td style='font-family:var(--body)'>egyenlő-e</td><td>5 == 5 → True</td></tr><tr><td>!=</td><td style='font-family:var(--body)'>nem egyenlő</td><td>5 != 3 → True</td></tr><tr><td>&lt; &gt;</td><td style='font-family:var(--body)'>kisebb, nagyobb</td><td>5 &gt; 3 → True</td></tr><tr><td>&lt;= &gt;=</td><td style='font-family:var(--body)'>kisebb vagy egyenlő, nagyobb vagy egyenlő</td><td>4 &gt;= 4 → True</td></tr></table></div>" +
+      "<div class='mistake'><b>= vagy ==?</b> Az egy egyenlőségjel <b>értékadás</b> (<code>x = 5</code>: legyen az x 5). A dupla <b>kérdés</b> (<code>x == 5</code>: egyenlő-e az x 5-tel?). Az if után mindig kérdés áll.</div>" },
+    { k: "if", t: "Az if: ha igaz, akkor…", h:
+      ex("if1") +
+      "<ol><li>Az <code>if</code> után a feltétel, a sor végén <b>kettőspont</b>.</li><li>Az if alá tartozó sorok <b>4 szóközzel beljebb</b> kezdődnek (behúzás). Ezek csak akkor futnak le, ha a feltétel igaz.</li><li>Az első nem behúzott sor már nem tartozik az if-hez: az mindig lefut (itt: Viszlát!).</li></ol>" + playBtn("behuz") },
+    { k: "else", t: "else: különben", h:
+      ex("ifelse") +
+      "<ul><li>Az <code>else:</code> ága akkor fut, ha az if feltétele <b>hamis</b>.</li><li>Az else-nek nincs feltétele, csak kettőspontja. Ugyanolyan mélyen kezdődik, mint az if.</li><li>Az if és az else közül <b>mindig pontosan egy</b> fut le.</li></ul>" + playBtn("ifelse") },
+    { k: "elif", t: "elif: különben, ha…", h:
+      ex("elif") +
+      "<ul><li>Ha kettőnél több lehetőség van, az <code>elif</code> (else if: különben, ha) kell. Akárhány lehet belőle.</li><li>A gép fentről lefelé nézi a feltételeket, és <b>csak az első igaz</b> ág fut le. A többit meg sem nézi.</li><li>Ezért a <b>szigorúbb feltétel kerül előre</b>: előbb a <code>&gt;= 85</code>, aztán a <code>&gt;= 70</code>.</li><li>A végén az <code>else</code> elhagyható; ha ott van, akkor fut, ha egyik feltétel sem igaz.</li></ul>" +
+      "<p class='dim'>A ponthatárok csak példák; az iskolában a tanár határai érvényesek.</p>" + playBtn("elif") },
+    { k: "Még egy példa", t: "Hőmérséklet: négy eset", h:
+      ex("homerseklet") + "<p>Próbáld ki -3, 10, 18 és 30 fokkal! Mindig pontosan egy sor íródik ki. Figyeld meg: az <code>elif t &lt; 15</code> ágához csak akkor jut el, ha a t már nem negatív, ezért nem kell kiírni, hogy <code>t &gt;= 0 and t &lt; 15</code>.</p>" },
+    { k: "and, or, not", t: "Több feltétel: and, or, not", h:
+      ex("logika") +
+      "<div class='ptwrap'><table class='pt'><tr><th>Kulcsszó</th><th>Mikor igaz?</th></tr><tr><td>a and b</td><td style='font-family:var(--body)'>ha <b>mindkettő</b> igaz</td></tr><tr><td>a or b</td><td style='font-family:var(--body)'>ha <b>legalább az egyik</b> igaz</td></tr><tr><td>not a</td><td style='font-family:var(--body)'>ha az a hamis (megfordítja)</td></tr></table></div>" +
+      "<ul><li>Intervallum: <code>10 &lt;= kor &lt;= 19</code> (vagy <code>kor &gt;= 10 and kor &lt;= 19</code>).</li><li><b>Csapda:</b> az <code>if jegy == 1 or 2:</code> mindig igaz! Mindkét oldalra teljes összehasonlítás kell: <code>jegy == 1 or jegy == 2</code>.</li></ul>" },
+    { k: "Szövegek", t: "Szöveg összehasonlítása", h:
+      ex("szoveg") +
+      "<ul><li>Szöveget idézőjeles szöveggel hasonlítunk össze: <code>jelszo == \"python123\"</code>.</li><li>A kis- és nagybetű <b>számít</b>: a Python123 nem egyezik a python123-mal.</li><li>Számot számmal hasonlíts össze: ha az inputból jön, előbb <code>int()</code>. A <code>\"15\" &gt;= 18</code> TypeError.</li></ul>" },
+    { k: "bool", t: "A feltétel is egy érték: bool", h:
+      ex("bool") +
+      "<p>Az összehasonlítás eredménye egy <b>bool</b> típusú érték: <code>True</code> vagy <code>False</code>. Változóba is tehető, és az <code>if</code> után közvetlenül is állhat: <code>if paros:</code>.</p>" },
+    { k: "Egymásban", t: "if az if-ben", h:
+      ex("egymasban") +
+      "<p>Egy if ágában újabb if is lehet; ilyenkor még 4 szóközzel beljebb kezdődik. Előbb a külső feltétel dönt, és csak ha az igaz, akkor jön a belső. Gyakran elif-fel egyszerűbb: <code>if kor &gt;= 18: … elif kor &gt;= 14: … else: …</code></p>" },
+    { k: "VS Code", t: "Behúzás a VS Code-ban", h:
+      vsEd(['pont = int(input("Pont: "))', "if pont >= 50:", '    print("Sikerült!")', "else:", '    print("Most nem sikerült.")', 'print("Vége.")']) +
+      "<ul><li>A kettőspont után <b>Enter</b>: a VS Code magától 4 szóközzel beljebb kezdi a sort.</li><li>A <b>Tab</b> 4 szóközt tesz, a <b>Shift+Tab</b> visszalép (jobb lent: <i>Spaces: 4</i>).</li><li>A halvány függőleges vonalak mutatják, mi tartozik egy blokkba.</li><li>Ha egy sor nem illeszkedik, piros hullámvonal jelzi még futtatás előtt; vidd rá az egeret, és elolvashatod a hibát.</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák és üzeneteik", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
+      [["if x = 5:", "SyntaxError (Maybe you meant '=='…)", "if x == 5:"],
+       ["if x == 5", "SyntaxError: expected ':'", "if x == 5:"],
+       ["if x > 0:\nprint(\"jó\")", "IndentationError: expected an indented block", "4 szóköz a print elé"],
+       ["else if x > 2:", "SyntaxError", "elif x > 2:"],
+       ["kor = input()\nif kor >= 18:", "TypeError: '>=' not supported…", "int(input())"],
+       ["if x == 1 or 2:", "nincs hibaüzenet, de mindig igaz", "x == 1 or x == 2"],
+       ["if p >= 40: … elif p >= 85:", "nincs hibaüzenet, de a második ág sosem fut", "a szigorúbb előre"]].map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaEq") + ex("hibaKp") + ex("hibaBe") },
+    { k: "Trükkök", t: "Tanácsok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Próbáld ki minden ágat</span><span>Annyi bemenettel futtasd, ahány ág van, és a határokkal is (például pontosan 18, pontosan 85). A gyakorló feladatoknál a gép is így ellenőriz.</span></div>" +
+      "<div class='trick'><span class='t'>Mondd ki magyarul</span><span>„Ha a szám 2-vel osztva 0 maradékot ad, akkor páros, különben páratlan.” Ebből szinte szó szerint jön a kód.</span></div>" +
+      "<div class='trick'><span class='t'>Határ: &gt; vagy &gt;=?</span><span>„Legalább 18” → <code>&gt;= 18</code>. „Több mint 18” → <code>&gt; 18</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Kettőspont, behúzás</span><span>Ha a VS Code nem húzza be magától a következő sort, valószínűleg lemaradt a kettőspont.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "igaz", name: "Igaz vagy hamis?", gen(l){
+      const t = pick(IGAZ[l - 1])();
+      return P.choice("Mit ír ki ez a program: True vagy False?<pre class='code'>" + esc(t.code) + "</pre>", t.ans, [t.ans === "True" ? "False" : "True"], "<p>" + esc(t.sol) + "</p>", "Nem ez. Számold ki a feltételt lépésenként.");
+    } },
+    { id: "ag", name: "Melyik ág fut?", gen(l){
+      const t = pick(AG[l - 1])();
+      return P.choice("Melyik ág fut le, vagyis mit ír ki ez a program?<pre class='code'>" + esc(t.code) + "</pre>", t.ans, t.opts.filter(o => o !== t.ans), "<p>" + esc(t.sol) + "</p>", "Nem ez. Nézd végig a feltételeket fentről lefelé: az első igaz ág fut le.");
+    } },
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen(l){
+      const t = pick(HIBA[l - 1])(); const h = P.hiba(t, HPOOL, "Nézd meg: == vagy =? Kettőspont a sor végén? Behúzás? elif vagy „else if”? Szám vagy szöveg?");
+      if (t.ins) h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?");
+      return h;
+    } },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-5-elagazas", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["==  !=  <  >  <=  >=", "összehasonlítás: True vagy False"], ["if feltétel:\n    …", "ha igaz, a behúzott sorok futnak"], ["else:\n    …", "különben (ha a feltétel hamis)"], ["elif feltétel:\n    …", "különben, ha… (csak az első igaz ág fut)"], ["a and b · a or b · not a", "mindkettő · legalább az egyik · megfordítja"], ["10 <= x <= 20", "x a 10 és a 20 között (a határokkal)"], ["szam % 2 == 0", "páros-e"], ["jelszo == \"abc\"", "szöveg összehasonlítása (a kis- és nagybetű számít)"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
