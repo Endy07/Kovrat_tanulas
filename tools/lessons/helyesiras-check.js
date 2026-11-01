@@ -84,6 +84,13 @@ eq(sum7("Nyáron a balatonnál voltunk.", "Nyáron a Balatonnál voltunk."), ["s
 eq(sum7("Azt mondta hogy jön.", "Azt mondta, hogy jön."), ["del:>,:irasjel"], "align hiányzó vessző");
 eq(sum7("Almát, és körtét vettem.", "Almát és körtét vettem."), ["ins:,>:irasjel"], "align fölösleges vessző");
 
+// gyakori tévesztések (11. lecke)
+[["mindíg", "mindig", ["hossz"]], ["kiváncsi", "kíváncsi", ["hossz"]], ["muszály", "muszáj", ["jly"]], ["akor", "akkor", ["kettoz"]], ["mond", "mondd", ["kettoz"]],
+ ["had", "hadd", ["kettoz"]], ["egyel", "eggyel", ["kettoz"]], ["egésség", "egészség", ["hason"]], ["tudode", "tudod-e", ["kotojel"]]]
+  .forEach(([t, r, c]) => eq(H.classify(t, r), c, "classify " + t + "/" + r));
+eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom 11");
+eq(H.classify("Egyenlőre", "Egyelőre"), ["szopar"], "classify egyenlőre");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");

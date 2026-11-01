@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101045039">
+<meta name="kovrat-version" content="20261101045745">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -368,6 +368,7 @@ const H = (function(){
     egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő közvetlenül az ige előtt: megcsinálom, elment; összetett szó: délután, bableves, kétéves; lásd a 7. és a 8. leckét).", href: "helyesiras-igekotok.html" },
     kulon:  { n: "Különírás", d: "Ezt két szóba kell írni (pl. igekötő az ige után vagy ha szó van közte: csináld meg, meg is csinálom, meg fogom írni; nem tudom).", href: "helyesiras-igekotok.html" },
     kotojel:{ n: "Kötőjel", d: "Kötőjel kell: ismételt igekötő (meg-megáll), mellérendelés (ide-oda, piros-fehér), tulajdonnév vagy betűszó + köznév (Petőfi-szobor, tv-műsor), hosszú összetett szó (labdarúgó-bajnokság), szám kétezer fölött (kétezer-egy).", href: "helyesiras-osszetett.html" },
+    szopar: { n: "Összekevert szópár", d: "Két létező szó, más jelentéssel: egyelőre (most még) ↔ egyenlőre (egyforma részre). Nézd meg, melyik illik a mondatba!", href: "helyesiras-tevesztesek.html" },
     irasjel:{ n: "Írásjel", d: "Pont, vessző, kérdőjel. A mondat végére írásjel kell; a vessző a tagmondatok közé (a két tagmondatot összekötő és, de, mert, hogy elé is); a két szót összekötő és elé nem kell.", href: "helyesiras-vesszo.html" },
     hiany:  { n: "Kimaradt szó", d: "Ez a szó kimaradt. Ha nem hallottad jól, hallgasd meg újra a mondatot.", href: "" },
     tobblet:{ n: "Fölösleges szó", d: "Ez a szó nincs a szövegben.", href: "" },
@@ -405,8 +406,10 @@ const H = (function(){
   // Felszólító mód (AkH 76–80.): futsatok ~ fussatok, sietsen ~ siessen, választsunk ~ válasszunk, festsen ~ fessen, olvasjon ~ olvasson
   const felszKey = w => lower(w).replace(/szts/g, "ssz").replace(/sts/g, "ss").replace(/ts/g, "ss").replace(/([sz])j/g, "$1$1");
   // mely átalakítások teszik egyenlővé a beírt és a helyes szót? (a legkevesebb, ami elég)
+  const SZOPAR = [["egyelőre", "egyenlőre"]];
   function classify(typed, right){
     if (typed === right) return [];
+    if (SZOPAR.some(p => p.includes(lower(typed)) && p.includes(lower(right)) && lower(typed) !== lower(right))) return ["szopar"];
     if (typed.includes("-") !== right.includes("-") && typed.replace(/-/g, "") === right.replace(/-/g, "")) return ["kotojel"];
     for (const s of SUBS){
       const f = x => s.reduce((acc, k) => NORM[k](acc), x);
@@ -761,6 +764,26 @@ const H = (function(){
         "Olyan magasra másztunk, mint még soha.",
         "Fent megettük a szendvicseinket, és gyönyörködtünk a kilátásban." ] }
     ],
+    tev: [
+      { id: "g1", t: "Üzenet a barátomnak", s: [
+        "Kíváncsi vagyok, eljössz-e holnap a meccsre.",
+        "Muszáj lesz korán indulnunk, mert a busz mindig késik.",
+        "Egyelőre nem tudom, hány órakor kezdődik a játék.",
+        "Mondd meg Petinek is, hogy hadd jöjjön velünk!",
+        "Ha mégsem érsz rá, írj nekem egy üzenetet." ] },
+      { id: "g2", t: "Az edzés", s: [
+        "Az edző azt mondta, hogy az egészség a legfontosabb.",
+        "Ezért mindig alaposan bemelegítünk, mielőtt játszani kezdünk.",
+        "Ma eggyel több kört futottunk, mint a múlt héten.",
+        "Nem tudom, miért, de egyáltalán nem fáradtam el.",
+        "Mindjárt vége az edzésnek, és akkor mehetünk haza." ] },
+      { id: "g3", t: "A kirándulásra", s: [
+        "A tanárnő megkérdezte, hogy van-e mindenkinél víz.",
+        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit.",
+        "Az út körülbelül tíz kilométer, ezért kényelmes cipőt kell húzni.",
+        "Peti helyett ma Anna vezeti a csoportot, mert ő ismeri a legjobban az utat.",
+        "Nagyon tetszett a kirándulás, szívesen elmennék újra." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -821,10 +844,16 @@ const H = (function(){
         "Azonnal kivittem sétálni, mert egész nap egyedül volt.",
         "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
         "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
-        "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] }
+        "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] },
+      { id: "v11", t: "Levél a nagymamának", s: [
+        "Tegnap este felhívott a nagymamám, és megkérdezte, hogyan telt a hetem.",
+        "Elmondtam neki, hogy a helyesírási leckéket már majdnem mind megcsináltam.",
+        "Nagyon örült, és azt mondta, hogy büszke rám.",
+        "Megígértem neki, hogy a következő levelemben egyetlen hibát sem fogok ejteni.",
+        "Kíváncsi vagyok, sikerül-e." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vesszo: "A vessző", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vesszo: "A vessző", tev: "Gyakori tévesztések", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");

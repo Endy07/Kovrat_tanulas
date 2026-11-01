@@ -1,0 +1,249 @@
+<!--@HEAD-->
+<title>Gyakori tévesztések</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{align-self:flex-start;max-width:100%;background:#2A3442;border-radius:18px 18px 18px 4px;padding:12px 14px;font-family:var(--body);font-size:clamp(1.05rem,4.6vw,1.25rem);line-height:1.9;color:#fff}
+.tok{background:none;border:0;color:inherit;font:inherit;padding:0 1px;border-radius:5px;cursor:pointer}
+.tok[data-on="1"]{background:#5A3A1A;color:#FFB01F}
+.tok.ok{background:#1E4A30;color:#8BE3AE}.tok.miss{outline:2px dashed #F2796C}.tok.extra{background:#4A1E1E;color:#F2796C}
+.fixed{font-size:.8em;color:#8BE3AE;margin-left:3px}
+.ctabs{display:flex;flex-wrap:wrap;gap:8px}
+.ctabs button{background:#151B23;border:1.5px solid #3A4656;border-radius:12px;color:#DCE3EC;padding:6px 12px;font-family:var(--body);font-weight:700}
+.ctabs button[aria-pressed="true"]{border-color:#FFB01F;color:#FFB01F}
+.cmsg{color:#DCE3EC;min-height:1.4em}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 11. lecke</span>
+  <h1>Gyakori tévesztések: a chat-hibák</h1>
+  <p class="lead"><b>Mindíg</b>, <b>muszály</b>, <b>nemtudom</b>, <b>egyenlőre</b>, <b>had jöjjön</b>: ezek a leggyakoribb hibák, főleg üzenetírás közben. Ebben az ismétlő leckében mindegyikről megtudod, melyik szabály dönt, és melyik leckében tanultad.</p>
+  <div class="panel">
+    <span class="eyebrow">Hibavadász: koppints a hibás szavakra, aztán ellenőrizd!</span>
+    <div class="ctabs" id="ct"></div>
+    <div class="chat"><div class="bub" id="cb"></div></div>
+    <div class="row"><button class="btn primary" id="cchk">Ellenőrzés</button></div>
+    <p class="cmsg" id="cm" aria-live="polite"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="mindig" aria-selected="true">mindig, kíváncsi</button>
+    <button class="tab" data-m="mondd" aria-selected="false">mondd, add, hadd</button>
+    <button class="tab" data-m="egyelore" aria-selected="false">egyelőre, egyenlőre</button>
+    <button class="tab" data-m="e" aria-selected="false">tudod-e, stb.</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. a leggyakoribb chatszavak (mindig, kíváncsi, muszáj, akkor, nem tudom, egészség) · 2. szópárok és igék (egyelőre ↔ egyenlőre, helyett ↔ helyet, mondd, add, hadd) · 3. rövidítések és az -e kérdőszó (pl., stb., km, tudod-e). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>Az írásjeleket a gép itt sem mondja ki (bekapcsolható). Ezek a szövegek a gyakori hibákra épülnek: mindig, kíváncsi, muszáj, egyelőre, mondd, hadd, eggyel, nem tudom, egészség, tetszik.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Röviden!</span><span>mindig (rövid i) · egyedül · de: kíváncsi, szívesen, írok (hosszú í)</span></div>
+    <div class="trick"><span class="t">Két betű</span><span>akkor, itt, mellett, eggyel · mondd, add, hadd, tedd · de: lesz, kisebb (egy)</span></div>
+    <div class="trick"><span class="t">Külön, egybe</span><span>nem tudom, meg fogom, jó éjszakát · de: egyáltalán, ugyanaz, nemsokára, délután</span></div>
+    <div class="trick"><span class="t">Pár, ami más</span><span>egyelőre (most még) ↔ egyenlőre (egyforma részre) · helyett (más helyett) ↔ helyet (foglal)</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015): a szabályok a 2–10. lecke pontjai szerint (ott a részletes lista); 38. pont (mondd, add, hadd, tedd: -d, -dd), 248. pont (a stb. előtt nincs vessző), 263. pont (az -e kérdőszó kötőjellel), 278–284. pont (rövidítések, mértékegységek) · helyesiras.mta.hu. ⚠️ A 263. és a 278–284. pont számát kivonatból olvastuk ki.</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: hibavadász (két chatüzenet; [szöveg, javított alak vagy null]) ---------- */
+  const CHAT = [
+    [["Szia!", null], ["Kiváncsi", "Kíváncsi"], ["vagyok,", null], ["holnap", null], ["is", null], ["ugyan az", "ugyanaz"], ["a", null], ["busz", null], ["jön-e.", null],
+     ["Muszály", "Muszáj"], ["lesz", null], ["korán", null], ["kelni,", null], ["mert", null], ["eggyel", null], ["korábban", null], ["indulunk.", null],
+     ["Nemtudom,", "Nem tudom,"], ["mikor", null], ["érünk", null], ["haza,", null], ["de", null], ["majd", null], ["irok!", "írok!"]],
+    [["Mond", "Mondd"], ["meg", null], ["Petinek,", null], ["hogy", null], ["had", "hadd"], ["jöjjön", null], ["ő", null], ["is!", null],
+     ["Egyenlőre", "Egyelőre"], ["nem", null], ["tudom,", null], ["hány", null], ["órakor", null], ["kezdődik", null], ["a", null], ["meccs,", null],
+     ["de", null], ["szerintem", null], ["akor", "akkor"], ["indulunk,", null], ["amikor", null], ["mindenki", null], ["itt", null], ["van.", null]]
+  ];
+  let ck = 0;
+  function drawChat(){
+    $("#ct").innerHTML = CHAT.map((_, k) => '<button data-k="' + k + '" aria-pressed="' + (k === ck) + '">' + (k + 1) + ". üzenet</button>").join("");
+    $("#cb").innerHTML = CHAT[ck].map((t, i) => '<button class="tok" data-i="' + i + '" data-on="0">' + esc(t[0]) + "</button>").join(" ");
+    $("#cm").textContent = "";
+  }
+  $("#ct").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b){ ck = Number(b.dataset.k); drawChat(); } });
+  $("#cb").addEventListener("click", e => { const t = e.target.closest(".tok"); if (!t || t.classList.contains("ok")) return; t.dataset.on = t.dataset.on === "1" ? "0" : "1"; t.classList.remove("extra", "miss"); });
+  $("#cchk").addEventListener("click", () => {
+    let found = 0, miss = 0, extra = 0;
+    $$("#cb .tok").forEach(t => {
+      const w = CHAT[ck][Number(t.dataset.i)], on = t.dataset.on === "1";
+      if (w[1] && on){ found++; t.classList.add("ok"); if (!t.querySelector(".fixed")) t.insertAdjacentHTML("beforeend", '<span class="fixed">→ ' + esc(w[1]) + "</span>"); }
+      else if (w[1]){ miss++; t.classList.add("miss"); }
+      else if (on){ extra++; t.classList.add("extra"); }
+    });
+    $("#cm").textContent = "Megtaláltad: " + found + " · kimaradt: " + miss + (extra ? " · ez jó volt, nem hibás: " + extra : "") + (miss ? " (szaggatott keret)" : "") + (!miss && !extra ? " · Hibátlan!" : "");
+  });
+  drawChat();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    mindig: () => [
+      { cap: "Mindig. Sokan hosszú í-vel írják, pedig rövid: mindig. Ezt meg kell tanulni.", html: W("mind<u>i</u>g", "rövid i (2. lecke)") },
+      { cap: "Kíváncsi: itt viszont mindkét í hosszú. Szívesen: hosszú í. Egyedül: rövid ü.", html: W("k<u>í</u>v<u>á</u>ncsi · sz<u>í</u>vesen · egyed<u>ü</u>l") },
+      { cap: "Muszáj: j-vel, nem ly-nal. Ez kivétel a több szótagú szavak között.", html: W("muszá<u>j</u>", "4. lecke") },
+      { cap: "Egészség: egész és -ség, ezért sz és s is kell. Tetszik, mindjárt: meg kell tanulni.", html: W("egé<u>szs</u>ég · te<u>ts</u>zik · min<u>dj</u>árt", "5. lecke") }
+    ],
+    mondd: () => [
+      { cap: "Mondd meg neki! A mond igéhez a felszólító -d jön: mond + d = mondd. Két d!", html: W("mon<u>dd</u> meg", "6. lecke: rövid alak") },
+      { cap: "Ugyanígy: add ide, tedd le, vidd el, hidd el, edd meg.", html: W("a<u>dd</u> · te<u>dd</u> · vi<u>dd</u> · hi<u>dd</u>") },
+      { cap: "Hadd menjek! A hadd két d-vel írandó. A had egészen mást jelent: hadsereg.", html: W("ha<u>dd</u> menjek · ha<u>dd</u> jöjjön", "nem: had") },
+      { cap: "De: mond (kijelentő): Mindig ezt mondja. Mondd (felszólító): Mondd meg!", html: W("ő mond · te mondd meg!") }
+    ],
+    egyelore: () => [
+      { cap: "Egyelőre: most még, egyelőre nem tudom. Ez a gyakoribb.", html: W("egyelőre = most még") },
+      { cap: "Egyenlőre: egyenlő részekre, egyforma nagyságúra. A tortát egyenlőre vágtuk.", html: W("egyenlőre = egyformára") },
+      { cap: "Helyett: más helyett. Peti helyett én megyek. Helyet: hely + et. Foglalj helyet!", html: W("Peti helye<u>tt</u> · foglalj helye<u>t</u>") },
+      { cap: "Eggyel: egy + vel, két g. Eggyel több pontom van.", html: W("e<u>ggy</u>el több", "3. lecke") }
+    ],
+    e: () => [
+      { cap: "Tudod-e? Az -e kérdőszót kötőjellel kapcsoljuk az igéhez.", html: W("tudod<u>-e</u> · jössz<u>-e</u> · kérdezte, hogy jön<u>-e</u>") },
+      { cap: "Rövidítések: a szó eleje és pont. Például: pl. És a többi: stb. Körülbelül: kb.", html: W("pl. · stb. · kb. · ill.") },
+      { cap: "A stb. elé nem teszünk vesszőt, mert olyan, mint az és: alma, körte stb.", html: W("alma, körte stb.", "nem: alma, körte, stb.") },
+      { cap: "A mértékegységek után nincs pont: km, kg, cm, m.", html: W("5 km · 2 kg · 30 cm", "nincs pont") }
+    ]
+  };
+  const MET = { mindig: "mindig, kíváncsi", mondd: "mondd, add, hadd", egyelore: "egyelőre, egyenlőre", e: "tudod-e, stb." };
+  const PB = { m: "mindig" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Miért ezek?", h:
+      "<p>Üzenetírás közben gyorsan írunk, és a fül után megyünk. Ilyenkor jönnek a jellegzetes hibák. Szinte mindegyik mögött egy szabály áll, amit már tanultál: ez a lecke összegyűjti őket.</p>" +
+      "<div class='note'>Ha egy hibánál bizonytalan vagy, kattints a lecke nevére, és nézd át a szabályt!</div>" },
+    { k: "Hossz", t: "Rövid vagy hosszú? (2. lecke)", h:
+      "<p class='src'><a href='helyesiras-maganhangzok.html'>A lecke →</a></p>" +
+      tbl(["jó", "rossz", "miért"], [["<b>mindig</b>", "mindíg", "rövid i, meg kell tanulni"], ["<b>kíváncsi</b>", "kiváncsi", "két hosszú: í, á"], ["<b>egyedül</b>", "egyedűl", "-ül: mindig rövid"], ["<b>szívesen</b>", "szivesen", "hosszú í"], ["<b>írok</b>", "irok", "ír: hosszú í"]]) + playBtn("mindig"), init: playInit },
+    { k: "Kettőzés", t: "Egy vagy két betű? (3. lecke)", h:
+      "<p class='src'><a href='helyesiras-massalhangzok.html'>A lecke →</a></p>" +
+      tbl(["jó", "rossz", "miért"], [["<b>akkor, itt, mellett</b>", "akor, it, melett", "meg kell tanulni"], ["<b>eggyel</b>", "egyel", "egy + vel"], ["<b>lesz, kisebb</b>", "lessz, kissebb", "egy sz, egy s"], ["<b>egyszer</b>", "eggyszer", "egy gy"]]) },
+    { k: "j, ly", t: "j vagy ly? (4. lecke)", h:
+      "<p class='src'><a href='helyesiras-j-ly.html'>A lecke →</a></p>" +
+      "<p class='eq'><b>muszáj</b> (nem muszály) · <b>hülye</b> (nem hüje) · <b>olyan, milyen</b> (nem ojan, mijen) · <b>helyett</b> (nem hejett)</p>" },
+    { k: "Hasonulás", t: "Másképp mondjuk (5. lecke)", h:
+      "<p class='src'><a href='helyesiras-hasonulasok.html'>A lecke →</a></p>" +
+      "<p class='eq'><b>egészség</b> (nem egésség) · <b>mindjárt</b> (nem mingyárt) · <b>tetszik</b> (nem teccik) · <b>barátság</b> · <b>azonnal</b></p>" },
+    { k: "Igék", t: "Mondd, add, hadd (6. lecke)", h:
+      "<p class='src'><a href='helyesiras-felszolito.html'>A lecke →</a></p>" +
+      tbl(["jó", "rossz"], [["<b>Mondd</b> meg neki!", "Mond meg"], ["<b>Add</b> ide!", "Ad ide"], ["<b>Hadd</b> menjek!", "Had menjek"], ["<b>Játsszunk!</b>", "Játszunk! (kérésnél)"], ["<b>Lássuk!</b>", "Látsuk"]]) + playBtn("mondd"), init: playInit },
+    { k: "Egybe, külön", t: "Egybe vagy külön? (7. és 8. lecke)", h:
+      "<p class='src'><a href='helyesiras-igekotok.html'>7. lecke →</a> · <a href='helyesiras-osszetett.html'>8. lecke →</a></p>" +
+      tbl(["külön", "egybe"], [["nem tudom", "nemsokára, nemrég"], ["meg fogom csinálni", "megcsinálom"], ["jó éjszakát, boldog születésnapot", "délután, hazafelé, egyáltalán"], ["ugyan (= mégis)", "ugyanaz, ugyanis"]]) },
+    { k: "Szópárok", t: "Két szó, két jelentés", h:
+      tbl(["szó", "jelentés", "példa"], [["egyelőre", "most még", "Egyelőre nem tudom."], ["egyenlőre", "egyforma részre", "Egyenlőre vágtuk a tortát."], ["helyett", "más helyett", "Peti helyett én megyek."], ["helyet", "hely + et", "Foglalj helyet!"], ["hadd", "engedd, hogy", "Hadd menjek!"], ["had", "sereg", "a török had"]]) + playBtn("egyelore"), init: playInit },
+    { k: "Rövidítés", t: "Rövidítések és mértékegységek", h:
+      tbl(["teljesen", "röviden"], [["például", "<b>pl.</b>"], ["és a többi", "<b>stb.</b>"], ["körülbelül", "<b>kb.</b>"], ["illetve", "<b>ill.</b>"], ["utca", "<b>u.</b>"], ["kilométer, kilogramm, centiméter", "<b>km, kg, cm</b> (pont nélkül!)"]]) +
+      "<p>A <b>stb.</b> elé nem kell vessző: <b>alma, körte stb.</b></p>" },
+    { k: "-e", t: "Az -e kérdőszó: kötőjellel", h:
+      "<p class='eq'>Tudod-e? · Jössz-e holnap? · Megkérdezte, hogy jön-e. · Nem tudom, lesz-e idő.</p>" +
+      "<div class='mistake'><b>tudode, jössz e</b> → tudod-e, jössz-e.</div>" + playBtn("e"), init: playInit },
+    { k: "Hibák", t: "A top 10", h:
+      "<div class='mistake'><b>mindíg</b> → mindig · <b>kiváncsi</b> → kíváncsi</div>" +
+      "<div class='mistake'><b>muszály</b> → muszáj · <b>hüje</b> → hülye</div>" +
+      "<div class='mistake'><b>nemtudom</b> → nem tudom · <b>megfogom csinálni</b> → meg fogom csinálni</div>" +
+      "<div class='mistake'><b>mond meg, had menjek</b> → mondd meg, hadd menjek</div>" +
+      "<div class='mistake'><b>egyenlőre</b> (= most még) → egyelőre · <b>akor</b> → akkor</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Küldés előtt</span><span>Olvasd el az üzenetet még egyszer, lassan.</span></div>" +
+      "<div class='trick'><span class='t'>Gyűjtsd a saját hibáidat</span><span>Írd fel a füzeted hátuljára, amit rendszeresen elrontasz.</span></div>" +
+      "<div class='trick'><span class='t'>Kérdezd meg a szabályt</span><span>Melyik leckéhez tartozik? Hossz, kettőzés, j/ly, egybe-külön?</span></div>" +
+      "<div class='trick'><span class='t'>Szótár</span><span>Ha bizonytalan vagy: helyesiras.mta.hu, „Helyesírási tanácsadó”.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const S = [
+    [["{Mindig|Mindíg} elfelejtem a jelszavamat.", "mindig: rövid i."], ["Nagyon {kíváncsi|kiváncsi} vagyok az eredményre.", "kíváncsi: két hosszú magánhangzó."],
+     ["Holnap {muszáj|muszály} korán kelnem.", "muszáj: j-vel."], ["{Akkor|Akor} indulunk, ha kész vagy.", "akkor: két k."], ["{Nem tudom|Nemtudom}, hol a tollam.", "nem tudom: külön."],
+     ["Este majd {írok|irok}, ha hazaértem.", "ír: hosszú í."], ["Ma {egyedül|egyedűl} megyek haza.", "-ül: rövid ü."], ["Jó {egészséget|egésséget} kívánok!", "egész + ség."],
+     ["Ez a játék nagyon {tetszik|teccik}.", "tetszik: meg kell tanulni."], ["{Mindjárt|Mingyárt} ott vagyok!", "mindjárt: meg kell tanulni."], ["Ez nagyon {hülye|hüje} vicc volt.", "hülye: ly-nal."],
+     ["{Egyáltalán|Egyátalán} nem fáradtam el.", "egyáltalán: egy szó, l-lel."], ["Ez {ugyanaz|ugyan az} a könyv, amit tegnap olvastam.", "ugyanaz: egybe."]],
+    [["{Egyelőre|Egyenlőre} nem tudok jönni.", "egyelőre = most még."], ["A tortát {egyenlőre|egyelőre} vágtuk, mindenki ugyanakkorát kapott.", "egyenlőre = egyforma részre."],
+     ["Peti {helyett|helyet} ma én leszek a kapus.", "helyett = más helyett."], ["Kérlek, foglalj {helyet|helyett}!", "helyet = hely + et."], ["{Hadd|Had} menjek el én is!", "hadd: két d."],
+     ["{Mondd|Mond} meg neki, hogy várjon!", "mond + d = mondd (felszólító)."], ["{Add|Ad} ide a tollat, légy szíves!", "ad + d = add."], ["{Eggyel|Egyel} több pontom van, mint neked.", "egy + vel = eggyel."],
+     ["{Tedd|Ted} le a telefont!", "tesz → tedd."], ["{Játsszunk|Játszunk} még egy kört!", "Kérés: játsszunk."], ["Holnap {meg fogom|megfogom} csinálni.", "meg fogom: külön."],
+     ["{Lássuk|Látsuk}, mit tudsz!", "lát → lássuk."]],
+    [["Szerinted {eljön-e|eljöne} Peti?", "Az -e kötőjellel."], ["Kérdezd meg, hogy {kér-e|kére} még!", "Az -e kötőjellel."],
+     ["A futópálya {5 km|5 km.} hosszú.", "A mértékegység után nincs pont (a mondat végén persze van)."],
+     ["{Tudod-e|Tudode}, hány óra van?", "Az -e kérdőszó kötőjellel."], ["Megkérdezte, hogy {jövök-e|jövöke} holnap.", "-e: kötőjellel."], ["Nem tudom, {lesz-e|lesz e} idő játszani.", "-e: kötőjellel."],
+     ["A csomag {2 kg|2 kg.} volt.", "kg: pont nélkül."]]
+  ];
+  const R = [   // rövidítések és -e: [leírás, jó, [rossz], magyarázat]
+    [["például (röviden)", "pl.", ["pl", "p.l."], "Rövidítés: pont a végén."], ["és a többi (röviden)", "stb.", ["stb", "s.t.b."], "Rövidítés: pont a végén."],
+     ["körülbelül (röviden)", "kb.", ["kb", "k.b."], "Rövidítés: pont."], ["illetve (röviden)", "ill.", ["ill", "il."], "Rövidítés: pont."]],
+    [["kilométer (mértékegység)", "km", ["km.", "Km"], "Mértékegység: pont nélkül."], ["kilogramm (mértékegység)", "kg", ["kg.", "Kg"], "Mértékegység: pont nélkül."],
+     ["centiméter (mértékegység)", "cm", ["cm.", "Cm"], "Mértékegység: pont nélkül."], ["utca (címben, röviden)", "u.", ["u", "ut."], "Rövidítés: pont."],
+     ["doktor (név előtt, a mondat közepén)", "dr.", ["dr", "Dr"], "Rövidítés: kisbetű és pont."]],
+    [["tudod + -e", "tudod-e", ["tudode", "tudod e"], "Az -e kötőjellel."], ["jössz + -e", "jössz-e", ["jösszé", "jössz e"], "Az -e kötőjellel."],
+     ["lesz + -e", "lesz-e", ["leszé", "lesz e"], "Az -e kötőjellel."], ["alma, körte + és a többi", "alma, körte stb.", ["alma, körte, stb.", "alma, körte stb"], "A stb. elé nincs vessző, utána pont."],
+     ["kérdezte, hogy jön + -e", "jön-e", ["jöne", "jön e"], "Az -e kötőjellel."]]
+  ];
+  R[2] = R[2].concat(R[0].slice(0, 2), R[1].slice(0, 2));
+  const types = [
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) },
+    { id: "mondat", name: "Melyik mondat a jó?", gen(l){
+      const it = pick(S[l - 1]), P = H.sentParse(it[0]), good = P.pre + P.good + P.post, bad = (P.pre + pick(P.bad) + P.post).replace(/ ,/g, ",");
+      return H.choiceTask("Melyik mondat helyes?", good, [bad], "<p>" + it[1] + "</p>", "Nem ez. " + it[1]);
+    } },
+    { id: "rov", name: "Rövidítés, -e", gen(l){
+      const t = pick(R[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-tev", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.tev, player: pb, print: "tollbamondasok.html#tev", punct: false });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Jó</th><th>Nem</th><th>Lecke</th></tr>" + [
+    ["mindig, egyedül", "mindíg, egyedűl", "2."], ["kíváncsi, szívesen, írok", "kiváncsi, szivesen, irok", "2."], ["akkor, itt, mellett, eggyel", "akor, it, melett, egyel", "3."],
+    ["lesz, kisebb", "lessz, kissebb", "3."], ["muszáj, hülye, olyan", "muszály, hüje, ojan", "4."], ["egészség, mindjárt, tetszik", "egésség, mingyárt, teccik", "5."],
+    ["mondd, add, hadd, tedd", "mond, ad, had, ted", "6."], ["nem tudom, meg fogom", "nemtudom, megfogom", "7."], ["egyáltalán, ugyanaz, nemsokára", "egyátalán, ugyan az, nem sokára", "7–8."],
+    ["egyelőre (most még)", "egyenlőre", "–"], ["pl., stb., kb. · km, kg, cm", "pl, stb, km.", "–"], ["tudod-e, jössz-e", "tudode, jössz e", "–"]]
+    .map(r => "<tr><td class='l'><b>" + r[0] + "</b></td><td class='l'>" + r[1] + "</td><td class='l'>" + r[2] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
