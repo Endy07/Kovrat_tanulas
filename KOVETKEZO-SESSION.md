@@ -1,6 +1,25 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 késő este (Python-sorozat: 3. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 4. lecke)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–3. lecke (PR #5 `7ea784c`, PR #6 `869ae3f`; a pult mindkettőt ellenőrizte).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **4. Műveletek és beépített függvények**
+  (`python-4-muveletek`): `/ // % **`, műveleti sorrend, `+=`, `round` (páros felé), `abs`, `max`, `min`, a maradék a gyakorlatban,
+  a Python REPL a VS Code termináljában. 12 dia, 4 levezetés, 6 feladattípus.
+- **Tesztek:** `py-check --verify 40 python-4-muveletek` 3176 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után az **5. lecke: feltételek (`if`, `elif`, `else`)** (`python-5-elagazas`), a terv szerint,
+VS Code-os példákkal, az alapoktól (nem tudjuk, volt-e már `if` az iskolában).
+
+**Felhős teszt Pyodide-dal:** `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, `KOVRAT_PYODIDE=<…>/package`
+(recept, utolsó szakasz). Ha az ág PR-jét beolvasztották: `git merge origin/main` az ágba (a force-push itt tiltott), új PR.
+
+**Endi döntésére vár:** a 4. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 késő este (Python-sorozat: 3. lecke)
 
 **Hol tartunk:**
 - **Élesben (PR #5, Endi olvasztotta be: `7ea784c`):** a sorozatterv (`docs/python-terv.md`), a közös modul, az 1. és 2. lecke. A pult
@@ -39,12 +58,8 @@ az ágba, és új PR.
 **Felhős teszt Pyodide-dal** (a jsDelivr nem érhető el): `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, és
 `KOVRAT_PYODIDE=<…>/package` a `lesson-test.js`-nek (részletek: `docs/LECKE-RECEPT.md`, utolsó szakasz).
 
-**Endi döntésére vár:**
-1. A PR beolvasztása.
-2. A `python-elozetes` címkéje („10. évfolyam előzetes”) elavult, mert a Mechwartban 9.-ben van Python. Átírjuk-e (például
-   „Áttekintés: kódolvasás”), vagy maradjon?
-3. ⚠️ Milyen környezetben programoznak az iskolában (IDLE, Thonny, VS Code, online)? És hol tart most az osztály (volt-e már
-   `if`)? Ehhez igazítjuk a 3–10. lecke tempóját és a képernyős példákat.
+**Eldőlt (2026-11-01):** a PR #5 beolvasztva; az iskolában VS Code; az áttekintés címe „Python – gyors áttekintés”; a sorozat
+semmit nem tételez fel (`if` sem).
 
 ---
 

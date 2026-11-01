@@ -46,7 +46,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 1 | **Mi a program? A `print`** | `python-1-kiiras` | program, utasítás, sorrend, `print`, szöveg (idézőjel) és szám, több érték vesszővel, üres `print()`, megjegyzés `#`, egyszerű számolás, a hibaüzenet részei | ✅ kész (2026. 11. 01.) |
 | 2 | **Változók és típusok** | `python-2-valtozok` | értékadás (`=` jobbról balra), felülírás, `x = x + 1`, névszabályok, `int` `float` `str` `bool`, `type()`, `"5"` ↔ `5`, `int()` `str()` `float()`, f-string | ✅ kész (2026. 11. 01.) |
 | 3 | **Adatbekérés: `input` és a típusváltás** | `python-3-input` | `input()` mindig szöveg, `int(input())`, `float(input())`, a kérdező szöveg, több bemenet, a program váza (bekérés → számolás → kiírás), `ValueError`, a VS Code terminálja | ✅ kész (2026. 11. 01.) |
-| 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan) | tervezett |
+| 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan), a Python mint számológép a VS Code-ban | ✅ kész (2026. 11. 01.) |
 | 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | tervezett |
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | tervezett |
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | tervezett |
@@ -120,7 +120,8 @@ ha az iskola odaér.
   `% 2`, utolsó számjegy `% 10`, perc → óra:perc.
 - **Tipikus hibák:** `a + b / 2` az átlagnál; `/` a `//` helyett; `round(x), 2`; `^` a `**` helyett (Pythonban más művelet);
   a Python párosra kerekít (`round(2.5)` → 2); `ZeroDivisionError`.
-- **Feladattípusok:** Mit ír ki? · Mennyi a maradék? · Írd meg! · Melyik zárójelezés jó? · Hibakereső.
+- **Feladattípusok (kész):** Mit ír ki? · Melyik művelet? (/, //, %, **) · int vagy float? · Írd meg! (két bemenettel) · Milyen hibát ad? ·
+  Javítsd ki! (a tipikus hibák többsége itt hibaüzenet nélküli: `a + b / 2`, `^`, `=+`, `round(x), 2`).
 
 ### 5. Feltételek: `if`, `elif`, `else`
 
