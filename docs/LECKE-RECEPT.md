@@ -577,3 +577,13 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
   (a „Tovább” sosem tiltódott le), és JS-hibát. A kockaszám gyanús értéke is jel.
 - **Toldalék szám után:** `C.nal(n)`, `C.tol(n)`, `C.acc(n)` (a szám utolsó kiejtett szava szerint: 3, 6, 8, 20, 60, 80, 100 mély),
   névelő: `C.az(n)`. A `-ig` mindig jó. Generált mondatban más toldalékot ne írj szám után; fogalmazd át.
+
+### A Python-sorozat 7–10. leckéje (2026. 11. 01.)
+
+- **Függvényes feladat:** `tests[k].calls = [[hívás, várt kiírt érték], …]`; a `PYCORE.withCalls` a kód végére `print("@@", hívás)`
+  sorokat tesz (a böngészőben és a `py-check`-ben is), a `judge` ezeket veti össze, és célzott üzenetet ad (nincs ilyen függvény,
+  None-t ad vissza). A `T.fname` a függvény neve.
+- **A tesztelő a „Jó válasz” végéről levágta a zárójeles megjegyzést** („3 (a 4 sorból)”), és ez a `2 * (a + b)`-re végződő
+  mintakódot is megcsonkította: 17 hamis hiba. Most kódblokk (`pre`) válasznál nem vág.
+- **VS Code-rajzok:** a hibakereső kiemelt sora a *következő* sor (még nem futott le); a Variables panel `név: érték` alakú; a
+  metódus-ajánló listájában nincs magyar leírás (a súgó angol).
