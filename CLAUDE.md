@@ -29,7 +29,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html`, `python-7-for.html`, `python-8-listak.html`, `python-9-szovegek.html`, `python-10-fuggvenyek.html` | A **Python-sorozat a nulláról** (2026. 11. 01.), mind a 10 lecke. Terv: [`docs/python-terv.md`](docs/python-terv.md) (10 lecke). Forrás: `tools/lessons/python-*.src.html`. |
+| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html`, `python-7-for.html`, `python-8-listak.html`, `python-9-szovegek.html`, `python-10-fuggvenyek.html`, `python-11-modulok.html` | A **Python-sorozat a nulláról** (2026. 11. 01.): az 1–10. lecke, és a 10.-es tanterv folytatása (11. modulok; tervezett: 12. kivételek, 13. fájlok, ismétlő próbadolgozat). Terv: [`docs/python-terv.md`](docs/python-terv.md). Forrás: `tools/lessons/python-*.src.html`. |
 | `tools/lessons/python.js`, `python.css` | A Python-sorozat közös modulja (a `<!--@PYJS-->` jelölő hozza be): Pyodide-futtató, futtató-szerkesztő, hibatippek, pontos kimenet-összevetés, a változók típusa/értéke, feladatfajták. Ellenőrző: `node tools/lessons/py-check.js --verify 40 <lecke>`. |
 | `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód · 7. igekötők · 8. összetett szavak és számok · 9. kis- és nagybetű · 10. vessző · 11. gyakori tévesztések (2026. 11. 01.) · a 44 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
@@ -347,6 +347,16 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   üzenet a hiányzó függvényre és a None-t visszaadóra. A `lesson-test.js` a kódblokk-válasz végéről már nem vág le zárójeles részt.
   Lektor: 7 pont (szakmai: a return helye a ciklus után „a for-ral egy vonalban”, nem „behúzás nélkül”; a hibakereső visszatérése a
   hívó sorra két lépés; névelők, „negyzet” ékezet nélkül; „többször, különböző argumentumokkal”), mind javítva, a tesztek újrafuttatva.
+  Élesben (PR #13, `26a2a3f`).
+- **A 10.-es tanterv folytatása (Endi döntése, 2026-11-01):** modulok, kivételkezelés, fájlkezelés ugyanabban a felépítésben, utána
+  ismétlő próbadolgozat az 1–10. leckéből (`docs/python-terv.md`, 11–14.).
+- **11. lecke: Modulok: math és random** (`python-11-modulok`): 12 dia, 4 levezetés (import és a pont, floor/ceil/round/int számegyenesen,
+  számkitaláló, a `random.py` fájlnév-csapda a VS Code-ban), 6 típus (Mit ír ki?, Milyen értéket adhat?, Melyik kell?, Írd meg!, Milyen
+  hibát ad?, Javítsd ki!). A közös keret `opts` paramétert kapott: `rig` (a `random` előre megadott értékei a próbákhoz), `files` (saját
+  munkamappa előre kiírt fájlokkal, a 13. leckéhez); a `judge`-ban új: `seq` (sorrend), `fout` (fájltartalom), a `calls` saját üzenete;
+  a `py-check` `-X utf8`-cal fut. Lektor: 13 pont (szakmai: a `math.py` nem takarja el a math modult, mert beépített, ezért a csapda
+  példája a `random.py` és a `turtle.py`; a pénzfeldobásnál a choice is jó lett volna; a névsorsolásnál a listát a diáknak kell beírnia),
+  mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
