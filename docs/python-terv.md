@@ -50,7 +50,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | ✅ kész (2026. 11. 01.) |
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | ✅ kész (2026. 11. 01.) |
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | ✅ kész (2026. 11. 01.) |
-| 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | tervezett |
+| 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | ✅ kész (2026. 11. 01.) |
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | tervezett |
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | tervezett |
 | + | **Ismétlő próbadolgozat (később)** | – | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | ötlet |
@@ -162,7 +162,9 @@ ha az iskola odaér.
   megszámlálás, maximumkiválasztás, keresés, kiválogatás.
 - **Tipikus hibák:** `IndexError` (`lista[len(lista)]`); a `range(len(lista))` és a `for x in lista` keverése; `append` értékadással
   (`lista = lista.append(x)` → `None`).
-- **Feladattípusok:** Mit ír ki? · Melyik index? · Írd meg! (tételek) · Hibakereső.
+- **Feladattípusok (kész):** Mit ír ki? · Melyik elem? · Melyik tétel? · Írd meg! (tételek; a számok bekérése: darabszám, aztán
+  egyenként, append) · Milyen hibát ad? · Javítsd ki!
+- **VS Code:** a lista a hibakereső Variables panelén (kinyitva az elemek az indexükkel).
 
 ### 9. Szövegek mélyebben
 
