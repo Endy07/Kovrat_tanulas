@@ -1,6 +1,34 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 (lezárva: a helyesírás-sor kész és élesben)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 este (Python-sorozat: terv + 1–2. lecke)
+
+**Hol tartunk:**
+- **Terv:** `docs/python-terv.md`, 10 lecke a nulláról (print → változók → input → műveletek → if → while → for → listák →
+  szövegek → függvények); leckénként cél, fogalmak, tipikus hibák, feladattípusok; a viszony a `python-elozetes` és a
+  `python-dolgozat` leckéhez (egyikhez sem nyúltunk).
+- **Kész, PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a beolvasztás Endié): **1. Mi a program? A print** (`python-1-kiiras`),
+  **2. Változók és típusok** (`python-2-valtozok`), a közös modul (`tools/lessons/python.js` + `python.css`, `<!--@PYJS-->`),
+  a `py-check.js` sorozat-módja, és a kezdőlapon új csoport: „Python a nulláról”.
+- **Tesztek:** `py-check.js --verify 40` (1.: 2517, 2.: 3413 valódi Python-futás, 0 hiba; a régi dolgozat-mód is megy);
+  `lesson-test.js` 40-nel, Pyodide-dal a böngészőben (1.: 480/480, 2.: 720/720), 390 px, sötét téma, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után élőben ellenőrizni (`version.json`, a két lecke futtatója). Utána a **3. lecke:
+`input` és típusváltás** (`python-3-input`), a terv szerint; a „Írd meg!” itt már két bemenettel fut, mint a dolgozat-leckében
+(`tests: [{ ins, exp }]`, `PYCORE.cmpOut`).
+
+**Felhős teszt Pyodide-dal** (a jsDelivr nem érhető el): `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, és
+`KOVRAT_PYODIDE=<…>/package` a `lesson-test.js`-nek (részletek: `docs/LECKE-RECEPT.md`, utolsó szakasz).
+
+**Endi döntésére vár:**
+1. A PR beolvasztása.
+2. A `python-elozetes` címkéje („10. évfolyam előzetes”) elavult, mert a Mechwartban 9.-ben van Python. Átírjuk-e (például
+   „Áttekintés: kódolvasás”), vagy maradjon?
+3. ⚠️ Milyen környezetben programoznak az iskolában (IDLE, Thonny, VS Code, online)? És hol tart most az osztály (volt-e már
+   `if`)? Ehhez igazítjuk a 3–10. lecke tempóját és a képernyős példákat.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 (lezárva: a helyesírás-sor kész és élesben)
 
 **Hol tartunk:**
 - **Élesben a teljes helyesírás-sor:** mind a 11 lecke (1–3.: 2026-10-30; 4.: PR #1 `25ed352`; 5–11.: PR #2 `e81870d`), lektorálva,
