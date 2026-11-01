@@ -424,3 +424,19 @@ szándékos hibákkal (tavaj, korcsojapálya, ojan, hejet, mosojjal, fojtatta, m
 - **Linuxon a pre-commit hook nem fut:** a `.githooks/pre-commit` a repóban 100644-es (nem futtatható), Windowson ez nem számít.
   Felhős klónban: `git config core.hooksPath .githooks` és `chmod +x .githooks/pre-commit` (a módváltozást ne commitold), vagy
   HTML-es commit után kézzel `sh tools/bump-version.sh` és egy verzió-commit (2026-11-01-én így történt).
+
+### A 2026. 11. 01-i 5. helyesírás-lecke (hasonulások)
+
+Eredmény: `helyesiras-hasonulasok` 600/600 (5 típus × 3 szint × 40), 12 dia, 17 lejátszó-kocka, 390 px rendben, JS-hiba nincs.
+A közös modul változása miatt újrafuttatva: j/ly 600/600, betűk 600/600, magánhangzók 480/480, mássalhangzók 480/480,
+tollbamondások hibátlan; `helyesiras-check.js` 354 ellenőrzés, hiba nélkül. Tollbamondás-próba 6 szándékos hasonulási hibával
+(egésségnapot, ablagban, ezben, minnyájan, azomban, Azkor): mind a 6 a „Hasonulás (szóelemzés)” csoportba került.
+
+- **Pontszámot csak teljes listából írj.** A 4. leckében a toldalék j-jének pontja elsőre 51. lett, mert a szabályzat oldalának
+  kivonatában egy szomszédos pont száma tapadt a táblázathoz; helyesen 55. A 47–60. pont listáját egyben kérve derült ki
+  („List the numbered points from 47 to 60 … first sentence … examples”). Új leckénél előbb ezt a listát kérd le.
+- **A hasonulás-felismerő (`hasonKey`) a többi hibatípus után fut**, különben elnyelné a kettőzési (házal) és a többjegyű betűs
+  (sinte ~ szinte) hibákat. Az sz–z és az s–zs külön osztály, ezért a sinte/szinte nem hasonulás.
+- **Rossz alakként létező szó:** jégé, vízé, kőé, emberé (birtokos -é), szível, dobal, ara, ere, ezre. Ezek kimaradtak a gombokból.
+- **Hosszú kiejtés a kártyán** ([baráccság]) 390 px-en a széléig ért: a mono betű `clamp(1rem,4.6vw,1.3rem)` és `overflow-wrap:anywhere`.
+  A tesztelő ezt nem jelzi (nincs túllógás), csak a képernyőképen látszik.

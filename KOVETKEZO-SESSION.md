@@ -1,5 +1,21 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-01 délután
+
+**Élesben:** a 4. lecke (j vagy ly), PR #1, `25ed352`. **Kész, PR-ra vár** (`claude/dreamy-hopper-52jouj`, a `main`-ről újraindítva):
+az 5. lecke (`helyesiras-hasonulasok.html`), 4 új tollbamondás (`H.TEXTS.hason` h1–h3, `vegyes` v5; összesen 20), új hibatípus
+(`hason`), és a j/ly-lecke forrásának javítása (AkH 55., nem 51.).
+
+**Tesztek:** `helyesiras-check.js` 354/354 · `lesson-test.js` 40-nel: hasonulások 600/600, j/ly 600/600, betűk 600/600,
+magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan · tollbamondás-próba 6/6 a jó csoportba.
+
+**Döntésre vár:** a PR beolvasztása (Endi). Utána élőben ellenőrizni (`version.json`, a lecke).
+
+**Javasolt folytatás:** 6. lecke: felszólító mód és tárgyas ragozás (játsszon, eddz, lássa, tanítsa, fusson; AkH 42–43., 54–57., 80–81.
+— a pontszámokat előbb teljes listából ellenőrizd), vagy ha megjött a chat, előbb a hibastatisztika.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-11-01 (felhős próbafutás)
 
 **Kész a `claude/dreamy-hopper-52jouj` ágon (nincs a `main`-ben, élesítésre vár):** a 4. helyesírás-lecke
