@@ -65,6 +65,7 @@ Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: bön
 
 ## Hol tartunk (2026. 11. 01.)
 
+- **A helyesírás-sor kész és élesben** (11 lecke, 44 tollbamondás, szintfelmérő automatikus mentéssel). Következő: Python-sorozat a nulláról, új sessionben.
 - **Új (2026. 11. 01., délután): helyesírás 5. lecke (hasonulások), 6. lecke (felszólító mód), 7. (igekötők), 8. (összetett szavak, számok), 9. (kis- és nagybetű), 10. (vessző) és 11. lecke (gyakori tévesztések)**, 28 új tollbamondással (összesen 44). Ezzel a tervezett helyesírás-leckesor teljes.
 - **Új (2026. 11. 01.): helyesírás 4. lecke, j vagy ly**, és 4 új tollbamondás (3 j/ly-os, 1 vegyes). Élesben (PR #1, `25ed352`).
 - **Új (2026. 10. 30.): magyar helyesírás.** Endi kérésére helyesírás-tananyag az alapoktól, az AkH 12 szerint: terv 10 leckével (`docs/helyesiras-terv.md`), az első 3 lecke kész, és 12 tollbamondás (a gép felolvassa, összeveti, megmondja a szabályt; nyomtatható is). Ha megjön Kovrat chatje, hibastatisztika alapján igazítjuk a sorrendet (a chat nem kerül a repóba).

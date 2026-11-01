@@ -1,11 +1,28 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 reggel (élesben)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 (lezárva: a helyesírás-sor kész és élesben)
 
-**Élesben:** az 5–11. lecke és a szintfelmérő (PR #2, `e81870d`). **PR #3:** a szintfelmérő eredménye automatikusan Endi Google-űrlapjába
-megy (Endi kérése). Beolvasztás után Endi próbakitöltése igazolja, hogy a sor megjelenik a táblázatban.
+**Hol tartunk:**
+- **Élesben a teljes helyesírás-sor:** mind a 11 lecke (1–3.: 2026-10-30; 4.: PR #1 `25ed352`; 5–11.: PR #2 `e81870d`), lektorálva,
+  44 tollbamondás, és a **szintfelmérő** (`helyesiras-szintfelmero.html`, a kezdőlapon a helyesírás-csoport elején).
+- **A szintfelmérő eredménye automatikusan Endi Google-űrlapjába megy** (PR #3, `b014b7d`): „Kovrat Szintfelmero”, a válaszok a
+  „Kovrat Szintfelmero (válaszok)” táblázatban. Élesben igazolva (a pult két próbakitöltése megérkezett; Endi törölte a próbasorokat,
+  a B „Pontszám” oszlop el van rejtve).
+- Minden ág beolvasztva; ez a lezáró dokumentációs PR az utolsó a `claude/dreamy-hopper-52jouj` ágról.
 
-**Következő:** Kovrat kitölti a szintfelmérőt → az eredményből a gyenge leckékhez plusz gyakorlás; Python-folytatás, ha az iskola odaér.
+**Következő lépés: a Python-sorozat, új sessionben** (a pult indítja; a feladatleírás a pultnál:
+`2026-11-01-kovrat-python-alapok.md`). Mi a programozás, kiírás → változók → adatbekérés → műveletek → feltételek → ciklusok → listák →
+szövegek → függvények; az első két lecke elsőként. Építsen a `python-dolgozat` futtatójára és ellenőrzőjére (Pyodide, `py-check.js`,
+a `LOGIC` blokk mintája). A `main`-ről, saját ágon; PR, a beolvasztás Endié.
+
+**Közben (Endi, Kovrat):**
+- Kovrat kitölti a szintfelmérőt; az eredmény a táblázatba érkezik. Ha szólnak, a gyenge leckékhez plusz gyakorlás készülhet.
+- Ha megjön Kovrat chatje (`C:\KOVRAT\chat\`): hibastatisztika (`docs/helyesiras-hibak.md`, csak hibatípusok), és ehhez igazítás.
+- Ha kiderül, mit vesznek magyarórán (vagy jön füzetfotó): a leckék sorrendjét ahhoz igazítani.
+
+**Tanulság a felhős munkához** (részletek: `docs/LECKE-RECEPT.md`): a pontszámokat a szabályzatból egyben kérd le, és a
+kereszthivatkozásokkal ellenőrizd; a lektori kör sok apró hibát fog; a háttérszervert PID alapján állítsd le (a `pkill -f` a saját
+parancsot is leállíthatja); a felhős gép a github.io-t és a docs.google.com-ot nem éri el, az élő próbát Endi vagy a pult végzi.
 
 ---
 
