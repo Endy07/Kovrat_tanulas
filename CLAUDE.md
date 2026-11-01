@@ -316,6 +316,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   behúzás a VS Code-ban, szerkesztőrajzzal), 6 típus (Igaz vagy hamis?, Melyik ág fut?, Mit ír ki?, Írd meg!, Milyen hibát ad?,
   Javítsd ki!). A közös modul bővült: a próba `not` mezője (ami nem lehet a kimenetben), 3–5 próbabemenet, hibatipp a hiányzó
   kettőspontra és a behúzásra; a kódrajzokon nincs ligatúra (`>=` nem olvad `≥`-vé).
+  Lektor: 9 pont (Python-hiba nincs; névelő, „próbálj ki minden ágat”, tinédzser 13-tól, a „nagyobb” feladat a kisebb számot
+  sem engedi kiírni, az elif-levezetés kiemelése), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
