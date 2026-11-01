@@ -13,6 +13,8 @@ magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan · to
 
 **Javasolt folytatás:** 6. lecke: felszólító mód és tárgyas ragozás (játsszon, eddz, lássa, tanítsa, fusson; AkH 42–43., 54–57., 80–81.
 — a pontszámokat előbb teljes listából ellenőrizd), vagy ha megjött a chat, előbb a hibastatisztika.
+**Endi kérése (2026-11-01):** „Legyen nem elváló igekötők is majd.” → a 7. leckében (egybe-/különírás) külön rész az
+igekötőkről (megcsinálom ↔ meg is csinálom, nem csinálom meg). ⚠️ Ha Endi külön leckét vagy a 6. leckébe szánta, kérdezd meg.
 
 ---
 
