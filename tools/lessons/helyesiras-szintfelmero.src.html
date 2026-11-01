@@ -26,7 +26,7 @@
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Magyar helyesírás · szintfelmérő</span>
   <h1>Hol tartok helyesírásból?</h1>
-  <p class="lead">22 rövid kérdés mind a 11 helyesírás-lecke anyagából, leckénként kettő. Nincs jegy és nincs időkorlát. A végén megmutatja, melyik leckéket érdemes átnézned, és a böngésződ megjegyzi az eredményt, hogy később összevethesd. Minden indításkor más kérdéseket kapsz.</p>
+  <p class="lead">22 rövid kérdés mind a 11 helyesírás-lecke anyagából, leckénként kettő. Nincs jegy és nincs időkorlát. A végén megmutatja, melyik leckéket érdemes átnézned, a böngésződ megjegyzi az eredményt, és Endi is megkapja. Minden indításkor más kérdéseket kapsz.</p>
 </header>
 
 <section class="section-head">
@@ -108,6 +108,28 @@
     [11, "Melyik a helyes? ___ elfelejtem a jelszavamat.", "Mindig", ["Mindíg"], "mindig: rövid i."]
   ];
   const KEY = "kovrat-hfelmero";
+  /* Automatikus mentés Endi Google-űrlapjába (Endi kérése, 2026. 11. 01.).
+     Csak az élő oldalról küld (github.io), a gépi tesztek és a localhost nem. Név és más adat nem megy, csak az eredmény.
+     Ha nincs internet, a beküldés a böngészőben várakozik, és a következő megnyitáskor újra próbálja. */
+  const FORM = "https://docs.google.com/forms/d/e/1FAIpQLScUGsoGJuaE76tzKAPzJAoJ_4h6s940Ch3i8W2L4xuy3q5L3w/formResponse";
+  const FIELDS = { d: "entry.45623993", score: "entry.680943775", per: "entry.791818041", miss: "entry.12529840" };
+  const PKEY = "kovrat-hfelmero-kuldes";
+  const canSend = () => /(^|\.)github\.io$/.test(location.hostname) && !navigator.webdriver;
+  const pending = () => { try { return JSON.parse(K.store.get(PKEY) || "[]"); } catch (e) { return []; } };
+  const setPending = a => { try { K.store.set(PKEY, JSON.stringify(a.slice(-20))); } catch (e) {} };
+  function post(rec){
+    const body = new URLSearchParams();
+    Object.keys(FIELDS).forEach(k => body.append(FIELDS[k], rec[k]));
+    return fetch(FORM, { method: "POST", mode: "no-cors", body });   // a válasz nem olvasható (no-cors); ha a hálózat él, megérkezik
+  }
+  async function flush(){
+    if (!canSend()) return null;
+    const q = pending(); if (!q.length) return true;
+    const left = [];
+    for (const rec of q){ try { await post(rec); } catch (e) { left.push(rec); } }
+    setPending(left);
+    return left.length === 0;
+  }
   const load = () => { try { return JSON.parse(K.store.get(KEY) || "[]"); } catch (e) { return []; } };
   const save = h => { try { K.store.set(KEY, JSON.stringify(h.slice(-10))); } catch (e) {} };
   const S = { items: [], i: 0, ans: [] };
@@ -144,6 +166,10 @@
     const weak = per.filter(x => x.ok < x.n).sort((a, b) => a.ok - b.ok || a.L[0] - b.L[0]);
     const d = new Date(), ds = d.getFullYear() + ". " + String(d.getMonth() + 1).padStart(2, "0") + ". " + String(d.getDate()).padStart(2, "0") + ".";
     const h = load(); h.push({ d: ds, score, n, per: per.map(x => x.ok) }); save(h);
+    const tm = ds + " " + String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+    setPending(pending().concat([{ d: tm, score: score + " / " + n,
+      per: per.map(x => x.L[0] + ". " + x.L[1] + ": " + x.ok + "/" + x.n).join("; "),
+      miss: S.ans.filter(x => !x.ok).map(x => x.it.p[1].replace("___", "…") + " → " + x.got + " (helyesen: " + x.it.p[2] + ")").join(" | ") || "nincs" }]));
     const endi = "Helyesírási szintfelmérő, " + ds + "\nEredmény: " + score + " / " + n + "\n" +
       (weak.length ? "Gyakorolni: " + weak.map(x => x.L[0] + ". " + x.L[1] + " (" + x.ok + "/" + x.n + ")").join(", ") : "Minden leckéből hibátlan.");
     $("#fm").innerHTML =
@@ -153,8 +179,11 @@
       "<h3>Leckénként</h3><div>" + per.map(x => "<div class='res-row " + (x.ok < x.n ? "bad" : "ok") + "'><span>" + x.L[0] + ". " + esc(x.L[1]) + "</span><span class='sc'>" + x.ok + "/" + x.n + "</span></div>").join("") + "</div>" +
       (score < n ? "<h3>A hibás válaszok</h3>" + S.ans.filter(x => !x.ok).map(x => "<p class='miss'>" + qHtml(x.it.p[1]) + "<br><s>" + esc(x.got) + "</s> → <b>" + esc(x.it.p[2]) + "</b>. " + esc(x.it.p[4]) + "</p>").join("") : "") +
       "<h3>Endinek</h3><div class='endi' id='endi'>" + esc(endi) + "</div>" +
+      "<p class='meta' id='sent'></p>" +
       "<div class='row'><button class='btn' data-a='copy'>Másolás</button><button class='btn primary' data-a='start'>Új felmérő</button></div>";
     drawHist();
+    flush().then(ok => { const el = $("#sent"); if (!el) return;
+      el.textContent = ok === null ? "" : ok ? "Az eredményt elmentettük Endinek. ✓" : "Most nem sikerült elküldeni (nincs internet?). Legközelebb, amikor megnyitod az oldalt, újra megpróbálja."; });
   }
   function drawHist(){
     const h = load();
@@ -171,6 +200,7 @@
     else if (b.dataset.a === "copy"){ try { navigator.clipboard.writeText($("#endi").textContent); b.textContent = "Kimásolva ✓"; } catch (err) { b.textContent = "Jelöld ki és másold"; } }
   });
   intro();
+  flush();   // ha korábban nem ment el, most pótolja
 })();
 </script>
 <!--@UPDATE-->
