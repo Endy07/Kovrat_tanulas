@@ -440,3 +440,15 @@ tollbamondások hibátlan; `helyesiras-check.js` 354 ellenőrzés, hiba nélkül
 - **Rossz alakként létező szó:** jégé, vízé, kőé, emberé (birtokos -é), szível, dobal, ara, ere, ezre. Ezek kimaradtak a gombokból.
 - **Hosszú kiejtés a kártyán** ([baráccság]) 390 px-en a széléig ért: a mono betű `clamp(1rem,4.6vw,1.3rem)` és `overflow-wrap:anywhere`.
   A tesztelő ezt nem jelzi (nincs túllógás), csak a képernyőképen látszik.
+
+### A 2026. 11. 01-i 6. helyesírás-lecke (felszólító mód)
+
+Eredmény: `helyesiras-felszolito` 600/600, 11 dia, 16 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva a modul miatt:
+hasonulások 600/600, j/ly 600/600, betűk 600/600, magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan;
+`helyesiras-check.js` 402 ellenőrzés, hiba nélkül. Tollbamondás-próba 5 szándékos hibával: futsatok, sietsen, választsunk →
+„Felszólító mód (ige)”; Vigyázatok, játszunk → „Mássalhangzó hossza” (ez is jó szabály: a kettőzést felejtette el).
+
+- **A pontszámokat most is egyben kértük le** (36–46. és 76–82.), így nem csúszott el egy sem.
+- **Kijelentő ↔ felszólító feladatnál mindkét gomb létező szó** (tanítjuk/tanítsuk): itt ez a lényeg, a mondat dönt; a
+  „rossz alak ne legyen létező szó” szabály a hiánypótlásra és az alakképző gombokra vonatkozik (ott: főzünk, válaszon, agyon kimaradt).
+- **Új hibatípus a felismerőben:** `felszKey` (ts/sts/szts → ss/ssz, s/z + j → kettőzés), a hasonulás előtt, a kettőzés után.

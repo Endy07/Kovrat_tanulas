@@ -1,6 +1,17 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 délután
+## 🧭 BELÉPÉSI PONT — 2026-11-01 este
+
+**A PR #2-ben (beolvasztásra vár):** az 5. lecke (hasonulások) és a **6. lecke (felszólító mód,** `helyesiras-felszolito.html`**)**,
+8 új tollbamondás (összesen 24), két új hibatípus (`hason`, `felsz`). Tesztek: a 6 helyesírás-lecke mind hibátlan (600/600 ×4,
+480/480 ×2), `helyesiras-check.js` 402/402.
+
+**Következő:** a 7. lecke, egybe- és különírás, **benne külön rész az igekötőkről** (Endi kérése). A pontokat (AkH 99–138.)
+előbb egyben kérd le, és nézd meg az igekötők pontjait külön.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 délután
 
 **Élesben:** a 4. lecke (j vagy ly), PR #1, `25ed352`. **Kész, PR-ra vár** (`claude/dreamy-hopper-52jouj`, a `main`-ről újraindítva):
 az 5. lecke (`helyesiras-hasonulasok.html`), 4 új tollbamondás (`H.TEXTS.hason` h1–h3, `vegyes` v5; összesen 20), új hibatípus

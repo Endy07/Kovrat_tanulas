@@ -32,12 +32,12 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 3 | **Mássalhangzók hossza** | 7., 9., 36–38., 46., 59., 87., 92–93. | Itt, akkor, lesz, kisebb: chatben is sokat tévesztett szavak; a hosszú többjegyű betű az 1. leckére épül. | ✅ kész |
 | 4 | **j vagy ly** | 88., 55–57., 92–93. | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | ✅ kész, élesben (2026. 11. 01.) |
 | 5 | **Kiejtés és szóelemzés: hasonulások** | 41., 48–60., 82–83., 90. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | ✅ kész (2026. 11. 01.) |
-| 6 | **Igék: felszólító mód és tárgyas ragozás** | 42–43., 54–57., 80–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | tervezett |
+| 6 | **Igék: felszólító mód és tárgyas ragozás** | 38., 42–44., 55–57., 76–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | ✅ kész (2026. 11. 01.) |
 | 7 | **Egybe- és különírás** | 99–138. (válogatva) | **Igekötők külön résszel (Endi kérése, 2026. 11. 01.):** mikor egybe (megcsinálom, elmegyek), mikor külön (meg is csinálom, nem csinálom meg, meg fogom csinálni), és az ige elé tapadó, de nem elváló esetek. Utána összetett szavak, jelentésváltozás, számok (kétezerig egybe). Chatben valószínűleg ez a sok hiba. ⚠️ | tervezett |
 | 8 | **Nagy kezdőbetű és tulajdonnevek** | 139–205. (válogatva) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
 | 9 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
 | 10 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 5 × 3 + 5 vegyes = 20 |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 6 × 3 + 6 vegyes = 24 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -95,6 +95,17 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
   Tollbamondás: h1–h3 és a vegyes v5.
 - Új hibatípus a tollbamondásban: **Hasonulás (szóelemzés)** (`H.classify` → `hason`), a többi típus után nézzük, így a régi
   besorolások nem változtak (minden régi ellenőrzés átment).
+
+## A 6. lecke (felszólító mód), 2026. 11. 01.
+
+- ✅ A pontok a szabályzat 36–46. és 76–82. pontjának listájából: 38. (-d, -dd: írd, nézd; edd, idd) · 42. (a felszólító mód jele:
+  -j, -jj a jön-nél, a tő végi mássalhangzóval azonos hang; eszik… -gy; hisz: ggy) · 43. (tárgyas: mossuk, nézzük) · 44. (kettős alakok:
+  dobj – dobjál, írd – írjad) · 76. (mássalhangzó vagy hosszú magánhangzó + t: ts — tanítson, fűts) · 77. (rövid magánhangzó + t, lát,
+  bocsát: ss — kössétek, lássuk) · 78. (st, szt: a t nélküli tőből — fessen, válasszon) · 79–80. (s, sz, z, dz) · 81. (lesz, tesz, vesz,
+  visz, eszik, iszik: gy).
+- Gyakorlótípusok: Felszólító alak · Tárgyas: -juk vagy -suk? · Kijelentő vagy felszólító? (tanítjuk ↔ tanítsuk, mondatban) · Melyik a jó? ·
+  Hibás szó. Tollbamondás: f1–f3 és a vegyes v6. Új hibatípus: **Felszólító mód (ige)** (futsatok ~ fussatok, választsunk ~ válasszunk).
+- ⚠️ A „Kijelentő vagy felszólító?” típusban mindkét gomb létező szó: ez szándékos, a mondat dönt.
 
 ## Ellenőrzés
 
