@@ -1,0 +1,244 @@
+<!--@HEAD-->
+<title>Igekötők: egybe vagy külön</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.mv{display:flex;flex-wrap:wrap;gap:8px}
+.mv button{background:#151B23;border:1.5px solid #3A4656;border-radius:12px;color:#DCE3EC;padding:8px 12px;font-family:var(--body);font-weight:700;font-size:1rem}
+.mv button[aria-pressed="true"]{border-color:#FFB01F;color:#FFB01F}
+.mvs{font-family:var(--body);font-weight:700;font-size:clamp(1.3rem,6vw,1.9rem);color:#fff;overflow-wrap:anywhere;min-height:1.6em}
+.mvs u{color:#FFB01F;text-decoration-thickness:3px;text-underline-offset:6px}
+.mvr{display:inline-block;font-family:var(--mono);font-size:.85rem;border-radius:8px;padding:2px 8px;background:#2A3442;color:#9CC2FF}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 7. lecke</span>
+  <h1>Igekötők: egybe vagy külön?</h1>
+  <p class="lead"><b>Megcsinálom</b>, de <b>nem csinálom meg</b>. <b>Meg is csinálom</b>, <b>meg fogom csinálni</b>, és néha <b>meg-megcsinálom</b>. Az igekötő (meg, el, ki, be, le, fel, vissza, össze…) vándorol a mondatban, és a helye dönti el, hogyan írjuk.</p>
+  <div class="panel">
+    <span class="eyebrow">Az igekötő vándorol: kattints egy mondatra</span>
+    <div class="mv" id="mv"></div>
+    <div class="mvs" id="mvs" aria-live="polite"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem" id="mvn"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Hol áll az igekötő?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="elotte" aria-selected="true">megcsinálom</button>
+    <button class="tab" data-m="kozte" aria-selected="false">meg is csinálom</button>
+    <button class="tab" data-m="ismetelt" aria-selected="false">meg-megáll</button>
+    <button class="tab" data-m="abba" aria-selected="false">abbahagy, abba tette</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. az ige előtt egybe, az ige után külön (megcsinálom, csináld meg) · 2. ha szó van közte, külön (meg is, meg fogom, meg kell); az ismételt igekötő (meg-megáll) · 3. igekötő vagy határozószó (abbahagyta, abba tette), és a nem (nem tudom, nemsokára, nemcsak). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj az igekötőkre: hazaértem, nem írtam meg, meg kell írnom, be is fejeztem, vissza-visszajött, el is ment, meg-megálltunk.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Közvetlenül az ige előtt</span><span>Egybe: megcsinálom, elmegyek, visszaadtam, összeszedtük, kikapcsolta</span></div>
+    <div class="trick"><span class="t">Az ige után</span><span>Külön: csináld meg, nem csinálom meg, ülj le, kapcsold ki</span></div>
+    <div class="trick"><span class="t">Szó van közte</span><span>Külön: meg is csinálom, meg fogom csinálni, meg kell írni, el ne késs, be sem fejeztem</span></div>
+    <div class="trick"><span class="t">Kétszer egymás után</span><span>Kötőjel, és egybe az igével: meg-megáll, ki-kinéz, vissza-visszatér</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 120. pont a)–e) (az igekötők írása, az igekötők listája, az ismételt igekötő, igekötő vagy határozószó) · a nem tudom, nemsokára, nemrég, nemcsak alakok: helyesírási szótár, helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: az igekötő vándorol (AkH 120.) ---------- */
+  const u = s => esc(s).replace(/\[([^\]]+)\]/g, "<u>$1</u>");
+  const MV = [
+    ["Megcsinálom.", "[Meg]csinálom.", "a) közvetlenül az ige előtt: egybe"],
+    ["Csináld meg!", "Csináld [meg]!", "b) az ige után: külön"],
+    ["Nem csinálom meg.", "Nem csinálom [meg].", "b) a nem miatt az ige után került: külön"],
+    ["Meg is csinálom.", "[Meg] is csinálom.", "c) szó van közte (is): külön"],
+    ["Meg fogom csinálni.", "[Meg] fogom csinálni.", "c) szó van közte (fogom): külön"],
+    ["Meg kell csinálni.", "[Meg] kell csinálni.", "c) szó van közte (kell): külön"],
+    ["Meg-megcsinálja.", "[Meg-meg]csinálja.", "d) kétszer: kötőjel, és egybe az igével"]
+  ];
+  let mk = 0;
+  function drawMv(){
+    $("#mv").innerHTML = MV.map((m, k) => '<button data-k="' + k + '" aria-pressed="' + (k === mk) + '">' + esc(m[0]) + "</button>").join("");
+    $("#mvs").innerHTML = u(MV[mk][1]);
+    $("#mvn").innerHTML = '<span class="mvr">' + esc(MV[mk][2]) + "</span>";
+  }
+  $("#mv").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; mk = Number(b.dataset.k); drawMv(); if (K.tts.on && K.tts.ok) K.tts.say(MV[mk][0]); });
+  drawMv();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    elotte: () => [
+      { cap: "Megcsinálom. A meg igekötő: az ige elé kerül, és megváltoztatja a jelentését.", html: W("<u>meg</u> + csinálom") },
+      { cap: "Ha közvetlenül az ige előtt áll, egybeírjuk: megcsinálom, elmegyek, visszaadtam.", html: W("<u>meg</u>csinálom · <u>el</u>megyek · <u>vissza</u>adtam", "a) közvetlenül előtte: egybe") },
+      { cap: "Ha az ige után áll, külön írjuk: csináld meg, ülj le, kapcsold ki.", html: W("csináld <u>meg</u> · ülj <u>le</u> · kapcsold <u>ki</u>", "b) utána: külön") },
+      { cap: "A nem az igekötőt az ige mögé tolja: nem csinálom meg, nem megyek el.", html: W("nem csinálom <u>meg</u> · nem megyek <u>el</u>") }
+    ],
+    kozte: () => [
+      { cap: "Meg is csinálom. Az igekötő az ige előtt van, de nem közvetlenül: közte áll az is.", html: W("<u>meg</u> is csinálom") },
+      { cap: "Ha szó áll közte, az igekötő külön szó marad.", html: W("<u>meg</u> is · <u>el</u> ne késs · <u>be</u> sem fejeztem", "c) szó van közte: külön") },
+      { cap: "A fog és a kell is ilyen: meg fogom írni, meg kell írni. A megfogom egészen mást jelent: kézzel megfogok valamit.", html: W("<u>meg</u> fogom írni · <u>meg</u> kell írni", "nem: megfogom írni") },
+      { cap: "De ha az igekötő a főnévi igenév előtt áll, ahhoz tapad: fogom elfelejteni, kell megírni.", html: W("fogom <u>el</u>felejteni · nem kell <u>meg</u>írni") }
+    ],
+    ismetelt: () => [
+      { cap: "Meg-megáll. Ha az igekötőt kétszer mondjuk, az ismétlést jelent: többször, néha.", html: W("<u>meg-meg</u>áll") },
+      { cap: "A két igekötő közé kötőjel kerül, és az egészet egybeírjuk az igével.", html: W("ki-kinéz · le-leereszt · vissza-visszatér", "d) ismételt igekötő") },
+      { cap: "Nem jó: megmegáll, vagy meg megáll.", html: W("<s>megmegáll</s> · <s>meg megáll</s> → meg-megáll") }
+    ],
+    abba: () => [
+      { cap: "Abbahagyta a sírást. Itt az abba igekötő: abbahagy, azt jelenti, befejez.", html: W("<u>abba</u>hagyta", "igekötő: egybe") },
+      { cap: "Abba tette, amelyikben eredetileg volt. Itt az abba helyet mutat: abba a dobozba. Ez határozószó, külön írjuk.", html: W("<u>abba</u> tette", "határozószó: külön") },
+      { cap: "Ugyanígy: idejött hozzám, de: nem a szomszédba, hanem ide jött.", html: W("<u>ide</u>jött hozzám · nem oda, hanem <u>ide</u> jött") },
+      { cap: "Fennmaradt a neve: igekötő. Fenn maradt a padláson: helyet mutat, külön.", html: W("<u>fenn</u>maradt (a neve) · <u>fenn</u> maradt (a padláson)") }
+    ]
+  };
+  const MET = { elotte: "megcsinálom", kozte: "meg is csinálom", ismetelt: "meg-megáll", abba: "abbahagy, abba tette" };
+  const PB = { m: "elotte" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi az igekötő?", h:
+      "<p>Az igekötő az ige elé kerülő kis szó, amely megváltoztatja az ige jelentését: <b>megy → elmegy, bemegy, kimegy, visszamegy</b>.</p>" +
+      "<p>A leggyakoribbak: <b>meg, el, ki, be, le, fel (föl), át, rá, vissza, össze, haza, oda, ide, szét, végig, abba, újra, tönkre</b>.</p>" +
+      "<div class='note'><b>A lecke kérdése:</b> hol áll az igekötő? Közvetlenül az ige előtt, utána, vagy szó van köztük?</div>" },
+    { k: "a) Előtte", t: "Közvetlenül az ige előtt: egybe", h:
+      "<p class='eq'>megcsinálom · elmegyek · visszaadtam · összeszedtük · kikapcsolta · lefeküdtem · felírta · átugrotta</p>" +
+      "<p>Az igenévvel is: <b>megírni</b>, <b>eldobott</b> (labda), <b>kikapcsolva</b>. És a belőle képzett főnév is egybe: <b>megoldás, bejárat</b>.</p>" + playBtn("elotte"), init: playInit },
+    { k: "b) Utána", t: "Az ige után: külön", h:
+      "<p class='eq'>csináld meg · ülj le · kapcsold ki · gyere be · nem csinálom meg · nem megyek el · most ültünk le</p>" +
+      "<p>Felszólításnál és tagadásnál (nem) az igekötő gyakran az ige mögé kerül. Ilyenkor <b>külön</b> szó.</p>" +
+      "<div class='mistake'><b>csináldmeg, üljle, nemtudom</b> → csináld meg, ülj le, nem tudom.</div>" },
+    { k: "c) Közte", t: "Ha szó áll az igekötő és az ige között: külön", h:
+      tbl(["közte álló szó", "példa"], [["is, sem", "<b>meg is</b> csinálom · <b>be sem</b> fejeztem"], ["ne, nem", "<b>el ne</b> késs · <b>le nem</b> tenné"], ["fog", "<b>meg fogom</b> írni"], ["kell, lehet, szabad", "<b>meg kell</b> írni · <b>haza lehet</b> menni"]]) +
+      "<div class='mistake'><b>megfogom írni</b> → meg fogom írni. A megfogom mást jelent: kézzel megfogok valamit.</div>" + playBtn("kozte"), init: playInit },
+    { k: "Az igenévhez", t: "Néha az igenévhez tapad", h:
+      "<p>Ha az igekötő a főnévi igenév (-ni) <b>közvetlenül előtt</b> áll, ahhoz írjuk egybe:</p>" +
+      "<p class='eq'>nem fogom elfelejteni · nem kell megírni · szeretném bekapcsolni · el akarok menni</p>" +
+      "<p>A szabály ugyanaz: az számít, mi áll <b>közvetlenül</b> az igekötő után.</p>" },
+    { k: "d) Kétszer", t: "Ismételt igekötő: kötőjel", h:
+      "<p>Ha az igekötőt megismételjük (többször, néha), a kettő közé kötőjel kerül, és az igével egybeírjuk:</p>" +
+      "<p class='eq'>meg-megáll · ki-kinéz · le-leereszt · össze-összevesznek · vissza-visszatér</p>" + playBtn("ismetelt"), init: playInit },
+    { k: "e) Vagy határozószó?", t: "Igekötő vagy helyet mutató szó?", h:
+      tbl(["igekötő (egybe)", "határozószó (külön)"], [["abbahagyta (a sírást)", "abba tette (amiben volt)"], ["idejött hozzám", "nem oda, hanem ide jött"], ["fennmaradt (a neve)", "fenn maradt (a padláson)"], ["félreállt (tapintatból)", "nem középre, hanem félre állt"]]) +
+      "<p>Ha a szó <b>helyet mutat</b>, és azt emeljük ki, külön írjuk. Ha az igével együtt új jelentése van, egybe.</p>" + playBtn("abba"), init: playInit },
+    { k: "A nem", t: "A nem: többnyire külön", h:
+      "<p>A <b>nem</b> az ige előtt külön szó: <b>nem tudom, nem megyek, nem szeretem</b>.</p>" +
+      "<p>Néhány szót viszont egybeírunk vele, ezeket meg kell tanulni: <b>nemsokára, nemrég, nemcsak (… hanem … is), nemhogy</b>.</p>" +
+      "<div class='mistake'><b>nemtudom</b> → nem tudom. <b>nem sokára</b> → nemsokára.</div>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>meg csinálom, el ment, vissza adtam</b> → megcsinálom, elment, visszaadtam.</div>" +
+      "<div class='mistake'><b>csináldmeg, kapcsoldki</b> → csináld meg, kapcsold ki.</div>" +
+      "<div class='mistake'><b>megfogom írni, megkell írni</b> → meg fogom írni, meg kell írni.</div>" +
+      "<div class='mistake'><b>megis csinálom</b> → meg is csinálom.</div>" +
+      "<div class='mistake'><b>megmegállt, meg megállt</b> → meg-megállt.</div>" +
+      "<div class='mistake'><b>nemtudom</b> → nem tudom.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mi jön utána?</span><span>Ha közvetlenül az ige: egybe. Ha bármi más (is, fog, kell, ne): külön.</span></div>" +
+      "<div class='trick'><span class='t'>Előtte vagy mögötte?</span><span>Ha az igekötő az ige mögött áll, mindig külön: csináld meg.</span></div>" +
+      "<div class='trick'><span class='t'>megfogom ≠ meg fogom</span><span>Ha jövő időt mondasz (fogom csinálni), a meg külön.</span></div>" +
+      "<div class='trick'><span class='t'>Kétszer?</span><span>Kötőjel, és tapad az igéhez: ki-kinéz.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const S = [
+    [["Holnap {megcsinálom|meg csinálom} a házi feladatot.", "a) Közvetlenül az ige előtt: egybe."], ["{Csináld meg|Csináldmeg} most, ne holnap!", "b) Az ige után: külön."],
+     ["A busz már {elment|el ment}, mire kiértünk.", "a) Közvetlenül az ige előtt: egybe."], ["Peti {bekapcsolta|be kapcsolta} a gépet.", "a) Egybe."],
+     ["{Kapcsold ki|Kapcsoldki} a telefont!", "b) Az ige után: külön."], ["A kutya {átugrotta|át ugrotta} a kerítést.", "a) Egybe."],
+     ["{Visszaadtam|Vissza adtam} a könyvet a könyvtárba.", "a) Egybe."], ["A tanár {felírta|fel írta} a táblára a feladatot.", "a) Egybe."],
+     ["{Összeszedtük|Össze szedtük} a szemetet az udvaron.", "a) Egybe."], ["Este korán {lefeküdtem|le feküdtem}.", "a) Egybe."],
+     ["{Ülj le|Üljle}, kérlek!", "b) Az ige után: külön."], ["Ma nem {csinálom meg|csinálommeg} a leckét.", "b) A nem miatt az ige után áll: külön."]],
+    [["Ezt {meg is csinálom|megis csinálom}, ha segítesz.", "c) Az is közte áll: külön."], ["Holnap {meg fogom írni|megfogom írni} a levelet.", "c) A fogom közte áll: külön. A megfogom mást jelent."],
+     ["A dolgozatot {meg kell írni|megkell írni} péntekig.", "c) A kell közte áll: külön."], ["{El ne késs|Elne késs} a vonatról!", "c) A ne közte áll: külön."],
+     ["Ezt soha nem {fogom elfelejteni|fogom el felejteni}.", "Az el közvetlenül a felejteni előtt áll: egybe."], ["Óra után {haza lehet menni|hazalehet menni}.", "c) A lehet közte áll: külön."],
+     ["A leckét még {be sem fejeztem|besem fejeztem}.", "c) A sem közte áll: külön."], ["A macska {ki-kinézett|kikinézett} az ablakon.", "d) Ismételt igekötő: kötőjel."],
+     ["A busz {meg-megállt|megmegállt} a dombon.", "d) Ismételt igekötő: kötőjel."], ["A kiskutya {vissza-visszanézett|vissza visszanézett} ránk.", "d) Ismételt igekötő: kötőjel, egybe az igével."]],
+    [["Végre {abbahagyta|abba hagyta} a kiabálást.", "e) Itt az abba igekötő (abbahagy = befejez): egybe."], ["Melyik fiókba tette? {Abba tette|Abbatette}, amelyik nyitva volt.", "e) Itt az abba helyet mutat: külön."],
+     ["{Idejött|Ide jött} hozzám, és megölelt.", "e) Igekötő: idejött."], ["Nem a szomszédba ment, hanem {ide jött|idejött}.", "e) A hely a fontos (nem oda, hanem ide): külön."],
+     ["A neve {fennmaradt|fenn maradt} a történelemben.", "e) Igekötő: fennmaradt."], ["A labda {fenn maradt|fennmaradt} a tetőn.", "e) Helyet mutat: fenn maradt."],
+     ["{Nem tudom|Nemtudom}, hol hagytam a kulcsomat.", "A nem az ige előtt külön."], ["{Nemsokára|Nem sokára} kezdődik a film.", "A nemsokára egy szó."],
+     ["{Nemrég|Nem rég} költöztünk ide.", "A nemrég egy szó."], ["{Nemcsak|Nem csak} focizni szeret, hanem úszni is.", "A nemcsak … hanem … is: egybe."],
+     ["Tapintatból {félreállt|félre állt} az útból.", "e) Igekötő: félreállt."]]
+  ];
+  const C = [   // [leírás, jó, [rossz], magyarázat]
+    [["meg + csinálom (az ige előtt)", "megcsinálom", ["meg csinálom", "meg-csinálom"], "a) Közvetlenül az ige előtt: egybe."], ["el + megyek", "elmegyek", ["el megyek", "el-megyek"], "a) Egybe."],
+     ["csináld + meg (az ige után)", "csináld meg", ["csináldmeg", "csináld-meg"], "b) Az ige után: külön."], ["vissza + adom", "visszaadom", ["vissza adom", "vissza-adom"], "a) Egybe."],
+     ["ülj + le", "ülj le", ["üljle", "ülj-le"], "b) Az ige után: külön."], ["össze + szedtük", "összeszedtük", ["össze szedtük", "össze-szedtük"], "a) Egybe."],
+     ["ki + kapcsolta", "kikapcsolta", ["ki kapcsolta", "ki-kapcsolta"], "a) Egybe."], ["kapcsold + ki", "kapcsold ki", ["kapcsoldki", "kapcsold-ki"], "b) Külön."],
+     ["fel + írta", "felírta", ["fel írta", "fel-írta"], "a) Egybe."], ["gyere + be", "gyere be", ["gyerebe", "gyere-be"], "b) Külön."]],
+    [["meg + is + csinálom", "meg is csinálom", ["megis csinálom", "meg iscsinálom"], "c) Az is közte áll: külön."], ["meg + fogom + írni", "meg fogom írni", ["megfogom írni", "meg fogomírni"], "c) A fogom közte áll: külön."],
+     ["meg + kell + írni", "meg kell írni", ["megkell írni", "meg kellírni"], "c) A kell közte áll: külön."], ["el + ne + késs", "el ne késs", ["elne késs", "el nekéss"], "c) A ne közte áll: külön."],
+     ["be + sem + fejeztem", "be sem fejeztem", ["besem fejeztem", "be semfejeztem"], "c) A sem közte áll: külön."], ["fogom + el + felejteni", "fogom elfelejteni", ["fogom el felejteni", "fogomel felejteni"], "Az el a felejteni előtt áll: egybe vele."],
+     ["ki + ki + nézett (ismételve)", "ki-kinézett", ["kikinézett", "ki kinézett"], "d) Ismételt igekötő: kötőjel, egybe az igével."], ["meg + meg + állt (ismételve)", "meg-megállt", ["megmegállt", "meg megállt"], "d) Kötőjel."],
+     ["vissza + vissza + tér (ismételve)", "vissza-visszatér", ["visszavisszatér", "vissza visszatér"], "d) Kötőjel."], ["össze + össze + vesznek (ismételve)", "össze-összevesznek", ["összeösszevesznek", "össze összevesznek"], "d) Kötőjel."]],
+    [["abba + hagyta (a sírást)", "abbahagyta", ["abba hagyta", "abba-hagyta"], "e) Igekötő (abbahagy = befejez): egybe."], ["abba + tette (abba, amelyikben volt)", "abba tette", ["abbatette", "abba-tette"], "e) Helyet mutat: külön."],
+     ["ide + jött (hozzám)", "idejött", ["ide-jött", "ide jöt"], "e) Igekötő: idejött hozzám."], ["fenn + maradt (a neve)", "fennmaradt", ["fenn-maradt", "fen maradt"], "e) Igekötő: fennmaradt."],
+     ["nem + tudom", "nem tudom", ["nemtudom", "nem-tudom"], "A nem az ige előtt külön."], ["nem + sokára", "nemsokára", ["nem sokára", "nem-sokára"], "Egy szó: nemsokára."],
+     ["nem + rég", "nemrég", ["nem rég", "nem-rég"], "Egy szó: nemrég."], ["nem + csak (… hanem … is)", "nemcsak", ["nem csak", "nem-csak"], "Egy szó: nemcsak."]]
+  ];
+  C.push(C[2].concat(C[0].slice(0, 4), C[1].slice(0, 4)));
+  C.splice(2, 1);
+  const types = [
+    { id: "egybe", name: "Egybe vagy külön?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "rakd", name: "Hogyan írjuk?", gen(l){
+      const t = pick(C[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "mondat", name: "Melyik mondat a jó?", gen(l){
+      const it = pick(S[l - 1]), P = H.sentParse(it[0]), good = P.pre + P.good + P.post, bad = P.pre + pick(P.bad) + P.post;
+      return H.choiceTask("Melyik mondat helyes?", good, [bad], "<p class='sent'>" + esc(P.pre) + "<b>" + esc(P.good) + "</b>" + esc(P.post) + "</p><p>" + it[1] + "</p>", "Nem ez. " + it[1]);
+    } },
+    { id: "hibas", name: "Hibás rész a mondatban", gen: l => H.sentFix(pick(S[l - 1])) }
+  ];
+  K.practice($("#practice"), { id: "h-igek", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.igek, player: pb, print: "tollbamondasok.html#igek" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Hol áll az igekötő?</th><th>Példa</th></tr>" + [
+    ["a) közvetlenül az ige előtt: egybe", "megcsinálom, elmegyek, visszaadtam"], ["b) az ige után: külön", "csináld meg, ülj le, nem csinálom meg"],
+    ["c) szó van közte: külön", "meg is csinálom, meg fogom írni, meg kell írni, el ne késs"], ["… az igenév előtt: ahhoz egybe", "nem fogom elfelejteni, nem kell megírni"],
+    ["d) kétszer: kötőjel, egybe az igével", "meg-megáll, ki-kinéz, vissza-visszatér"], ["e) helyet mutat: külön", "abba tette, ide jött (nem oda), fenn maradt (a padláson)"],
+    ["… igekötő: egybe", "abbahagyta, idejött hozzám, fennmaradt a neve"], ["nem + ige: külön", "nem tudom, nem megyek"],
+    ["meg kell tanulni: egybe", "nemsokára, nemrég, nemcsak, nemhogy"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

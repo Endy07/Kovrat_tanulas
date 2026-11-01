@@ -61,10 +61,11 @@
   const { $, $$, esc } = K;
   const FOCUS = { betuk: "Többjegyű betűk (cs, gy, ny, sz, zs, dz, dzs), hosszú kettős betűk (ssz, ggy, lly).", maganhangzok: "-ból, -ről, -tól (hosszú) · -ul, -ül, -szor, -kor, -ig (rövid) · -ít (hosszú) · rövidülő tövek.",
     massalhangzok: "Múlt idő (-tt, -t), középfok (-bb), névutók (alatt, előtt), hosszú többjegyű betűk, kettőzött szavak (itt, akkor, éppen).",
-    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–6. lecke szabályai vegyesen.",
+    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–7. lecke szabályai vegyesen.",
+    igek: "Igekötők: hazaértem, leültem, nem írtam meg, meg kell írnom, be is fejeztem, vissza-visszajött, el is ment, meg-megálltunk, nemsokára.",
     felsz: "Felszólító mód: fussatok, siessen, válasszunk, játsszunk, süssön, tegyünk, felejtsétek, hívjon · kijelentő: visszük.",
     hason: "Szóelemzés: egészség, község, népdal, színpad, mindnyájan, barátság, egyszer · ebben, akkor, azzal · kézzel, dobozzal, ronggyal." };
-  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html" };
+  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html", igek: "helyesiras-igekotok.html" };
   const keys = Object.keys(H.TEXTS);
   // nyomtatható lista
   $("#all").innerHTML = keys.map(g => '<h2 id="' + g + '">' + esc(H.GROUPS[g]) + "</h2>" +

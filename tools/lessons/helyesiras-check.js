@@ -60,6 +60,16 @@ eq(H.classify("házal", "házzal"), ["kettoz"], "classify házal/házzal");
   .forEach(([t, r]) => eq(H.classify(t, r), ["felsz"], "classify " + t + "/" + r));
 eq(H.classify("játszunk", "játsszunk"), ["kettoz"], "classify játszunk/játsszunk");
 
+// igekötők (7. lecke): AkH 120.
+const sum7 = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
+eq(sum7("Holnap meg csinálom.", "Holnap megcsinálom."), ["egybe:meg csinálom>megcsinálom:egybe"], "align meg csinálom");
+eq(sum7("Csináldmeg most!", "Csináld meg most!"), ["kulon:Csináldmeg>Csináld meg:kulon"], "align csináldmeg");
+eq(sum7("Holnap megfogom írni.", "Holnap meg fogom írni."), ["kulon:megfogom>meg fogom:kulon"], "align megfogom");
+
+eq(sum7("A busz megmegállt.", "A busz meg-megállt."), ["sub:megmegállt>meg-megállt:kotojel"], "align megmegállt");
+eq(sum7("A busz meg megállt.", "A busz meg-megállt."), ["egybe:meg megállt>meg-megállt:egybe+kotojel"], "align meg megállt");
+eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");
