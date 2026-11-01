@@ -34,11 +34,11 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 5 | **Kiejtés és szóelemzés: hasonulások** | 41., 48–60., 82–83., 90. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | ✅ kész (2026. 11. 01.) |
 | 6 | **Igék: felszólító mód és tárgyas ragozás** | 38., 42–44., 55–57., 76–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | ✅ kész (2026. 11. 01.) |
 | 7 | **Igekötők: egybe vagy külön** (Endi kérése, 2026. 11. 01.) | 120. a)–e) | Mikor egybe (megcsinálom, elmegyek), mikor külön (csináld meg, nem csinálom meg, meg is csinálom, meg fogom csinálni), ismételt igekötő (meg-megáll), igekötő vagy határozószó (abbahagyta ↔ abba tette); a nem (nem tudom, nemsokára). Chatben valószínűleg sok a hiba. ⚠️ | ✅ kész (2026. 11. 01.) |
-| 7/b | **Egybe- és különírás: összetett szavak, számok** | 99–138. (válogatva), 291. | Összetett szavak, jelentésváltozás, a 6:3-as szabály, számok (kétezerig egybe, fölötte kötőjellel). A pontokat előbb egyben kérd le. | tervezett |
-| 8 | **Nagy kezdőbetű és tulajdonnevek** | 139–205. (válogatva) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
-| 9 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
-| 10 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 7 × 3 + 7 vegyes = 28 |
+| 8 | **Összetett szavak és számok** | 94–95., 101–113., 116–119., 139., 291. | Jelző + főnév vagy összetétel (gyors írás ↔ gyorsírás), jelöletlen kapcsolat (kéményseprő), névutó (ház mellett ↔ délután), kötőjel (ide-oda, Petőfi-szobor, tv-műsor), anyagnév, számnév + képző, színnév, a 6 szótag szabály, számok (kétezerig egybe, fölötte kötőjel, évszám egybe). | ✅ kész (2026. 11. 01.) |
+| 9 | **Nagy kezdőbetű és tulajdonnevek** | 140–205. (válogatva; a pontszámokat előbb egyben kérd le) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
+| 10 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
+| 11 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 8 × 3 + 8 vegyes = 32 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -119,6 +119,19 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
 - A tollbamondás egybe-/különírás típusai most a leckére mutatnak; új típus: **Kötőjel** (megmegállt ~ meg-megállt).
 - „Nem elváló igekötők” (Endi): úgy értettük, hogy az igekötő írása legyen a téma; az egybeírt (nem elváló) és a külön írt esetek
   egyaránt benne vannak. ⚠️ Ha Endi mást értett rajta, igazítjuk.
+
+## A 8. lecke (összetett szavak és számok), 2026. 11. 01.
+
+- A tervben eredetileg 7/b volt; a folyamatos számozás miatt 8. lett, a nagybetű 9., a vessző 10., a gyakori tévesztések 11.
+- ✅ Pontok a szabályzat 99–140. pontjának listájából: 94–95. (az összetétel, jelentésváltozás: gyors írás ↔ gyorsírás, jelző lámpa ↔
+  jelzőlámpa, sok szög ↔ sokszög) · 101–103. (mellérendelés: süt-főz, ide-oda; ikerszók: irul-pirul ↔ csigabiga) · 105–106. (jelzős,
+  raggal jelölt kapcsolat: külön) · 108. (névutó külön, de délután, hazafelé, földalatti) · 109–110. (jelöletlen: kéményseprő, napsugár,
+  iskolaudvar) · 111. (jelentéstömörítés: bableves, motorcsónak, hófehér) · 112–113. (Petőfi-szobor, tv-műsor) · 116. (anyagnév: aranygyűrű,
+  de bőr pénztárca) · 117. (kétéves, háromlábú) · 119. (színnév: sötétzöld) · 139. (hat szótag fölött, legalább 3 tag: kötőjel) ·
+  291. (kétezer fölött a hármas csoportok közé kötőjel, kivéve az évszámot).
+- A számíró és a „Számok betűvel” feladat ugyanazzal a függvénnyel ír (`num`), a szabályzat példáin ellenőrizve (2001, 47 563);
+  a gombok egyediségét 9000 sorsolás igazolta. A százas helyén nincs 1 (ezeregyszáz ~ ezerszáz kettőssége miatt).
+- ⚠️ A „kettő a szám végén, két a belsejében” a köznyelvi szokás; a szabályzat pontszámát nem kértük le.
 
 ## Ellenőrzés
 

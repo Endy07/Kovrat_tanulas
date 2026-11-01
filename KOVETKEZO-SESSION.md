@@ -1,6 +1,16 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel
+## 🧭 BELÉPÉSI PONT — 2026-11-01 késő éjjel
+
+**A PR #2-ben (beolvasztásra vár):** az 5–8. lecke (hasonulások, felszólító mód, igekötők, **összetett szavak és számok**,
+`helyesiras-osszetett.html`), 16 új tollbamondás (összesen 32). Tesztek: a 8 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 491/491.
+
+**Következő:** a 9. lecke, nagy kezdőbetű és tulajdonnevek (AkH 140–205., válogatva). A pontokat előbb egyben kérd le.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel
 
 **A PR #2-ben (beolvasztásra vár):** az 5. (hasonulások), a 6. (felszólító mód) és a **7. lecke (igekötők,** `helyesiras-igekotok.html`**)**,
 12 új tollbamondás (összesen 28), új hibatípusok: `hason`, `felsz`, `kotojel`. Tesztek: a 7 helyesírás-lecke mind hibátlan,

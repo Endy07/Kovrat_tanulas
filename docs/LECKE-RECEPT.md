@@ -462,3 +462,14 @@ ellenőrzés. Tollbamondás-próba 5 szándékos hibával (haza értem, meg csin
 - **Több szóból álló jó válasz** (csináld meg, meg is csinálom) a `H.sentFix`-ben és a választós gombokon is működik; a tesztelő a
   „Jó válasz” teljes szövegét írja be.
 - **A kötőjel-hiba** (megmegállt) elsőre „Egyéb elírás” volt: a `classify` most a kötőjel nélküli egyezést előbb nézi (`kotojel`).
+
+### A 2026. 11. 01-i 8. helyesírás-lecke (összetett szavak és számok)
+
+Eredmény: `helyesiras-osszetett` 480/480, 11 dia, 14 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a hét korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 491 ellenőrzés. Tollbamondás-próba 5 szándékos hibával
+(labdarúgóbajnokság, dél után, sötét zöld, piros fehér, két gólos): mind az „Egybeírás” vagy a „Kötőjel” csoportba került.
+
+- **Generált feladatnál a gombok egyediségét külön ellenőrizd** (Node-ban, több ezer sorsolással): a kerek ezresnél (kétezer) és a
+  kétezer alatti számnál az egybe-/kötőjeles változat egybeesett volna a jóval. A tesztelő ezt nem veszi észre, mert az első egyező
+  gombot nyomja meg.
+- **A `.nb input` szabály a pipát is elkapta** (széles lett): az azonosítóra (`#nbi`) szűkíts. A tesztelő ezt sem jelzi, csak a kép.
