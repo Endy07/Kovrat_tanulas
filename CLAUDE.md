@@ -273,6 +273,8 @@ Endi: „Mehet, ahogy javaslod.” Ugyanabba a PR #2-be.
   kimondás nélkül), puska; forrás: a 2–10. lecke pontjai, és 38., 248., 263., 278–284. (⚠️ az utóbbiak kivonatból).
 - **Közös modul:** új hibatípus, `szopar` (egyelőre ↔ egyenlőre); új szövegek: `tev` (3) és `v11` — összesen 44.
 - ⚠️ Kovrat chatje nem jött meg, ezért a hibák általánosak. Ha megjön, a hibastatisztika alapján igazítjuk.
+- **Lektori kör (2026-11-01):** három független lektor az 5–11. leckén; a javítások listája `docs/helyesiras-terv.md` végén. A 9. lecke
+  pontszámai az élő szövegen ellenőrizve helyesek.
 
 ## Döntések és indokaik
 

@@ -173,6 +173,29 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
 - Gyakorlótípusok: Melyik a jó? · Hibás szó · Melyik mondat a jó? · Rövidítés, -e. Hero: hibavadász két chatüzenettel.
   Tollbamondás: g1–g3 (írásjel-kimondás nélkül) és a vegyes v11. Új hibatípus: **Összekevert szópár** (egyelőre ↔ egyenlőre).
 
+## Lektori kör az 5–11. leckén (2026. 11. 01.)
+
+Három független lektor (alügynök) nézte át a leckéket és a tollbamondásokat az AkH 12 szövege alapján (a 9–11. lecke lektora a
+helyesiras.mta.hu élő szövegét olvasta). Javítva:
+- **5. lecke:** kiejtésjelölés [készfej] (nem [késfej]), [vísszint], [külömpség] (különb + ség), [baráccságos]; rossz gomb „babbal”
+  (létező szó) → „babaval”; „azzal/avval” mindkettő elfogadva.
+- **6. lecke:** [külgyön]; a „nem lehet hibázni” megjegyzés helyett: olvasunk ↔ olvassunk, játszunk ↔ játsszunk; ts szabály: „de nem s, sz”;
+  két jó gombos mondatok egyértelművé téve (Lássuk csak…; Az edző azt kérte, hogy értsük…); rossz gomb „lessen/lessél, vesszél, lépen”
+  (létező szavak) cserélve; a beírós feladat elfogadja a kettős alakokat (tegyed, írjál, légy…).
+- **7. lecke:** „el akarok menni” rossz példa volt (c eset) → „nem akarok elmenni”; a „megfogom ≠ meg fogom” trükk pontosítva; „A labda nem
+  esett le, hanem fenn maradt”; 107. pont (nemsokára).
+- **8. lecke:** a 2. szint leírása; hadsereg, búbánat: összeforrott összetétel (nem ikerszó); a 6 szótagos szabály egységesen; hazafelé,
+  délután egyértelmű; 102. a), 114. pont.
+- **9. lecke:** Kelet-Európa: világtáj + tulajdonnév; Csendes-óceán: egyik tag sem tulajdonnév; a kivétel-trükk pontosítva; a rendezvény
+  nagybetűs alakja elfogadható, ezért kikerült a feladatokból; „Corvin Mozi” nem rossz gomb többé; „Hogyan írjuk a mondat közepén?”.
+  **A pontszámok helyesek** (a lektor az élő szövegen ellenőrizte), a ⚠️ törölve.
+- **10. lecke:** „válaszd el” (nem választsd); itthagyunk; 254. pont; a választható vesszős mondatok (értelmező, közbevetés) kikerültek
+  a „Tedd ki a vesszőket” feladatból.
+- **11. lecke:** „eggyel: a gy megkettőződik”; a hero-üzenet természetesebb; 38. és 62. pont; ⚠️ törölve.
+- **Tollbamondás:** a levél eleji megszólítás (k2) helyett a mondat végére került (ott nincs választható írásjel); a felszólító mondatok
+  felkiáltójelet kaptak (g1, g3); v11 címe „Telefon a nagymamától”; i1, o3, v5 természetesebb.
+- **Közös modul:** `H.sentParse` a jó alak mellett elfogad szintén helyes alakot is („{Tedd/Tegyed|Ted}”).
+
 ## Ellenőrzés
 
 - `node tools/lessons/helyesiras-check.js` – elválasztás (AkH 226–227. példái), betűszám, ábécérend (AkH 14. táblái),

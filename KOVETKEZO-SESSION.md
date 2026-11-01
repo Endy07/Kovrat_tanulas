@@ -6,11 +6,12 @@
 28 új tollbamondás (összesen 44). **A tervezett 11 leckés helyesírás-sor teljes.** Tesztek: a 11 helyesírás-lecke mind hibátlan,
 `helyesiras-check.js` 627/627.
 
+**Lektori kör kész (2026-11-01):** az 5–11. lecke átnézve és javítva, a 9. lecke pontszámai helyesek.
+
 **Javasolt folytatás:**
-1. Friss szemű lektor az 5–11. leckére (magyar nyelv, AkH-helyesség, két jó gombos feladat) — az 1–3. leckénél bevált.
-2. A 9. lecke pontszámainak újraellenőrzése (két kivonat 10-zel eltért).
-3. Ha megjött Kovrat chatje: hibastatisztika, és a 11. lecke + tollbamondások igazítása.
-4. Python-folytatás (elágazás, ciklus, lista), ha az iskola odaér.
+1. A PR #2 beolvasztása és élő ellenőrzés.
+2. Ha megjött Kovrat chatje: hibastatisztika, és a 11. lecke + tollbamondások igazítása.
+3. Python-folytatás (elágazás, ciklus, lista), ha az iskola odaér.
 
 ---
 

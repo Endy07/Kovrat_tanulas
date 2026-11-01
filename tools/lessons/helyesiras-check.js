@@ -91,6 +91,9 @@ eq(sum7("Almát, és körtét vettem.", "Almát és körtét vettem."), ["ins:,>
 eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom 11");
 eq(H.classify("Egyenlőre", "Egyelőre"), ["szopar"], "classify egyenlőre");
 
+// választható jó alak a mondatos feladatban (lektori javítás)
+{ const P = H.sentParse("{Tedd/Tegyed|Ted} le!"); eq([P.good, P.goods, P.bad], ["Tedd", ["Tedd", "Tegyed"], ["Ted"]], "sentParse alternatíva"); eq(H.sentGood("{Tedd/Tegyed|Ted} le!"), "Tedd le!", "sentGood alternatíva"); }
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");

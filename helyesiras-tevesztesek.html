@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101050552">
+<meta name="kovrat-version" content="20261101050958">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -523,11 +523,12 @@ const H = (function(){
     return { parts, tail: item.slice(last) };
   }
   const gapWord = item => item.replace(/\[([^\]|]+)(\|[^\]]*)?\]/g, "$1");
+  // „{jó|rossz}”; a jó helyén „/” jelöli a szintén elfogadott alakot: „{Tedd/Tegyed|Ted}” (a gomb és a megoldás az elsőt mutatja)
   function sentParse(s){
-    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|");
-    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: alts[0], bad: alts.slice(1) };
+    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|"), goods = alts[0].split("/");
+    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: goods[0], goods, bad: alts.slice(1) };
   }
-  const sentGood = s => s.replace(/\{([^}|]+)[^}]*\}/g, "$1");
+  const sentGood = s => s.replace(/\{([^}|\/]+)[^}]*\}/g, "$1");
   function choiceTask(q, good, others, sol, bad){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
@@ -556,7 +557,7 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good) return { ok: true, msg: "Helyes!" };
+        if (S.goods.includes(t)) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
         if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
@@ -756,7 +757,7 @@ const H = (function(){
         "Hazafelé Annával és Gergővel beszélgettem, mert ők is a mi utcánkban laknak.",
         "Otthon gyorsan lezuhanyoztam, megvacsoráztam, és lefeküdtem aludni." ] },
       { id: "k2", t: "Levél a barátomnak", s: [
-        "Kedves Bence, nagyon örültem a levelednek.",
+        "Nagyon örültem a levelednek, Bence.",
         "Képzeld, a hétvégén meglátogattuk a nagymamámat, aki most is palacsintát sütött.",
         "Ettem túrósat, lekvárosat és kakaósat is.",
         "Jaj, a végén annyit ettem, hogy alig tudtam felállni!",
@@ -774,7 +775,7 @@ const H = (function(){
         "Muszáj lesz korán indulnunk, mert a busz mindig késik.",
         "Egyelőre nem tudom, hány órakor kezdődik a játék.",
         "Mondd meg Petinek is, hogy hadd jöjjön velünk!",
-        "Ha mégsem érsz rá, írj nekem egy üzenetet." ] },
+        "Ha mégsem érsz rá, írj nekem egy üzenetet!" ] },
       { id: "g2", t: "Az edzés", s: [
         "Az edző azt mondta, hogy az egészség a legfontosabb.",
         "Ezért mindig alaposan bemelegítünk, mielőtt játszani kezdünk.",
@@ -783,7 +784,7 @@ const H = (function(){
         "Mindjárt vége az edzésnek, és akkor mehetünk haza." ] },
       { id: "g3", t: "A kirándulásra", s: [
         "A tanárnő megkérdezte, hogy van-e mindenkinél víz.",
-        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit.",
+        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit!",
         "Az út körülbelül tíz kilométer, ezért kényelmes cipőt kell húzni.",
         "Peti helyett ma Anna vezeti a csoportot, mert ő ismeri a legjobban az utat.",
         "Nagyon tetszett a kirándulás, szívesen elmennék újra." ] }
@@ -818,7 +819,7 @@ const H = (function(){
         "A kutya azóta minden reggel hangos ugatással ébreszt mindnyájunkat.",
         "Egyszer kiszökött a kertből, és az utcán szaladgált.",
         "Akkor az egész ház kiabált, mire végre visszajött.",
-        "Most már a kapu mellett egy magasabb kerítés vigyáz rá." ] },
+        "Most már egy magasabb kerítés vigyáz rá, hogy ne szökjön ki." ] },
       { id: "v6", t: "Horgászat", s: [
         "A hétvégén a nagybátyám megtanított minket horgászni.",
         "Azt mondta, hogy üljünk csendben, és figyeljük a vizet.",
@@ -849,7 +850,7 @@ const H = (function(){
         "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
         "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
         "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] },
-      { id: "v11", t: "Levél a nagymamának", s: [
+      { id: "v11", t: "Telefon a nagymamától", s: [
         "Tegnap este felhívott a nagymamám, és megkérdezte, hogyan telt a hetem.",
         "Elmondtam neki, hogy a helyesírási leckéket már majdnem mind megcsináltam.",
         "Nagyon örült, és azt mondta, hogy büszke rám.",
@@ -1042,7 +1043,7 @@ if (typeof module !== "undefined") module.exports = H;
     <div class="trick"><span class="t">Külön, egybe</span><span>nem tudom, meg fogom, jó éjszakát · de: egyáltalán, ugyanaz, nemsokára, délután</span></div>
     <div class="trick"><span class="t">Pár, ami más</span><span>egyelőre (most még) ↔ egyenlőre (egyforma részre) · helyett (más helyett) ↔ helyet (foglal)</span></div>
   </div>
-  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015): a szabályok a 2–10. lecke pontjai szerint (ott a részletes lista); 38. pont (mondd, add, hadd, tedd: -d, -dd), 248. pont (a stb. előtt nincs vessző), 263. pont (az -e kérdőszó kötőjellel), 278–284. pont (rövidítések, mértékegységek) · helyesiras.mta.hu. ⚠️ A 263. és a 278–284. pont számát kivonatból olvastuk ki.</p>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015): a szabályok a 2–10. lecke pontjai szerint (ott a részletes lista); 38. és 62. pont (tedd, edd; mondd, add; a hadd szótári adat), 248. pont (a stb. előtt nincs vessző), 263. pont (az -e kérdőszó kötőjellel), 278–284. pont (rövidítések, mértékegységek) · helyesiras.mta.hu</p>
 </section>
 
 </div>
@@ -1571,7 +1572,7 @@ const K = (function(){
   /* ---------- Hero: hibavadász (két chatüzenet; [szöveg, javított alak vagy null]) ---------- */
   const CHAT = [
     [["Szia!", null], ["Kiváncsi", "Kíváncsi"], ["vagyok,", null], ["holnap", null], ["is", null], ["ugyan az", "ugyanaz"], ["a", null], ["busz", null], ["jön-e.", null],
-     ["Muszály", "Muszáj"], ["lesz", null], ["korán", null], ["kelni,", null], ["mert", null], ["eggyel", null], ["korábban", null], ["indulunk.", null],
+     ["Muszály", "Muszáj"], ["lesz", null], ["korán", null], ["kelni,", null], ["mert", null], ["egy", null], ["busszal", null], ["korábban", null], ["indulunk.", null],
      ["Nemtudom,", "Nem tudom,"], ["mikor", null], ["érünk", null], ["haza,", null], ["de", null], ["majd", null], ["irok!", "írok!"]],
     [["Mond", "Mondd"], ["meg", null], ["Petinek,", null], ["hogy", null], ["had", "hadd"], ["jöjjön", null], ["ő", null], ["is!", null],
      ["Egyenlőre", "Egyelőre"], ["nem", null], ["tudom,", null], ["hány", null], ["órakor", null], ["kezdődik", null], ["a", null], ["meccs,", null],
@@ -1618,7 +1619,7 @@ const K = (function(){
       { cap: "Egyelőre: most még, egyelőre nem tudom. Ez a gyakoribb.", html: W("egyelőre = most még") },
       { cap: "Egyenlőre: egyenlő részekre, egyforma nagyságúra. A tortát egyenlőre vágtuk.", html: W("egyenlőre = egyformára") },
       { cap: "Helyett: más helyett. Peti helyett én megyek. Helyet: hely + et. Foglalj helyet!", html: W("Peti helye<u>tt</u> · foglalj helye<u>t</u>") },
-      { cap: "Eggyel: egy + vel, két g. Eggyel több pontom van.", html: W("e<u>ggy</u>el több", "3. lecke") }
+      { cap: "Eggyel: egy és -vel, a gy megkettőződik: ggy. Eggyel több pontom van.", html: W("e<u>ggy</u>el több", "3. lecke") }
     ],
     e: () => [
       { cap: "Tudod-e? Az -e kérdőszót kötőjellel kapcsoljuk az igéhez.", html: W("tudod<u>-e</u> · jössz<u>-e</u> · kérdezte, hogy jön<u>-e</u>") },
@@ -1659,7 +1660,7 @@ const K = (function(){
       tbl(["jó", "rossz"], [["<b>Mondd</b> meg neki!", "Mond meg"], ["<b>Add</b> ide!", "Ad ide"], ["<b>Hadd</b> menjek!", "Had menjek"], ["<b>Játsszunk!</b>", "Játszunk! (kérésnél)"], ["<b>Lássuk!</b>", "Látsuk"]]) + playBtn("mondd"), init: playInit },
     { k: "Egybe, külön", t: "Egybe vagy külön? (7. és 8. lecke)", h:
       "<p class='src'><a href='helyesiras-igekotok.html'>7. lecke →</a> · <a href='helyesiras-osszetett.html'>8. lecke →</a></p>" +
-      tbl(["külön", "egybe"], [["nem tudom", "nemsokára, nemrég"], ["meg fogom csinálni", "megcsinálom"], ["jó éjszakát, boldog születésnapot", "délután, hazafelé, egyáltalán"], ["ugyan (= mégis)", "ugyanaz, ugyanis"]]) },
+      tbl(["külön", "egybe"], [["nem tudom", "nemsokára, nemrég"], ["meg fogom csinálni", "megcsinálom"], ["jó éjszakát, boldog születésnapot", "délután, hazafelé, egyáltalán"], ["ugyan (Ugyan, hagyd már!)", "ugyanaz, ugyanis"]]) },
     { k: "Szópárok", t: "Két szó, két jelentés", h:
       tbl(["szó", "jelentés", "példa"], [["egyelőre", "most még", "Egyelőre nem tudom."], ["egyenlőre", "egyforma részre", "Egyenlőre vágtuk a tortát."], ["helyett", "más helyett", "Peti helyett én megyek."], ["helyet", "hely + et", "Foglalj helyet!"], ["hadd", "engedd, hogy", "Hadd menjek!"], ["had", "sereg", "a török had"]]) + playBtn("egyelore"), init: playInit },
     { k: "Rövidítés", t: "Rövidítések és mértékegységek", h:

@@ -69,7 +69,7 @@ table.pt td.l{text-align:left}
     <div class="trick"><span class="t">Külön, egybe</span><span>nem tudom, meg fogom, jó éjszakát · de: egyáltalán, ugyanaz, nemsokára, délután</span></div>
     <div class="trick"><span class="t">Pár, ami más</span><span>egyelőre (most még) ↔ egyenlőre (egyforma részre) · helyett (más helyett) ↔ helyet (foglal)</span></div>
   </div>
-  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015): a szabályok a 2–10. lecke pontjai szerint (ott a részletes lista); 38. pont (mondd, add, hadd, tedd: -d, -dd), 248. pont (a stb. előtt nincs vessző), 263. pont (az -e kérdőszó kötőjellel), 278–284. pont (rövidítések, mértékegységek) · helyesiras.mta.hu. ⚠️ A 263. és a 278–284. pont számát kivonatból olvastuk ki.</p>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015): a szabályok a 2–10. lecke pontjai szerint (ott a részletes lista); 38. és 62. pont (tedd, edd; mondd, add; a hadd szótári adat), 248. pont (a stb. előtt nincs vessző), 263. pont (az -e kérdőszó kötőjellel), 278–284. pont (rövidítések, mértékegységek) · helyesiras.mta.hu</p>
 </section>
 
 </div>
@@ -81,7 +81,7 @@ table.pt td.l{text-align:left}
   /* ---------- Hero: hibavadász (két chatüzenet; [szöveg, javított alak vagy null]) ---------- */
   const CHAT = [
     [["Szia!", null], ["Kiváncsi", "Kíváncsi"], ["vagyok,", null], ["holnap", null], ["is", null], ["ugyan az", "ugyanaz"], ["a", null], ["busz", null], ["jön-e.", null],
-     ["Muszály", "Muszáj"], ["lesz", null], ["korán", null], ["kelni,", null], ["mert", null], ["eggyel", null], ["korábban", null], ["indulunk.", null],
+     ["Muszály", "Muszáj"], ["lesz", null], ["korán", null], ["kelni,", null], ["mert", null], ["egy", null], ["busszal", null], ["korábban", null], ["indulunk.", null],
      ["Nemtudom,", "Nem tudom,"], ["mikor", null], ["érünk", null], ["haza,", null], ["de", null], ["majd", null], ["irok!", "írok!"]],
     [["Mond", "Mondd"], ["meg", null], ["Petinek,", null], ["hogy", null], ["had", "hadd"], ["jöjjön", null], ["ő", null], ["is!", null],
      ["Egyenlőre", "Egyelőre"], ["nem", null], ["tudom,", null], ["hány", null], ["órakor", null], ["kezdődik", null], ["a", null], ["meccs,", null],
@@ -128,7 +128,7 @@ table.pt td.l{text-align:left}
       { cap: "Egyelőre: most még, egyelőre nem tudom. Ez a gyakoribb.", html: W("egyelőre = most még") },
       { cap: "Egyenlőre: egyenlő részekre, egyforma nagyságúra. A tortát egyenlőre vágtuk.", html: W("egyenlőre = egyformára") },
       { cap: "Helyett: más helyett. Peti helyett én megyek. Helyet: hely + et. Foglalj helyet!", html: W("Peti helye<u>tt</u> · foglalj helye<u>t</u>") },
-      { cap: "Eggyel: egy + vel, két g. Eggyel több pontom van.", html: W("e<u>ggy</u>el több", "3. lecke") }
+      { cap: "Eggyel: egy és -vel, a gy megkettőződik: ggy. Eggyel több pontom van.", html: W("e<u>ggy</u>el több", "3. lecke") }
     ],
     e: () => [
       { cap: "Tudod-e? Az -e kérdőszót kötőjellel kapcsoljuk az igéhez.", html: W("tudod<u>-e</u> · jössz<u>-e</u> · kérdezte, hogy jön<u>-e</u>") },
@@ -169,7 +169,7 @@ table.pt td.l{text-align:left}
       tbl(["jó", "rossz"], [["<b>Mondd</b> meg neki!", "Mond meg"], ["<b>Add</b> ide!", "Ad ide"], ["<b>Hadd</b> menjek!", "Had menjek"], ["<b>Játsszunk!</b>", "Játszunk! (kérésnél)"], ["<b>Lássuk!</b>", "Látsuk"]]) + playBtn("mondd"), init: playInit },
     { k: "Egybe, külön", t: "Egybe vagy külön? (7. és 8. lecke)", h:
       "<p class='src'><a href='helyesiras-igekotok.html'>7. lecke →</a> · <a href='helyesiras-osszetett.html'>8. lecke →</a></p>" +
-      tbl(["külön", "egybe"], [["nem tudom", "nemsokára, nemrég"], ["meg fogom csinálni", "megcsinálom"], ["jó éjszakát, boldog születésnapot", "délután, hazafelé, egyáltalán"], ["ugyan (= mégis)", "ugyanaz, ugyanis"]]) },
+      tbl(["külön", "egybe"], [["nem tudom", "nemsokára, nemrég"], ["meg fogom csinálni", "megcsinálom"], ["jó éjszakát, boldog születésnapot", "délután, hazafelé, egyáltalán"], ["ugyan (Ugyan, hagyd már!)", "ugyanaz, ugyanis"]]) },
     { k: "Szópárok", t: "Két szó, két jelentés", h:
       tbl(["szó", "jelentés", "példa"], [["egyelőre", "most még", "Egyelőre nem tudom."], ["egyenlőre", "egyforma részre", "Egyenlőre vágtuk a tortát."], ["helyett", "más helyett", "Peti helyett én megyek."], ["helyet", "hely + et", "Foglalj helyet!"], ["hadd", "engedd, hogy", "Hadd menjek!"], ["had", "sereg", "a török had"]]) + playBtn("egyelore"), init: playInit },
     { k: "Rövidítés", t: "Rövidítések és mértékegységek", h:

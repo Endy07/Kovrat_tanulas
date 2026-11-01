@@ -508,3 +508,14 @@ helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 627
 - **A „Hibás szó” feladat levágja a záró pontot** (`/[.,!?]$/`): ponttal végződő jó választ (pl., kb., stb.) ne tegyél bele.
 - **A dia címébe ne tegyél linket:** a `K.deck` a címet a pont-gomb `aria-label`-jébe is beírja (HTML-lel együtt). A link a dia szövegébe való.
 - **Rövidítést ne tegyél tollbamondásba:** a felolvasó nem „például”-t mond a pl. helyett.
+
+### Lektori kör az 5–11. leckén (2026. 11. 01.)
+
+Három párhuzamos lektor-alügynök (2–3 lecke mindegyiknek, „ne módosíts, csak listát adj”, hibánként: hely · baj · javítás · biztos/bizonytalan).
+Kb. 5 perc alatt végeztek, összesen kb. 40 tétel, ebből a biztosakat és a jól indokolt bizonytalanokat javítottuk. Utána mind a 11 lecke
+újratesztelve (hibátlan), `helyesiras-check.js` 629.
+
+- **Amit a gépi teszt nem lát, a lektor igen:** rossz kiejtésjelölés, rossz gombként létező szó, a kettős alakok (tegyed, avval) el nem
+  fogadása, választható írásjel a tollbamondásban vagy a „Tedd ki” feladatban, és a saját szabályunknak ellentmondó mintamondat.
+- **A Firecrawl-keret egy lektori körre épp elég volt;** a lektorok kifogytak belőle. Legközelebb egy lektor egyszerre kérje le a teljes
+  szükséges pontsort.

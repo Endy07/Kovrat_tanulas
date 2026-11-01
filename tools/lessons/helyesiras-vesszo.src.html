@@ -68,7 +68,7 @@ table.pt td.l{text-align:left}
     <div class="trick"><span class="t">Mindig kell</span><span>de, sőt, hanem előtt · mint (hasonlítás) előtt · vagy…, vagy · sem…, sem · nemcsak…, hanem</span></div>
     <div class="trick"><span class="t">Megszólítás, indulatszó</span><span>Peti, gyere ide! · Gyere ide, Peti! · Most pedig, gyerekek, figyeljetek! · Jaj, elfelejtettem!</span></div>
   </div>
-  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 240–243. pont (az írásjelek, mondatvégi írásjel), 244. pont (vessző a tagmondatok között, az és előtt, mint), 248. pont (felsorolás, de, sőt, páros kötőszók; az és két mondatrész között), 249. pont (értelmező), 250. pont (ahol nem kell: mint tanút), 251–252. pont (közbevetés), 255–256. pont (megszólítás), 261. pont (indulatszó), 262. pont (két kötőszó egymás mellett) · helyesiras.mta.hu</p>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 240–243. pont (az írásjelek, mondatvégi írásjel), 244. pont (vessző a tagmondatok között, az és előtt, mint), 248. pont (felsorolás, de, sőt, páros kötőszók; az és két mondatrész között), 249. pont (értelmező), 250. pont (ahol nem kell: mint tanút), 251–252. pont (közbevetés), 254–256. pont (megszólítás, levél eleji megszólítás), 261. pont (indulatszó), 262. pont (két kötőszó egymás mellett) · helyesiras.mta.hu</p>
 </section>
 
 </div>
@@ -186,7 +186,7 @@ table.pt td.l{text-align:left}
     { k: "Trükkök", t: "Okosan", h:
       "<div class='two-col'><div class='trick'><span class='t'>Számold az igéket</span><span>Két ige = két tagmondat = vessző a határon.</span></div>" +
       "<div class='trick'><span class='t'>Az és két oldala</span><span>Ige van mindkét oldalon? Vessző. Csak egy-egy szó? Nincs.</span></div>" +
-      "<div class='trick'><span class='t'>Kinek szólsz?</span><span>A nevét vesszővel választsd el: Szia, Peti!</span></div>" +
+      "<div class='trick'><span class='t'>Kinek szólsz?</span><span>A nevét vesszővel válaszd el: Szia, Peti!</span></div>" +
       "<div class='trick'><span class='t'>Olvasd fel</span><span>Ahol a beszédben szünetet tartasz, sokszor vessző kell (de az és előtt figyelj!).</span></div></div>" }
   ];
   K.deck($("#deck"), slides);
@@ -204,7 +204,7 @@ table.pt td.l{text-align:left}
     [["Vettünk almát| körtét és szilvát.", 1, "Felsorolás: vessző (248. a)."], ["Vettünk almát, körtét| és szilvát.", 0, "Felsorolásban az és előtt nincs vessző."],
      ["Szép| de drága cipőt láttam.", 1, "A de előtt mindig vessző (248. c)."], ["Gyors| sőt nagyon gyors volt.", 1, "A sőt előtt vessző."],
      ["Magasabb| mint a bátyja.", 1, "Hasonlítás: a mint előtt vessző (244. c)."], ["Fehér lett| mint a fal.", 1, "Hasonlítás: vessző."],
-     ["Petit| mint csapatkapitányt mindenki tisztelte.", 0, "A mint itt azt jelenti: csapatkapitányként. Nincs vessző (250. b)."], ["Vagy most jössz| vagy itt hagyunk.", 1, "Páros kötőszó: a második elé vessző (248. f)."],
+     ["Petit| mint csapatkapitányt mindenki tisztelte.", 0, "A mint itt azt jelenti: csapatkapitányként. Nincs vessző (250. b)."], ["Vagy most jössz| vagy itthagyunk.", 1, "Páros kötőszó: a második elé vessző (248. f)."],
      ["Sem a tollamat| sem a ceruzámat nem találom.", 1, "Páros kötőszó: vessző."], ["Nemcsak okos| hanem szorgalmas is.", 1, "nemcsak…, hanem: vessző."],
      ["Hol esik| hol süt a nap.", 1, "Páros kötőszó: vessző."], ["A piros| meg a kék ceruzámat keresem.", 0, "Két szó között a meg előtt nincs vessző."]],
     [["Peti| gyere ide!", 1, "Megszólítás: vessző (255)."], ["Gyere ide| Peti!", 1, "Megszólítás a végén: vessző."],
@@ -235,7 +235,9 @@ table.pt td.l{text-align:left}
       return H.choiceTask("Melyik mondat helyes?", fill(t[0], t[1]), [fill(t[0], !t[1])], "<p>" + t[2] + "</p>", "Nem ez. " + t[2]);
     } },
     { id: "tedd", name: "Tedd ki a vesszőket!", gen(l){
-      let t; do { t = pick(V[l - 1]); } while (!fill(t[0], t[1]).includes(","));
+      // a választható vesszős mondatok (értelmező után, közbevetés: AkH 249. b, 251.) itt kimaradnak
+      const OPT = /^(Petit\||Bence\||Anna\|)/;
+      let t; do { t = pick(V[l - 1]); } while (!fill(t[0], t[1]).includes(",") || OPT.test(t[0]));
       const right = fill(t[0], t[1]), bare = right.replace(/,/g, "");
       return { q: "Írd le a mondatot, és tedd ki a vesszőket!<div class='sent'>" + esc(bare) + "</div>", kind: "input", ph: "a mondat vesszőkkel", answer: esc(right),
         sol: "<p>" + t[2] + "</p>",

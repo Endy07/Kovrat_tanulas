@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101050552">
+<meta name="kovrat-version" content="20261101050958">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -519,11 +519,12 @@ const H = (function(){
     return { parts, tail: item.slice(last) };
   }
   const gapWord = item => item.replace(/\[([^\]|]+)(\|[^\]]*)?\]/g, "$1");
+  // „{jó|rossz}”; a jó helyén „/” jelöli a szintén elfogadott alakot: „{Tedd/Tegyed|Ted}” (a gomb és a megoldás az elsőt mutatja)
   function sentParse(s){
-    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|");
-    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: alts[0], bad: alts.slice(1) };
+    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|"), goods = alts[0].split("/");
+    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: goods[0], goods, bad: alts.slice(1) };
   }
-  const sentGood = s => s.replace(/\{([^}|]+)[^}]*\}/g, "$1");
+  const sentGood = s => s.replace(/\{([^}|\/]+)[^}]*\}/g, "$1");
   function choiceTask(q, good, others, sol, bad){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
@@ -552,7 +553,7 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good) return { ok: true, msg: "Helyes!" };
+        if (S.goods.includes(t)) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
         if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
@@ -752,7 +753,7 @@ const H = (function(){
         "Hazafelé Annával és Gergővel beszélgettem, mert ők is a mi utcánkban laknak.",
         "Otthon gyorsan lezuhanyoztam, megvacsoráztam, és lefeküdtem aludni." ] },
       { id: "k2", t: "Levél a barátomnak", s: [
-        "Kedves Bence, nagyon örültem a levelednek.",
+        "Nagyon örültem a levelednek, Bence.",
         "Képzeld, a hétvégén meglátogattuk a nagymamámat, aki most is palacsintát sütött.",
         "Ettem túrósat, lekvárosat és kakaósat is.",
         "Jaj, a végén annyit ettem, hogy alig tudtam felállni!",
@@ -770,7 +771,7 @@ const H = (function(){
         "Muszáj lesz korán indulnunk, mert a busz mindig késik.",
         "Egyelőre nem tudom, hány órakor kezdődik a játék.",
         "Mondd meg Petinek is, hogy hadd jöjjön velünk!",
-        "Ha mégsem érsz rá, írj nekem egy üzenetet." ] },
+        "Ha mégsem érsz rá, írj nekem egy üzenetet!" ] },
       { id: "g2", t: "Az edzés", s: [
         "Az edző azt mondta, hogy az egészség a legfontosabb.",
         "Ezért mindig alaposan bemelegítünk, mielőtt játszani kezdünk.",
@@ -779,7 +780,7 @@ const H = (function(){
         "Mindjárt vége az edzésnek, és akkor mehetünk haza." ] },
       { id: "g3", t: "A kirándulásra", s: [
         "A tanárnő megkérdezte, hogy van-e mindenkinél víz.",
-        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit.",
+        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit!",
         "Az út körülbelül tíz kilométer, ezért kényelmes cipőt kell húzni.",
         "Peti helyett ma Anna vezeti a csoportot, mert ő ismeri a legjobban az utat.",
         "Nagyon tetszett a kirándulás, szívesen elmennék újra." ] }
@@ -814,7 +815,7 @@ const H = (function(){
         "A kutya azóta minden reggel hangos ugatással ébreszt mindnyájunkat.",
         "Egyszer kiszökött a kertből, és az utcán szaladgált.",
         "Akkor az egész ház kiabált, mire végre visszajött.",
-        "Most már a kapu mellett egy magasabb kerítés vigyáz rá." ] },
+        "Most már egy magasabb kerítés vigyáz rá, hogy ne szökjön ki." ] },
       { id: "v6", t: "Horgászat", s: [
         "A hétvégén a nagybátyám megtanított minket horgászni.",
         "Azt mondta, hogy üljünk csendben, és figyeljük a vizet.",
@@ -845,7 +846,7 @@ const H = (function(){
         "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
         "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
         "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] },
-      { id: "v11", t: "Levél a nagymamának", s: [
+      { id: "v11", t: "Telefon a nagymamától", s: [
         "Tegnap este felhívott a nagymamám, és megkérdezte, hogyan telt a hetem.",
         "Elmondtam neki, hogy a helyesírási leckéket már majdnem mind megcsináltam.",
         "Nagyon örült, és azt mondta, hogy büszke rám.",

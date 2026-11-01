@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101050552">
+<meta name="kovrat-version" content="20261101050958">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -514,11 +514,12 @@ const H = (function(){
     return { parts, tail: item.slice(last) };
   }
   const gapWord = item => item.replace(/\[([^\]|]+)(\|[^\]]*)?\]/g, "$1");
+  // „{jó|rossz}”; a jó helyén „/” jelöli a szintén elfogadott alakot: „{Tedd/Tegyed|Ted}” (a gomb és a megoldás az elsőt mutatja)
   function sentParse(s){
-    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|");
-    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: alts[0], bad: alts.slice(1) };
+    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|"), goods = alts[0].split("/");
+    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: goods[0], goods, bad: alts.slice(1) };
   }
-  const sentGood = s => s.replace(/\{([^}|]+)[^}]*\}/g, "$1");
+  const sentGood = s => s.replace(/\{([^}|\/]+)[^}]*\}/g, "$1");
   function choiceTask(q, good, others, sol, bad){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
@@ -547,7 +548,7 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good) return { ok: true, msg: "Helyes!" };
+        if (S.goods.includes(t)) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
         if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
@@ -747,7 +748,7 @@ const H = (function(){
         "Hazafelé Annával és Gergővel beszélgettem, mert ők is a mi utcánkban laknak.",
         "Otthon gyorsan lezuhanyoztam, megvacsoráztam, és lefeküdtem aludni." ] },
       { id: "k2", t: "Levél a barátomnak", s: [
-        "Kedves Bence, nagyon örültem a levelednek.",
+        "Nagyon örültem a levelednek, Bence.",
         "Képzeld, a hétvégén meglátogattuk a nagymamámat, aki most is palacsintát sütött.",
         "Ettem túrósat, lekvárosat és kakaósat is.",
         "Jaj, a végén annyit ettem, hogy alig tudtam felállni!",
@@ -765,7 +766,7 @@ const H = (function(){
         "Muszáj lesz korán indulnunk, mert a busz mindig késik.",
         "Egyelőre nem tudom, hány órakor kezdődik a játék.",
         "Mondd meg Petinek is, hogy hadd jöjjön velünk!",
-        "Ha mégsem érsz rá, írj nekem egy üzenetet." ] },
+        "Ha mégsem érsz rá, írj nekem egy üzenetet!" ] },
       { id: "g2", t: "Az edzés", s: [
         "Az edző azt mondta, hogy az egészség a legfontosabb.",
         "Ezért mindig alaposan bemelegítünk, mielőtt játszani kezdünk.",
@@ -774,7 +775,7 @@ const H = (function(){
         "Mindjárt vége az edzésnek, és akkor mehetünk haza." ] },
       { id: "g3", t: "A kirándulásra", s: [
         "A tanárnő megkérdezte, hogy van-e mindenkinél víz.",
-        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit.",
+        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit!",
         "Az út körülbelül tíz kilométer, ezért kényelmes cipőt kell húzni.",
         "Peti helyett ma Anna vezeti a csoportot, mert ő ismeri a legjobban az utat.",
         "Nagyon tetszett a kirándulás, szívesen elmennék újra." ] }
@@ -809,7 +810,7 @@ const H = (function(){
         "A kutya azóta minden reggel hangos ugatással ébreszt mindnyájunkat.",
         "Egyszer kiszökött a kertből, és az utcán szaladgált.",
         "Akkor az egész ház kiabált, mire végre visszajött.",
-        "Most már a kapu mellett egy magasabb kerítés vigyáz rá." ] },
+        "Most már egy magasabb kerítés vigyáz rá, hogy ne szökjön ki." ] },
       { id: "v6", t: "Horgászat", s: [
         "A hétvégén a nagybátyám megtanított minket horgászni.",
         "Azt mondta, hogy üljünk csendben, és figyeljük a vizet.",
@@ -840,7 +841,7 @@ const H = (function(){
         "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
         "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
         "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] },
-      { id: "v11", t: "Levél a nagymamának", s: [
+      { id: "v11", t: "Telefon a nagymamától", s: [
         "Tegnap este felhívott a nagymamám, és megkérdezte, hogyan telt a hetem.",
         "Elmondtam neki, hogy a helyesírási leckéket már majdnem mind megcsináltam.",
         "Nagyon örült, és azt mondta, hogy büszke rám.",
@@ -1578,7 +1579,7 @@ const K = (function(){
       { cap: "Népdal. Mondd ki gyorsan: nébdal. A p helyett b-t hallunk.", html: W("[né<u>b</u>dal]") },
       { cap: "Miért? A d zöngés hang, és a mellette álló p-t is zöngéssé teszi. Ez a hasonulás.", html: W("p + d → [bd]", "zöngésség szerinti hasonulás") },
       { cap: "De írásban a szó elemeit írjuk: nép és dal. Ezért népdal.", html: W("né<u>p</u> + dal = né<u>p</u>dal") },
-      { cap: "Ugyanígy: ablakban, nem ablagban. Vízszint, nem víszszint. Adhat, nem athat.", html: W("abla<u>k</u>ban · ví<u>z</u>szint · a<u>d</u>hat") },
+      { cap: "Ugyanígy: ablakban, nem ablagban. Vízszint, nem vísszint. Adhat, nem athat.", html: W("abla<u>k</u>ban · ví<u>z</u>szint · a<u>d</u>hat") },
       { cap: "Az n is változik: azonban, különben, színpad. Úgy mondjuk: azomban, külömben, szímpad. Írva n.", html: W("azo<u>n</u>ban · külö<u>n</u>ben · szí<u>n</u>pad", "p, b, m előtt [m]-nek ejtjük") }
     ],
     egeszseg: () => [
@@ -1623,7 +1624,7 @@ const K = (function(){
       "<div class='note'><b>A trükk:</b> bontsd szét a szót. Ha tudod, miből áll, tudod, hogyan kell írni.</div>" },
     { k: "Zöngésség", t: "Zöngés és zöngétlen párok", h:
       "<p>Ezek a hangok párban vannak: <b>b–p, d–t, g–k, v–f, z–sz, zs–s, gy–ty, dz–c, dzs–cs</b>. Ha egy zöngés és egy zöngétlen kerül egymás mellé, az első igazodik a másodikhoz.</p>" +
-      tbl(["így mondjuk", "így írjuk", "mert"], [["[nébdal]", "<b>népdal</b>", "nép + dal"], ["[ablagban]", "<b>ablakban</b>", "ablak + ban"], ["[athat]", "<b>adhat</b>", "ad + hat"], ["[víszszint]", "<b>vízszint</b>", "víz + szint"], ["[zsepkendő]", "<b>zsebkendő</b>", "zseb + kendő"], ["[késfej]", "<b>kézfej</b>", "kéz + fej"]]) + playBtn("nepdal"), init: playInit },
+      tbl(["így mondjuk", "így írjuk", "mert"], [["[nébdal]", "<b>népdal</b>", "nép + dal"], ["[ablagban]", "<b>ablakban</b>", "ablak + ban"], ["[athat]", "<b>adhat</b>", "ad + hat"], ["[vísszint]", "<b>vízszint</b>", "víz + szint"], ["[zsepkendő]", "<b>zsebkendő</b>", "zseb + kendő"], ["[készfej]", "<b>kézfej</b>", "kéz + fej"]]) + playBtn("nepdal"), init: playInit },
     { k: "Az n", t: "Az n hangja: [m] vagy [ny]", h:
       "<p>A p, b, m előtt az n-t [m]-nek mondjuk, a gy, ty, ny előtt [ny]-nek. Írva n marad:</p>" +
       tbl(["így mondjuk", "így írjuk"], [["[azomban]", "<b>azonban</b>"], ["[külömben]", "<b>különben</b>"], ["[szímpad]", "<b>színpad</b>"], ["[szémpor]", "<b>szénpor</b>"], ["[tammenet]", "<b>tanmenet</b>"], ["[önygyújtó]", "<b>öngyújtó</b>"]]) },
@@ -1668,8 +1669,8 @@ const K = (function(){
      A rossz alakok közt nincs létező szó (kétszer átnézve: pl. jégé, vízé, kőé, emberé, szível, dobal, ara, ere kimaradt). */
   const PR = [   // [kiejtés, helyes, [rossz], magyarázat]
     [["[nébdal]", "népdal", ["nébdal"], "nép + dal: a p marad."], ["[ablagban]", "ablakban", ["ablagban"], "ablak + ban: a k marad."], ["[athat]", "adhat", ["athat"], "ad + hat: a d marad."],
-     ["[lögdös]", "lökdös", ["lögdös"], "lök + dös: a k marad."], ["[szíftelen]", "szívtelen", ["szíftelen"], "szív + telen: a v marad."], ["[víszszint]", "vízszint", ["vísszint", "víszint"], "víz + szint: a z marad."],
-     ["[késfej]", "kézfej", ["késfej"], "kéz + fej: a z marad."], ["[zsepkendő]", "zsebkendő", ["zsepkendő"], "zseb + kendő: a b marad."], ["[doptam]", "dobtam", ["doptam"], "dob + tam: a b marad."],
+     ["[lögdös]", "lökdös", ["lögdös"], "lök + dös: a k marad."], ["[szíftelen]", "szívtelen", ["szíftelen"], "szív + telen: a v marad."], ["[vísszint]", "vízszint", ["vísszint", "víszint"], "víz + szint: a z marad."],
+     ["[készfej]", "kézfej", ["készfej"], "kéz + fej: a z marad."], ["[zsepkendő]", "zsebkendő", ["zsepkendő"], "zseb + kendő: a b marad."], ["[doptam]", "dobtam", ["doptam"], "dob + tam: a b marad."],
      ["[azomban]", "azonban", ["azomban"], "azon + ban: az n marad, pedig m-nek ejtjük."], ["[külömben]", "különben", ["külömben"], "külön + ben: az n marad."], ["[szímpad]", "színpad", ["szímpad"], "szín + pad: az n marad."],
      ["[szémpor]", "szénpor", ["szémpor"], "szén + por: az n marad."], ["[tammenet]", "tanmenet", ["tammenet", "tamenet"], "tan + menet: az n marad."]],
     [["[egésség]", "egészség", ["egésség", "egézség"], "egész + ség: az sz is, az s is megmarad."], ["[kösség]", "község", ["kösség", "köszség"], "köz + ség."], ["[áccsap]", "átcsap", ["áccsap", "átcsapp"], "át + csap."],
@@ -1678,9 +1679,9 @@ const K = (function(){
      ["[acc]", "adsz", ["acc", "atsz"], "ad + sz."], ["[minnyájan]", "mindnyájan", ["minnyájan", "mindnyájjan"], "mind + nyájan: a d kiesik a kiejtésből, írva marad."],
      ["[teccik]", "tetszik", ["teccik", "tecik"], "tetszik: a hagyomány szerint, meg kell tanulni."], ["[jáccik]", "játszik", ["jáccik", "jácik"], "játszik: a hagyomány szerint."],
      ["[mingyárt]", "mindjárt", ["mingyárt", "minnyárt"], "mindjárt: a hagyomány szerint."], ["[röktön]", "rögtön", ["röktön"], "rögtön: a hagyomány szerint."]],
-    [["[külömbség]", "különbség", ["külömbség", "külömpség"], "külön + b + ség: az n marad."], ["[egésségügyi]", "egészségügyi", ["egésségügyi", "egészségüggyi"], "egész + ség + ügyi."],
-     ["[barácságos]", "barátságos", ["barácságos", "baráccságos"], "barát + ság + os."], ["[nébdalverseny]", "népdalverseny", ["nébdalverseny", "népdalversenny"], "nép + dal + verseny."],
-     ["[víszszintes]", "vízszintes", ["vísszintes", "víszintes"], "víz + szint + es."], ["[minnyájunkat]", "mindnyájunkat", ["minnyájunkat", "minnyájjunkat"], "mind + nyájunkat."],
+    [["[külömpség]", "különbség", ["külömpség", "külömség"], "különb + ség: az n is, a b is marad."], ["[egésségügyi]", "egészségügyi", ["egésségügyi", "egészségüggyi"], "egész + ség + ügyi."],
+     ["[baráccságos]", "barátságos", ["baráccságos", "barácságos"], "barát + ság + os."], ["[nébdalverseny]", "népdalverseny", ["nébdalverseny", "népdalversenny"], "nép + dal + verseny."],
+     ["[vísszintes]", "vízszintes", ["vísszintes", "víszintes"], "víz + szint + es."], ["[minnyájunkat]", "mindnyájunkat", ["minnyájunkat", "minnyájjunkat"], "mind + nyájunkat."],
      ["[ucca]", "utca", ["ucca", "uca"], "utca: a hagyomány szerint."], ["[maraggyanak]", "maradjanak", ["maraggyanak", "maradjanakk"], "marad + j + anak: a d is, a j is megmarad."],
      ["[láttya]", "látja", ["láttya", "látya"], "lát + ja."], ["[kertye]", "kertje", ["kertye", "kerttye"], "kert + je."]]
   ];
@@ -1697,7 +1698,7 @@ const K = (function(){
   ];
   const VV = [   // [tő, rag, jó, [rossz], magyarázat]
     [["ház", "-val", "házzal", ["házal", "házval"], "Mássalhangzó után a v hasonul: házzal."], ["kéz", "-vel", "kézzel", ["kézel", "kézvel"], "kéz + vel = kézzel."], ["dob", "-val", "dobbal", ["dobval", "dobbval"], "dob + val = dobbal."],
-     ["szén", "-vel", "szénnel", ["szénel", "szénvel"], "szén + vel = szénnel."], ["kanál", "-val", "kanállal", ["kanálal", "kanálval"], "kanál + val = kanállal."], ["baba", "-val", "babával", ["babbal", "babáal"], "Magánhangzó után megmarad a v: babával."],
+     ["szén", "-vel", "szénnel", ["szénel", "szénvel"], "szén + vel = szénnel."], ["kanál", "-val", "kanállal", ["kanálal", "kanálval"], "kanál + val = kanállal."], ["baba", "-val", "babával", ["babaval", "babáal"], "Magánhangzó után megmarad a v: babával."],
      ["hajó", "-val", "hajóval", ["hajóal", "hajóvval"], "Magánhangzó után megmarad a v."], ["kő", "-vé", "kővé", ["kővvé", "kőfé"], "Magánhangzó után a v marad: kővé."], ["víz", "-vé", "vízzé", ["vízvé", "vizzé"], "víz + vé = vízzé."],
      ["jég", "-vé", "jéggé", ["jégvé", "jéggvé"], "jég + vé = jéggé."], ["por", "-vá", "porrá", ["porvá", "porá"], "por + vá = porrá."], ["ember", "-vé", "emberré", ["embervé"], "ember + vé = emberré."]],
     [["busz", "-val", "busszal", ["buszal", "buszval"], "busz + val: hosszú sz, csak az első jegyet kettőzzük: busszal."], ["kulcs", "-val", "kulccsal", ["kulcsal", "kulcsval"], "kulcs + val = kulccsal."],
@@ -1720,7 +1721,7 @@ const K = (function(){
      ["A kirándulás {költsége|kölcsége} ötezer forint.", "költ + ség."], ["{Mindnyájan|Minnyájan} megírtuk a házi feladatot.", "mind + nyájan."]],
     [["{Busszal|Buszal} megyünk az uszodába.", "busz + val = busszal."], ["A levelet {kézzel|kézel} írtam.", "kéz + vel = kézzel."], ["{Ebben|Ezben} a dobozban vannak a játékaim.", "ez + ben = ebben."],
      ["{Akkor|Azkor} indulunk, ha mindenki itt van.", "az + kor = akkor."], ["{Ehhez|Ezhez} a feladathoz számológép kell.", "ez + hez = ehhez."], ["A tó vize télen {jéggé|jégvé} fagyott.", "jég + vé = jéggé."],
-     ["{Azzal|Azal} a busszal megyünk, amelyik előbb jön.", "az + val = azzal."], ["{Akkora|Azkora} zaj volt, hogy semmit sem hallottunk.", "az + kora = akkora."], ["{Abban|Azban} a házban lakik a nagymamám.", "az + ban = abban."],
+     ["{Azzal/Avval|Azal} a busszal megyünk, amelyik előbb jön.", "az + val = azzal (vagy avval)."], ["{Akkora|Azkora} zaj volt, hogy semmit sem hallottunk.", "az + kora = akkora."], ["{Abban|Azban} a házban lakik a nagymamám.", "az + ban = abban."],
      ["A gyerekek {homokkal|homokal} játszottak.", "homok + kal = homokkal."], ["{Efféle|Ezféle} trükköket még nem láttam.", "ez + féle = efféle."], ["A mesében a királyfi {kővé|kővvé} változott.", "Magánhangzó után a v marad: kővé."]]
   ];
   const types = [
