@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101045745">
+<meta name="kovrat-version" content="20261101050552">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -689,7 +689,7 @@ const H = (function(){
         "Délután hazaértem, és rögtön leültem tanulni.",
         "A matekleckét gyorsan megcsináltam, de a fogalmazást nem írtam meg.",
         "Anya azt mondta, hogy vacsora előtt meg kell írnom.",
-        "Leírtam az első mondatot, aztán újra és újra kitöröltem.",
+        "Leírtam az első mondatot, aztán többször is átírtam.",
         "Végül be is fejeztem, és elégedetten kapcsoltam ki a lámpát." ] },
       { id: "i2", t: "Az elveszett kulcs", s: [
         "Reggel nem találtam a kulcsomat, pedig mindent átnéztem.",
@@ -719,8 +719,8 @@ const H = (function(){
         "Késő este mindenki fáradtan, de boldogan ment haza." ] },
       { id: "o3", t: "A városnézés", s: [
         "Az osztályunk szombaton egynapos kiránduláson vett részt Budapesten.",
-        "Délelőtt megnéztük a Petőfi-szobrot és a Parlamentet.",
-        "Ebédre a Duna-parton ettünk egy kis vendéglőben.",
+        "Délelőtt megnéztük a Petőfi-szobrot és az Országházat.",
+        "Egy kis Duna-parti vendéglőben ebédeltünk.",
         "Délután a földalattival utaztunk, ami nagyon tetszett mindenkinek.",
         "Hazafelé a vonaton már mindenki aludt." ] }
     ],
@@ -991,7 +991,7 @@ if (typeof module !== "undefined") module.exports = H;
   <a class="back" href="index.html">← Vissza a leckékhez</a>
   <span class="eyebrow">Magyar helyesírás · 7. lecke</span>
   <h1>Igekötők: egybe vagy külön?</h1>
-  <p class="lead"><b>Megcsinálom</b>, de <b>nem csinálom meg</b>. <b>Meg is csinálom</b>, <b>meg fogom csinálni</b>, és néha <b>meg-megcsinálom</b>. Az igekötő (meg, el, ki, be, le, fel, vissza, össze…) vándorol a mondatban, és a helye dönti el, hogyan írjuk.</p>
+  <p class="lead"><b>Megcsinálom</b>, de <b>nem csinálom meg</b>. <b>Meg is csinálom</b>, <b>meg fogom csinálni</b>, és <b>meg-megcsinálom</b>. Az igekötő (meg, el, ki, be, le, fel, vissza, össze…) vándorol a mondatban, és a helye dönti el, hogyan írjuk.</p>
   <div class="panel">
     <span class="eyebrow">Az igekötő vándorol: kattints egy mondatra</span>
     <div class="mv" id="mv"></div>
@@ -1037,7 +1037,7 @@ if (typeof module !== "undefined") module.exports = H;
     <div class="trick"><span class="t">Szó van közte</span><span>Külön: meg is csinálom, meg fogom csinálni, meg kell írni, el ne késs, be sem fejeztem</span></div>
     <div class="trick"><span class="t">Kétszer egymás után</span><span>Kötőjel, és egybe az igével: meg-megáll, ki-kinéz, vissza-visszatér</span></div>
   </div>
-  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 120. pont a)–e) (az igekötők írása, az igekötők listája, az ismételt igekötő, igekötő vagy határozószó) · a nem tudom, nemsokára, nemrég, nemcsak alakok: helyesírási szótár, helyesiras.mta.hu</p>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 120. pont a)–e) (az igekötők írása, az igekötők listája, az ismételt igekötő, igekötő vagy határozószó), 107. pont (nemsokára) · a nem tudom, nemsokára, nemrég, nemcsak alakok: helyesírási szótár, helyesiras.mta.hu</p>
 </section>
 
 </div>
@@ -1640,7 +1640,7 @@ const K = (function(){
       "<div class='mistake'><b>megfogom írni</b> → meg fogom írni. A megfogom mást jelent: kézzel megfogok valamit.</div>" + playBtn("kozte"), init: playInit },
     { k: "Az igenévhez", t: "Néha az igenévhez tapad", h:
       "<p>Ha az igekötő a főnévi igenév (-ni) <b>közvetlenül előtt</b> áll, ahhoz írjuk egybe:</p>" +
-      "<p class='eq'>nem fogom elfelejteni · nem kell megírni · szeretném bekapcsolni · el akarok menni</p>" +
+      "<p class='eq'>nem fogom elfelejteni · nem kell megírni · szeretném bekapcsolni · nem akarok elmenni</p>" +
       "<p>A szabály ugyanaz: az számít, mi áll <b>közvetlenül</b> az igekötő után.</p>" },
     { k: "d) Kétszer", t: "Ismételt igekötő: kötőjel", h:
       "<p>Ha az igekötőt megismételjük (többször, néha), a kettő közé kötőjel kerül, és az igével egybeírjuk:</p>" +
@@ -1662,7 +1662,7 @@ const K = (function(){
     { k: "Trükkök", t: "Okosan", h:
       "<div class='two-col'><div class='trick'><span class='t'>Mi jön utána?</span><span>Ha közvetlenül az ige: egybe. Ha bármi más (is, fog, kell, ne): külön.</span></div>" +
       "<div class='trick'><span class='t'>Előtte vagy mögötte?</span><span>Ha az igekötő az ige mögött áll, mindig külön: csináld meg.</span></div>" +
-      "<div class='trick'><span class='t'>megfogom ≠ meg fogom</span><span>Ha jövő időt mondasz (fogom csinálni), a meg külön.</span></div>" +
+      "<div class='trick'><span class='t'>megfogom ≠ meg fogom</span><span>Ha a meg a fogom előtt áll: meg fogom csinálni (külön). Ha utána: fogom megcsinálni (egybe).</span></div>" +
       "<div class='trick'><span class='t'>Kétszer?</span><span>Kötőjel, és tapad az igéhez: ki-kinéz.</span></div></div>" }
   ];
   K.deck($("#deck"), slides);
@@ -1682,7 +1682,7 @@ const K = (function(){
      ["A busz {meg-megállt|megmegállt} a dombon.", "d) Ismételt igekötő: kötőjel."], ["A kiskutya {vissza-visszanézett|vissza visszanézett} ránk.", "d) Ismételt igekötő: kötőjel, egybe az igével."]],
     [["Végre {abbahagyta|abba hagyta} a kiabálást.", "e) Itt az abba igekötő (abbahagy = befejez): egybe."], ["Melyik fiókba tette? {Abba tette|Abbatette}, amelyik nyitva volt.", "e) Itt az abba helyet mutat: külön."],
      ["{Idejött|Ide jött} hozzám, és megölelt.", "e) Igekötő: idejött."], ["Nem a szomszédba ment, hanem {ide jött|idejött}.", "e) A hely a fontos (nem oda, hanem ide): külön."],
-     ["A neve {fennmaradt|fenn maradt} a történelemben.", "e) Igekötő: fennmaradt."], ["A labda {fenn maradt|fennmaradt} a tetőn.", "e) Helyet mutat: fenn maradt."],
+     ["A neve {fennmaradt|fenn maradt} a történelemben.", "e) Igekötő: fennmaradt."], ["A labda nem esett le, hanem {fenn maradt|fennmaradt} a tetőn.", "e) A hely a fontos (nem lent, hanem fenn): külön."],
      ["{Nem tudom|Nemtudom}, hol hagytam a kulcsomat.", "A nem az ige előtt külön."], ["{Nemsokára|Nem sokára} kezdődik a film.", "A nemsokára egy szó."],
      ["{Nemrég|Nem rég} költöztünk ide.", "A nemrég egy szó."], ["{Nemcsak|Nem csak} focizni szeret, hanem úszni is.", "A nemcsak … hanem … is: egybe."],
      ["Tapintatból {félreállt|félre állt} az útból.", "e) Igekötő: félreállt."]]
@@ -1699,7 +1699,7 @@ const K = (function(){
      ["ki + ki + nézett (ismételve)", "ki-kinézett", ["kikinézett", "ki kinézett"], "d) Ismételt igekötő: kötőjel, egybe az igével."], ["meg + meg + állt (ismételve)", "meg-megállt", ["megmegállt", "meg megállt"], "d) Kötőjel."],
      ["vissza + vissza + tér (ismételve)", "vissza-visszatér", ["visszavisszatér", "vissza visszatér"], "d) Kötőjel."], ["össze + össze + vesznek (ismételve)", "össze-összevesznek", ["összeösszevesznek", "össze összevesznek"], "d) Kötőjel."]],
     [["abba + hagyta (a sírást)", "abbahagyta", ["abba hagyta", "abba-hagyta"], "e) Igekötő (abbahagy = befejez): egybe."], ["abba + tette (abba, amelyikben volt)", "abba tette", ["abbatette", "abba-tette"], "e) Helyet mutat: külön."],
-     ["ide + jött (hozzám)", "idejött", ["ide-jött", "ide jöt"], "e) Igekötő: idejött hozzám."], ["fenn + maradt (a neve)", "fennmaradt", ["fenn-maradt", "fen maradt"], "e) Igekötő: fennmaradt."],
+     ["ide + jött (hozzám)", "idejött", ["ide-jött"], "e) Igekötő: idejött hozzám."], ["fenn + maradt (a neve)", "fennmaradt", ["fenn-maradt"], "e) Igekötő: fennmaradt."],
      ["nem + tudom", "nem tudom", ["nemtudom", "nem-tudom"], "A nem az ige előtt külön."], ["nem + sokára", "nemsokára", ["nem sokára", "nem-sokára"], "Egy szó: nemsokára."],
      ["nem + rég", "nemrég", ["nem rég", "nem-rég"], "Egy szó: nemrég."], ["nem + csak (… hanem … is)", "nemcsak", ["nem csak", "nem-csak"], "Egy szó: nemcsak."]]
   ];

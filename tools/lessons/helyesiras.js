@@ -448,7 +448,7 @@ const H = (function(){
         "Délután hazaértem, és rögtön leültem tanulni.",
         "A matekleckét gyorsan megcsináltam, de a fogalmazást nem írtam meg.",
         "Anya azt mondta, hogy vacsora előtt meg kell írnom.",
-        "Leírtam az első mondatot, aztán újra és újra kitöröltem.",
+        "Leírtam az első mondatot, aztán többször is átírtam.",
         "Végül be is fejeztem, és elégedetten kapcsoltam ki a lámpát." ] },
       { id: "i2", t: "Az elveszett kulcs", s: [
         "Reggel nem találtam a kulcsomat, pedig mindent átnéztem.",
@@ -478,8 +478,8 @@ const H = (function(){
         "Késő este mindenki fáradtan, de boldogan ment haza." ] },
       { id: "o3", t: "A városnézés", s: [
         "Az osztályunk szombaton egynapos kiránduláson vett részt Budapesten.",
-        "Délelőtt megnéztük a Petőfi-szobrot és a Parlamentet.",
-        "Ebédre a Duna-parton ettünk egy kis vendéglőben.",
+        "Délelőtt megnéztük a Petőfi-szobrot és az Országházat.",
+        "Egy kis Duna-parti vendéglőben ebédeltünk.",
         "Délután a földalattival utaztunk, ami nagyon tetszett mindenkinek.",
         "Hazafelé a vonaton már mindenki aludt." ] }
     ],
