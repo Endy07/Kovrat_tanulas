@@ -37,8 +37,8 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 8 | **Összetett szavak és számok** | 94–95., 101–113., 116–119., 139., 291. | Jelző + főnév vagy összetétel (gyors írás ↔ gyorsírás), jelöletlen kapcsolat (kéményseprő), névutó (ház mellett ↔ délután), kötőjel (ide-oda, Petőfi-szobor, tv-műsor), anyagnév, számnév + képző, színnév, a 6 szótag szabály, számok (kétezerig egybe, fölötte kötőjel, évszám egybe). | ✅ kész (2026. 11. 01.) |
 | 9 | **Kis- és nagy kezdőbetű, tulajdonnevek** | 144–145., 153., 163–166., 170–200. (⚠️ kivonatból) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | ✅ kész (2026. 11. 01.) |
 | 10 | **Központozás: a vessző** | 240–244., 248–252., 255–256., 261–262. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | ✅ kész (2026. 11. 01.) |
-| 11 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 10 × 3 + 10 vegyes = 40 |
+| 11 | **Gyakori tévesztések** | a 2–10. lecke pontjai; 38., 248., 263., 278–284. (⚠️ az utóbbiak kivonatból) | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | ✅ kész (2026. 11. 01.) |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 11 × 3 + 11 vegyes = 44 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -160,6 +160,18 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
   vessző-csoportnál); bekapcsolható. A régi leckéknél változatlan.
 - Az értelmező utáni vessző (249. b) választható, ezért a tollbamondás-szövegekbe nem tettünk értelmezőt (különben a jó megoldás is hibának számítana).
 - Gyakorlótípusok: Kell vessző? · Melyik mondat a jó? · Tedd ki a vesszőket! (begépelős) · Mondat végén. Tollbamondás: k1–k3 és a vegyes v10.
+
+## A 11. lecke (gyakori tévesztések), 2026. 11. 01. — a tervezett sor vége
+
+- Ismétlő lecke: minden hibánál megmondja, melyik szabály és melyik lecke (2–10.) dönt. Új anyag: szópárok (egyelőre ↔ egyenlőre,
+  helyett ↔ helyet, hadd ↔ had), rövidítések (pl., stb., kb., ill., u., dr.; km, kg, cm pont nélkül), a stb. előtt nincs vessző (248. d
+  analógiája, a 248. b szövege szerint), az -e kérdőszó kötőjellel (263.).
+- ⚠️ **Kovrat chatje még nem jött meg**, ezért a hibák általános chat-hibák, nem az ő saját hibái. Ha megjön: hibastatisztika
+  (`docs/helyesiras-hibak.md`, csak típusok), és ehhez igazítjuk a 11. lecke példáit és a tollbamondásokat.
+- A rövidítések nem kerültek tollbamondásba (a felolvasó rosszul ejti őket), és a „Hibás szó” feladatba sem (a záró pontot az
+  ellenőrző levágja).
+- Gyakorlótípusok: Melyik a jó? · Hibás szó · Melyik mondat a jó? · Rövidítés, -e. Hero: hibavadász két chatüzenettel.
+  Tollbamondás: g1–g3 (írásjel-kimondás nélkül) és a vegyes v11. Új hibatípus: **Összekevert szópár** (egyelőre ↔ egyenlőre).
 
 ## Ellenőrzés
 

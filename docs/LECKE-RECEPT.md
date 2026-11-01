@@ -498,3 +498,13 @@ megoldásra; a tollbamondás két kihagyott vesszője az „Írásjel” csoport
 - **A választható vesszőt** (értelmező után, 249. b) ne tedd tollbamondásba: a gép a jó megoldást is hibának számolná.
 - **A mintamondatot is ellenőrizd a saját szabályoddal:** „Anna, gyere ide és segíts!” elsőre hibásan került a vesszőrakóba (két
   tagmondat: …ide, és segíts!).
+
+### A 2026. 11. 01-i 11. helyesírás-lecke (gyakori tévesztések)
+
+Eredmény: `helyesiras-tevesztesek` 480/480, 12 dia, 12 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 10 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 627 ellenőrzés. Célzott próba: a hibavadász (3 talált, 2 kimaradt,
+1 fölösleges jelölés helyesen jelezve); tollbamondás szándékos hibákkal: hossz, j/ly, kettőzés, kötőjel, írásjel, szópár csoportokba.
+
+- **A „Hibás szó” feladat levágja a záró pontot** (`/[.,!?]$/`): ponttal végződő jó választ (pl., kb., stb.) ne tegyél bele.
+- **A dia címébe ne tegyél linket:** a `K.deck` a címet a pont-gomb `aria-label`-jébe is beírja (HTML-lel együtt). A link a dia szövegébe való.
+- **Rövidítést ne tegyél tollbamondásba:** a felolvasó nem „például”-t mond a pl. helyett.

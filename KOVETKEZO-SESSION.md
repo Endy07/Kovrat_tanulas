@@ -1,6 +1,20 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 reggel
+## 🧭 BELÉPÉSI PONT — 2026-11-01 (a helyesírás-leckesor kész)
+
+**A PR #2-ben (beolvasztásra vár):** az 5–11. lecke, legutóbb a **11. (gyakori tévesztések,** `helyesiras-tevesztesek.html`**)**,
+28 új tollbamondás (összesen 44). **A tervezett 11 leckés helyesírás-sor teljes.** Tesztek: a 11 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 627/627.
+
+**Javasolt folytatás:**
+1. Friss szemű lektor az 5–11. leckére (magyar nyelv, AkH-helyesség, két jó gombos feladat) — az 1–3. leckénél bevált.
+2. A 9. lecke pontszámainak újraellenőrzése (két kivonat 10-zel eltért).
+3. Ha megjött Kovrat chatje: hibastatisztika, és a 11. lecke + tollbamondások igazítása.
+4. Python-folytatás (elágazás, ciklus, lista), ha az iskola odaér.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 reggel
 
 **A PR #2-ben (beolvasztásra vár):** az 5–10. lecke, legutóbb a **10. (a vessző,** `helyesiras-vesszo.html`**)**, 24 új tollbamondás
 (összesen 40). Tesztek: a 10 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 576/576.
