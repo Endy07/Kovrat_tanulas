@@ -323,7 +323,7 @@ Endi: „Mehet, ahogy javaslod.” Ugyanabba a PR #2-be.
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 - **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`).
   A **4. lecke (j/ly)** élesben (2026-11-01, PR #1). Az **5–11. lecke** és a **szintfelmérő** **élesben** (2026-11-01, PR #2, Endi olvasztotta be: `e81870d`, Pages `success`; Endi képernyőképe a szintfelmérőről). **A tervezett helyesírás-leckesor teljes**, lektorálva.
-  A szintfelmérő eredménye automatikusan Endi Google-űrlapjába megy (PR #3). Következő: ha megjön a chat (`C:\KOVRAT\chat\`),
+  A szintfelmérő eredménye automatikusan Endi Google-űrlapjába megy (PR #3, `b014b7d`, élesben igazolva 2026-11-01). Következő: ha megjön a chat (`C:\KOVRAT\chat\`),
   a hibastatisztika (`docs/helyesiras-hibak.md`); a szintfelmérő eredményei (Endinek másolható összefoglaló) addig is mutatják Kovrat gyenge pontjait.
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke

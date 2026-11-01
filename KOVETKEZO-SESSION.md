@@ -3,7 +3,7 @@
 ## 🧭 BELÉPÉSI PONT — 2026-11-01 reggel (élesben)
 
 **Élesben:** az 5–11. lecke és a szintfelmérő (PR #2, `e81870d`). **PR #3:** a szintfelmérő eredménye automatikusan Endi Google-űrlapjába
-megy (Endi kérése). Beolvasztás után Endi próbakitöltése igazolja, hogy a sor megjelenik a táblázatban.
+megy (Endi kérése). **PR #3 beolvasztva (`b014b7d`), élesben igazolva** (a pult két próbakitöltése megérkezett a táblázatba). A két próbasort Endi törli.
 
 **Következő:** Kovrat kitölti a szintfelmérőt → az eredményből a gyenge leckékhez plusz gyakorlás; Python-folytatás, ha az iskola odaér.
 

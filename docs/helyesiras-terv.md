@@ -207,7 +207,9 @@ helyesiras.mta.hu élő szövegét olvasta). Javítva:
   `formResponse` címre; csak a github.io-ról és nem gépi tesztből (`navigator.webdriver`); ha nincs internet, a böngészőben várakozik, és
   a következő megnyitáskor újra próbálja. Név és más adat nem megy. ⚠️ Az űrlap címe a nyilvános repóban van: elvben bárki küldhetne rá.
   Ellenőrizve: Playwright-szimuláció (a github.io címre irányítva, a beküldést elfogva): egy beküldés, a négy mező helyes tartalommal.
-  A valódi beküldést a felhős gép nem érte el (a docs.google.com nincs engedélyezve), azt Endi próbakitöltése igazolja.
+  A valódi beküldést a felhős gép nem érte el; **élesben igazolva 2026-11-01** (a pult Endi gépén, Chrome, két kitöltés: 11/22 és 8/22,
+  mindkettő megjelent a „Kovrat Szintfelmero (válaszok)” táblázatban, minden oszlop helyes, konzolhiba nincs). A táblázat B oszlopa
+  („Pontszám”) az űrlap egykori kvíz módjából maradt, üres; az űrlapból törölhető.
 - Ellenőrizve: minden elemnek egy jó válasza van; hibátlan kitöltés 5 × 22/22; hibás kitöltésnél a jó leckéket ajánlja; az előzmény
   újratöltés után megmarad; 390 px, sötét téma, JS-hiba nincs.
 
