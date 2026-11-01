@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101030843">
+<meta name="kovrat-version" content="20261101035931">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -373,6 +373,7 @@ const H = (function(){
     jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (folyik, király, hely, olyan, gólya); kivétel a muszáj. A toldalék j-je mindig j (tanulj, látja).", href: "helyesiras-j-ly.html" },
     kettoz: { n: "Mássalhangzó hossza", d: "Egy vagy két betű? A hosszú mássalhangzót kettőzve írjuk (itt, mellett, akkor); a többjegyűnél szón belül csak az első jegyet (hosszú, asszony), összetett szó határán teljesen (jegygyűrű).", href: "helyesiras-massalhangzok.html" },
     hason:  { n: "Hasonulás (szóelemzés)", d: "Másképp mondjuk, mint írjuk. Bontsd szét a szót, és a tövet meg a toldalékot írd le: népdal, azonban, egészség, barátság, mindnyájan, házzal, ebben.", href: "helyesiras-hasonulasok.html" },
+    felsz:  { n: "Felszólító mód (ige)", d: "t végű igénél ts (tanítson, értsen) vagy ss (fusson, lásson); st, szt végűnél a t kimarad (fessen, válasszon); s, sz, z végűnél kettőzés (olvasson, nézzen).", href: "helyesiras-felszolito.html" },
     tobbj:  { n: "Többjegyű betű", d: "A cs, dz, dzs, gy, ly, ny, sz, ty, zs egy-egy betű: minden jegyét le kell írni (dzseki, nem dzeki).", href: "helyesiras-betuk-elvalasztas.html" },
     egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő az ige előtt: megcsinálom; összetett szó: számítógép).", href: "" },
     kulon:  { n: "Különírás", d: "Ezt két szóba kell írni.", href: "" },
@@ -410,6 +411,8 @@ const H = (function(){
     c.forEach((x, i) => { if (!(out.length && out[out.length - 1] === x && !L[i].v)) out.push(x); });
     return out.join("|");
   }
+  // Felszólító mód (AkH 76–80.): futsatok ~ fussatok, sietsen ~ siessen, választsunk ~ válasszunk, festsen ~ fessen, olvasjon ~ olvasson
+  const felszKey = w => lower(w).replace(/szts/g, "ssz").replace(/sts/g, "ss").replace(/ts/g, "ss").replace(/([sz])j/g, "$1$1");
   // mely átalakítások teszik egyenlővé a beírt és a helyes szót? (a legkevesebb, ami elég)
   function classify(typed, right){
     if (typed === right) return [];
@@ -417,6 +420,7 @@ const H = (function(){
       const f = x => s.reduce((acc, k) => NORM[k](acc), x);
       if (f(typed) === f(right)) return s.slice();
     }
+    if (felszKey(typed) === felszKey(right)) return ["felsz"];
     if (hasonKey(typed) === hasonKey(right)) return (typed[0] !== right[0] && lower(typed[0]) === lower(right[0])) ? ["kis", "hason"] : ["hason"];
     const a = letters(typed), b = letters(right);
     if (a.length === b.length && a.every((x, i) => x.l === b[i].l || ((x.l.length > 1 || b[i].l.length > 1) && x.l[0] === b[i].l[0]))) return ["tobbj"];
@@ -665,6 +669,26 @@ const H = (function(){
         "Ekkora rendetlenséget még sosem láttam, de mindnyájan segítettünk.",
         "Végül a bátyám kézzel írt egy táblát, és kiragasztotta az ajtóra." ] }
     ],
+    felsz: [
+      { id: "f1", t: "Az edzés előtt", s: [
+        "Az edző hangosan szólt nekünk, hogy álljunk sorba.",
+        "Először fussatok két kört, aztán nyújtsatok alaposan!",
+        "Vigyázzatok egymásra, és senki ne siessen!",
+        "Ha elfáradtatok, igyatok egy kis vizet.",
+        "Utána válasszunk két csapatot, és játsszunk egy meccset." ] },
+      { id: "f2", t: "Levél a nagymamának", s: [
+        "Anya megkért, hogy írjak egy levelet a nagymamának.",
+        "Azt írtam neki, hogy vigyázzon magára, és sokat pihenjen.",
+        "Megkértem, hogy süssön nekünk a kedvenc süteményéből.",
+        "A végére odaírtam, hogy hívjon fel, ha unatkozik.",
+        "A levelet holnap együtt visszük el a postára." ] },
+      { id: "f3", t: "Kirándulás előtt", s: [
+        "A tanárnő elmondta, mit tegyünk a hátizsákba.",
+        "Vegyetek fel kényelmes cipőt, és hozzatok esőkabátot!",
+        "Ne felejtsétek otthon a vizet és a szendvicset!",
+        "Az erdőben maradjatok együtt, és figyeljetek egymásra.",
+        "Ha valaki eltéved, azonnal hívja fel a tanárnőt." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -695,10 +719,16 @@ const H = (function(){
         "A kutya azóta minden reggel hangos ugatással ébreszt mindnyájunkat.",
         "Egyszer kiszökött a kertből, és az utcán szaladgált.",
         "Akkor az egész ház kiabált, mire végre visszajött.",
-        "Most már a kapu mellett egy magasabb kerítés vigyáz rá." ] }
+        "Most már a kapu mellett egy magasabb kerítés vigyáz rá." ] },
+      { id: "v6", t: "Horgászat", s: [
+        "A hétvégén a nagybátyám megtanított minket horgászni.",
+        "Azt mondta, hogy üljünk csendben, és figyeljük a vizet.",
+        "Egyszer hirtelen megmozdult az úszó, és a bot is meghajlott.",
+        "A nagybátyám segített, hogy lassan kihúzzuk a halat a partra.",
+        "Akkora halat még sosem láttam, ezért le is fényképeztük." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");
@@ -1386,9 +1416,10 @@ const K = (function(){
   const { $, $$, esc } = K;
   const FOCUS = { betuk: "Többjegyű betűk (cs, gy, ny, sz, zs, dz, dzs), hosszú kettős betűk (ssz, ggy, lly).", maganhangzok: "-ból, -ről, -tól (hosszú) · -ul, -ül, -szor, -kor, -ig (rövid) · -ít (hosszú) · rövidülő tövek.",
     massalhangzok: "Múlt idő (-tt, -t), középfok (-bb), névutók (alatt, előtt), hosszú többjegyű betűk, kettőzött szavak (itt, akkor, éppen).",
-    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–5. lecke szabályai vegyesen.",
+    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–6. lecke szabályai vegyesen.",
+    felsz: "Felszólító mód: fussatok, siessen, válasszunk, játsszunk, süssön, tegyünk, felejtsétek, hívjon · kijelentő: visszük.",
     hason: "Szóelemzés: egészség, község, népdal, színpad, mindnyájan, barátság, egyszer · ebben, akkor, azzal · kézzel, dobozzal, ronggyal." };
-  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html" };
+  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html" };
   const keys = Object.keys(H.TEXTS);
   // nyomtatható lista
   $("#all").innerHTML = keys.map(g => '<h2 id="' + g + '">' + esc(H.GROUPS[g]) + "</h2>" +

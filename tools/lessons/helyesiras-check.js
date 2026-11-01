@@ -55,6 +55,11 @@ eq(H.letterCount("gally"), 4, "betűszám gally"); eq(H.letterCount("osztállyal
 eq(H.classify("Eccer", "egyszer"), ["kis", "hason"], "classify Eccer/egyszer");
 eq(H.classify("házal", "házzal"), ["kettoz"], "classify házal/házzal");
 
+// felszólító mód (6. lecke): AkH 76–80.
+[["futsatok", "fussatok"], ["sietsen", "siessen"], ["választsunk", "válasszunk"], ["festsen", "fessen"], ["olvasjon", "olvasson"], ["nézjen", "nézzen"], ["látson", "lásson"]]
+  .forEach(([t, r]) => eq(H.classify(t, r), ["felsz"], "classify " + t + "/" + r));
+eq(H.classify("játszunk", "játsszunk"), ["kettoz"], "classify játszunk/játsszunk");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");
