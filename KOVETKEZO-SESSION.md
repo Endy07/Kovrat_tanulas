@@ -7,6 +7,7 @@
 `helyesiras-check.js` 627/627.
 
 **Lektori kör kész (2026-11-01):** az 5–11. lecke átnézve és javítva, a 9. lecke pontszámai helyesek.
+**Szintfelmérő kész** (`helyesiras-szintfelmero.html`, a kezdőlapon a helyesírás-csoport elején), szintén a PR #2-ben.
 
 **Javasolt folytatás:**
 1. A PR #2 beolvasztása és élő ellenőrzés.

@@ -196,6 +196,15 @@ helyesiras.mta.hu élő szövegét olvasta). Javítva:
   felkiáltójelet kaptak (g1, g3); v11 címe „Telefon a nagymamától”; i1, o3, v5 természetesebb.
 - **Közös modul:** `H.sentParse` a jó alak mellett elfogad szintén helyes alakot is („{Tedd/Tegyed|Ted}”).
 
+## Szintfelmérő (2026. 11. 01.)
+
+- `helyesiras-szintfelmero.html`: 22 kérdés, leckénként 2, véletlenül egy 54 elemes készletből (a leckék lektorált feladataiból). A végén:
+  eredmény, leckénkénti pontszám, ajánlott leckék (a leggyengébb elöl), a hibás válaszok magyarázattal, Endinek másolható összefoglaló,
+  és az előzmények (localStorage, legfeljebb 10). Nincs jegy, nincs időkorlát.
+- Részben pótolja a chat-statisztikát: Kovrat saját hibáiból mutatja a gyenge pontokat, a chat szövege nélkül.
+- Ellenőrizve: minden elemnek egy jó válasza van; hibátlan kitöltés 5 × 22/22; hibás kitöltésnél a jó leckéket ajánlja; az előzmény
+  újratöltés után megmarad; 390 px, sötét téma, JS-hiba nincs.
+
 ## Ellenőrzés
 
 - `node tools/lessons/helyesiras-check.js` – elválasztás (AkH 226–227. példái), betűszám, ábécérend (AkH 14. táblái),

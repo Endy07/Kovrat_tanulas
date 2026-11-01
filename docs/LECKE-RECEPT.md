@@ -519,3 +519,10 @@ Kb. 5 perc alatt végeztek, összesen kb. 40 tétel, ebből a biztosakat és a j
   fogadása, választható írásjel a tollbamondásban vagy a „Tedd ki” feladatban, és a saját szabályunknak ellentmondó mintamondat.
 - **A Firecrawl-keret egy lektori körre épp elég volt;** a lektorok kifogytak belőle. Legközelebb egy lektor egyszerre kérje le a teljes
   szükséges pontsort.
+
+### Szintfelmérő (2026. 11. 01.)
+
+- **A háttérszerver leállítása (`pkill -f "http.server 8765"`) a saját bash-parancsot is megölheti** (a parancssorában benne van a
+  minta): az utána következő lépések nem futnak le. A `pkill` mindig a parancs **legvégén** álljon, vagy PID alapján állítsd le.
+- Egyedi felületnél (nincs `.practice`) a `lesson-test.js` csak a szélességet és a JS-hibát nézi; a működést célzott Playwright-próba
+  igazolja (itt: hibátlan kitöltés a forrásból kiolvasott jó válaszokkal, hibás kitöltés, előzmény újratöltés után).
