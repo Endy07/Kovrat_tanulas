@@ -322,6 +322,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   a VS Code-ban Ctrl+C-vel), 6 típus (Hányszor fut le?, Mennyi lesz a végén?, Mit ír ki?, Írd meg!, Milyen hibát ad?, Javítsd ki!).
   A közös keret: 20 000 karakter kimenet fölött leáll (kiíró végtelen ciklus), a `py-check` futásonként 0,5 mp-es időkorláttal
   (TimeoutError = „végtelen ciklus” válasz), toldalék-segédek számokhoz (`C.nal`, `C.tol`, `C.acc`).
+  Lektor: 9 pont (Python-hiba nincs; névelő és „hármasával”, a csapda-kód valójában végtelen ciklus, a nyomkövetés-táblázat a
+  levezetéshez igazítva, a „Végtelen ciklus” megoldásában nem a TimeoutError név áll), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
