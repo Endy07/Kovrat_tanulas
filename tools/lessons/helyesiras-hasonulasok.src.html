@@ -1,0 +1,267 @@
+<!--@HEAD-->
+<title>Hasonulások</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.pairbtn .w.k{font-family:var(--mono);font-size:clamp(1rem,4.6vw,1.3rem);color:#9CC2FF;overflow-wrap:anywhere}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 5. lecke</span>
+  <h1>Hasonulások: másképp mondjuk, mint írjuk</h1>
+  <p class="lead">Úgy mondjuk: [nébdal], [egésség], [eccer]. Úgy írjuk: <b>népdal</b>, <b>egészség</b>, <b>egyszer</b>. Megtanulod, miért: a magyar írás a szó <b>elemeit</b> mutatja meg, a tövet és a toldalékot. Ha szét tudod bontani a szót, tudod, hogyan kell írni.</p>
+  <div class="panel">
+    <span class="eyebrow">Kattints a szóra: így mondjuk, így írjuk</span>
+    <div class="pairs" id="pairs"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem">A szögletes zárójel [ ] a kiejtést jelöli. Írásban a szó részei látszanak.</p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Bontsuk szét!</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="nepdal" aria-selected="true">népdal</button>
+    <button class="tab" data-m="egeszseg" aria-selected="false">egészség</button>
+    <button class="tab" data-m="hazzal" aria-selected="false">házzal, vízzé</button>
+    <button class="tab" data-m="ebben" aria-selected="false">ebben, akkor</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. zöngésség és az n (népdal, ablakban, azonban, különben) · 2. teljes hasonulás, összeolvadás, kiesés (egészség, barátság, egyszer, mindnyájan, tetszik) · 3. -val, -vel, -vá, -vé és az ez, az (házzal, vízzé, ebben, akkor). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Ne a hallott alakot írd le, hanem bontsd szét a szót: egészség, község, mindnyájan, népdal, színpad, ebben, azzal, kézzel.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Bontsd szét</span><span>egész + ség · barát + ság · egy + szer · nép + dal · azon + ban · mind + nyájan</span></div>
+    <div class="trick"><span class="t">-val, -vel, -vá, -vé</span><span>Magánhangzó után v: babával, kővé · mássalhangzó után a v hasonul: házzal, kézzel, vízzé, porrá, busszal</span></div>
+    <div class="trick"><span class="t">ez, az</span><span>ebben, abban, akkor, ekkor, ahhoz, ehhez, azzal, ezzel, akkora, efféle · de: ezt, azt, ezért, azért</span></div>
+    <div class="trick"><span class="t">Meg kell tanulni</span><span>tetszik, játszik, mindjárt, rögtön, utca (a hagyomány őrzi)</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 41. pont (-val, -vel, -vá, -vé), 48–60. pont (hasonulás, összeolvadás, rövidülés, kiesés), 82–83. pont (-val/-vel alakjai; az, ez), 90. pont (tetszik, játszik, mindjárt, rögtön, utca) · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: kiejtés és írás (AkH 50–52., 58., 60., 90.) ---------- */
+  const PAIRS = [["népdal", "[nébdal]", "nép + dal"], ["azonban", "[azomban]", "azon + ban"], ["egészség", "[egésség]", "egész + ség"], ["barátság", "[baráccság]", "barát + ság"],
+    ["egyszer", "[eccer]", "egy + szer"], ["mindnyájan", "[minnyájan]", "mind + nyájan"], ["különben", "[külömben]", "külön + ben"], ["tetszik", "[teccik]", "hagyomány: meg kell tanulni"]];
+  const side = PAIRS.map(() => 0);
+  function drawPairs(){
+    $("#pairs").innerHTML = PAIRS.map((p, k) => '<button class="pairbtn" data-p="' + k + '">' +
+      (side[k] ? '<span class="m">így írjuk</span><span class="w">' + esc(p[0]) + '</span><span class="m">' + esc(p[2]) + "</span>"
+               : '<span class="m">így mondjuk</span><span class="w k">' + esc(p[1]) + '</span><span class="m">kattints: hogyan írjuk?</span>') + "</button>").join("");
+  }
+  $("#pairs").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; const k = Number(b.dataset.p); side[k] = 1 - side[k]; drawPairs(); if (K.tts.on && K.tts.ok) K.tts.say(PAIRS[k][0]); });
+  drawPairs();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    nepdal: () => [
+      { cap: "Népdal. Mondd ki gyorsan: nébdal. A p helyett b-t hallunk.", html: W("[né<u>b</u>dal]") },
+      { cap: "Miért? A d zöngés hang, és a mellette álló p-t is zöngéssé teszi. Ez a hasonulás.", html: W("p + d → [bd]", "zöngésség szerinti hasonulás") },
+      { cap: "De írásban a szó elemeit írjuk: nép és dal. Ezért népdal.", html: W("né<u>p</u> + dal = né<u>p</u>dal") },
+      { cap: "Ugyanígy: ablakban, nem ablagban. Vízszint, nem víszszint. Adhat, nem athat.", html: W("abla<u>k</u>ban · ví<u>z</u>szint · a<u>d</u>hat") },
+      { cap: "Az n is változik: azonban, különben, színpad. Úgy mondjuk: azomban, külömben, szímpad. Írva n.", html: W("azo<u>n</u>ban · külö<u>n</u>ben · szí<u>n</u>pad", "p, b, m előtt [m]-nek ejtjük") }
+    ],
+    egeszseg: () => [
+      { cap: "Egészség. Úgy mondjuk: egésség. Az sz eltűnt?", html: W("[egé<u>ss</u>ég]") },
+      { cap: "Bontsuk szét: egész és -ség. Az sz és az s a kiejtésben egyforma lett. Ez a teljes hasonulás.", html: W("egé<u>sz</u> + <u>s</u>ég", "teljes hasonulás") },
+      { cap: "Írásban mindkettő megmarad: egészség. Ugyanígy: község, köz és -ség.", html: W("egé<u>szs</u>ég · kö<u>zs</u>ég") },
+      { cap: "Barátság: úgy mondjuk, baráccság. A t és az s összeolvad. Írva: barát + ság.", html: W("bará<u>ts</u>ág · szaba<u>ds</u>ág · köl<u>ts</u>ég", "összeolvadás") },
+      { cap: "Egyszer: úgy mondjuk, eccer. Írva: egy és -szer.", html: W("e<u>gysz</u>er") },
+      { cap: "Mindnyájan: úgy mondjuk, minnyájan. A d kiesik a kiejtésből, írásban ott marad: mind + nyájan.", html: W("min<u>d</u>nyájan", "kiesés") }
+    ],
+    hazzal: () => [
+      { cap: "Ház és -val. A -val v-je hasonul: olyan lesz, mint az előtte álló mássalhangzó.", html: W("ház + val → ház + <u>z</u>al") },
+      { cap: "Ezért két z-t írunk: házzal. Ugyanígy: kézzel, dobbal, szénnel.", html: W("há<u>zz</u>al · ké<u>zz</u>el · do<u>bb</u>al · szé<u>nn</u>el") },
+      { cap: "Magánhangzó után a v megmarad: babával, hajóval.", html: W("babá<u>v</u>al · hajó<u>v</u>al") },
+      { cap: "A -vá, -vé is így működik: víz és -vé, vízzé. Jég, jéggé. Por, porrá. De: kő, kővé.", html: W("ví<u>zz</u>é · jé<u>gg</u>é · po<u>rr</u>á · kő<u>v</u>é") },
+      { cap: "Többjegyű betűnél csak az első jegyet kettőzzük: busszal, kulccsal, ággyal.", html: W("bu<u>ssz</u>al · ku<u>lccs</u>al · á<u>ggy</u>al", "3. lecke: hosszú többjegyű betű") }
+    ],
+    ebben: () => [
+      { cap: "Ez és -ben. Az ez z-je hasonul a toldalék első hangjához: ebben.", html: W("ez + ben → e<u>bb</u>en") },
+      { cap: "Az és -kor: akkor. Az és -hoz: ahhoz. Ez és -re: erre.", html: W("a<u>kk</u>or · a<u>hh</u>oz · e<u>rr</u>e") },
+      { cap: "Az és -val: azzal. Itt két alak is jó: azzal és avval, ezzel és evvel.", html: W("a<u>zz</u>al (avval) · e<u>zz</u>el (evvel)") },
+      { cap: "A -kora, -féle, -fajta előtt is: akkora, ekkora, efféle, effajta.", html: W("a<u>kk</u>ora · e<u>ff</u>éle") },
+      { cap: "De: ezt, azt, ezért, azért. A tárgyrag előtt és magánhangzó előtt a z megmarad.", html: W("e<u>z</u>t · a<u>z</u>t · e<u>z</u>ért") }
+    ]
+  };
+  const MET = { nepdal: "népdal", egeszseg: "egészség", hazzal: "házzal, vízzé", ebben: "ebben, akkor" };
+  const PB = { m: "nepdal" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Úgy írjuk, ahogy mondjuk? Nem mindig.", h:
+      "<p>A legtöbb szót úgy írjuk, ahogy kimondjuk. De ha két hang találkozik, kimondva gyakran <b>megváltoznak</b>: hasonulnak egymáshoz, összeolvadnak, vagy kiesnek.</p>" +
+      "<p>Írásban ilyenkor a <b>szó elemeit</b> írjuk le: a tövet és a toldalékot, úgy, ahogy külön mondanánk őket. Ez a <b>szóelemző írás</b>.</p>" +
+      "<p class='eq'>[nébdal] → nép + dal = népdal · [egésség] → egész + ség = egészség</p>" +
+      "<div class='note'><b>A trükk:</b> bontsd szét a szót. Ha tudod, miből áll, tudod, hogyan kell írni.</div>" },
+    { k: "Zöngésség", t: "Zöngés és zöngétlen párok", h:
+      "<p>Ezek a hangok párban vannak: <b>b–p, d–t, g–k, v–f, z–sz, zs–s, gy–ty, dz–c, dzs–cs</b>. Ha egy zöngés és egy zöngétlen kerül egymás mellé, az első igazodik a másodikhoz.</p>" +
+      tbl(["így mondjuk", "így írjuk", "mert"], [["[nébdal]", "<b>népdal</b>", "nép + dal"], ["[ablagban]", "<b>ablakban</b>", "ablak + ban"], ["[athat]", "<b>adhat</b>", "ad + hat"], ["[víszszint]", "<b>vízszint</b>", "víz + szint"], ["[zsepkendő]", "<b>zsebkendő</b>", "zseb + kendő"], ["[késfej]", "<b>kézfej</b>", "kéz + fej"]]) + playBtn("nepdal"), init: playInit },
+    { k: "Az n", t: "Az n hangja: [m] vagy [ny]", h:
+      "<p>A p, b, m előtt az n-t [m]-nek mondjuk, a gy, ty, ny előtt [ny]-nek. Írva n marad:</p>" +
+      tbl(["így mondjuk", "így írjuk"], [["[azomban]", "<b>azonban</b>"], ["[külömben]", "<b>különben</b>"], ["[szímpad]", "<b>színpad</b>"], ["[szémpor]", "<b>szénpor</b>"], ["[tammenet]", "<b>tanmenet</b>"], ["[önygyújtó]", "<b>öngyújtó</b>"]]) },
+    { k: "Teljes hasonulás", t: "Két hangból egyforma lesz", h:
+      "<p>Néha a két hang <b>teljesen egyforma</b> lesz. Írásban mégis mindkettőt a helyén hagyjuk:</p>" +
+      tbl(["így mondjuk", "így írjuk", "mert"], [["[egésség]", "<b>egészség</b>", "egész + ség"], ["[kösség]", "<b>község</b>", "köz + ség"], ["[áccsap]", "<b>átcsap</b>", "át + csap"], ["[áccipel]", "<b>átcipel</b>", "át + cipel"]]) + playBtn("egeszseg"), init: playInit },
+    { k: "Összeolvadás", t: "t + s, d + s, gy + sz: összeolvadnak", h:
+      "<p>A t, d, gy és az utána jövő s vagy sz egy [cs] vagy [c] hanggá olvad. Írva megmarad mindkettő:</p>" +
+      tbl(["így mondjuk", "így írjuk", "mert"], [["[baráccság]", "<b>barátság</b>", "barát + ság"], ["[szabaccság]", "<b>szabadság</b>", "szabad + ság"], ["[kölcség]", "<b>költség</b>", "költ + ség"], ["[naccság]", "<b>nagyság</b>", "nagy + ság"], ["[eccer]", "<b>egyszer</b>", "egy + szer"], ["[acc]", "<b>adsz</b>", "ad + sz"]]) },
+    { k: "Kiesés", t: "Három mássalhangzó: a középső kiesik", h:
+      "<p>Ha három mássalhangzó kerül egymás mellé, a középső a kiejtésből gyakran kiesik. Írásban ott marad:</p>" +
+      "<p class='eq'>[minnyájan] → <b>mindnyájan</b> (mind + nyájan) · [csugbe] → <b>csukd be</b> · [mossincs] → <b>most sincs</b></p>" },
+    { k: "Ismétlés", t: "Amit már tanultál: rövidülés és a j", h:
+      "<ul><li>A hosszú mássalhangzót mássalhangzó mellett röviden mondjuk, de kettőzve írjuk: <b>jobbra</b> [jobra], <b>otthon</b> [othon], <b>varrt</b> [vart]. (3. lecke)</li>" +
+      "<li>A toldalék j-je hasonul vagy összeolvad, írva megmarad: <b>látja</b> [láttya], <b>adja</b> [aggya], <b>hagyjátok</b> [haggyátok], <b>tanulj</b> [tanujj]. (4. lecke)</li></ul>" },
+    { k: "-val, -vel", t: "-val, -vel, -vá, -vé: a v hasonul", h:
+      tbl(["a szó vége", "-val, -vel", "-vá, -vé"], [["magánhangzó", "babá<b>v</b>al, hajó<b>v</b>al", "kő<b>v</b>é, hamu<b>v</b>á"], ["mássalhangzó", "há<b>zz</b>al, ké<b>zz</b>el, do<b>bb</b>al, szé<b>nn</b>el", "ví<b>zz</b>é, jé<b>gg</b>é, po<b>rr</b>á, embe<b>rr</b>é"], ["többjegyű betű", "bu<b>ssz</b>al, ku<b>lccs</b>al, á<b>ggy</b>al", "ré<b>ssz</b>é"]]) +
+      "<p>A v helyére a szó utolsó mássalhangzója kerül még egyszer. <b>házval</b>, <b>házal</b>: mindkettő hibás.</p>" + playBtn("hazzal"), init: playInit },
+    { k: "ez, az", t: "Az ez és az az toldalékkal", h:
+      "<p>Az ez, az z-je teljesen hasonul a mássalhangzóval kezdődő toldalékhoz, és kettőzve írjuk:</p>" +
+      tbl(["ez + …", "az + …"], [["ebben, ebből, ebbe", "abban, abból, abba"], ["ehhez, ekkor, erre", "ahhoz, akkor, arra"], ["ennek, ennél, ettől", "annak, annál, attól"], ["ezzel (evvel)", "azzal (avval)"], ["ekkora, efféle, effajta", "akkora, afféle, affajta"]]) +
+      "<p><b>De:</b> ezt, azt (tárgyrag) · ezért, azért, ezen, azon (magánhangzó jön).</p>" + playBtn("ebben"), init: playInit },
+    { k: "Hagyomány", t: "Szavak, amelyeket meg kell tanulni", h:
+      "<p>Néhány szót a hagyomány szerint írunk, ezeket nem lehet szétbontani, csak megtanulni:</p>" +
+      tbl(["így mondjuk", "így írjuk"], [["[teccik]", "<b>tetszik</b>"], ["[jáccik]", "<b>játszik</b>"], ["[mingyárt]", "<b>mindjárt</b>"], ["[röktön]", "<b>rögtön</b>"], ["[ucca]", "<b>utca</b>"]]) },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>egésség, kösség</b> → egészség, község.</div>" +
+      "<div class='mistake'><b>eccer, baráccság, szabaccság</b> → egyszer, barátság, szabadság.</div>" +
+      "<div class='mistake'><b>azomban, külömben</b> → azonban, különben.</div>" +
+      "<div class='mistake'><b>minnyájan</b> → mindnyájan.</div>" +
+      "<div class='mistake'><b>házal, házval, ezben, azkor</b> → házzal, ebben, akkor.</div>" +
+      "<div class='mistake'><b>teccik, jáccik, mingyárt</b> → tetszik, játszik, mindjárt.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Bontsd szét</span><span>egészség = egész + ség. barátság = barát + ság. Ha a tő megvan, a betűk is megvannak.</span></div>" +
+      "<div class='trick'><span class='t'>Mondd külön</span><span>nép… dal. azon… ban. A külön kimondott szóelem megmutatja a jó betűt.</span></div>" +
+      "<div class='trick'><span class='t'>Keresd a rokont</span><span>község → köz · költség → költ · szabadság → szabad.</span></div>" +
+      "<div class='trick'><span class='t'>-val, -vel</span><span>Mássalhangzó után sosem v: házzal, busszal. Magánhangzó után v: hajóval.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ----------
+     A rossz alakok közt nincs létező szó (kétszer átnézve: pl. jégé, vízé, kőé, emberé, szível, dobal, ara, ere kimaradt). */
+  const PR = [   // [kiejtés, helyes, [rossz], magyarázat]
+    [["[nébdal]", "népdal", ["nébdal"], "nép + dal: a p marad."], ["[ablagban]", "ablakban", ["ablagban"], "ablak + ban: a k marad."], ["[athat]", "adhat", ["athat"], "ad + hat: a d marad."],
+     ["[lögdös]", "lökdös", ["lögdös"], "lök + dös: a k marad."], ["[szíftelen]", "szívtelen", ["szíftelen"], "szív + telen: a v marad."], ["[víszszint]", "vízszint", ["vísszint", "víszint"], "víz + szint: a z marad."],
+     ["[késfej]", "kézfej", ["késfej"], "kéz + fej: a z marad."], ["[zsepkendő]", "zsebkendő", ["zsepkendő"], "zseb + kendő: a b marad."], ["[doptam]", "dobtam", ["doptam"], "dob + tam: a b marad."],
+     ["[azomban]", "azonban", ["azomban"], "azon + ban: az n marad, pedig m-nek ejtjük."], ["[külömben]", "különben", ["külömben"], "külön + ben: az n marad."], ["[szímpad]", "színpad", ["szímpad"], "szín + pad: az n marad."],
+     ["[szémpor]", "szénpor", ["szémpor"], "szén + por: az n marad."], ["[tammenet]", "tanmenet", ["tammenet", "tamenet"], "tan + menet: az n marad."]],
+    [["[egésség]", "egészség", ["egésség", "egézség"], "egész + ség: az sz is, az s is megmarad."], ["[kösség]", "község", ["kösség", "köszség"], "köz + ség."], ["[áccsap]", "átcsap", ["áccsap", "átcsapp"], "át + csap."],
+     ["[áccipel]", "átcipel", ["áccipel", "átcippel"], "át + cipel."], ["[baráccság]", "barátság", ["baráccság", "barácság"], "barát + ság."], ["[szabaccság]", "szabadság", ["szabaccság", "szabatság"], "szabad + ság."],
+     ["[kölcség]", "költség", ["kölcség", "kölség"], "költ + ség."], ["[naccság]", "nagyság", ["naccság", "nagság"], "nagy + ság."], ["[eccer]", "egyszer", ["eccer", "eggyszer"], "egy + szer."],
+     ["[acc]", "adsz", ["acc", "atsz"], "ad + sz."], ["[minnyájan]", "mindnyájan", ["minnyájan", "mindnyájjan"], "mind + nyájan: a d kiesik a kiejtésből, írva marad."],
+     ["[teccik]", "tetszik", ["teccik", "tecik"], "tetszik: a hagyomány szerint, meg kell tanulni."], ["[jáccik]", "játszik", ["jáccik", "jácik"], "játszik: a hagyomány szerint."],
+     ["[mingyárt]", "mindjárt", ["mingyárt", "minnyárt"], "mindjárt: a hagyomány szerint."], ["[röktön]", "rögtön", ["röktön"], "rögtön: a hagyomány szerint."]],
+    [["[külömbség]", "különbség", ["külömbség", "külömpség"], "külön + b + ség: az n marad."], ["[egésségügyi]", "egészségügyi", ["egésségügyi", "egészségüggyi"], "egész + ség + ügyi."],
+     ["[barácságos]", "barátságos", ["barácságos", "baráccságos"], "barát + ság + os."], ["[nébdalverseny]", "népdalverseny", ["nébdalverseny", "népdalversenny"], "nép + dal + verseny."],
+     ["[víszszintes]", "vízszintes", ["vísszintes", "víszintes"], "víz + szint + es."], ["[minnyájunkat]", "mindnyájunkat", ["minnyájunkat", "minnyájjunkat"], "mind + nyájunkat."],
+     ["[ucca]", "utca", ["ucca", "uca"], "utca: a hagyomány szerint."], ["[maraggyanak]", "maradjanak", ["maraggyanak", "maradjanakk"], "marad + j + anak: a d is, a j is megmarad."],
+     ["[láttya]", "látja", ["láttya", "látya"], "lát + ja."], ["[kertye]", "kertje", ["kertye", "kerttye"], "kert + je."]]
+  ];
+  const BR = [   // [szó, jó bontás, [rossz], magyarázat]
+    [["népdal", "nép + dal", ["néb + dal", "né + pdal"], "A nép és a dal szóból."], ["ablakban", "ablak + ban", ["ablag + ban", "abla + kban"], "ablak + -ban."], ["adhat", "ad + hat", ["at + hat", "a + dhat"], "ad + -hat."],
+     ["azonban", "azon + ban", ["azom + ban", "azo + nban"], "azon + -ban."], ["különben", "külön + ben", ["külöm + ben", "külö + nben"], "külön + -ben."], ["vízszint", "víz + szint", ["vísz + szint", "ví + zszint"], "víz + szint."],
+     ["színpad", "szín + pad", ["szím + pad", "szí + npad"], "szín + pad."], ["zsebkendő", "zseb + kendő", ["zsep + kendő", "zse + bkendő"], "zseb + kendő."]],
+    [["egészség", "egész + ség", ["egés + ség", "egé + szség"], "egész + -ség."], ["község", "köz + ség", ["kös + ség", "kö + zség"], "köz + -ség."], ["barátság", "barát + ság", ["barác + ság", "baráccs + ág"], "barát + -ság."],
+     ["szabadság", "szabad + ság", ["szabac + ság", "szabat + ság"], "szabad + -ság."], ["költség", "költ + ség", ["kölc + ség", "köl + tség"], "költ + -ség."], ["egyszer", "egy + szer", ["ecc + er", "eg + yszer"], "egy + -szer."],
+     ["mindnyájan", "mind + nyájan", ["minny + ájan", "min + nyájan"], "mind + nyájan."], ["nagyság", "nagy + ság", ["nacc + ság", "nag + yság"], "nagy + -ság."]],
+    [["házzal", "ház + val", ["ház + al", "házz + al"], "ház + -val: a v hasonul, ezért zz."], ["kézzel", "kéz + vel", ["kéz + el", "kézz + el"], "kéz + -vel."], ["vízzé", "víz + vé", ["víz + é", "vízz + é"], "víz + -vé."],
+     ["ebben", "ez + ben", ["eb + ben", "e + bben"], "ez + -ben: a z hasonul."], ["akkor", "az + kor", ["ak + kor", "a + kkor"], "az + -kor."], ["ekkora", "ez + kora", ["ek + kora", "e + kkora"], "ez + -kora."],
+     ["ahhoz", "az + hoz", ["ah + hoz", "a + hhoz"], "az + -hoz."], ["busszal", "busz + val", ["bus + szal", "buss + zal"], "busz + -val: a v hasonul, ssz."], ["ezzel", "ez + vel", ["ezz + el", "e + zzel"], "ez + -vel."]]
+  ];
+  const VV = [   // [tő, rag, jó, [rossz], magyarázat]
+    [["ház", "-val", "házzal", ["házal", "házval"], "Mássalhangzó után a v hasonul: házzal."], ["kéz", "-vel", "kézzel", ["kézel", "kézvel"], "kéz + vel = kézzel."], ["dob", "-val", "dobbal", ["dobval", "dobbval"], "dob + val = dobbal."],
+     ["szén", "-vel", "szénnel", ["szénel", "szénvel"], "szén + vel = szénnel."], ["kanál", "-val", "kanállal", ["kanálal", "kanálval"], "kanál + val = kanállal."], ["baba", "-val", "babával", ["babbal", "babáal"], "Magánhangzó után megmarad a v: babával."],
+     ["hajó", "-val", "hajóval", ["hajóal", "hajóvval"], "Magánhangzó után megmarad a v."], ["kő", "-vé", "kővé", ["kővvé", "kőfé"], "Magánhangzó után a v marad: kővé."], ["víz", "-vé", "vízzé", ["vízvé", "vizzé"], "víz + vé = vízzé."],
+     ["jég", "-vé", "jéggé", ["jégvé", "jéggvé"], "jég + vé = jéggé."], ["por", "-vá", "porrá", ["porvá", "porá"], "por + vá = porrá."], ["ember", "-vé", "emberré", ["embervé"], "ember + vé = emberré."]],
+    [["busz", "-val", "busszal", ["buszal", "buszval"], "busz + val: hosszú sz, csak az első jegyet kettőzzük: busszal."], ["kulcs", "-val", "kulccsal", ["kulcsal", "kulcsval"], "kulcs + val = kulccsal."],
+     ["ágy", "-val", "ággyal", ["ágyal", "ágyval"], "ágy + val = ággyal."], ["rongy", "-val", "ronggyal", ["rongyal", "rongyval"], "rongy + val = ronggyal."], ["osztály", "-val", "osztállyal", ["osztályal", "osztályval"], "osztály + val = osztállyal."],
+     ["rész", "-vé", "résszé", ["részvé", "részzé"], "rész + vé = résszé."], ["barát", "-val", "baráttal", ["barátal", "barátval"], "barát + val = baráttal."], ["tíz", "-vel", "tízzel", ["tízel", "tízvel"], "tíz + vel = tízzel."],
+     ["fa", "-vá", "fává", ["faá", "favá"], "Magánhangzó után v; a fa szó végén á lesz: fává."], ["gyöngy", "-vel", "gyönggyel", ["gyöngyel", "gyöngyvel"], "gyöngy + vel = gyönggyel."]],
+    [["ez", "-ben", "ebben", ["ezben", "eben"], "Az ez z-je hasonul: ebben."], ["az", "-ban", "abban", ["azban", "aban"], "az + ban = abban."], ["az", "-kor", "akkor", ["azkor", "akor"], "az + kor = akkor."],
+     ["ez", "-vel", "ezzel", ["ezvel", "ezel"], "ez + vel = ezzel (vagy evvel)."], ["az", "-hoz", "ahhoz", ["azhoz", "ahoz"], "az + hoz = ahhoz."], ["ez", "-hez", "ehhez", ["ezhez", "ehez"], "ez + hez = ehhez."],
+     ["az", "-ra", "arra", ["azra", "azrra"], "az + ra = arra."], ["az", "-kora", "akkora", ["azkora", "akora"], "az + kora = akkora."], ["ez", "-féle", "efféle", ["ezféle", "eféle"], "ez + féle = efféle."],
+     ["ez", "-nek", "ennek", ["eznek", "enek"], "ez + nek = ennek."], ["az", "-tól", "attól", ["aztól", "atól"], "az + tól = attól."],
+     ["az", "-t (tárgyrag)", "azt", ["att", "at"], "A tárgyrag előtt nem hasonul: azt, ezt."], ["ez", "-ért", "ezért", ["eszért", "ezzért"], "Magánhangzó előtt nem hasonul: ezért."]]
+  ];
+  const S = [
+    [["A kórus egy szép {népdalt|nébdalt} énekelt.", "nép + dal: a p marad."], ["Az {ablakban|ablagban} egy macska ült.", "ablak + ban."], ["Szerettem volna menni, {azonban|azomban} esett az eső.", "azon + ban: az n marad."],
+     ["Siess, {különben|külömben} lekésed a buszt!", "külön + ben."], ["A színjátszók már a {színpadon|szímpadon} próbálnak.", "szín + pad."], ["Ezt a feladatot bárki {megoldhatja|megolthatja}.", "old + hat: a d marad."],
+     ["Vegyél elő egy {zsebkendőt|zsepkendőt}!", "zseb + kendő."], ["A polcot {vízszintesen|víszintesen} kell felszerelni.", "víz + szint + es."], ["Tegnap {dobtam|doptam} ki a régi füzeteimet.", "dob + tam."]],
+    [["Az {egészséged|egésséged} a legfontosabb.", "egész + ség."], ["Nagyapáék egy kis {községben|kösségben} laknak.", "köz + ség."], ["Peti és én régóta {barátságban|baráccságban} vagyunk.", "barát + ság."],
+     ["{Egyszer|Eccer} már jártam Budapesten.", "egy + szer."], ["A nyári {szabadság|szabaccság} alatt sokat pihentünk.", "szabad + ság."], ["Ez a játék {tetszik|teccik} a legjobban.", "tetszik: meg kell tanulni."],
+     ["Az öcsém egész nap a számítógépen {játszik|jáccik}.", "játszik: meg kell tanulni."], ["{Mindjárt|Mingyárt} kezdődik az óra.", "mindjárt: meg kell tanulni."], ["Az ebédet {rögtön|röktön} megettem.", "rögtön: meg kell tanulni."],
+     ["A kirándulás {költsége|kölcsége} ötezer forint.", "költ + ség."], ["{Mindnyájan|Minnyájan} megírtuk a házi feladatot.", "mind + nyájan."]],
+    [["{Busszal|Buszal} megyünk az uszodába.", "busz + val = busszal."], ["A levelet {kézzel|kézel} írtam.", "kéz + vel = kézzel."], ["{Ebben|Ezben} a dobozban vannak a játékaim.", "ez + ben = ebben."],
+     ["{Akkor|Azkor} indulunk, ha mindenki itt van.", "az + kor = akkor."], ["{Ehhez|Ezhez} a feladathoz számológép kell.", "ez + hez = ehhez."], ["A tó vize télen {jéggé|jégvé} fagyott.", "jég + vé = jéggé."],
+     ["{Azzal|Azal} a busszal megyünk, amelyik előbb jön.", "az + val = azzal."], ["{Akkora|Azkora} zaj volt, hogy semmit sem hallottunk.", "az + kora = akkora."], ["{Abban|Azban} a házban lakik a nagymamám.", "az + ban = abban."],
+     ["A gyerekek {homokkal|homokal} játszottak.", "homok + kal = homokkal."], ["{Efféle|Ezféle} trükköket még nem láttam.", "ez + féle = efféle."], ["A mesében a királyfi {kővé|kővvé} változott.", "Magánhangzó után a v marad: kővé."]]
+  ];
+  const types = [
+    { id: "kiejt", name: "Hogyan írjuk?", gen(l){
+      const t = pick(l === 3 ? PR[2].concat(PR[0], PR[1]) : PR[l - 1]);
+      return H.choiceTask("Így mondjuk: <span class='num'>" + esc(t[0]) + "</span>. Hogyan írjuk?", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "bont", name: "Bontsd szét!", gen(l){
+      const t = pick(BR[l - 1]);
+      return H.choiceTask("Miből áll ez a szó? <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[0]) + "</b> = " + esc(t[1]) + ". " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "rag", name: "-val, -vé, ez, az", gen(l){
+      const t = pick(VV[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span> + " + esc(t[1]), t[2], t[3], "<p><b>" + esc(t[2]) + "</b>. " + t[4] + "</p>", "Nem ez. " + t[4]);
+    } },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) }
+  ];
+  K.practice($("#practice"), { id: "h-hason", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.hason, player: pb, print: "tollbamondasok.html#hason" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Szabály</th><th>Példa</th></tr>" + [
+    ["Szóelemző írás: a tövet és a toldalékot írjuk", "nép + dal = népdal"], ["Zöngésség: a betű nem változik", "népdal, ablakban, adhat, vízszint, zsebkendő"],
+    ["Az n p, b, m előtt is n", "azonban, különben, színpad"], ["Teljes hasonulás: mindkét betű marad", "egészség, község, átcsap"],
+    ["Összeolvadás: mindkét betű marad", "barátság, szabadság, költség, egyszer"], ["Kiesés: a betű ott marad", "mindnyájan, csukd be"],
+    ["-val, -vel, -vá, -vé mássalhangzó után", "házzal, kézzel, vízzé, porrá, busszal"], ["… magánhangzó után v", "babával, hajóval, kővé"],
+    ["ez, az + mássalhangzós toldalék", "ebben, akkor, ahhoz, azzal, akkora, efféle"], ["… de", "ezt, azt, ezért, azért"],
+    ["Hagyomány: meg kell tanulni", "tetszik, játszik, mindjárt, rögtön, utca"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

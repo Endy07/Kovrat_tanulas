@@ -47,6 +47,14 @@ eq(H.sortAbc(["egy", "egyfelé", "egyféle"]), ["egy", "egyfelé", "egyféle"], 
   .flat().forEach(h => eq(H.hyph(h.replace(/-/g, "")), h, "hyph " + h));
 eq(H.letterCount("gally"), 4, "betűszám gally"); eq(H.letterCount("osztállyal"), 8, "betűszám osztállyal");
 
+// hasonulás (5. lecke): AkH 50–52., 57–58., 60., 82–83., 90.
+[["nébdal", "népdal"], ["ablagban", "ablakban"], ["azomban", "azonban"], ["külömben", "különben"], ["egésség", "egészség"], ["kösség", "község"],
+ ["baráccság", "barátság"], ["szabaccság", "szabadság"], ["eccer", "egyszer"], ["minnyájan", "mindnyájan"], ["teccik", "tetszik"], ["jáccik", "játszik"],
+ ["mingyárt", "mindjárt"], ["röktön", "rögtön"], ["házval", "házzal"], ["ezben", "ebben"], ["azkor", "akkor"], ["aggya", "adja"], ["víszszint", "vízszint"]]
+  .forEach(([t, r]) => eq(H.classify(t, r), ["hason"], "classify " + t + "/" + r));
+eq(H.classify("Eccer", "egyszer"), ["kis", "hason"], "classify Eccer/egyszer");
+eq(H.classify("házal", "házzal"), ["kettoz"], "classify házal/házzal");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");
