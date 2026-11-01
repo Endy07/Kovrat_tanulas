@@ -1,6 +1,26 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 6. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 7. lecke)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–6. lecke (PR #5–#9; a pult mindet ellenőrizte).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva):
+  - **py-check: platformfüggetlen időkorlát** (`sys.settrace` + `time.monotonic`), a pult kérésére (Windowson nincs SIGALRM). Az 1–6. lecke
+    40-nel újrafuttatva: 0 hiba.
+  - **7. Számlálós ciklus: for és range** (`python-7-for`): range három alakja, visszafelé, for vagy while, összegzés, megszámlálás,
+    for szövegen, egymásba ágyazott ciklus, lépésenkénti futtatás a VS Code-ban (töréspont, F5, F10). 11 dia, 4 levezetés, 6 típus.
+- **Tesztek:** `py-check --verify 40 python-7-for` 2527 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után a **8. lecke: listák** (`python-8-listak`), a terv szerint (a programozási tételek Pythonban).
+
+**Felhős teszt Pyodide-dal:** `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, `KOVRAT_PYODIDE=<…>/package`
+(recept, utolsó szakasz). Ha az ág PR-jét beolvasztották: `git merge origin/main` az ágba (a force-push itt tiltott), új PR.
+
+**Endi döntésére vár:** a 7. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 6. lecke)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–5. lecke (PR #5–#8; a pult mindet ellenőrizte).

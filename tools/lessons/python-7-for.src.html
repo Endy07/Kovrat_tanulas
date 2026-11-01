@@ -1,0 +1,401 @@
+<!--@HEAD-->
+<title>Python 7: for és range</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-bar .dbg{color:#89d185}
+.vs-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.vs pre{margin:0;padding:8px 0;white-space:pre;overflow-x:auto;line-height:1.55;font-family:var(--mono)}
+.vs .ln{display:inline-block;width:2.6em;text-align:right;padding-right:.6em;color:#6e7681;user-select:none}
+.vs .bp{color:#e51400}
+.vs .hl{background:#4b4b18;display:inline-block;min-width:100%}
+.vs-vars{border-top:1px solid #3c3c3c;padding:6px 12px;font-size:.8rem;color:#9da5b4}
+.vs-vars b{color:#9cdcfe;font-weight:400}
+.vs-vars i{color:#b5cea8;font-style:normal}
+.rng{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--mono);margin:6px 0}
+.rng span{border:1.5px solid var(--line);border-radius:8px;padding:2px 8px;min-width:2em;text-align:center}
+.rng span.on{border-color:var(--led);background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.rng span.off{opacity:.45;text-decoration:line-through}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 7. lecke</span>
+  <h1>Számlálós ciklus: <code>for</code> és <code>range</code></h1>
+  <p class="lead">Ha előre tudod, hányszor kell ismételni, a <code>for</code> ciklus egyszerűbb, mint a <code>while</code>: nem kell kezdőérték, és nem felejtheted el a léptetést. A <code>range</code> adja a számokat, amelyeken a ciklus végigmegy. A <code>for</code> egy szöveg betűin is végig tud menni.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írd át a range számait, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> a <a href="python-6-while.html">6. lecke</a> (while, számláló, gyűjtő). <b>Ebben a leckében:</b> <code>for i in range(…)</code>, a range három alakja, a záró érték, ami <b>nincs benne</b>, összegzés és megszámlálás for-ral, for egy szövegen, ciklus a ciklusban, és lépésenkénti futtatás (Debug) a VS Code-ban.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. Írd át a range számait, és figyeld meg, mi változik!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A sárga sor fut éppen. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="range" aria-selected="true">range(1, 6)</button>
+    <button class="tab" data-m="forwhile" aria-selected="false">for vagy while?</button>
+    <button class="tab" data-m="tabla" aria-selected="false">Ciklus a ciklusban</button>
+    <button class="tab" data-m="debug" aria-selected="false">Lépésenként a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. A „Milyen számokat ad?” feladatnál a számokat vesszővel vagy szóközzel elválasztva írd be. Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép lefuttatja a programodat, és ellenőrzi a kimenetet. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A záró érték nincs benne</span><span><code>range(1, 6)</code> → 1, 2, 3, 4, 5. A 6 nincs benne! 1-től n-ig: <code>range(1, n + 1)</code>.</span></div>
+    <div class="trick"><span class="t">Hányszor fut le?</span><span><code>range(n)</code>: n-szer. <code>range(a, b)</code>: b − a-szor (ha b nagyobb).</span></div>
+    <div class="trick"><span class="t">Visszafelé</span><span><code>range(10, 0, -1)</code> → 10, 9, …, 1. Negatív lépés nélkül üres!</span></div>
+    <div class="trick"><span class="t">for vagy while?</span><span>Tudod előre, hányszor? → <code>for</code>. Valamitől függ (amíg 0, amíg jó a jelszó)? → <code>while</code>.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-6-while.html">← 6. lecke: while</a>
+    <a class="btn" href="programozasi-tetelek.html">Programozási tételek</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s&lt;=\s|\s<=\s/g, " kisebb vagy egyenlő "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\s==\s/g, " egyenlő-e "], [/\+=/g, " plusz egyenlő "], [/\s%\s/g, " maradéka "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const FOR = has(/\bfor\b[^\n]*\bin\b/, "használj for ciklust.");
+    const RNG = has(/range\s*\(/, "használd a range()-et.");
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    // a Python range(a, b, d) elemei
+    const pr = (a, b, d) => { d = d || 1; const r = []; if (d > 0) for (let x = a; x < b; x += d) r.push(x); else for (let x = a; x > b; x += d) r.push(x); return r; };
+    const lines = a => a.join("\n");
+    const WORDS = ["alma", "Python", "kutya", "iskola", "Kovrat", "program", "ablak", "macska"];
+    const MAGAN = "aáeéiíoóöőuúüű";
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("for i in range(1, 6):", I('print(f"{i}. kör")'), 'print("Vége.")') },
+      alap: { code: J("for i in range(5):", I("print(i)")) },
+      ketto: { code: J("for i in range(1, 6):", I("print(i)")) },
+      lepes: { code: J("for i in range(0, 21, 5):", I("print(i)"), 'print("---")', "for i in range(10, 0, -2):", I("print(i)")) },
+      n: { code: J('n = int(input("Meddig? "))', "for i in range(1, n + 1):", I('print(i, end=" ")'), "print()"), ins: ["7"] },
+      osszeg: { code: J("osszeg = 0", "for i in range(1, 101):", I("osszeg += i"), 'print(f"1-től 100-ig: {osszeg}")') },
+      szamol: { code: J("db = 0", "for i in range(1, 51):", I("if i % 7 == 0:"), I(I("db += 1")), 'print(f"1 és 50 között {db} szám osztható 7-tel.")') },
+      szoveg: { code: J('szo = "Python"', "for betu in szo:", I("print(betu)")) },
+      magan: { code: J('mondat = input("Írj egy mondatot: ")', "db = 0", "for betu in mondat.lower():", I('if betu in "aáeéiíoóöőuúüű":'), I(I("db += 1")), 'print(f"Magánhangzók száma: {db}")'), ins: ["Szia, Kovrat!"] },
+      tabla: { code: J("for sor in range(1, 4):", I("for osz in range(1, 4):"), I(I('print(sor * osz, end="\\t")')), I("print()")) },
+      csillag: { code: J('n = int(input("Hány sor? "))', "for i in range(1, n + 1):", I('print("*" * i)')), ins: ["5"] },
+      forwhile: { code: J("# while-lal:", "i = 1", "while i <= 3:", I("print(i)"), I("i += 1"), "# ugyanez for-ral:", "for i in range(1, 4):", I("print(i)")) },
+      hibaT: { code: J('n = input("Hányszor? ")', "for i in range(n):", I('print("Szia")')), ins: ["3"], err: "TypeError" },
+      hibaI: { code: J("for i in 5:", I("print(i)")), err: "TypeError" }
+    };
+
+    /* ---- „Milyen számokat ad?” (a py-check a print(*range(…)) kimenetét veti össze) ---- */
+    const mkR = (a, b, d) => { const code = b == null ? "range(" + a + ")" : d == null ? "range(" + a + ", " + b + ")" : "range(" + a + ", " + b + ", " + d + ")"; const v = b == null ? pr(0, a) : pr(a, b, d); return { expr: code, code: 'print(*' + code + ', sep=", ")', ans: v.join(", "), vals: v }; };
+    const RANGE = [
+      [
+        () => { const n = rnd(3, 7); return Object.assign(mkR(n), { sol: "range(" + n + "): 0-tól indul, és a " + n + " már nincs benne." }); },
+        () => { const a = rnd(1, 5), b = a + rnd(3, 6); return Object.assign(mkR(a, b), { sol: "range(" + a + ", " + b + "): " + C.tol(a) + " indul, " + C.Az(b).toLowerCase() + b + " már nincs benne." }); }
+      ],
+      [
+        () => { const d = pick([2, 3, 5]), a = rnd(0, 3), b = a + d * rnd(3, 5) + rnd(0, d - 1); return Object.assign(mkR(a, b, d), { sol: "range(" + a + ", " + b + ", " + d + "): " + C.tol(a) + " indul, " + d + "-" + ({ 2: "esével", 3: "asával", 5: "ösével" }[d]) + " lép, és " + C.az(b) + C.acc(b) + " már nem éri el." }); },
+        () => { const b = rnd(5, 9), a = rnd(0, 2); return Object.assign(mkR(b, a, -1), { sol: "Visszafelé lép (-1); a záró érték (" + a + ") itt sincs benne." }); }
+      ],
+      [
+        () => { const a = rnd(10, 20), d = pick([2, 3]), b = a - d * rnd(3, 4) - rnd(0, d - 1); return Object.assign(mkR(a, b, -d), { sol: "Visszafelé, " + ({ 2: "kettesével", 3: "hármasával" }[d]) + " lép; a záró érték (" + b + ") itt sincs benne, és ami azon túl van, az sem." }); },
+        () => { const n = rnd(3, 6); return pick([Object.assign(mkR(-n, 1), { sol: "Negatív számtól is indulhat: " + C.tol(-n) + " 0-ig (az 1 már nincs benne)." }), Object.assign(mkR(0, 2 * n + 1, 2), { sol: "0-tól kettesével: a páros számok " + 2 * n + "-ig." })]); }
+      ]
+    ];
+
+    /* ---- „Hányszor fut le?” ---- */
+    const HANY = [
+      [
+        () => { const n = rnd(3, 12); return { code: J("for i in range(" + n + "):", I('print("Szia")')), vcode: J("db = 0", "for i in range(" + n + "):", I("db += 1"), "print(db)"), ans: S(n), sol: "range(" + n + "): 0, 1, …, " + (n - 1) + ", ez pontosan " + n + " szám." }; },
+        () => { const a = rnd(1, 5), b = a + rnd(2, 9); return { code: J("for i in range(" + a + ", " + b + "):", I("print(i)")), vcode: J("db = 0", "for i in range(" + a + ", " + b + "):", I("db += 1"), "print(db)"), ans: S(b - a), sol: b + " − " + a + " = " + (b - a) + " (a záró érték nincs benne)." }; }
+      ],
+      [
+        () => { const d = pick([2, 3, 5]), b = rnd(10, 30); return { code: J("for i in range(0, " + b + ", " + d + "):", I("print(i)")), vcode: J("db = 0", "for i in range(0, " + b + ", " + d + "):", I("db += 1"), "print(db)"), ans: S(pr(0, b, d).length), sol: "Az értékek: " + pr(0, b, d).join(", ") + "." }; },
+        () => { const a = rnd(5, 12), b = rnd(1, 4); return pick([
+          { code: J("for i in range(" + a + ", " + b + "):", I("print(i)")), vcode: J("db = 0", "for i in range(" + a + ", " + b + "):", I("db += 1"), "print(db)"), ans: "0", sol: "A kezdőérték nagyobb a záró értéknél, a lépés +1: a range üres, a ciklus egyszer sem fut le. Visszafelé -1 lépés kellene." },
+          { code: J("for i in range(" + a + ", " + b + ", -1):", I("print(i)")), vcode: J("db = 0", "for i in range(" + a + ", " + b + ", -1):", I("db += 1"), "print(db)"), ans: S(a - b), sol: "Visszafelé: " + pr(a, b, -1).join(", ") + ", ez " + (a - b) + " kör." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 5), b = rnd(2, 5); return { code: J("for i in range(" + a + "):", I("for j in range(" + b + "):"), I(I('print("*", end="")')), I("print()")), vcode: J("db = 0", "for i in range(" + a + "):", I("for j in range(" + b + "):"), I(I("db += 1")), "print(db)"), ans: S(a * b), sol: "A belső ciklus magja a külső minden körében " + b + "-" + ({ 2: "szer", 3: "szor", 4: "szer", 5: "ször" }[b]) + " fut: " + a + " · " + b + " = " + a * b + "." }; },
+        () => { const w = pick(WORDS); return { code: J('szo = "' + w + '"', "for betu in szo:", I("print(betu)")), vcode: J('szo = "' + w + '"', "db = 0", "for betu in szo:", I("db += 1"), "print(db)"), ans: S(w.length), sol: "Ahány betű, annyi kör: " + w.length + "." }; }
+      ]
+    ];
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const n = rnd(3, 5); return { code: J("for i in range(" + n + "):", I("print(i)")), ans: lines(pr(0, n)), sol: "0-tól indul, és " + C.az(n) + n + " már nincs benne." }; },
+        () => { const a = rnd(1, 3), b = a + rnd(2, 4); return { code: J("for i in range(" + a + ", " + b + "):", I("print(i * 2)")), ans: lines(pr(a, b).map(x => 2 * x)), sol: "Az i: " + pr(a, b).join(", ") + "; ezek kétszerese íródik ki." }; }
+      ],
+      [
+        () => { const n = rnd(3, 6); const s = n * (n + 1) / 2; return { code: J("osszeg = 0", "for i in range(1, " + (n + 1) + "):", I("osszeg += i"), "print(osszeg)"), ans: S(s), sol: "1 + … + " + n + " = " + s + ". A print a ciklus után van: egyszer fut." }; },
+        () => { const w = pick(WORDS.filter(x => x.length <= 6)); return { code: J('szo = "' + w + '"', "for betu in szo:", I('print(betu, end="-")')), ans: w.split("").join("-") + "-", sol: "Minden betű után egy kötőjel, és nem kezd új sort (end=\"-\")." }; },
+        () => { const n = rnd(3, 5); return { code: J("for i in range(1, " + (n + 1) + "):", I('print("*" * i)')), ans: lines(pr(1, n + 1).map(k => "*".repeat(k))), sol: "Minden körben i darab csillag." }; }
+      ],
+      [
+        () => { const a = rnd(2, 3), b = rnd(2, 3); return { code: J("for i in range(1, " + (a + 1) + "):", I("for j in range(1, " + (b + 1) + "):"), I(I('print(i * j, end=" ")')), I("print()")), ans: lines(pr(1, a + 1).map(i => pr(1, b + 1).map(j => i * j).join(" ") + " ")), sol: "Ciklus a ciklusban: minden sorban az i-szeres értékek; a sor végén a print() új sort kezd." }; },
+        () => { const n = rnd(8, 15); return { code: J("db = 0", "for i in range(1, " + (n + 1) + "):", I("if i % 3 == 0:"), I(I("db += 1")), "print(db)"), ans: S(pr(1, n + 1).filter(x => x % 3 === 0).length), sol: "Megszámolja a 3-mal osztható számokat 1 és " + n + " között: " + pr(1, n + 1).filter(x => x % 3 === 0).join(", ") + "." }; },
+        () => { const w = pick(["alma", "iskola", "Python", "kutya", "ablak"]); const v = w.toLowerCase().split("").filter(c => MAGAN.includes(c)).length; return { code: J('szo = "' + w + '"', "db = 0", "for b in szo:", I('if b in "aeiou":'), I(I("db += 1")), "print(db)"), ans: S(v), sol: "Megszámolja a magánhangzókat (a, e, i, o, u) a szóban." }; }
+      ]
+    ];
+
+    /* ---- „Írd meg!” ---- */
+    const WRITE = [
+      [
+        () => { const n = rnd(4, 9); return { q: "Írd ki for ciklussal egymás alá a számokat 1-től " + n + "-ig!",
+          code: J("for i in range(1, " + (n + 1) + "):", I("print(i)")), tests: [{ ins: [], exact: lines(pr(1, n + 1)) }], must: [FOR, RNG], ex: "range(1, " + (n + 1) + "): a záró érték nincs benne, ezért " + (n + 1) + " kell, hogy " + C.az(n) + n + " is benne legyen." }; },
+        () => { const n = rnd(3, 6), w = pick(["Hajrá!", "Python", "Szia"]); return { q: "Írd ki " + n + "-" + ({ 3: "szor", 4: "szer", 5: "ször", 6: "szor" }[n]) + " egymás alá: <code>" + w + "</code>! Használj for ciklust és range-et.",
+          code: J("for i in range(" + n + "):", I('print("' + w + '")')), tests: [{ ins: [], exact: lines(Array(n).fill(w)) }], must: [FOR, RNG], mustNot: [has(new RegExp("(print[^\\n]*\\n[^\\n]*){" + n + "}"), "ne írd le " + n + " külön print-tel: a ciklus ismételjen.")], ex: "range(" + n + ") pontosan " + n + " kört ad." }; },
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és írd ki for ciklussal egymás alá a számokat 1-től n-ig!",
+          code: J('n = int(input("Meddig? "))', "for i in range(1, n + 1):", I("print(i)")), tests: [3, rnd(5, 9)].map(n => ({ ins: [S(n)], exact: lines(pr(1, n + 1)) })), must: [FOR, RNG, INP], ex: "range(1, n + 1): a + 1 miatt az n is benne van." })
+      ],
+      [
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és számold ki for ciklussal az 1 + 2 + … + n összeget! Írd ki f-stringgel.",
+          code: J('n = int(input("n = "))', "osszeg = 0", "for i in range(1, n + 1):", I("osszeg += i"), 'print(f"Az összeg: {osszeg}")'), tests: [rnd(3, 10), rnd(20, 100)].map(n => ({ ins: [S(n)], exp: [n * (n + 1) / 2] })), must: [FOR, RNG, INP], fstr: true, ex: "Gyűjtő változó: osszeg = 0 a ciklus előtt, osszeg += i benne, kiírás utána." }),
+        () => { const n = rnd(5, 9); return { q: "Írj visszaszámlálást for ciklussal " + C.tol(n) + " 1-ig, egymás alá! (Használd a range negatív lépését.)",
+          code: J("for i in range(" + n + ", 0, -1):", I("print(i)")), tests: [{ ins: [], exact: lines(pr(n, 0, -1)) }], must: [FOR, has(/range\s*\([^)]*-\s*1\s*\)/, "visszafelé a range harmadik száma -1.")], ex: "range(" + n + ", 0, -1): a 0 már nincs benne." }; },
+        () => ({ q: "Kérj be egy egész számot, és írd ki a szorzótábláját 1-től 10-ig, soronként így: <code>3 x 7 = 21</code>!",
+          code: J('n = int(input("Szám: "))', "for i in range(1, 11):", I('print(f"{n} x {i} = {n * i}")')), tests: [rnd(2, 9), rnd(11, 20)].map(n => ({ ins: [S(n)], exact: lines(pr(1, 11).map(i => n + " x " + i + " = " + n * i)) })), must: [FOR, RNG, INP], ex: "Egy ciklus 1-től 10-ig, a kiírásban az f-string három értéket illeszt be." })
+      ],
+      [
+        () => ({ q: "Kérj be egy szót, és írd ki f-stringgel, hány magánhangzó van benne (a, á, e, é, i, í, o, ó, ö, ő, u, ú, ü, ű; a nagybetű is számít)! Használj for ciklust a betűkön.",
+          code: J('szo = input("Egy szó: ")', "db = 0", "for b in szo.lower():", I('if b in "aáeéiíoóöőuúüű":'), I(I("db += 1")), 'print(f"Magánhangzók: {db}")'), tests: shuffle(["Kovrat", "Iskola", "számítógép", "Debrecen", "OKTÓBER", "program"]).slice(0, 2).map(w => ({ ins: [w], exp: [w.toLowerCase().split("").filter(c => MAGAN.includes(c)).length] })), must: [FOR, INP], fstr: true, ex: "for b in szo: minden betűn végigmegy. A .lower() kisbetűsít, így a nagy magánhangzó is számít." }),
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és rajzolj csillagokból egy n soros háromszöget: az első sorban 1, a másodikban 2 csillag, és így tovább!",
+          code: J('n = int(input("Hány sor? "))', "for i in range(1, n + 1):", I('print("*" * i)')), tests: [3, rnd(4, 7)].map(n => ({ ins: [S(n)], exact: lines(pr(1, n + 1).map(k => "*".repeat(k))) })), must: [FOR, INP], ex: "A \"*\" * i pontosan i csillag." }),
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és írd ki f-stringgel, hány szám osztható 3-mal vagy 5-tel 1 és n között (a határokat is beleértve)!",
+          code: J('n = int(input("n = "))', "db = 0", "for i in range(1, n + 1):", I("if i % 3 == 0 or i % 5 == 0:"), I(I("db += 1")), 'print(f"Darab: {db}")'), tests: [rnd(10, 20), rnd(50, 100)].map(n => ({ ins: [S(n)], exp: [pr(1, n + 1).filter(x => x % 3 === 0 || x % 5 === 0).length] })), must: [FOR, INP], fstr: true, ex: "Megszámlálás: db = 0, a ciklusban if-fel db += 1. „Vagy” → or." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const n = rnd(3, 6); return pick([
+          { code: J("for i in range(" + n + ")", I("print(i)")), err: "SyntaxError", fix: J("for i in range(" + n + "):", I("print(i)")), sol: "Hiányzik a kettőspont." },
+          { code: J("for i in range(" + n + "):", "print(i)"), err: "IndentationError", fix: J("for i in range(" + n + "):", I("print(i)")), sol: "A ciklusmagot be kell húzni." },
+          { code: J("for i in range(" + n + "):", I("print(i)")), err: "", sol: "Hibátlan." }]); },
+        () => { const n = rnd(3, 6); return pick([
+          { code: J("for i in " + n + ":", I("print(i)")), err: "TypeError", fix: J("for i in range(" + n + "):", I("print(i)")), sol: "Egy számon nem lehet végigmenni (int object is not iterable). range(" + n + ") kell." },
+          { code: J("for i in range(" + n + ".0):", I("print(i)")), err: "TypeError", fix: J("for i in range(" + n + "):", I("print(i)")), sol: "A range csak egész számot kaphat, tizedes törtet (float) nem." }]); }
+      ],
+      [
+        () => { const k = S(rnd(3, 6)); return pick([
+          { code: J('n = input("Hányszor? ")', "for i in range(n):", I('print("Szia")')), ins: [k], err: "TypeError", fix: J('n = int(input("Hányszor? "))', "for i in range(n):", I('print("Szia")')), sol: "Az n szöveg; a range számot vár: int(input(…))." },
+          { code: J('n = int(input("Hányszor? "))', "for i in range(n):", I('print("Szia")')), ins: [k], err: "", sol: "Hibátlan." }]); },
+        () => pick([
+          { code: J("for i in range(1, 4):", I("osszeg += i"), "print(osszeg)"), err: "NameError", fix: J("osszeg = 0", "for i in range(1, 4):", I("osszeg += i"), "print(osszeg)"), sol: "Az osszeg-nek nincs kezdőértéke: osszeg = 0 kell a ciklus elé." },
+          { code: J("for i in range(10, 0):", I("print(i)")), err: "", sol: "Nincs hiba, de nem ír ki semmit: a range üres, mert visszafelé -1 lépés kellene." }])
+      ],
+      [
+        () => pick([
+          { code: J('for betu in "alma":', I("print(betu)")), err: "", sol: "Hibátlan: a for egy szöveg betűin is végigmegy." },
+          { code: J("for b in 2026:", I("print(b)")), err: "TypeError", fix: J('for b in "2026":', I("print(b)")), sol: "Egy szám jegyein nem lehet közvetlenül végigmenni; szövegként igen: \"2026\" (vagy str(2026))." },
+          { code: J("for i in range(1, 10, 0):", I("print(i)")), err: "ValueError", fix: J("for i in range(1, 10, 1):", I("print(i)")), sol: "A range lépése nem lehet 0 (akkor sosem érne a végére)." }]),
+        () => pick([
+          { code: J("for i in range(3):", I("for j in range(2):"), I("print(i, j)")), err: "IndentationError", fix: J("for i in range(3):", I("for j in range(2):"), I(I("print(i, j)"))), sol: "A belső ciklus magját még egyszer be kell húzni (8 szóköz)." },
+          { code: J("for i in range(3):", I("for j in range(2):"), I(I("print(i, j)"))), err: "", sol: "Hibátlan: 3 · 2 = 6 sort ír ki." }])
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "IndentationError", "TypeError", "ValueError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => { const n = rnd(4, 9); return { q: "Ennek a programnak ki kellene írnia a számokat 1-től " + n + "-ig, egymás alá, de az utolsó hiányzik. Javítsd ki!",
+          starter: J("for i in range(1, " + n + "):", I("print(i)")) + "\n", code: J("for i in range(1, " + (n + 1) + "):", I("print(i)")), tests: [{ ins: [], exact: lines(pr(1, n + 1)) }], ex: "A záró érték nincs benne: range(1, " + (n + 1) + ")." }; },
+        () => { const n = rnd(4, 9); return { q: "Ennek a programnak ki kellene írnia a számokat 1-től " + n + "-ig, de 0-tól kezdi, és az utolsót kihagyja. Javítsd ki!",
+          starter: J("for i in range(" + n + "):", I("print(i)")) + "\n", code: J("for i in range(1, " + (n + 1) + "):", I("print(i)")), tests: [{ ins: [], exact: lines(pr(1, n + 1)) }], ex: "range(" + n + ") a 0-tól " + (n - 1) + "-ig ad számokat. 1-től " + n + "-ig: range(1, " + (n + 1) + ")." }; }
+      ],
+      [
+        () => { const n = rnd(5, 9); return { q: "Ennek a programnak visszaszámlálást kellene kiírnia " + C.tol(n) + " 1-ig, de nem ír ki semmit. Javítsd ki!",
+          starter: J("for i in range(" + n + ", 0):", I("print(i)")) + "\n", code: J("for i in range(" + n + ", 0, -1):", I("print(i)")), tests: [{ ins: [], exact: lines(pr(n, 0, -1)) }], ex: "Visszafelé a lépés -1: range(" + n + ", 0, -1). Nélküle a range üres." }; },
+        () => ({ q: "Ennek a programnak az 1 + 2 + … + n összeget kellene kiírnia, egyszer, de minden körben kiír valamit. Javítsd ki!",
+          starter: J('n = int(input("n = "))', "osszeg = 0", "for i in range(1, n + 1):", I("osszeg += i"), I('print(f"Összeg: {osszeg}")')) + "\n", code: J('n = int(input("n = "))', "osszeg = 0", "for i in range(1, n + 1):", I("osszeg += i"), 'print(f"Összeg: {osszeg}")'), tests: [rnd(3, 6), rnd(7, 12)].map(n => ({ ins: [S(n)], exact: "Összeg: " + n * (n + 1) / 2 })), ex: "A print behúzás nélkül, a ciklus után." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak az 1 + 2 + … + n összeget kellene kiírnia, de két hiba is van benne. Javítsd ki!",
+          starter: J('n = int(input("n = "))', "for i in range(1, n):", I("osszeg = 0"), I("osszeg += i"), 'print(f"Összeg: {osszeg}")') + "\n", code: J('n = int(input("n = "))', "osszeg = 0", "for i in range(1, n + 1):", I("osszeg += i"), 'print(f"Összeg: {osszeg}")'), tests: [rnd(3, 9), rnd(10, 40)].map(n => ({ ins: [S(n)], exp: [n * (n + 1) / 2] })), ex: "A nullázás a ciklus elé kell (különben minden körben elölről kezdi), és a range(1, n + 1), hogy az n is benne legyen." }),
+        () => ({ q: "Ennek a programnak n sorból álló csillagháromszöget kellene rajzolnia (1, 2, … n csillag), de rosszul rajzol. Javítsd ki!",
+          starter: J('n = int(input("Hány sor? "))', "for i in range(n):", I('print("*" * i)')) + "\n", code: J('n = int(input("Hány sor? "))', "for i in range(1, n + 1):", I('print("*" * i)')), tests: [3, rnd(4, 7)].map(n => ({ ins: [S(n)], exact: lines(pr(1, n + 1).map(k => "*".repeat(k))) })), ex: "A range(n) 0-tól indul: az első sor üres, az utolsó csak n − 1 csillag. range(1, n + 1) kell." })
+      ]
+    ];
+
+    const banks = [
+      { id: "range", kind: "kiir", L: RANGE },
+      { id: "hany", kind: "kiir", L: HANY },
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { RANGE, HANY, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, pr, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { RANGE, HANY, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, pr } = LOGIC;
+  const S = String;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: [], rows: 5 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  const rng = (vals, on, off) => '<div class="rng">' + vals.map((v, i) => '<span class="' + (i === on ? "on" : "") + '">' + v + "</span>").join("") + (off != null ? '<span class="off">' + off + "</span>" : "") + "</div>";
+  // VS Code hibakereső: töréspont, kiemelt sor, Variables panel
+  const dbg = (src, bp, hl, vars) => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span><span class="dbg">▶ Run and Debug · ⏭ Step Over (F10)</span></div><pre>' +
+    src.map((l, i) => '<span class="' + (hl === i + 1 ? "hl" : "") + '"><span class="ln">' + (bp === i + 1 ? '<span class="bp">●</span> ' : "") + (i + 1) + "</span>" + esc(l) + "</span>").join("\n") + '</pre><div class="vs-vars">VARIABLES › Locals: ' + (Object.keys(vars).length ? Object.keys(vars).map(k => "<b>" + esc(k) + "</b> = <i>" + esc(vars[k]) + "</i>").join(" · ") : "(még üres)") + "</div></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function rangeFrames(){
+    const src = ["for i in range(1, 6):", "    print(i)"], v = pr(1, 6);
+    const F = [{ cap: "A range(1, 6) a számokat egytől indítja, és a hat előtt áll meg: 1, 2, 3, 4, 5. A 6 nincs benne!", html: srcHtml(src, 1) + rng(v, -1, 6) }];
+    v.forEach((x, k) => F.push({ cap: (k + 1) + ". kör: a for az i-be teszi a következő számot, " + x + ", és lefut a ciklusmag: kiírja.", html: srcHtml(src, 2) + rng(v, k, 6) + varTbl({ i: x }) + outBox(v.slice(0, k + 1).join("\n")) }));
+    F.push({ cap: "Elfogytak a számok: a ciklus véget ér. Nem kellett kezdőérték, feltétel és i += 1: a for mindezt elvégzi.", html: srcHtml(src, 0) + outBox(v.join("\n")) });
+    return F;
+  }
+  function forwhileFrames(){
+    const w = ["i = 1", "while i <= 5:", "    print(i)", "    i += 1"], f = ["for i in range(1, 6):", "    print(i)"];
+    return [
+      { cap: "Ugyanaz a feladat kétféleképpen: írjuk ki a számokat egytől ötig. Balra while, jobbra for.", html: '<div class="two-col">' + srcHtml(w, 0) + srcHtml(f, 0) + "</div>" },
+      { cap: "A while-hoz három dolog kell: kezdőérték a ciklus előtt, feltétel, és léptetés a cikluson belül. Ha a léptetés kimarad, végtelen ciklus lesz.", html: '<div class="two-col">' + srcHtml(w, 1) + srcHtml(f, 0) + "</div>" },
+      { cap: "A for-ban ez mind egy sorban van: a range megadja, honnan indul és meddig megy, a for pedig magától lépteti az i-t.", html: '<div class="two-col">' + srcHtml(w, 0) + srcHtml(f, 1) + "</div>" },
+      { cap: "Ezért: ha tudod, hányszor kell ismételni, használj for-t. Ha valamitől függ, például amíg 0-t nem írnak be, akkor while kell.", html: '<p class="big">tudom, hányszor → <span class="led">for</span><br>amíg valami igaz → <span class="led">while</span></p>' }
+    ];
+  }
+  function tablaFrames(){
+    const src = ["for sor in range(1, 4):", "    for osz in range(1, 4):", '        print(sor * osz, end=" ")', "    print()"];
+    const rows = [];
+    const F = [{ cap: "Kis szorzótábla: ciklus a ciklusban. A külső ciklus a sorokon megy végig, a belső egy soron belül az oszlopokon.", html: srcHtml(src, 0) }];
+    for (let r = 1; r <= 3; r++){
+      F.push({ cap: "A külső ciklus: sor = " + r + ". A belső ciklus végigmegy az oszlopokon: " + r + " · 1, " + r + " · 2, " + r + " · 3, egy sorba írva.", html: srcHtml(src, 3) + varTbl({ sor: r, osz: "1, 2, 3" }) + outBox(rows.concat([[1, 2, 3].map(c => r * c).join(" ")]).join("\n")) });
+      rows.push([1, 2, 3].map(c => r * c).join(" "));
+    }
+    F.push({ cap: "Minden sor végén az üres print új sort kezd. A belső ciklus magja összesen háromszor három, vagyis kilencszer futott le.", html: srcHtml(src, 4) + outBox(rows.join("\n")) });
+    return F;
+  }
+  function debugFrames(){
+    const src = ["osszeg = 0", "for i in range(1, 4):", "    osszeg += i", 'print(f"Összeg: {osszeg}")'];
+    return [
+      { cap: "A VS Code-ban a programot lépésenként is futtathatod, és közben látod a változókat. Először kattints a sorszám elé: megjelenik egy piros pötty, a töréspont.", html: dbg(src, 1, 0, {}) },
+      { cap: "Indítás: a Run and Debug, vagy az F5. A program a töréspontnál megáll, a sárga sáv mutatja, melyik sor jön.", html: dbg(src, 1, 1, {}) },
+      { cap: "A Step Over, vagy az F10 egy sort lép. Lent, a Variables panelen látod a változókat: osszeg = 0.", html: dbg(src, 1, 2, { osszeg: 0 }) },
+      { cap: "A sárga sor mindig az, amelyik a következő lépésben fut. Még két lépés: az osszeg += i már lefutott, az i értéke 1, az összeg 1. Így látod, hogyan változnak körről körre.", html: dbg(src, 1, 2, { osszeg: 1, i: 1 }) },
+      { cap: "Néhány lépéssel később: i = 3, az összeg 6. Ez ugyanaz a nyomkövetés, amit papíron csinálsz, csak a gép vezeti a táblázatot.", html: dbg(src, 1, 4, { osszeg: 6, i: 3 }) }
+    ];
+  }
+  const MET = { range: "range(1, 6)", forwhile: "for vagy while?", tabla: "Ciklus a ciklusban", debug: "Lépésenként a VS Code-ban" };
+  const MF = { range: rangeFrames, forwhile: forwhileFrames, tabla: tablaFrames, debug: debugFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "range" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "A for ciklus", h:
+      ex("alap") +
+      "<ul><li>A <code>for i in range(5):</code> azt jelenti: <b>minden i-re</b> a range számai közül, sorban, futtasd le a behúzott sorokat.</li><li>A <code>range(5)</code> öt számot ad: <b>0, 1, 2, 3, 4</b>. A számolás 0-tól indul, és az 5 <b>nincs benne</b>.</li><li>Nem kell kezdőérték, és nem kell <code>i += 1</code>: a for magától lép.</li></ul>" },
+    { k: "range(a, b)", t: "Honnan meddig: range(a, b)", h:
+      ex("ketto") +
+      "<ul><li><code>range(1, 6)</code> → 1, 2, 3, 4, 5. A kezdőérték <b>benne van</b>, a záró érték <b>nincs</b>.</li><li>1-től n-ig: <code>range(1, n + 1)</code>.</li><li>Hányszor fut le? A záró mínusz a kezdő: 6 − 1 = 5.</li></ul>" + playBtn("range") },
+    { k: "Lépésköz", t: "range(a, b, lépés) és visszafelé", h:
+      ex("lepes") +
+      "<ul><li>A harmadik szám a <b>lépésköz</b>: <code>range(0, 21, 5)</code> → 0, 5, 10, 15, 20.</li><li>Visszafelé negatív lépés kell: <code>range(10, 0, -2)</code> → 10, 8, 6, 4, 2. A 0 itt sincs benne.</li><li>Negatív lépés nélkül a <code>range(10, 0)</code> <b>üres</b>: a ciklus egyszer sem fut le, és hibaüzenet sincs.</li></ul>" },
+    { k: "Bekért határ", t: "A határt a felhasználó adja meg", h:
+      ex("n") + "<p>A range számai változók is lehetnek: <code>range(1, n + 1)</code>. Az <code>int(input())</code> itt is kell, mert a range csak egész számot fogad el.</p>" },
+    { k: "for vagy while?", t: "Mikor for, mikor while?", h:
+      ex("forwhile") +
+      "<ul><li><b>for</b>: ha előre tudod, hányszor (10-szer, 1-től n-ig, egy szó minden betűjére).</li><li><b>while</b>: ha valamitől függ, meddig (amíg 0-t nem írnak be, amíg jó nem lesz a jelszó).</li><li>A for-ban nem tudsz végtelen ciklust csinálni azzal, hogy elfelejted a léptetést.</li></ul>" + playBtn("forwhile") },
+    { k: "Összegzés", t: "Összegzés és megszámlálás for-ral", h:
+      ex("osszeg") + ex("szamol") +
+      "<p>Ugyanaz a minta, mint a while-nál: a gyűjtő vagy számláló <b>előtte</b> kap kezdőértéket (0), a ciklusban nő, a kiírás <b>utána</b> jön. A megszámlálásnál a ciklusban egy <code>if</code> dönti el, számít-e az adott szám.</p>" },
+    { k: "Szövegen", t: "for egy szöveg betűin", h:
+      ex("szoveg") + ex("magan") +
+      "<ul><li>A <code>for betu in szo:</code> a szöveg <b>minden betűjén</b> végigmegy, sorban. Nem kell range.</li><li>A <code>betu in \"aáeéiíoóöőuúüű\"</code> megmondja, magánhangzó-e. A <code>.lower()</code> előbb kisbetűsít, hogy a nagybetű is számítson.</li><li>Egy számon (<code>for b in 2026</code>) nem lehet végigmenni: TypeError. Szövegként igen: <code>\"2026\"</code>.</li></ul>" },
+    { k: "Ciklus a ciklusban", t: "Egymásba ágyazott for", h:
+      ex("tabla") + ex("csillag") +
+      "<ul><li>A belső ciklus a külső <b>minden körében</b> teljesen lefut: 3 · 3 = 9-szer fut a belső magja.</li><li>A belső ciklus magja még 4 szóközzel beljebb kezdődik (összesen 8).</li><li>A <code>\"*\" * i</code> egymagában is kiad egy sort i csillaggal; a csillagháromszöghöz így egy ciklus is elég.</li></ul>" + playBtn("tabla") },
+    { k: "VS Code", t: "Lépésenkénti futtatás a VS Code-ban", h:
+      dbg(["osszeg = 0", "for i in range(1, 4):", "    osszeg += i", 'print(f"Összeg: {osszeg}")'], 1, 2, { osszeg: 1, i: 1 }) +
+      "<ol><li>Kattints a sorszám elé: piros pötty lesz, ez a <b>töréspont</b>.</li><li>Indítás: <b>Run and Debug</b> (F5), és válaszd a Python File-t. A program a töréspontnál megáll; a sárga sáv azt a sort mutatja, amelyik <b>következik</b>.</li><li><b>Step Over</b> (F10): egy sort lép. A <b>Variables</b> panelen látod, mi van a változókban.</li><li>Folytatás a következő töréspontig: F5. Leállítás: Shift+F5.</li></ol><p>Ha nem érted, mit csinál egy ciklus, így végig tudod nézni, körről körre.</p>" + playBtn("debug") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
+      [["range(1, 10) (1-től 10-ig)", "a 10 kimarad", "range(1, 11)"],
+       ["range(5) (1-től 5-ig)", "0, 1, 2, 3, 4", "range(1, 6)"],
+       ["range(10, 0)", "üres, nem fut le", "range(10, 0, -1)"],
+       ["for i in range(n)  (n = input())", "TypeError", "n = int(input())"],
+       ["for i in 5:", "TypeError: 'int' object is not iterable", "for i in range(5):"],
+       ["print a ciklusban (összeg)", "minden körben kiír", "a ciklus után"],
+       ["osszeg = 0 a ciklusban", "mindig elölről kezdi", "a ciklus elé"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaT") + ex("hibaI") },
+    { k: "Trükkök", t: "Tanácsok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Írd fel a range-et</span><span>Mielőtt futtatod, írd le, milyen számokat ad: <code>range(2, 8, 2)</code> → 2, 4, 6. A 8 nincs benne!</span></div>" +
+      "<div class='trick'><span class='t'>+ 1 a végén</span><span>„1-től n-ig” mindig <code>range(1, n + 1)</code>.</span></div>" +
+      "<div class='trick'><span class='t'>Mit csinál egy kör?</span><span>Fogalmazd meg egy körre: „kiírja i-t”, „hozzáadja i-t”. A ciklus ezt ismétli.</span></div>" +
+      "<div class='trick'><span class='t'>Lépésenként</span><span>Ha elakadsz, futtasd a VS Code-ban töréspontokkal (F5, F10), és figyeld a Variables panelt.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const normNums = v => String(v).replace(/[\[\]()]/g, " ").split(/[\s,;]+/).filter(Boolean).join(",");
+  const num = (t, q) => { const k = P.kiir(t, "Ciklus"); k.q = q + "<pre class='code'>" + esc(t.code) + "</pre>"; return k; };
+  const types = [
+    { id: "range", name: "Milyen számokat ad?", gen(l){
+      const t = pick(RANGE[l - 1])();
+      return { q: "Milyen számokat ad ez, sorban? (Vesszővel vagy szóközzel elválasztva írd be.)<pre class='code'>" + esc(t.expr) + "</pre>", kind: "input", answer: esc(t.ans), sol: "<p>" + esc(t.sol) + "</p>",
+        check: v => { const a = normNums(v), b = normNums(t.ans); if (a === b) return { ok: true, msg: "Helyes!" };
+          const vals = t.vals; if (a === vals.concat([vals.length ? vals[vals.length - 1] + (vals[1] - vals[0] || 1) : 0]).join(",")) return { ok: false, msg: "Majdnem: a záró érték már nincs benne!" };
+          return { ok: false, msg: "Nem jó. A kezdőérték benne van, a záró nincs; a harmadik szám a lépésköz." }; } };
+    } },
+    { id: "hany", name: "Hányszor fut le?", gen: l => num(pick(HANY[l - 1])(), "Hányszor fut le ennek a ciklusnak a magja (a legbelső sor)? Egy számot írj be.") },
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen(l){
+      const t = pick(HIBA[l - 1])(); const h = P.hiba(t, HPOOL, "Nézd meg: kettőspont? behúzás? range-et kapott a for, vagy egy számot? Egész szám van a range-ben? Van kezdőértéke a változónak?");
+      if (t.ins) h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?");
+      return h;
+    } },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-7-for", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["for i in range(5):", "0, 1, 2, 3, 4 (ötször)"], ["range(1, 6)", "1, 2, 3, 4, 5 (a 6 nincs benne)"], ["range(0, 21, 5)", "0, 5, 10, 15, 20"], ["range(10, 0, -1)", "10, 9, …, 1"], ["range(1, n + 1)", "1-től n-ig"], ["for betu in szo:", "a szöveg minden betűjén végig"], ["osszeg = 0 · osszeg += i", "összegzés"], ["F5 · F10 · töréspont", "lépésenkénti futtatás a VS Code-ban"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
