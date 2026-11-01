@@ -35,10 +35,10 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 6 | **Igék: felszólító mód és tárgyas ragozás** | 38., 42–44., 55–57., 76–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | ✅ kész (2026. 11. 01.) |
 | 7 | **Igekötők: egybe vagy külön** (Endi kérése, 2026. 11. 01.) | 120. a)–e) | Mikor egybe (megcsinálom, elmegyek), mikor külön (csináld meg, nem csinálom meg, meg is csinálom, meg fogom csinálni), ismételt igekötő (meg-megáll), igekötő vagy határozószó (abbahagyta ↔ abba tette); a nem (nem tudom, nemsokára). Chatben valószínűleg sok a hiba. ⚠️ | ✅ kész (2026. 11. 01.) |
 | 8 | **Összetett szavak és számok** | 94–95., 101–113., 116–119., 139., 291. | Jelző + főnév vagy összetétel (gyors írás ↔ gyorsírás), jelöletlen kapcsolat (kéményseprő), névutó (ház mellett ↔ délután), kötőjel (ide-oda, Petőfi-szobor, tv-műsor), anyagnév, számnév + képző, színnév, a 6 szótag szabály, számok (kétezerig egybe, fölötte kötőjel, évszám egybe). | ✅ kész (2026. 11. 01.) |
-| 9 | **Nagy kezdőbetű és tulajdonnevek** | 140–205. (válogatva; a pontszámokat előbb egyben kérd le) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
+| 9 | **Kis- és nagy kezdőbetű, tulajdonnevek** | 144–145., 153., 163–166., 170–200. (⚠️ kivonatból) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | ✅ kész (2026. 11. 01.) |
 | 10 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
 | 11 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 8 × 3 + 8 vegyes = 32 |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 9 × 3 + 9 vegyes = 36 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -132,6 +132,20 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
 - A számíró és a „Számok betűvel” feladat ugyanazzal a függvénnyel ír (`num`), a szabályzat példáin ellenőrizve (2001, 47 563);
   a gombok egyediségét 9000 sorsolás igazolta. A százas helyén nincs 1 (ezeregyszáz ~ ezerszáz kettőssége miatt).
 - ⚠️ A „kettő a szám végén, két a belsejében” a köznyelvi szokás; a szabályzat pontszámát nem kértük le.
+
+## A 9. lecke (kis- és nagybetű), 2026. 11. 01.
+
+- ⚠️ **A pontszámok:** a szabályzat oldalából két külön kivonat két, egymástól 10-zel eltérő számozást adott (például a személynevek
+  143. vagy 153.). A kereszthivatkozások döntöttek: a 140. pont „Vö. 166.”-ja a Kossuth-nóta szabályára mutat, a Ferenc körút
+  „Vö. 181.”-e a közterületekre. Ez alapján: 144. (ünnepek), 145. (népnevek), 153. (személynevek), 163. (állandó jelző), 164. (Zsófi néni),
+  166. (Kossuth-szobor), 170. (állatnevek), 171. (tárgynevek), 172–183. (földrajzi nevek, közterületek), 184. (csillagok), 186–194.
+  (intézmények, pályaudvarok, rendezvények, márkák), 196–200. (címek). A mondatkezdő nagybetű pontszámát nem találtuk meg.
+  Egy friss, teljes lekérdezéssel érdemes újra ellenőrizni.
+- A tartalom (melyik nagy, melyik kicsi) a kivonatok példáiból való, és mindkét kivonatban egyezett.
+- A „megye” helyett „vármegye” van 2023 óta, ezért a megyés példa kimaradt; a „Lengyelország Kelet-Európában” vitatható, Ukrajna lett.
+- Gyakorlótípusok: Kicsi vagy nagy? · Az -i képzős alak · Melyik a jó? · Hibás szó. Tollbamondás: n1–n3 és a vegyes v9.
+- **Javítás a közös modulban:** a `H.sentFix` eddig elfogadta a rossz kis-/nagybetűs alakot, ha a jó szó kisbetűs volt (a „Hétfőn” átment
+  a „hétfőn” helyett). Most csak a pontos alak jó; a kis-/nagybetű eltérésre célzott üzenet jön. Mind a 9 lecke újratesztelve.
 
 ## Ellenőrzés
 

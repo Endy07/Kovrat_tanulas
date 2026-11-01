@@ -1,6 +1,16 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 késő éjjel
+## 🧭 BELÉPÉSI PONT — 2026-11-01 hajnal
+
+**A PR #2-ben (beolvasztásra vár):** az 5–9. lecke, legutóbb a **9. (kis- és nagybetű,** `helyesiras-nagybetu.html`**)**, 20 új
+tollbamondás (összesen 36). Tesztek: a 9 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 534/534.
+
+**Következő:** a 10. lecke, a vessző (AkH 239–255.?). ⚠️ A pontszámokat egyben kérd le, és a kereszthivatkozásokkal ellenőrizd
+(a 9. leckénél két kivonat 10-zel eltért). A 10. leckétől a tollbamondás kikapcsolhatja az írásjelek kimondását (terv).
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 késő éjjel
 
 **A PR #2-ben (beolvasztásra vár):** az 5–8. lecke (hasonulások, felszólító mód, igekötők, **összetett szavak és számok**,
 `helyesiras-osszetett.html`), 16 új tollbamondás (összesen 32). Tesztek: a 8 helyesírás-lecke mind hibátlan,

@@ -473,3 +473,15 @@ helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 491
   kétezer alatti számnál az egybe-/kötőjeles változat egybeesett volna a jóval. A tesztelő ezt nem veszi észre, mert az első egyező
   gombot nyomja meg.
 - **A `.nb input` szabály a pipát is elkapta** (széles lett): az azonosítóra (`#nbi`) szűkíts. A tesztelő ezt sem jelzi, csak a kép.
+
+### A 2026. 11. 01-i 9. helyesírás-lecke (kis- és nagybetű)
+
+Eredmény: `helyesiras-nagybetu` 480/480, 11 dia, 13 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 8 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 534 ellenőrzés. Tollbamondás-próba 5 szándékos hibával
+(Júliusban, balatonhoz, Sétányhoz, Német, Balatoni): mind a „Kis- vagy nagybetű” csoportba került.
+
+- **Két kivonat, két számozás:** ugyanarra a kérdésre a szabályzat oldalának kivonata egyszer 10-zel kisebb pontszámokat adott. A
+  kereszthivatkozások („Vö. 166.”) döntöttek. Ha a számok nem stimmelnek a hivatkozásokkal, ne írd be őket ellenőrzés nélkül.
+- **A `H.sentFix` elfogadta a rossz kis-/nagybetűt** (régi engedékenység, a mondat eleji szó miatt): a kis-/nagybetűs leckében ez hiba
+  lett volna. A tesztelő nem vette észre, mert mindig a jó alakot írja be; csak egy célzott próba (`t.check("Hétfőn")`) mutatta meg.
+- **A mondat eleji szó elfedi a szabályt:** a tollbamondásban a hónap és a nap ne a mondat elején álljon (ott úgyis nagy).
