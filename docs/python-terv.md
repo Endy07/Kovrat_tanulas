@@ -48,7 +48,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 3 | **Adatbekérés: `input` és a típusváltás** | `python-3-input` | `input()` mindig szöveg, `int(input())`, `float(input())`, a kérdező szöveg, több bemenet, a program váza (bekérés → számolás → kiírás), `ValueError`, a VS Code terminálja | ✅ kész (2026. 11. 01.) |
 | 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan), a Python mint számológép a VS Code-ban | ✅ kész (2026. 11. 01.) |
 | 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | ✅ kész (2026. 11. 01.) |
-| 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | tervezett |
+| 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | ✅ kész (2026. 11. 01.) |
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | tervezett |
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | tervezett |
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | tervezett |
@@ -141,7 +141,10 @@ ha az iskola odaér.
 - **Fogalmak:** `while feltétel:`, a ciklusváltozó változtatása, `osszeg += x`, `db += 1`, `break`; nyomkövetés táblázattal.
 - **Tipikus hibák:** végtelen ciklus (kimarad az `i += 1`; a futtató 6 mp után leállítja); eggyel elcsúszás (`<` ↔ `<=`);
   a gyűjtő változó a cikluson belül nullázódik.
-- **Feladattípusok:** Hányszor fut le? · Mit ír ki? · Nyomkövetés (változók a végén) · Írd meg! · Hibakereső.
+- **Feladattípusok (kész):** Hányszor fut le? · Mennyi lesz a végén? (nyomkövetés) · Mit ír ki? · Írd meg! · Milyen hibát ad? (a „végtelen
+  ciklus” is válasz) · Javítsd ki!
+- **Technika:** a keret 20 000 karakter kimenet után leállítja a programot (kiíró végtelen ciklus), a böngészőben 6 mp az időkorlát,
+  a `py-check` minden futásnak 0,5 mp-et ad (TimeoutError). Számok utáni toldalékhoz: `C.nal`, `C.tol`, `C.acc`.
 
 ### 7. Számlálós ciklus: `for` és `range`
 

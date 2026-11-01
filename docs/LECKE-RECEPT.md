@@ -565,3 +565,14 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 - **Ágakat ellenőrző „Írd meg!”:** a próbák `exp`-je a kötelező szó, a `not` a másik ág szava (a „páros” benne van a „nem páros”-ban
   is, ezért a `not` dönt); legyen próba minden ágra és a határokra (18, 85, 2000/1900).
 - **Ha a PR-t beolvasztották, a force-push itt tiltott:** `git merge origin/main` az ágba, és új PR.
+
+### A Python-sorozat 6. leckéje (while, 2026. 11. 01.)
+
+- **Végtelen ciklus a feladatokban:** a keret 20 000 karakter kimenet után RuntimeError-ral leáll (a kiíró végtelen ciklus így gyors);
+  a böngészőben 6 mp az időkorlát (utána a worker újraindul); a `py-check` sorozat-módja futásonként 0,5 mp-et ad (SIGALRM →
+  TimeoutError). A „Milyen hibát ad?” `err: "TimeoutError"`-ral a „Végtelen ciklus” választ adja. A „Javítsd ki!” végtelen ciklusos
+  kiinduló kódja legyen kiíró (gyors leállás); a csendes végtelen ciklus a tesztelőben feladatonként 6 mp.
+- **Ismét: a LOGIC-on kívüli levezetés csak az exportált neveket látja** (`S`, `range`): a tesztelő 310 lejátszó-kockát mutatott
+  (a „Tovább” sosem tiltódott le), és JS-hibát. A kockaszám gyanús értéke is jel.
+- **Toldalék szám után:** `C.nal(n)`, `C.tol(n)`, `C.acc(n)` (a szám utolsó kiejtett szava szerint: 3, 6, 8, 20, 60, 80, 100 mély),
+  névelő: `C.az(n)`. A `-ig` mindig jó. Generált mondatban más toldalékot ne írj szám után; fogalmazd át.

@@ -20,8 +20,11 @@ const DRIVER = [
   "res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]",
   "sys.__stdout__.write(json.dumps(res, ensure_ascii=False))"
 ].join("\n");
+// a sorozat-leckéknél minden futás legfeljebb 0,5 mp (végtelen ciklus → TimeoutError, mint a böngészőben az időkorlát)
+const DRIVER_T = DRIVER.replace("res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]",
+  "import signal\ndef _al(s, f):\n    raise TimeoutError('időtúllépés')\nsignal.signal(signal.SIGALRM, _al)\nres = []\nfor j in d['jobs']:\n    signal.setitimer(signal.ITIMER_REAL, 0.5)\n    r = g['_kovrat_run'](j['code'], j['inputs'])\n    signal.setitimer(signal.ITIMER_REAL, 0)\n    res.append(r)");
 function pyRun(jobs, harness){
-  const r = spawnSync("python", ["-I", "-c", DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
+  const r = spawnSync("python", ["-I", "-c", harness ? DRIVER_T : DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
   if (r.status !== 0) throw new Error("python hiba: " + r.stderr.toString());
   return JSON.parse(r.stdout.toString("utf8"));
 }
@@ -93,7 +96,7 @@ function series(name, N){
   for (const b of L.banks) b.L.forEach((lv, li) => lv.forEach((g, gi) => { for (let k = 0; k < N; k++){
     const where = b.id + " " + (li + 1) + ". szint #" + (gi + 1), t = g();
     cnt[b.kind] = (cnt[b.kind] || 0) + 1;
-    if (b.kind === "kiir") add(t.code, t.ins, r => { if (r.err) return "hiba: " + r.err; if (PC.normOut(r.out) !== PC.normOut(t.ans)) return "Python: " + JSON.stringify(r.out) + " · JS: " + JSON.stringify(t.ans) + " · kód: " + JSON.stringify(t.code); });
+    if (b.kind === "kiir") add(t.vcode || t.code, t.ins, r => { if (r.err) return "hiba: " + r.err; if (PC.normOut(r.out) !== PC.normOut(t.ans)) return "Python: " + JSON.stringify(r.out) + " · JS: " + JSON.stringify(t.ans) + " · kód: " + JSON.stringify(t.code); });
     else if (b.kind === "hiba"){
       add(t.code, t.ins, r => { if (r.etype !== t.err) return "várt hiba: " + (t.err || "nincs") + " · Python: " + (r.err || "nincs hiba") + " · kód: " + JSON.stringify(t.code); });
       if (t.fix) add(t.fix, t.ins, r => { if (r.err) return "a javított kód is hibás: " + r.err + " · " + JSON.stringify(t.fix); });

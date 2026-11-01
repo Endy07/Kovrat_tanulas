@@ -1,0 +1,394 @@
+<!--@HEAD-->
+<title>Python 6: while</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-tab{display:flex;gap:16px;background:#252526;padding:4px 12px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#9da5b4;border-top:1px solid #3c3c3c}
+.vs-tab b{color:#e7e7e7;border-bottom:1px solid #e7e7e7}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.5;font-family:var(--mono)}
+.vs .ps{color:#9da5b4}
+.vs .ty{color:#7fb8ff}
+.vs .er{color:#f48771}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.trace td,.trace th{font-size:.85rem}
+.trace tr.now td{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 6. lecke</span>
+  <h1>Ismétlés feltétellel: <code>while</code></h1>
+  <p class="lead">A <code>while</code> (amíg) ciklus addig ismétli a behúzott sorokat, amíg a feltétele igaz. Így a program meg tud számolni, össze tud adni sok számot, és addig kérdezhet, amíg jó választ nem kap. A lényeg: a ciklusban valaminek <b>változnia kell</b>, különben sosem áll meg.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írd át a számokat, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az <a href="python-5-elagazas.html">5. lecke</a> (feltételek, kettőspont, behúzás) és a <a href="python-4-muveletek.html">4.</a> (<code>+=</code>). <b>Ebben a leckében:</b> a <code>while</code>, a ciklusváltozó, a számláló és a gyűjtő változó, bekérés addig, amíg…, a <code>break</code>, a végtelen ciklus, és hogyan állítod le a VS Code-ban.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. Változtasd meg a számokat, és nézd meg, hányszor fut le a ciklus!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések: a ciklus körről körre</h2>
+  <p>A sárga sor fut éppen, alatta a változók táblázata. Ez a <b>nyomkövetés</b>: papíron is így érdemes csinálni.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="szamlal" aria-selected="true">Számolás 1-től 3-ig</button>
+    <button class="tab" data-m="osszeg" aria-selected="false">Összegzés 0-ig</button>
+    <button class="tab" data-m="vegtelen" aria-selected="false">Végtelen ciklus</button>
+    <button class="tab" data-m="vs" aria-selected="false">Leállítás a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. A „Hányszor fut le?” és a „Mennyi lesz a végén?” feladatnál számot írj be. Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép több bemenettel lefuttatja a programodat; ha végtelen ciklus van benne, 6 másodperc után leállítja. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A ciklus három része</span><span>1. kezdőérték a ciklus <b>előtt</b> (<code>i = 1</code>) · 2. feltétel (<code>while i &lt;= 5:</code>) · 3. változtatás a cikluson <b>belül</b> (<code>i += 1</code>).</span></div>
+    <div class="trick"><span class="t">Gyűjtő változó</span><span><code>osszeg = 0</code> a ciklus előtt, <code>osszeg += x</code> benne, kiírás utána (behúzás nélkül).</span></div>
+    <div class="trick"><span class="t">&lt; vagy &lt;=?</span><span><code>i = 1; while i &lt;= 5</code>: 5-ször fut. <code>while i &lt; 5</code>: csak 4-szer. Számold meg!</span></div>
+    <div class="trick"><span class="t">Végtelen ciklus</span><span>A VS Code terminálban: <b>Ctrl+C</b>. Aztán keresd meg, mi nem változik a ciklusban.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-5-elagazas.html">← 5. lecke: feltételek</a>
+    <a class="btn" href="python-dolgozat.html">A Python-dolgozat leckéje</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s==\s/g, " egyenlő-e "], [/\s!=\s/g, " nem egyenlő "], [/\s&lt;=\s|\s<=\s/g, " kisebb vagy egyenlő "], [/\s&gt;=\s|\s>=\s/g, " nagyobb vagy egyenlő "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\+=/g, " plusz egyenlő "], [/-=/g, " mínusz egyenlő "], [/\s%\s/g, " maradéka "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const WH = has(/\bwhile\b/, "használj while ciklust.");
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    const range = (a, b, d) => { const r = []; for (let x = a; d > 0 ? x <= b : x >= b; x += d) r.push(x); return r; };
+    const digsum = n => S(n).split("").reduce((p, q) => p + +q, 0);
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("i = 1", "while i <= 5:", I('print(f"{i}. kör")'), I("i += 1"), 'print("Vége a ciklusnak.")') },
+      alap: { code: J("i = 1", "while i <= 3:", I('print("Szia!")'), I("i += 1"), 'print("Kész.")') },
+      szamol: { code: J("i = 1", "while i <= 5:", I("print(i)"), I("i += 1")) },
+      vissza: { code: J("i = 10", "while i > 0:", I("print(i)"), I("i -= 2"), 'print("Start!")') },
+      osszeg: { code: J("i = 1", "osszeg = 0", "while i <= 100:", I("osszeg += i"), I("i += 1"), 'print(f"1-től 100-ig az összeg: {osszeg}")') },
+      bekeres: { code: J("osszeg = 0", "db = 0", 'x = int(input("Szám (0 = vége): "))', "while x != 0:", I("osszeg += x"), I("db += 1"), I('x = int(input("Szám (0 = vége): "))'), 'print(f"{db} számot adtál meg, az összegük: {osszeg}")'), ins: ["5", "8", "3", "0"] },
+      jelszo: { code: J('jelszo = input("Jelszó: ")', "probak = 1", 'while jelszo != "python":', I('print("Hibás, próbáld újra!")'), I('jelszo = input("Jelszó: ")'), I("probak += 1"), 'print(f"Belépés. {probak}. próbálkozásra sikerült.")'), ins: ["alma", "Python", "python"] },
+      brk: { code: J("while True:", I('szo = input("Írj egy szót (stop = vége): ")'), I('if szo == "stop":'), I(I("break")), I('print(f"{szo} hossza: {len(szo)}")'), 'print("Kiléptél a ciklusból.")'), ins: ["alma", "Python", "stop"] },
+      szamjegy: { code: J('n = int(input("Egy pozitív egész: "))', "osszeg = 0", "while n > 0:", I("osszeg += n % 10"), I("n //= 10"), 'print(f"A számjegyek összege: {osszeg}")'), ins: ["2026"] },
+      vegtelen: { code: J("i = 1", "while i <= 5:", I("print(i)"), I("# itt hiányzik az i += 1"), 'print("Ide sosem jut el.")'), err: "RuntimeError" },
+      hibaN: { code: J("i = 1", "while i <= 3:", I("osszeg += i"), I("i += 1")), err: "NameError" }
+    };
+
+    /* ---- „Hányszor fut le?” (a py-check számlálóval futtatja: vcode) ---- */
+    const HANY = [
+      [
+        () => { const a = rnd(0, 3), b = a + rnd(2, 8), op = pick(["<", "<="]); const n = op === "<" ? b - a : b - a + 1;
+          return { code: J("i = " + a, "while i " + op + " " + b + ":", I("print(i)"), I("i += 1")), vcode: J("i = " + a, "db = 0", "while i " + op + " " + b + ":", I("db += 1"), I("i += 1"), "print(db)"), ans: S(n), sol: "Az i értékei: " + range(a, op === "<" ? b - 1 : b, 1).join(", ") + ". Ez " + n + " kör. " + (op === "<" ? C.Az(b) + b + " már nincs benne, mert " + b + " < " + b + " hamis." : C.Az(b) + b + " még benne van (<=).") }; },
+        () => { const a = rnd(5, 12); return { code: J("i = " + a, "while i > 0:", I("print(i)"), I("i -= 1")), vcode: J("i = " + a, "db = 0", "while i > 0:", I("db += 1"), I("i -= 1"), "print(db)"), ans: S(a), sol: "Visszaszámlálás " + C.tol(a) + " 1-ig: " + a + " kör (a 0-nál a feltétel már hamis)." }; }
+      ],
+      [
+        () => { const d = pick([2, 3, 5]), b = rnd(10, 30); const vals = range(0, b - 1, d); return { code: J("i = 0", "while i < " + b + ":", I("print(i)"), I("i += " + d)), vcode: J("i = 0", "db = 0", "while i < " + b + ":", I("db += 1"), I("i += " + d), "print(db)"), ans: S(vals.length), sol: "Az i értékei: " + vals.join(", ") + ". Ez " + vals.length + " kör." }; },
+        () => { const a = rnd(5, 9); return { code: J("i = " + a, "while i < 5:", I("print(i)"), I("i += 1")), vcode: J("i = " + a, "db = 0", "while i < 5:", I("db += 1"), I("i += 1"), "print(db)"), ans: "0", sol: "Az i kezdetben " + a + ", és " + a + " < 5 hamis: a ciklus egyszer sem fut le. A while előbb ellenőriz, aztán ismétel." }; }
+      ],
+      [
+        () => { const lim = rnd(20, 200), m = pick([2, 3]); let x = 1, c = 0; while (x < lim){ x *= m; c++; } return { code: J("x = 1", "while x < " + lim + ":", I("x *= " + m)), vcode: J("x = 1", "db = 0", "while x < " + lim + ":", I("db += 1"), I("x *= " + m), "print(db)"), ans: S(c), sol: "Az x: 1, " + Array.from({ length: c }, (_, k) => Math.pow(m, k + 1)).join(", ") + ". Az utolsó már nem kisebb " + C.nal(lim) + ": " + c + " kör." }; },
+        () => { const n = rnd(100, 99999); return { code: J("n = " + n, "while n > 0:", I("n //= 10")), vcode: J("n = " + n, "db = 0", "while n > 0:", I("db += 1"), I("n //= 10"), "print(db)"), ans: S(S(n).length), sol: "Minden körben levág egy számjegyet (// 10). Ahány számjegy, annyi kör: " + S(n).length + "." }; }
+      ]
+    ];
+
+    /* ---- „Mennyi lesz a végén?” (nyomkövetés; vcode a végén kiírja) ---- */
+    const VEG = [
+      [
+        () => { const a = rnd(3, 6); const s = a * (a + 1) / 2; return { q: "osszeg", code: J("i = 1", "osszeg = 0", "while i <= " + a + ":", I("osszeg += i"), I("i += 1")), vcode: J("i = 1", "osszeg = 0", "while i <= " + a + ":", I("osszeg += i"), I("i += 1"), "print(osszeg)"), ans: S(s), sol: "1 + 2 + … + " + a + " = " + s + "." }; },
+        () => { const a = rnd(1, 4), b = a + rnd(3, 6); return { q: "i", code: J("i = " + a, "while i < " + b + ":", I("i += 1")), vcode: J("i = " + a, "while i < " + b + ":", I("i += 1"), "print(i)"), ans: S(b), sol: "Addig nő, amíg kisebb " + C.nal(b) + ". Amikor eléri ezt az értéket, a feltétel hamis lesz, és megáll. Az i a végén " + b + "." }; }
+      ],
+      [
+        () => { const a = rnd(3, 5), m = 2; return { q: "x", code: J("x = 1", "i = 0", "while i < " + a + ":", I("x *= " + m), I("i += 1")), vcode: J("x = 1", "i = 0", "while i < " + a + ":", I("x *= " + m), I("i += 1"), "print(x)"), ans: S(Math.pow(m, a)), sol: "Minden körben duplázódik, " + ({ 3: "háromszor", 4: "négyszer", 5: "ötször" }[a]) + ": 2 " + C.az(a) + a + ". hatványon = " + Math.pow(m, a) + "." }; },
+        () => { const b = rnd(10, 25); const v = range(1, b, 1).filter(x => x % 3 === 0).length; return { q: "db", code: J("i = 1", "db = 0", "while i <= " + b + ":", I("if i % 3 == 0:"), I(I("db += 1")), I("i += 1")), vcode: J("i = 1", "db = 0", "while i <= " + b + ":", I("if i % 3 == 0:"), I(I("db += 1")), I("i += 1"), "print(db)"), ans: S(v), sol: "Megszámolja, hány 3-mal osztható szám van 1 és " + b + " között: " + range(1, b, 1).filter(x => x % 3 === 0).join(", ") + "." }; }
+      ],
+      [
+        () => { const n = rnd(100, 9999); return { q: "osszeg", code: J("n = " + n, "osszeg = 0", "while n > 0:", I("osszeg += n % 10"), I("n //= 10")), vcode: J("n = " + n, "osszeg = 0", "while n > 0:", I("osszeg += n % 10"), I("n //= 10"), "print(osszeg)"), ans: S(digsum(n)), sol: "A számjegyek összege: " + S(n).split("").join(" + ") + " = " + digsum(n) + "." }; },
+        () => { const a = rnd(20, 60), b = rnd(3, 9); let x = a, c = 0; while (x >= b){ x -= b; c++; } return { q: "x", code: J("x = " + a, "while x >= " + b + ":", I("x -= " + b)), vcode: J("x = " + a, "while x >= " + b + ":", I("x -= " + b), "print(x)"), ans: S(x), sol: "Addig vonja le " + C.az(b) + C.acc(b) + ", amíg lehet: ez a maradék, " + a + " % " + b + " = " + a % b + "." }; }
+      ]
+    ];
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const a = rnd(1, 3), b = a + rnd(2, 3); return { code: J("i = " + a, "while i <= " + b + ":", I("print(i)"), I("i += 1")), ans: range(a, b, 1).join("\n"), sol: "Minden körben kiírja az i-t, aztán növeli. A " + b + " még benne van (<=)." }; },
+        () => { const a = rnd(3, 5); return { code: J("i = " + a, "while i > 0:", I("print(i)"), I("i -= 1"), 'print("Start!")'), ans: range(a, 1, -1).concat(["Start!"]).join("\n"), sol: "Visszaszámlálás; a Start! a ciklus után jön (nincs behúzva), egyszer." }; }
+      ],
+      [
+        () => { const d = pick([2, 3]), b = rnd(8, 14); return { code: J("i = 0", "while i < " + b + ":", I("print(i)"), I("i += " + d)), ans: range(0, b - 1, d).join("\n"), sol: d + "-esével lép; " + C.az(b) + C.acc(b) + " már nem írja ki, mert az a feltétel szerint nem kisebb " + C.nal(b) + "." }; },
+        () => { const a = rnd(3, 5); return { code: J("i = 1", "while i <= " + a + ":", I('print("*" * i)'), I("i += 1")), ans: range(1, a, 1).map(k => "*".repeat(k)).join("\n"), sol: "Minden körben eggyel több csillag: a \"*\" * i ismétlés." }; },
+        () => { const a = rnd(3, 5); const s = a * (a + 1) / 2; return { code: J("i = 1", "osszeg = 0", "while i <= " + a + ":", I("osszeg += i"), I("i += 1"), "print(osszeg)"), ans: S(s), sol: "A print a ciklus után van (nincs behúzva), ezért csak egyszer, a végén írja ki az összeget." }; }
+      ],
+      [
+        () => { const a = rnd(3, 5); const s = a * (a + 1) / 2; let acc = 0; const lines = range(1, a, 1).map(k => (acc += k, S(acc))); return { code: J("i = 1", "osszeg = 0", "while i <= " + a + ":", I("osszeg += i"), I("print(osszeg)"), I("i += 1")), ans: lines.join("\n"), sol: "Itt a print a cikluson belül van: minden körben kiírja a részösszeget (" + lines.join(", ") + "). Az utolsó a teljes összeg: " + s + "." }; },
+        () => { const ws = shuffle(["alma", "kutya", "Python", "ház", "iskola"]).slice(0, 2); return { code: J("while True:", I("szo = input()"), I('if szo == "stop":'), I(I("break")), I("print(len(szo))"), 'print("vége")'), ins: ws.concat(["stop"]), ans: ws.map(w => S(w.length)).concat(["vége"]).join("\n"), sol: "Minden beírt szó hosszát kiírja, amíg a stop nem jön; a break kilép a ciklusból." }; },
+        () => { const a = rnd(2, 4); return { code: J("i = 1", "while i <= " + a + ":", I("j = 1"), I("while j <= i:"), I(I('print(j, end="")')), I(I("j += 1")), I("print()"), I("i += 1")), ans: range(1, a, 1).map(k => range(1, k, 1).join("")).join("\n"), sol: "Ciklus a ciklusban: minden sorban 1-től i-ig írja a számokat, aztán a print() új sort kezd." }; }
+      ]
+    ];
+
+    /* ---- „Írd meg!” ---- */
+    const lines = arr => arr.join("\n");
+    const WRITE = [
+      [
+        () => { const n = rnd(4, 9); return { q: "Írd ki while ciklussal egymás alá a számokat 1-től " + n + "-ig! (Csak a számokat, mindegyiket külön sorba.)",
+          code: J("i = 1", "while i <= " + n + ":", I("print(i)"), I("i += 1")), tests: [{ ins: [], exact: lines(range(1, n, 1)) }], must: [WH], ex: "Kezdőérték (i = 1), feltétel (i <= " + n + "), és a cikluson belül i += 1." }; },
+        () => { const n = rnd(5, 10); return { q: "Írj visszaszámlálást while ciklussal " + C.tol(n) + " 1-ig, egymás alá, és a végén írd ki: <b>Start!</b>",
+          code: J("i = " + n, "while i >= 1:", I("print(i)"), I("i -= 1"), 'print("Start!")'), tests: [{ ins: [], exact: lines(range(n, 1, -1).concat(["Start!"])) }], must: [WH], ex: "Csökkenő ciklusváltozó: i -= 1. A Start! a ciklus után, behúzás nélkül." }; },
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és írd ki while ciklussal egymás alá a számokat 1-től n-ig!",
+          code: J('n = int(input("Meddig? "))', "i = 1", "while i <= n:", I("print(i)"), I("i += 1")), tests: [3, rnd(5, 9)].map(n => ({ ins: [S(n)], exact: lines(range(1, n, 1)) })), must: [WH, INP], ex: "A határ most a bekért n: while i <= n." })
+      ],
+      [
+        () => ({ q: "Kérj be egy pozitív egész számot (n), és számold ki while ciklussal az 1 + 2 + … + n összeget! Írd ki f-stringgel.",
+          code: J('n = int(input("n = "))', "i = 1", "osszeg = 0", "while i <= n:", I("osszeg += i"), I("i += 1"), 'print(f"Az összeg: {osszeg}")'), tests: [rnd(3, 10), rnd(20, 100)].map(n => ({ ins: [S(n)], exp: [n * (n + 1) / 2] })), must: [WH, INP], fstr: true, ex: "A gyűjtő változó (osszeg = 0) a ciklus előtt kap kezdőértéket; a ciklusban osszeg += i; a kiírás a ciklus után." }),
+        () => { const mk = () => shuffle([rnd(1, 20), rnd(1, 20), rnd(1, 20), rnd(1, 20)]).slice(0, rnd(2, 4)).map(S).concat(["0"]); return { q: "Kérj be számokat addig, amíg 0-t nem ír be a felhasználó, és a végén írd ki f-stringgel a beírt számok összegét! (A 0 jelzi a végét.)",
+          code: J("osszeg = 0", 'x = int(input("Szám (0 = vége): "))', "while x != 0:", I("osszeg += x"), I('x = int(input("Szám (0 = vége): "))'), 'print(f"Az összeg: {osszeg}")'), tests: [mk(), mk()].map(i => ({ ins: i, exp: [i.reduce((p, q) => p + +q, 0)] })), must: [WH, INP], fstr: true, ex: "Az első számot a ciklus előtt kérjük be, a többit a ciklus végén. A feltétel: amíg a szám nem 0." }; },
+        () => { const j = pick(["python", "mechwart", "kovrat"]); return { q: "Kérd be a jelszót addig, amíg nem <code>" + j + "</code>! Minden rossz próbánál írd ki: <b>Hibás jelszó</b>, a végén pedig: <b>Belépés engedélyezve</b>.",
+          code: J('jelszo = input("Jelszó: ")', 'while jelszo != "' + j + '":', I('print("Hibás jelszó")'), I('jelszo = input("Jelszó: ")'), 'print("Belépés engedélyezve")'), tests: [{ ins: ["alma", j.toUpperCase(), j], exp: [{ s: "Hibás jelszó" }, { s: "Hibás jelszó" }, { s: "Belépés engedélyezve" }] }, { ins: [j], exp: [{ s: "Belépés engedélyezve" }], not: ["Hibás jelszó"] }], must: [WH, INP], ex: "Bekérés a ciklus előtt; amíg rossz, hibaüzenet és új bekérés a cikluson belül. A gép azt is kipróbálja, amikor elsőre jó." }; }
+      ],
+      [
+        () => ({ q: "Kérj be egy pozitív egész számot, és írd ki f-stringgel a számjegyei összegét! Használj while ciklust (n % 10 az utolsó jegy, n //= 10 levágja).",
+          code: J('n = int(input("Egy pozitív egész: "))', "osszeg = 0", "while n > 0:", I("osszeg += n % 10"), I("n //= 10"), 'print(f"A számjegyek összege: {osszeg}")'), tests: [rnd(10, 99), rnd(1000, 99999)].map(n => ({ ins: [S(n)], exp: [digsum(n)] })), must: [WH, INP, has(/%\s*10/, "az utolsó jegyhez % 10 kell.")], fstr: true, ex: "Amíg van számjegy (n > 0): hozzáadjuk az utolsót, és levágjuk." }),
+        () => { const mk = () => { const a = shuffle([rnd(1, 30), rnd(31, 60), rnd(61, 99), rnd(1, 99)]).slice(0, rnd(3, 4)); return a.map(S).concat(["0"]); }; return { q: "Kérj be pozitív számokat 0-ig, és a végén írd ki f-stringgel, hány számot írt be a felhasználó, és mennyi a legnagyobb! (A 0 nem számít bele.)",
+          code: J("db = 0", "legnagyobb = 0", 'x = int(input("Szám (0 = vége): "))', "while x != 0:", I("db += 1"), I("if x > legnagyobb:"), I(I("legnagyobb = x")), I('x = int(input("Szám (0 = vége): "))'), 'print(f"Darab: {db}, legnagyobb: {legnagyobb}")'), tests: [mk(), mk()].map(i => { const v = i.slice(0, -1).map(Number); return { ins: i, exp: [v.length, Math.max(...v)] }; }), must: [WH, INP], fstr: true, ex: "Számláló (db += 1) és a legnagyobb figyelése if-fel, a cikluson belül." }; },
+        () => ({ q: "Egy bankszámlán 10 000 Ft van, és minden évben 10%-kal nő (osszeg *= 1.1). Kérd be a célösszeget, és írd ki f-stringgel, hány év alatt éri el vagy haladja meg! Használj while ciklust.",
+          code: J('cel = int(input("Célösszeg (Ft): "))', "osszeg = 10000", "ev = 0", "while osszeg < cel:", I("osszeg *= 1.1"), I("ev += 1"), 'print(f"{ev} év kell.")'), tests: [rnd(11, 19) * 1000, rnd(20, 60) * 1000].map(c => { let o = 10000, e = 0; while (o < c){ o *= 1.1; e++; } return { ins: [S(c)], exp: [e] }; }), must: [WH, INP], fstr: true, ex: "Nem tudjuk előre, hány év kell: ezért while (amíg kevesebb, mint a cél). Az év a számláló." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const b = rnd(3, 6); return pick([
+          { code: J("i = 1", "while i <= " + b, I("print(i)"), I("i += 1")), err: "SyntaxError", fix: J("i = 1", "while i <= " + b + ":", I("print(i)"), I("i += 1")), sol: "Hiányzik a kettőspont a while sor végéről." },
+          { code: J("i = 1", "while i <= " + b + ":", I("i += 1")), err: "", sol: "Hibátlan: nem ír ki semmit, de lefut és megáll." },
+          { code: J("i = 1", "while i <= " + b + ":", I("x = i * 2")), err: "TimeoutError", fix: J("i = 1", "while i <= " + b + ":", I("x = i * 2"), I("i += 1")), sol: "Az i sosem változik, ezért az i <= " + b + " mindig igaz: végtelen ciklus. Hibaüzenet nincs, csak nem áll meg. (A VS Code-ban Ctrl+C.)" }]); },
+        () => { const b = rnd(3, 6); return pick([
+          { code: J("i = 1", "while i <= " + b + ":", I("osszeg += i"), I("i += 1")), err: "NameError", fix: J("i = 1", "osszeg = 0", "while i <= " + b + ":", I("osszeg += i"), I("i += 1")), sol: "Az osszeg += i a régi értékből számol, de az osszeg-nek nincs kezdőértéke. Kell elé: osszeg = 0." },
+          { code: J("i = 1", "while i <= " + b + ":", "print(i)", I("i += 1")), err: "IndentationError", fix: J("i = 1", "while i <= " + b + ":", I("print(i)"), I("i += 1")), sol: "A kettőspont után a ciklusmag sorát be kell húzni." }]); }
+      ],
+      [
+        () => { const b = rnd(3, 6); return pick([
+          { code: J("i = 1", "while i =< " + b + ":", I("i += 1")), err: "SyntaxError", fix: J("i = 1", "while i <= " + b + ":", I("i += 1")), sol: "A jel sorrendje: <= (előbb a kisebb, aztán az egyenlő)." },
+          { code: J("i = 10", "while i > 0:", I("i += 1")), err: "TimeoutError", fix: J("i = 10", "while i > 0:", I("i -= 1")), sol: "Az i nő, ezért mindig nagyobb marad 0-nál: végtelen ciklus. Csökkenteni kellene: i -= 1." },
+          { code: J("i = 10", "while i > 0:", I("i -= 3")), err: "", sol: "Hibátlan: 10, 7, 4, 1, aztán -2-nél megáll." }]); },
+        () => { const k = S(rnd(3, 6)); return pick([
+          { code: J('n = input("Meddig? ")', "i = 1", "while i <= n:", I("i += 1")), ins: [k], err: "TypeError", fix: J('n = int(input("Meddig? "))', "i = 1", "while i <= n:", I("i += 1")), sol: "Az n szöveg (\"" + k + "\"), az i szám: nem lehet őket összehasonlítani. int(input(…)) kell." },
+          { code: J('n = int(input("Meddig? "))', "i = 1", "while i <= n:", I("i += 1")), ins: [k], err: "", sol: "Hibátlan." }]); }
+      ],
+      [
+        () => pick([
+          { code: J("i = 1", "while i != 10:", I("i += 2")), err: "TimeoutError", fix: J("i = 1", "while i < 10:", I("i += 2")), sol: "Az i értékei 1, 3, 5, 7, 9, 11…: sosem lesz pontosan 10, ezért a != 10 mindig igaz. Biztonságosabb a < 10." },
+          { code: J("while True:", I("x = 1")), err: "TimeoutError", fix: J("while True:", I("x = 1"), I("break")), sol: "A while True mindig igaz: break nélkül sosem áll meg." },
+          { code: J("i = 0", "while i < 10:", I("i += 2"), I("if i == 6:"), I(I("break")), "print(i)"), err: "", sol: "Hibátlan: a break kilép, amikor az i 6. Kiírja: 6." }]),
+        () => pick([
+          { code: J("break", 'print("vége")'), err: "SyntaxError", fix: J("while True:", I("break"), 'print("vége")'), sol: "A break csak cikluson belül állhat." },
+          { code: J("x = 5", "while x > 0", I("x -= 1")), err: "SyntaxError", fix: J("x = 5", "while x > 0:", I("x -= 1")), sol: "Hiányzik a kettőspont." },
+          { code: J("x = 5", "while x > 0:", I("x -= 1"), "print(x)"), err: "", sol: "Hibátlan: a végén kiírja a 0-t." }])
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "IndentationError", "TypeError", "TimeoutError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => { const n = rnd(4, 8); return { q: "Ennek a programnak ki kellene írnia a számokat 1-től " + n + "-ig, egymás alá, de sosem áll meg. Javítsd ki!",
+          starter: J("i = 1", "while i <= " + n + ":", I("print(i)")) + "\n", code: J("i = 1", "while i <= " + n + ":", I("print(i)"), I("i += 1")), tests: [{ ins: [], exact: lines(range(1, n, 1)) }], ex: "Kimaradt az i += 1, ezért az i mindig 1, és a feltétel mindig igaz." }; },
+        () => { const n = rnd(4, 8); return { q: "Ennek a programnak ki kellene írnia a számokat 1-től " + n + "-ig, de az utolsót kihagyja. Javítsd ki!",
+          starter: J("i = 1", "while i < " + n + ":", I("print(i)"), I("i += 1")) + "\n", code: J("i = 1", "while i <= " + n + ":", I("print(i)"), I("i += 1")), tests: [{ ins: [], exact: lines(range(1, n, 1)) }], ex: "Eggyel elcsúszott: a < " + n + " nem engedi be " + C.az(n) + C.acc(n) + ". Helyesen: <= " + n + "." }; }
+      ],
+      [
+        () => ({ q: "Ennek a programnak 1-től n-ig kellene összeadnia a számokat, de rossz eredményt ad. Javítsd ki!",
+          starter: J('n = int(input("n = "))', "i = 1", "while i <= n:", I("osszeg = 0"), I("osszeg += i"), I("i += 1"), 'print(f"Összeg: {osszeg}")') + "\n", code: J('n = int(input("n = "))', "i = 1", "osszeg = 0", "while i <= n:", I("osszeg += i"), I("i += 1"), 'print(f"Összeg: {osszeg}")'), tests: [rnd(3, 9), rnd(10, 50)].map(n => ({ ins: [S(n)], exp: [n * (n + 1) / 2] })), ex: "A gyűjtő változó nullázása a cikluson belül volt, így minden körben elölről kezdte. A ciklus elé kell." }),
+        () => ({ q: "Ennek a programnak a végén egyszer kellene kiírnia az összeget, de minden körben kiírja. Javítsd ki!",
+          starter: J('n = int(input("n = "))', "i = 1", "osszeg = 0", "while i <= n:", I("osszeg += i"), I("i += 1"), I('print(f"Összeg: {osszeg}")')) + "\n", code: J('n = int(input("n = "))', "i = 1", "osszeg = 0", "while i <= n:", I("osszeg += i"), I("i += 1"), 'print(f"Összeg: {osszeg}")'),
+          tests: [rnd(3, 6), rnd(7, 12)].map(n => ({ ins: [S(n)], exact: "Összeg: " + n * (n + 1) / 2 })), ex: "A print behúzás nélkül, a ciklus után kell, hogy csak egyszer fusson." }),
+        () => { const j = pick(["python", "kovrat"]); return { q: "Ennek a programnak addig kellene kérnie a jelszót, amíg nem <code>" + j + "</code>, aztán kiírni: Belépés engedélyezve. De csak egyszer kérdez. Javítsd ki!",
+          starter: J('jelszo = input("Jelszó: ")', 'while jelszo == "' + j + '":', I('print("Hibás jelszó")'), I('jelszo = input("Jelszó: ")'), 'print("Belépés engedélyezve")') + "\n", code: J('jelszo = input("Jelszó: ")', 'while jelszo != "' + j + '":', I('print("Hibás jelszó")'), I('jelszo = input("Jelszó: ")'), 'print("Belépés engedélyezve")'),
+          tests: [{ ins: ["alma", j], exp: [{ s: "Hibás jelszó" }, { s: "Belépés engedélyezve" }] }, { ins: [j], exp: [{ s: "Belépés engedélyezve" }], not: ["Hibás jelszó"] }], ex: "Fordított feltétel: amíg a jelszó NEM jó (!=), addig kell ismételni." }; }
+      ],
+      [
+        () => ({ q: "Ennek a programnak 0-ig kellene számokat bekérnie, és kiírnia a darabszámot és az összeget. Két hiba is van benne. Javítsd ki!",
+          starter: J("db = 0", 'x = int(input("Szám: "))', "while x != 0:", I("osszeg += x"), I("db += 1"), 'print(f"{db} szám, összeg: {osszeg}")') + "\n", code: J("db = 0", "osszeg = 0", 'x = int(input("Szám: "))', "while x != 0:", I("osszeg += x"), I("db += 1"), I('x = int(input("Szám: "))'), 'print(f"{db} szám, összeg: {osszeg}")'),
+          tests: (() => { const mk = () => shuffle([rnd(1, 20), rnd(21, 40), rnd(41, 60)]).slice(0, rnd(2, 3)).map(S).concat(["0"]); return [mk(), mk()].map(i => { const v = i.slice(0, -1).map(Number); return { ins: i, exp: [v.length, v.reduce((p, q) => p + q, 0)] }; }); })(), ex: "Az osszeg-nek kezdőérték kell (osszeg = 0), és a cikluson belül újra be kell kérni a következő számot, különben az x sosem változik." }),
+        () => ({ q: "Ennek a programnak egy pozitív szám számjegyeinek összegét kellene kiírnia, de rosszul számol. Javítsd ki!",
+          starter: J('n = int(input("Szám: "))', "osszeg = 0", "while n > 0:", I("osszeg += n // 10"), I("n %= 10"), 'print(f"Számjegyösszeg: {osszeg}")') + "\n", code: J('n = int(input("Szám: "))', "osszeg = 0", "while n > 0:", I("osszeg += n % 10"), I("n //= 10"), 'print(f"Számjegyösszeg: {osszeg}")'), tests: [rnd(12, 98), rnd(100, 9999)].map(n => ({ ins: [S(n)], exp: [digsum(n)] })), ex: "Fel van cserélve: az utolsó jegy n % 10, a levágás n //= 10." })
+      ]
+    ];
+
+    const banks = [
+      { id: "hany", kind: "kiir", L: HANY },
+      { id: "veg", kind: "kiir", L: VEG },
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { HANY, VEG, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, range, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { HANY, VEG, KIIR, WRITE, HIBA, HPOOL, JAVIT, EX, range } = LOGIC;
+  const S = String;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, noInput: false, inputs: [], rows: 6 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- VS Code-terminál ---------- */
+  const vs = rows => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span></div><div class="vs-tab"><span>Problems</span><span>Output</span><b>Terminal</b></div><pre>' +
+    rows.map(r => r[0] === "p" ? '<span class="ps">PS C:\\Kovrat&gt;</span> ' + esc(r[1]) : r[0] === "e" ? '<span class="er">' + esc(r[1]) + "</span>" : r[0] === "c" ? '<span class="ps">PS C:\\Kovrat&gt;</span> <span class="cur"> </span>' : r[0] === "k" ? '<span class="ty">' + esc(r[1]) + "</span>" : esc(r[1])).join("\n") + "</pre></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, outBox } = P;
+  const trace = (cols, rows, now) => '<div class="ptwrap" style="margin-top:8px"><table class="pt trace"><tr>' + cols.map(c => "<th>" + esc(c) + "</th>").join("") + "</tr>" + rows.map((r, i) => '<tr class="' + (i === now ? "now" : "") + '">' + r.map(c => "<td>" + esc(c) + "</td>").join("") + "</tr>").join("") + "</table></div>";
+  function szamlalFrames(){
+    const src = ["i = 1", "while i <= 3:", "    print(i)", "    i += 1", 'print("Kész.")'];
+    const cols = ["kör", "i", "i <= 3?", "kiírja"], R = [];
+    const F = [{ cap: "A ciklus három része: kezdőérték a ciklus előtt, a feltétel, és a változtatás a cikluson belül. Kövessük a táblázatban!", html: srcHtml(src, 1) + trace(cols, [], -1) }];
+    for (let i = 1; i <= 3; i++){
+      R.push([S(i), S(i), "True", S(i)]);
+      F.push({ cap: i + ". kör: az i értéke " + i + ". A feltétel: " + i + " kisebb vagy egyenlő, mint 3? Igaz, ezért belép, kiírja: " + i + ", aztán az i eggyel nő.", html: srcHtml(src, i === 1 ? 2 : 3) + trace(cols, R, R.length - 1) + outBox(range(1, i, 1).join("\n")) });
+    }
+    R.push(["–", "4", "False", ""]);
+    F.push({ cap: "Az i most 4. A feltétel: 4 kisebb vagy egyenlő, mint 3? Hamis! A ciklus véget ér, a gép a ciklus utáni sorra ugrik.", html: srcHtml(src, 2) + trace(cols, R, R.length - 1) });
+    F.push({ cap: "A Kész sor egyszer fut le. A ciklus háromszor futott, és a végén az i értéke 4.", html: srcHtml(src, 5) + trace(cols, R, -1) + outBox("1\n2\n3\nKész.") });
+    return F;
+  }
+  function osszegFrames(){
+    const src = EX.bekeres.code.split("\n"), cols = ["x", "x != 0?", "osszeg", "db"];
+    return [
+      { cap: "Számokat adunk össze, amíg a felhasználó 0-t nem ír be. Bemenet: 5, 8, 3, 0. Előbb a gyűjtő és a számláló kap kezdőértéket: nulla.", html: srcHtml(src, 2) + trace(cols, [["", "", "0", "0"]], 0) },
+      { cap: "Az első számot a ciklus előtt kérjük be: 5.", html: srcHtml(src, 3) + trace(cols, [["5", "", "0", "0"]], 0) },
+      { cap: "5 nem egyenlő 0-val: igaz. Belép: az összeg 5, a darab 1. A ciklus végén bekéri a következőt: 8.", html: srcHtml(src, 7) + trace(cols, [["5", "True", "5", "1"], ["8", "", "", ""]], 1) },
+      { cap: "8 nem 0: összeg 13, darab 2. Jön a 3: összeg 16, darab 3. Aztán a 0.", html: srcHtml(src, 7) + trace(cols, [["5", "True", "5", "1"], ["8", "True", "13", "2"], ["3", "True", "16", "3"], ["0", "", "", ""]], 3) },
+      { cap: "0 nem egyenlő 0-val? Hamis. A ciklus véget ér; a 0-t nem adta hozzá. A kiírás: 3 számot adtál meg, az összegük 16.", html: srcHtml(src, 8) + trace(cols, [["5", "True", "5", "1"], ["8", "True", "13", "2"], ["3", "True", "16", "3"], ["0", "False", "16", "3"]], 3) + outBox("3 számot adtál meg, az összegük: 16") }
+    ];
+  }
+  function vegtelenFrames(){
+    const src = ["i = 1", "while i <= 5:", "    print(i)", 'print("Vége.")'];
+    return [
+      { cap: "Ebből a ciklusból kimaradt az i += 1. Mi lesz?", html: srcHtml(src, 0) },
+      { cap: "Az i értéke 1, a feltétel igaz, kiírja: 1. Aztán újra a feltétel: az i még mindig 1.", html: srcHtml(src, 3) + outBox("1") },
+      { cap: "És újra, és újra: az i sosem változik, ezért a feltétel mindig igaz. Ez a végtelen ciklus. Hibaüzenet nincs, a program egyszerűen nem áll meg.", html: srcHtml(src, 3) + outBox("1\n1\n1\n1\n1\n…") },
+      { cap: "Ebben a böngészős futtatóban a gép 6 másodperc után, vagy ha túl sokat ír ki, leállítja, és szól. A javítás: a cikluson belül változzon az i: i += 1.", html: '<pre class="term"><span class="e">✖ RuntimeError: Túl sok kimenet…</span>\n<span class="h">💡 Valószínűleg végtelen ciklus…</span></pre>' }
+    ];
+  }
+  function vsFrames(){
+    return [
+      { cap: "A VS Code-ban elindítod a végtelen ciklusos programot. A terminálban ömlik a kimenet, és nem áll meg.", html: vs([["p", "python program.py"], ["o", "1\n1\n1\n1\n1\n1"]]) },
+      { cap: "Kattints a terminálba, és nyomd meg a Ctrl+C billentyűket: a Ctrl-t nyomva tartva a C-t. Ez megszakítja a programot.", html: vs([["p", "python program.py"], ["o", "1\n1\n1"], ["k", "^C"]]) },
+      { cap: "A Python KeyboardInterrupt üzenettel áll le: ez azt jelenti, hogy a billentyűzetről szakították meg. Ez nem a program hibája, te állítottad le.", html: vs([["p", "python program.py"], ["o", "1\n1"], ["e", 'Traceback (most recent call last):\n  File "C:\\Kovrat\\program.py", line 3, in <module>\n    print(i)\nKeyboardInterrupt'], ["c"]]) },
+      { cap: "Most javítsd ki a programot: a cikluson belül növeld az i-t, mentsd el, és futtasd újra.", html: vs([["p", "python program.py"], ["o", "1\n2\n3\n4\n5\nVége."], ["c"]]) }
+    ];
+  }
+  const MET = { szamlal: "Számolás 1-től 3-ig", osszeg: "Összegzés 0-ig", vegtelen: "Végtelen ciklus", vs: "Leállítás a VS Code-ban" };
+  const MF = { szamlal: szamlalFrames, osszeg: osszegFrames, vegtelen: vegtelenFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "szamlal" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "Mi a ciklus?", h:
+      "<p>Ha valamit sokszor kell megcsinálni, nem írjuk le sokszor. A <b>ciklus</b> ismétli a behúzott sorokat. A <code>while</code> jelentése: <b>amíg</b>. Amíg a feltétel igaz, újra és újra lefut a ciklus magja.</p>" + ex("alap") +
+      "<ol><li><code>i = 1</code>: a ciklusváltozó kezdőértéke, a ciklus <b>előtt</b>.</li><li><code>while i &lt;= 3:</code> a feltétel; a végén kettőspont, mint az if-nél.</li><li>A behúzott sorok a <b>ciklusmag</b>; a végén az <code>i += 1</code> lépteti a változót.</li><li>Amikor a feltétel hamis lesz, a gép a ciklus utáni (nem behúzott) sorra ugrik.</li></ol>" + playBtn("szamlal") },
+    { k: "if vagy while?", t: "Mi a különbség az if-hez képest?", h:
+      "<div class='ptwrap'><table class='pt'><tr><th></th><th>if</th><th>while</th></tr><tr><td style='font-family:var(--body)'>ha a feltétel igaz</td><td style='font-family:var(--body)'>egyszer lefut</td><td style='font-family:var(--body)'>lefut, aztán újra megnézi a feltételt</td></tr><tr><td style='font-family:var(--body)'>meddig?</td><td style='font-family:var(--body)'>–</td><td style='font-family:var(--body)'>amíg a feltétel hamis nem lesz</td></tr></table></div>" +
+      "<p>A <code>while</code> <b>minden kör elején</b> megnézi a feltételt. Ha már az elején hamis, a ciklusmag egyszer sem fut le.</p>" },
+    { k: "Számolás", t: "Számlálás felfelé és lefelé", h:
+      ex("szamol") + ex("vissza") +
+      "<ul><li>Felfelé: <code>i += 1</code>; lefelé: <code>i -= 1</code>; kettesével: <code>i += 2</code>.</li><li><b>Hányszor fut le?</b> Az <code>i = 1</code> és a <code>while i &lt;= 5</code>: 5-ször. A <code>while i &lt; 5</code>: csak 4-szer. Ez a leggyakoribb elcsúszás!</li></ul>" },
+    { k: "Összegzés", t: "Gyűjtő változó: összeadás ciklussal", h:
+      ex("osszeg") +
+      "<ul><li>A <b>gyűjtő</b> változó (<code>osszeg</code>) a ciklus <b>előtt</b> kap kezdőértéket: 0.</li><li>A ciklusban mindig hozzáadunk: <code>osszeg += i</code>.</li><li>A kiírás a ciklus <b>után</b> jön, behúzás nélkül, különben minden körben kiírná.</li><li>Ugyanígy a <b>számláló</b>: <code>db = 0</code>, és a ciklusban <code>db += 1</code>.</li></ul>" },
+    { k: "Bekérés", t: "Bekérés, amíg 0-t nem írnak be", h:
+      ex("bekeres") +
+      "<p>Ez a while igazi ereje: <b>nem tudjuk előre</b>, hány számot ír be a felhasználó. A 0 jelzi a végét.</p><ol><li>Az első számot a ciklus <b>előtt</b> kérjük be.</li><li>A feltétel: <code>while x != 0:</code></li><li>A ciklus <b>végén</b> bekérjük a következőt. Ha ez kimarad, az x sosem változik: végtelen ciklus!</li></ol>" + playBtn("osszeg") },
+    { k: "Jelszó", t: "Kérdezz, amíg jó nem lesz", h:
+      ex("jelszo") + "<p>Amíg a jelszó <b>nem</b> jó (<code>!=</code>), addig hibaüzenet és új kérdés. Ha elsőre jó, a ciklus egyszer sem fut le, és rögtön a Belépés jön.</p>" },
+    { k: "break", t: "break: kilépés a ciklusból", h:
+      ex("brk") +
+      "<ul><li>A <code>while True:</code> feltétele mindig igaz: magától sosem áll meg.</li><li>A <code>break</code> azonnal kilép a ciklusból; a program a ciklus utáni sorral folytatódik.</li><li>Akkor hasznos, ha a kilépés feltétele a ciklus közepén derül ki.</li></ul>" },
+    { k: "Számjegyek", t: "Egy szép példa: számjegyek összege", h:
+      ex("szamjegy") + "<p>Amíg van még számjegy (<code>n &gt; 0</code>): az utolsó jegyet (<code>n % 10</code>) hozzáadjuk, aztán levágjuk (<code>n //= 10</code>). 2026 → 6, 2, 0, 2: az összeg 10.</p>" },
+    { k: "Végtelen", t: "A végtelen ciklus", h:
+      ex("vegtelen") +
+      "<ul><li>Ha a ciklusban semmi sem változtatja meg a feltételt, az mindig igaz marad: a program <b>sosem áll meg</b>. Hibaüzenet nincs.</li><li>Ez a futtató 6 másodperc után, vagy ha túl sokat ír ki, leállítja, és szól.</li><li>A VS Code-ban: kattints a terminálba, és nyomd meg a <b>Ctrl+C</b>-t (KeyboardInterrupt).</li><li>Keresd meg: <b>változik a ciklusváltozó a cikluson belül?</b> Jó irányba változik? (Ha <code>while i &gt; 0</code>, akkor csökkennie kell.)</li></ul>" + playBtn("vegtelen") + playBtn("vs") },
+    { k: "Nyomkövetés", t: "Nyomkövetés papíron", h:
+      "<p>Ha nem tudod, mit csinál egy ciklus, vezess táblázatot: minden körben egy sor, az oszlopok a változók és a feltétel.</p>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>kör</th><th>i</th><th>osszeg</th><th>i &lt;= 3?</th></tr><tr><td>előtte</td><td>1</td><td>0</td><td>True</td></tr><tr><td>1.</td><td>2</td><td>1</td><td>True</td></tr><tr><td>2.</td><td>3</td><td>3</td><td>True</td></tr><tr><td>3.</td><td>4</td><td>6</td><td>False → vége</td></tr></table></div>" +
+      "<p>(<code>i = 1, osszeg = 0, while i &lt;= 3: osszeg += i; i += 1</code>). A „Mennyi lesz a végén?” feladatokat így a legkönnyebb megoldani.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Javítás</th></tr>" +
+      [["kimarad az i += 1", "végtelen ciklus (nincs hibaüzenet)", "i += 1 a ciklusmagba"],
+       ["while i < 5 (5-ször kellene)", "eggyel kevesebbszer fut", "while i <= 5"],
+       ["osszeg = 0 a ciklusban", "minden körben elölről kezdi", "a ciklus elé"],
+       ["print a ciklusban", "minden körben kiír", "behúzás nélkül, a ciklus után"],
+       ["osszeg += i, de nincs osszeg = 0", "NameError", "osszeg = 0 a ciklus elé"],
+       ["while i <= 5", "SyntaxError: expected ':'", "kettőspont a végére"],
+       ["nincs új input a ciklus végén", "végtelen ciklus", "x = int(input(…)) a ciklus végére"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaN") },
+    { k: "Trükkök", t: "Tanácsok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>A három rész</span><span>Minden ciklusnál nézd meg: van kezdőérték? van feltétel? változik a változó a ciklusban?</span></div>" +
+      "<div class='trick'><span class='t'>Számold meg a köröket</span><span>Kicsi számmal (például 3) írd fel, milyen értékeken megy végig az i. Így kiderül, &lt; vagy &lt;= kell-e.</span></div>" +
+      "<div class='trick'><span class='t'>Előtte, benne, utána</span><span>Kezdőérték előtte, gyűjtés benne, kiírás utána.</span></div>" +
+      "<div class='trick'><span class='t'>Mikor while?</span><span>Ha nem tudod előre, hányszor kell ismételni (amíg 0, amíg jó a jelszó). Ha tudod (10-szer), a következő leckében tanult for egyszerűbb.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const num = (t, q) => { const k = P.kiir(t, "Ciklus"); k.q = q + "<pre class='code'>" + esc(t.code) + "</pre>"; return k; };
+  const types = [
+    { id: "hany", name: "Hányszor fut le?", gen: l => num(pick(HANY[l - 1])(), "Hányszor fut le ennek a ciklusnak a magja? (Egy számot írj be.)") },
+    { id: "veg", name: "Mennyi lesz a végén?", gen(l){ const t = pick(VEG[l - 1])(); return num(t, "Mennyi lesz " + (/^[aeiouáéíóöőúüűx]/i.test(t.q) ? "az" : "a") + " <code>" + t.q + "</code> változó értéke a program végén?"); } },
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen(l){
+      const t = pick(HIBA[l - 1])(); const h = P.hiba(t, HPOOL, "Nézd meg: kettőspont? behúzás? van kezdőértéke a változónak? változik a ciklusváltozó jó irányba?");
+      if (t.ins) h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?");
+      return h;
+    } },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-6-while", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["i = 1\nwhile i <= 5:\n    …\n    i += 1", "5-ször ismétel (i = 1, 2, 3, 4, 5)"], ["osszeg = 0  (előtte)\nosszeg += x  (benne)", "gyűjtő változó"], ["db = 0\ndb += 1", "számláló"], ["x = int(input())\nwhile x != 0:\n    …\n    x = int(input())", "bekérés, amíg 0-t nem írnak"], ["while True:\n    if …:\n        break", "kilépés a ciklus közepén"], ["Ctrl+C", "végtelen ciklus leállítása a VS Code terminálban"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
