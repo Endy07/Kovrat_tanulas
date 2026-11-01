@@ -105,6 +105,9 @@ const PYCORE = (function(){
   /* ---- Pontos kimenet: a sor végi szóköz és a záró üres sorok nem számítanak ---- */
   const normOut = s => String(s).replace(/\r/g, "").split("\n").map(l => l.replace(/[ \t]+$/, "")).join("\n").replace(/\n+$/, "");
   const vis = s => String(s).replace(/ /g, "·");
+  // névelő sorszám elé: „az 1. sor”, „az 5. sor”, „a 2. sor”
+  const az = n => /^(1|1\d{3}|5\d*)$/.test(String(n)) ? "az " : "a ";
+  const Az = n => az(n) === "az " ? "Az " : "A ";
   const noSp = s => s.replace(/\s+/g, "");
   const noPunct = s => s.replace(/[.,!?;:'"„”]/g, "");
   // az első eltérés magyarul (null, ha egyezik)
@@ -118,11 +121,11 @@ const PYCORE = (function(){
       if (a === b) continue;
       if (a == null) return { line: n, why: "A kimenet rövidebb a vártnál. Ez a sor hiányzik: " + (b === "" ? "egy üres sor" : b) };
       if (b == null) return { line: n, why: "A kimenetben több sor van, mint kellene. Fölösleges: " + (a === "" ? "egy üres sor" : a) };
-      if (a.toLowerCase() === b.toLowerCase()) return { line: n, why: "A " + n + ". sorban a kis- és nagybetű eltér. Vártam: " + b + " · Kiírta: " + a };
-      if (noSp(a) === noSp(b)) return { line: n, why: "A " + n + ". sorban a szóközök eltérnek (a pont most szóközt jelöl). Vártam: " + vis(b) + " · Kiírta: " + vis(a) };
-      if (noPunct(a) === noPunct(b)) return { line: n, why: "A " + n + ". sorban egy írásjel eltér. Vártam: " + b + " · Kiírta: " + a };
-      if (a === "" || b === "") return { line: n, why: a === "" ? "A " + n + ". sor üres, pedig ezt vártam: " + b : "A " + n + ". sorba üres sor kellene (üres print()), de ezt írta ki: " + a };
-      return { line: n, why: "A " + n + ". sor nem egyezik. Vártam: " + b + " · Kiírta: " + a };
+      if (a.toLowerCase() === b.toLowerCase()) return { line: n, why: Az(n) + n + ". sorban a kis- és nagybetű eltér. Vártam: " + b + " · Kiírta: " + a };
+      if (noSp(a) === noSp(b)) return { line: n, why: Az(n) + n + ". sorban a szóközök eltérnek (a pont most szóközt jelöl). Vártam: " + vis(b) + " · Kiírta: " + vis(a) };
+      if (noPunct(a) === noPunct(b)) return { line: n, why: Az(n) + n + ". sorban egy írásjel eltér. Vártam: " + b + " · Kiírta: " + a };
+      if (a === "" || b === "") return { line: n, why: a === "" ? Az(n) + n + ". sor üres, pedig ezt vártam: " + b : Az(n) + n + ". sorba üres sor kellene (üres print()), de ezt írta ki: " + a };
+      return { line: n, why: Az(n) + n + ". sor nem egyezik. Vártam: " + b + " · Kiírta: " + a };
     }
     return { why: "A kimenet nem egyezik." };
   }
@@ -185,13 +188,13 @@ const PYCORE = (function(){
     if (U.length !== A.length && noSp(u) === noSp(a)) return { ok: false, msg: "A szöveg jó, de a sorok száma nem: minden print új sorba ír. A program " + A.length + " sort ír ki." };
     if (U.length !== A.length) return { ok: false, msg: "Nem jó. A program " + A.length + " sort ír ki (minden print egy sort), te " + U.length + " sort írtál." };
     for (let i = 0; i < A.length; i++){
-      const x = U[i], y = A[i], n = A.length > 1 ? "A " + (i + 1) + ". sor: " : "";
+      const x = U[i], y = A[i], n = A.length > 1 ? Az(i + 1) + (i + 1) + ". sor: " : "";
       if (x === y) continue;
       if (x.replace(/^["']|["']$/g, "") === y || x.replace(/["']/g, "") === y.replace(/["']/g, "") && /["']/.test(x)) return { ok: false, msg: n + "majdnem: az idézőjel nem íródik ki, az csak a programban jelzi a szöveget." };
       if (y.endsWith(".0") && x === y.slice(0, -2)) return { ok: false, msg: n + "majdnem: a / osztás eredménye mindig tizedes tört, ezért .0 is van a végén." };
       if (x.toLowerCase() === y.toLowerCase()) return { ok: false, msg: n + "a kis- és nagybetű számít" + (/^(True|False)$/.test(y) ? ": True és False nagy kezdőbetűvel." : ".") };
       if (noSp(x) === noSp(y)) return { ok: false, msg: n + "majdnem, csak a szóközök nem stimmelnek. A vessző a print-ben egy szóközt tesz, a + nem tesz." };
-      return { ok: false, msg: "Nem jó. " + (A.length > 1 ? "Az első eltérés a " + (i + 1) + ". sorban van." : "Kövesd sorról sorra!") };
+      return { ok: false, msg: "Nem jó. " + (A.length > 1 ? "Az első eltérés " + az(i + 1) + (i + 1) + ". sorban van." : "Kövesd sorról sorra!") };
     }
     return { ok: false, msg: "Nem jó." };
   }

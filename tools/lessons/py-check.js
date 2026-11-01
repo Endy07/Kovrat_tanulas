@@ -98,7 +98,7 @@ function series(name, N){
       add(t.code, t.ins, r => { if (r.etype !== t.err) return "várt hiba: " + (t.err || "nincs") + " · Python: " + (r.err || "nincs hiba") + " · kód: " + JSON.stringify(t.code); });
       if (t.fix) add(t.fix, t.ins, r => { if (r.err) return "a javított kód is hibás: " + r.err + " · " + JSON.stringify(t.fix); });
     }
-    else if (b.kind === "tipus") add("print(type(" + t.expr + ").__name__)", [], r => { const o = r.out.trim(); if (r.err || o !== t.type) return t.expr + " → Python: " + (r.err || o) + ", JS: " + t.type; });
+    else if (b.kind === "tipus") add((t.pre ? t.pre + "\n" : "") + "print(type(" + t.expr + ").__name__)", [], r => { const o = r.out.trim(); if (r.err || o !== t.type) return t.expr + " → Python: " + (r.err || o) + ", JS: " + t.type; });
     else if (b.kind === "nev") add(t.name + " = 1", [], r => { if (!r.err !== !!t.ok) return t.name + ": Python szerint " + (r.err ? "nem jó (" + r.err + ")" : "jó") + ", a feladat szerint " + (t.ok ? "jó" : "nem jó"); });
     else if (b.kind === "write"){
       if (t.tests.length > 1 && t.tests[0].ins.join("|") === t.tests[1].ins.join("|")) fail(where, "két egyforma próbabemenet");
