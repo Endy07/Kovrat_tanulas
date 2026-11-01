@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101082019">
+<meta name="kovrat-version" content="20261101083232">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -171,7 +171,7 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
-<title>Python-előzetes</title>
+<title>Python – gyors áttekintés</title>
 <style>
 .code,.prompt pre,.opt,.src{font-variant-ligatures:none}
 .src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
@@ -191,9 +191,9 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
 
 <header class="hero section-head">
   <a class="back" href="index.html">← Vissza a leckékhez</a>
-  <span class="eyebrow">Programozás · 10. évfolyam előzetes</span>
-  <h1>Python-előzetes: kódolvasás</h1>
-  <p class="lead">A Python a 10.-ben jön, de olvasni már most megtanulhatod. A jó programozó fejben is le tudja futtatni a kódot: sorról sorra, a változók értékével. Próbáld ki!</p>
+  <span class="eyebrow">Programozás · Python</span>
+  <h1>Python – gyors áttekintés</h1>
+  <p class="lead">Egy gyors kör a Python alapjain, kódolvasással: minden fontos fogalom egy-egy dián. Lépésenként, futtatóval a <a href="python-1-kiiras.html">Python a nulláról</a> sorozat tanítja. A jó programozó fejben is le tudja futtatni a kódot: sorról sorra, a változók értékével. Próbáld ki!</p>
   <div class="panel">
     <span class="eyebrow">Python-léptető: válassz programot, és lépj sorról sorra</span>
     <div class="tabs" id="hp"><button class="tab" data-p="0" aria-selected="true">Összegzés</button><button class="tab" data-p="1" aria-selected="false">Páros vagy páratlan</button><button class="tab" data-p="2" aria-selected="false">Duplázás</button></div>
@@ -611,7 +611,8 @@ const K = (function(){
   /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
      cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
      task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
-              answer, sol, frames, title, options:[{l,v}], ph, starter, hint } */
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint }
+     egyedi fajta: task.mount(el, vizsga) → { raw() } (a .code-ed dobozba szerel, az Ellenőrzés gomb a készleté) */
   function practice(root, cfg){
     const key = "kovrat-" + cfg.id;
     const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
@@ -647,7 +648,7 @@ const K = (function(){
     function inputHtml(t){
       if (t.kind === "choice")
         return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
-      if (t.kind === "code" || t.kind === "js")
+      if (t.kind === "code" || t.kind === "js" || t.mount)
         return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
       return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
     }
@@ -656,7 +657,7 @@ const K = (function(){
       let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
       if (S.exam){
         h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
-        if (t.kind === "code" || t.kind === "js") h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+        if (t.kind === "code" || t.kind === "js" || t.mount) h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
       } else {
         h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
           (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
@@ -665,6 +666,8 @@ const K = (function(){
       box.innerHTML = h;
       if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
       else if (t.kind === "js") S.ed = jseditor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows, html: t.html, prompt: !!(t.inputs && t.inputs.length), inputs: t.inputs });
+      // egyedi feladatfajta (pl. Python-futtató): a feladat maga szereli fel a szerkesztőt, a raw() adja az ellenőrizendőt
+      else if (t.mount) S.ed = t.mount($(".code-ed", box), !!S.exam);
       const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
     }
     function newTask(){
@@ -674,6 +677,7 @@ const K = (function(){
       const t = S.task;
       if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
       if (t.kind === "js") return { code: S.ed.get(), run: o => S.ed.run(o) };
+      if (t.mount) return S.ed.raw();
       const i = $("input", box); return i ? i.value : "";
     }
     function feedback(res){
@@ -835,7 +839,7 @@ const K = (function(){
   /* ---------- Diák ---------- */
   const slides = [
     { k: "Alap", t: "Miért Python?", h:
-      "<p>A Python egyszerű, jól olvasható nyelv: a 10.-ben ezt tanulod. Értelmezett nyelv: a gép sorról sorra olvassa és futtatja a programot (a C például fordított nyelv: a programot előbb gépi kódra fordítják, és csak utána fut).</p>" +
+      "<p>A Python egyszerű, jól olvasható nyelv: az iskolában ezt tanulod. Értelmezett nyelv: a gép sorról sorra olvassa és futtatja a programot (a C például fordított nyelv: a programot előbb gépi kódra fordítják, és csak utána fut).</p>" +
       code('print("Szia, világ!")') + "<p>Ennyi az első program. Nincs pontosvessző, nincs kapcsos zárójel: a szerkezetet a <b>behúzás</b> adja.</p>" +
       "<div class='note'><b>Ugyanaz, mint JavaScriptben:</b> változó, if, ciklus, lista. Ha a JS-leckét megcsináltad, a Python ismerős lesz.</div>" },
     { k: "Változók", t: "Változók és típusok", h:

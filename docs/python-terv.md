@@ -14,8 +14,10 @@ Jelölés: ✅ biztos (forrással igazolva) · ⚠️ feltételezés (Kovrat vag
 - ✅ Az országos programtanterv a Pythont a 10.-re teszi (4 + 48 + 20 óra, `docs/tanrend-10.md`): `print`, literálok és típusok,
   típuskonverzió, operátorok, rövidített értékadás, `input`, sztringek, relációk, `if`/`elif`/`else`, `while`, `for`, listák,
   függvények; utána modulok, kivételek, fájlkezelés. A sorozat ezt a sorrendet követi, a Mechwart tempójában (9.-ben).
-- ⚠️ Nem tudjuk, milyen környezetben dolgoznak (IDLE, Thonny, VS Code, online). A leckék a böngészőben futtatnak; a magyarázat
-  úgy szól, hogy bármelyik környezetben ugyanígy legyen („a futtató” = ahol a programot elindítod).
+- ✅ **Az iskolában VS Code-ban dolgoznak** (Endi, 2026-11-01). A leckék a böngészőben futtatnak, de a 3. leckétől külön dia és
+  levezetés mutatja, hogyan megy ugyanez a VS Code-ban: a `.py` fájl futtatása (▶ Run Python File, vagy `python program.py`), a
+  terminál kimenete, a bekérés a terminálban, és a hibaüzenet (Traceback) ott.
+- ✅ Nem tudjuk, volt-e már `if` az iskolában; Endi: „menjen az alapoktól”. A sorozat semmit nem tételez fel.
 - ⚠️ Nem tudjuk a tanár sorrendjét az elágazástól kezdve. Ha Kovrat füzete vagy egy újabb feladatsor megjön, a 5–10. lecke
   sorrendjét és jelöléseit ahhoz igazítjuk (a recept 0. szakasza: az iskolai módszert tanítjuk).
 
@@ -23,7 +25,7 @@ Jelölés: ✅ biztos (forrással igazolva) · ⚠️ feltételezés (Kovrat vag
 
 | Lecke | Mi ez | Viszonya a sorozathoz |
 |---|---|---|
-| `python-elozetes` (2026-10-23) | Kódolvasás futtató nélkül: egy-egy dia az összes alapfogalomról (változó, `if`, `for`, `while`, lista, függvény). | **Áttekintés, nem tananyag.** A sorozat minden fogalmát lassabban, részletesebben, futtatóval tanítja. Nem módosítjuk; a jelölése (`print`, `range(5)` → 0…4, 4 szóköz behúzás) egyezik a sorozattal. ⚠️ A címkéje („10. évfolyam előzetes”) azóta elavult (a Mechwartban 9.-ben van Python): Endi döntése, átírjuk-e. |
+| `python-elozetes` (2026-10-23; 2026-11-01-től „Python – gyors áttekintés”) | Kódolvasás futtató nélkül: egy-egy dia az összes alapfogalomról (változó, `if`, `for`, `while`, lista, függvény). | **Áttekintés, nem tananyag.** A sorozat minden fogalmát lassabban, részletesebben, futtatóval tanítja. Nem módosítjuk; a jelölése (`print`, `range(5)` → 0…4, 4 szóköz behúzás) egyezik a sorozattal. A címkéje 2026-11-01-én Endi kérésére „Python – gyors áttekintés” lett (a „10. évfolyam” kikerült). |
 | `python-dolgozat` (2026-10-25) | Dolgozatra készítő ismétlés: a gyakorló feladatsor 52 feladata, próbadolgozat. | **A sorozat 1–4. és 9. leckéjének ismétlője.** Ugyanaz a futtató (Pyodide 0.27.7, Web Worker), ugyanaz a bemenet-kezelés és a magyar hibatipp; a fogalmak és a szavak ugyanazok (bekérés, kiírás, típusváltás, f-string). A dolgozat-lecke nem változik; a sorozat leckéi a végükön linkelnek rá („Ha ez megy: próbadolgozat”). |
 
 **Ellentmondás nincs, mert:** a sorozat is f-stringgel írja ki az eredményt, amint a 2. leckében bevezeti (az 1. leckében még
@@ -43,7 +45,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 |---|---|---|---|---|
 | 1 | **Mi a program? A `print`** | `python-1-kiiras` | program, utasítás, sorrend, `print`, szöveg (idézőjel) és szám, több érték vesszővel, üres `print()`, megjegyzés `#`, egyszerű számolás, a hibaüzenet részei | ✅ kész (2026. 11. 01.) |
 | 2 | **Változók és típusok** | `python-2-valtozok` | értékadás (`=` jobbról balra), felülírás, `x = x + 1`, névszabályok, `int` `float` `str` `bool`, `type()`, `"5"` ↔ `5`, `int()` `str()` `float()`, f-string | ✅ kész (2026. 11. 01.) |
-| 3 | **Adatbekérés: `input` és a típusváltás** | `python-3-input` | `input()` mindig szöveg, `int(input())`, `float(input())`, a kérdező szöveg, több bemenet, a program váza (bekérés → számolás → kiírás), `ValueError` | tervezett |
+| 3 | **Adatbekérés: `input` és a típusváltás** | `python-3-input` | `input()` mindig szöveg, `int(input())`, `float(input())`, a kérdező szöveg, több bemenet, a program váza (bekérés → számolás → kiírás), `ValueError`, a VS Code terminálja | ✅ kész (2026. 11. 01.) |
 | 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan) | tervezett |
 | 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | tervezett |
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | tervezett |
@@ -105,8 +107,11 @@ ha az iskola odaér.
   több bemenet egymás után; a futtatóban a bemenetek soronként.
 - **Tipikus hibák:** kimaradt `int()` (`"5" + "3"` → `53`, vagy `TypeError`); `int("3.5")` és `int("")` (`ValueError`);
   tizedesvessző (`3,5`); a kérdés kiírása külön `print`-tel, felesleges ismétléssel; zárójelhiba: `int(input("…")`.
-- **Feladattípusok:** Mit ír ki? (megadott bemenettel) · Írd meg! (két különböző bemenettel ellenőrizve, mint a dolgozat-
-  leckében) · Milyen típusú lesz? · Hibakereső · Javítsd ki!
+- **Feladattípusok (kész):** Mit ír ki? (megadott bemenettel, csak a print kimenete) · Melyik kell? (int, float vagy semmi) ·
+  Milyen típusú lesz? · Írd meg! (két különböző bemenettel ellenőrizve, mint a dolgozat-leckében) · Milyen hibát ad? (a megadott
+  bemenettel) · Javítsd ki!
+- **VS Code:** külön dia és levezetés: a `.py` fájl, a ▶ Run Python File és a `python program.py`, a kérdés és a válasz a
+  terminálban (oda kell kattintani), a Traceback a terminálban; és hogy a böngészős futtatóban a bemenet előre megadandó.
 
 ### 4. Műveletek és beépített függvények
 
