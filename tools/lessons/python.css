@@ -1,0 +1,34 @@
+/* A Python-sorozat közös stílusa (a <!--@PYJS--> jelölő hozza be) */
+.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre{font-variant-ligatures:none}
+.slide .eq{white-space:normal}
+.src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
+.src div{padding:0 14px;white-space:pre}
+.src div.cur{background:#4a3a12;color:#FFB01F}
+.src .ln{display:inline-block;width:1.8em;color:#5A6676;user-select:none}
+.pyed{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.pyed label,.kiirlbl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.panel .pyed label{color:var(--panel-muted)}
+.pyed textarea,.kiirta{width:100%;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:4;resize:vertical}
+.panel .pyed textarea{border-color:#3A4656;background:#0A0E13}
+.pyed .pyta{min-height:170px}
+.pyed .pyin{min-height:76px}
+.pyright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pyst{font-size:.85rem;color:var(--muted)}
+.panel .pyst{color:var(--panel-muted)}
+.term,.pyout{background:#0A0E13;color:#DCE3EC;border-radius:10px;font-family:var(--mono);font-size:.88rem}
+.pyout{min-height:110px;display:flex;flex-direction:column;border:1.5px solid #3A4656}
+.pyout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;padding:6px 12px;border-bottom:1px solid #334051}
+.pyout-b,.term{margin:0;padding:8px 12px;max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.term .i,.pyout-b .i{color:#7fb8ff}
+.term .e,.pyout-b .e{color:#ff8a7d}
+.term .h,.pyout-b .h{color:#DCE3EC;opacity:.85}
+.term .dim,.pyout-b .dim{color:#8C99AA}
+.feedback .term{margin-top:8px;font-weight:400}
+.fout{margin-top:8px;border:1.5px solid #3A4656;border-radius:10px;overflow:hidden}
+.fout-h{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;padding:4px 12px;border-bottom:1px solid #334051}
+.fout pre{margin:0;padding:8px 12px;color:#7fe0a8;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono)}
+.tb{background:#0A0E13;color:#ff8a7d;border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:.85rem;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.tb .tl{color:#FFB01F}
+.big-note{border:2px solid var(--led);border-radius:14px;padding:12px 16px;max-width:70ch}
+.next{display:flex;flex-wrap:wrap;gap:10px}
+#cheat td{text-align:left}

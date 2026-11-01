@@ -3,6 +3,9 @@
 //   node tools/lessons/py-check.js --write        az 52 eredeti feladat példafutását beírja a forrás /*@OUTS*/ blokkjába
 //   node tools/lessons/py-check.js --verify [N]   minden „Írd meg” sablon × szint × N feladat: a mintamegoldás átmegy-e
 //                                                 a saját ellenőrzésen; a „Mit ír ki?” válaszai egyeznek-e a valódi Pythonnal
+//   node tools/lessons/py-check.js --verify N <lecke>   a Python-sorozat egy leckéje (python-1-kiiras, …), a közös
+//                                                 python.js keretével: Mit ír ki? · Írd meg!/Javítsd ki! (a minta átmegy,
+//                                                 a kiinduló kód nem) · Milyen hibát ad? · Milyen típusú? · változónév · a diák példái
 const fs = require("fs"), path = require("path"), { spawnSync } = require("child_process");
 const SRC = path.join(__dirname, "python-dolgozat.src.html");
 let src = fs.readFileSync(SRC, "utf8");
@@ -17,8 +20,8 @@ const DRIVER = [
   "res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]",
   "sys.__stdout__.write(json.dumps(res, ensure_ascii=False))"
 ].join("\n");
-function pyRun(jobs){
-  const r = spawnSync("python", ["-I", "-c", DRIVER], { input: Buffer.from(JSON.stringify({ harness: HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
+function pyRun(jobs, harness){
+  const r = spawnSync("python", ["-I", "-c", DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
   if (r.status !== 0) throw new Error("python hiba: " + r.stderr.toString());
   return JSON.parse(r.stdout.toString("utf8"));
 }
@@ -28,6 +31,7 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ co
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const arg = process.argv[2];
+if (arg === "--verify" && process.argv[4] && process.argv[4] !== "python-dolgozat") process.exit(series(process.argv[4], Number(process.argv[3] || 30)));
 if (arg === "--write"){
   const ORIG = new Function(block("ORIG") + "\nreturn ORIG;")();
   const res = pyRun(ORIG.map(o => ({ code: o.code, inputs: o.ins })));
@@ -73,3 +77,42 @@ if (arg === "--verify"){
   process.exit(fails || kf ? 1 : 0);
 }
 console.log("Használat: node tools/lessons/py-check.js --write | --verify [N]");
+
+/* ---------- A Python-sorozat leckéi: a közös python.js keretével ---------- */
+function series(name, N){
+  const lib = fs.readFileSync(path.join(__dirname, "python.js"), "utf8");
+  const lsrc = fs.readFileSync(path.join(__dirname, name + ".src.html"), "utf8");
+  const blk = (txt, b) => { const m = new RegExp("/\\*@" + b + "\\*/([\\s\\S]*?)/\\*@/" + b + "\\*/").exec(txt); if (!m) throw new Error("nincs blokk: " + b); return m[1]; };
+  const H = new Function(blk(lib, "HARNESS") + "\nreturn PY_HARNESS;")();
+  const PC = new Function(blk(lib, "PYCORE") + "\nreturn PYCORE;")();
+  const L = new Function("K", "P", blk(lsrc, "LOGIC") + "\nreturn LOGIC;")({ rnd, pick, shuffle, esc }, { C: PC });
+  const jobs = [], chk = [];
+  const add = (code, ins, f) => { jobs.push({ code, inputs: ins || [] }); chk.push(f); };
+  const cnt = {}; const bad = [];
+  const fail = (where, m) => { bad.push(where + ": " + m); };
+  for (const b of L.banks) b.L.forEach((lv, li) => lv.forEach((g, gi) => { for (let k = 0; k < N; k++){
+    const where = b.id + " " + (li + 1) + ". szint #" + (gi + 1), t = g();
+    cnt[b.kind] = (cnt[b.kind] || 0) + 1;
+    if (b.kind === "kiir") add(t.code, t.ins, r => { if (r.err) return "hiba: " + r.err; if (PC.normOut(r.out) !== PC.normOut(t.ans)) return "Python: " + JSON.stringify(r.out) + " · JS: " + JSON.stringify(t.ans) + " · kód: " + JSON.stringify(t.code); });
+    else if (b.kind === "hiba"){
+      add(t.code, t.ins, r => { if (r.etype !== t.err) return "várt hiba: " + (t.err || "nincs") + " · Python: " + (r.err || "nincs hiba") + " · kód: " + JSON.stringify(t.code); });
+      if (t.fix) add(t.fix, t.ins, r => { if (r.err) return "a javított kód is hibás: " + r.err + " · " + JSON.stringify(t.fix); });
+    }
+    else if (b.kind === "tipus") add("print(type(" + t.expr + ").__name__)", [], r => { const o = r.out.trim(); if (r.err || o !== t.type) return t.expr + " → Python: " + (r.err || o) + ", JS: " + t.type; });
+    else if (b.kind === "nev") add(t.name + " = 1", [], r => { if (!r.err !== !!t.ok) return t.name + ": Python szerint " + (r.err ? "nem jó (" + r.err + ")" : "jó") + ", a feladat szerint " + (t.ok ? "jó" : "nem jó"); });
+    else if (b.kind === "write"){
+      if (t.tests.length > 1 && t.tests[0].ins.join("|") === t.tests[1].ins.join("|")) fail(where, "két egyforma próbabemenet");
+      const rs = [], n0 = jobs.length;
+      t.tests.forEach((tt, i) => add(t.code, tt.ins, r => { rs[i] = r; if (i < t.tests.length - 1) return; const j = PC.judge(t, t.code, rs); if (!j.ok) return "a minta nem megy át: " + j.why + " · kimenet: " + JSON.stringify(rs[j.k || 0].out) + (rs[j.k || 0].err ? " · " + rs[j.k || 0].err : "") + " · kód: " + JSON.stringify(t.code); }));
+      if (t.starter){ const ss = []; t.tests.forEach((tt, i) => add(t.starter, tt.ins, r => { ss[i] = r; if (i < t.tests.length - 1) return; if (PC.judge(t, t.starter, ss).ok) return "a kiinduló (hibás) kód átmegy: " + JSON.stringify(t.starter); })); }
+    }
+    else fail(where, "ismeretlen fajta: " + b.kind);
+    const last = chk.length; for (let q = 0; q < last; q++) if (!chk[q].where) chk[q].where = where;
+  } }));
+  (Array.isArray(L.EX) ? L.EX : Object.values(L.EX || {})).forEach((e, i) => { cnt.ex = (cnt.ex || 0) + 1; add(e.code, e.ins, r => { if ((r.etype || "") !== (e.err || "")) return "várt: " + (e.err || "nincs hiba") + " · Python: " + (r.err || "nincs hiba") + " · " + JSON.stringify(e.code); }); chk[chk.length - 1].where = "példa #" + (i + 1); });
+  const res = pyRun(jobs, H);
+  res.forEach((r, i) => { const m = chk[i](r); if (m) fail(chk[i].where, m); });
+  console.log(name + ": " + Object.entries(cnt).map(([k, v]) => k + " " + v).join(" · ") + " · futás " + jobs.length + " · hiba " + bad.length);
+  bad.slice(0, 20).forEach(b => console.log("  ✖ " + b));
+  return bad.length ? 1 : 0;
+}
