@@ -1,0 +1,298 @@
+<!--@HEAD-->
+<title>Felszólító mód</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.vb{display:flex;flex-wrap:wrap;gap:8px}
+.vb button{background:#151B23;border:1.5px solid #3A4656;border-radius:12px;color:#DCE3EC;padding:8px 12px;font-family:var(--body);font-weight:700;font-size:1.05rem}
+.vb button[aria-pressed="true"]{border-color:#FFB01F;color:#FFB01F}
+.vt{width:100%;border-collapse:collapse;font-family:var(--body)}
+.vt td{padding:6px 8px;border-bottom:1px solid #2A3442;color:#DCE3EC}
+.vt td:first-child{color:#8C99AA;font-size:.9rem;width:40%}
+.vt td b{color:#fff;font-size:clamp(1.1rem,5vw,1.35rem)}
+.vt u{color:#FFB01F;text-decoration-thickness:3px;text-underline-offset:4px}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 6. lecke</span>
+  <h1>Felszólító mód: tanítson, lásson, válasszon</h1>
+  <p class="lead"><b>Tanítsuk</b> vagy <b>tanítjuk</b>? <b>Fusson</b> vagy <b>futson</b>? <b>Játsszunk</b> vagy <b>játszunk</b>? Megtanulod, hogyan írjuk a felszólító módot (amikor kérünk, utasítunk vagy javaslunk), és hogyan különbözik a kijelentő módtól.</p>
+  <div class="panel">
+    <span class="eyebrow">Igealakok: válassz egy igét</span>
+    <div class="vb" id="vb"></div>
+    <table class="vt" id="vt"></table>
+    <p style="color:var(--panel-muted);font-size:.92rem" id="vnote"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="olvas" aria-selected="true">olvasson</button>
+    <button class="tab" data-m="tanit" aria-selected="false">tanítson</button>
+    <button class="tab" data-m="lat" aria-selected="false">lásson, fusson</button>
+    <button class="tab" data-m="valaszt" aria-selected="false">válasszon</button>
+    <button class="tab" data-m="tanitjuk" aria-selected="false">tanítjuk vagy tanítsuk?</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. -j és az s, sz, z végű igék (tanuljon, olvasson, nézzen) · 2. a t végű igék (tanítson, fusson, lásson, válasszon) · 3. rendhagyók és a rövid alak (egyél, legyen, higgyen, játsszon, eddzen; edd, tedd, lásd). A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj a felszólító alakokra: fussatok, siessen, válasszunk, játsszunk, süssön, tegyünk, felejtsétek.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">A felszólító mód jele</span><span>Legtöbbször j: tanuljon, írjon, hagyjon, küldjön · jön: jöjjön</span></div>
+    <div class="trick"><span class="t">s, sz, z, dz végű ige</span><span>A j hasonul: olvasson, nézzen, ússzon, eddzen · tárgyas is: olvassuk, nézzük, játsszuk</span></div>
+    <div class="trick"><span class="t">t végű ige</span><span>tanítson, értsen (ts) · fusson, lásson, nyisson (ss) · fessen, válasszon (st, szt: a t kimarad)</span></div>
+    <div class="trick"><span class="t">Kijelentő vagy felszólító?</span><span>tanítjuk (most csináljuk) ↔ tanítsuk (kérés) · látjuk ↔ lássuk · értjük ↔ értsük</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 38. pont (-d, -dd: írd, edd), 42–44. pont (a felszólító mód jele, a tárgyas ragozás, kettős alakok), 55–57. pont (a toldalék j-je), 76–81. pont (t, st, szt, s, sz, z, dz végű igék; lesz, tesz, vesz, visz, eszik, iszik) · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: igealakok (AkH 42., 76–81.) ---------- */
+  // [ige, aláhúzandó rész, te, ő, mi, ti, ők, te + azt (rövid), megjegyzés]
+  const VB = [
+    ["tanul", "lj", "tanulj", "tanuljon", "tanuljunk", "tanuljatok", "tanuljanak", "tanuld", "A legtöbb igénél a felszólító mód jele j."],
+    ["olvas", "ss", "olvass", "olvasson", "olvassunk", "olvassatok", "olvassanak", "olvasd", "s végű ige: a j hasonul, ss lesz."],
+    ["néz", "zz", "nézz", "nézzen", "nézzünk", "nézzetek", "nézzenek", "nézd", "z végű ige: zz."],
+    ["tanít", "ts", "taníts", "tanítson", "tanítsunk", "tanítsatok", "tanítsanak", "tanítsd", "Hosszú magánhangzó + t: ts."],
+    ["lát", "ss", "láss", "lásson", "lássunk", "lássatok", "lássanak", "lásd", "A lát olyan, mint a rövid magánhangzó + t: ss."],
+    ["fut", "ss", "fuss", "fusson", "fussunk", "fussatok", "fussanak", "–", "Rövid magánhangzó + t: ss."],
+    ["választ", "ssz", "válassz", "válasszon", "válasszunk", "válasszatok", "válasszanak", "válaszd", "szt végű ige: a t kimarad, ssz."],
+    ["játszik", "ssz", "játssz", "játsszon", "játsszunk", "játsszatok", "játsszanak", "játszd", "A tő játsz-, sz végű: ssz. A ts megmarad!"],
+    ["edz", "ddz", "eddz", "eddzen", "eddzünk", "eddzetek", "eddzenek", "edzd", "dz végű ige: ddz (csak a d kettőződik)."],
+    ["eszik", "gy", "egyél", "egyen", "együnk", "egyetek", "egyenek", "edd", "Rendhagyó: gy. Ugyanígy: iszik, lesz, tesz, vesz, visz."]
+  ];
+  let vk = 0;
+  const mark = (w, p) => { const i = w.lastIndexOf(p); return i < 0 ? esc(w) : esc(w.slice(0, i)) + "<u>" + esc(p) + "</u>" + esc(w.slice(i + p.length)); };
+  function drawVb(){
+    const v = VB[vk];
+    $("#vb").innerHTML = VB.map((x, k) => '<button data-v="' + k + '" aria-pressed="' + (k === vk) + '">' + esc(x[0]) + "</button>").join("");
+    $("#vt").innerHTML = [["te", 2], ["ő", 3], ["mi", 4], ["ti", 5], ["ők", 6], ["te + azt (rövid alak)", 7]].map(r => "<tr><td>" + r[0] + "</td><td><b>" + (v[r[1]] === "–" ? "–" : mark(v[r[1]], v[1])) + "</b></td></tr>").join("");
+    $("#vnote").textContent = v[8];
+  }
+  $("#vb").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; vk = Number(b.dataset.v); drawVb(); if (K.tts.on && K.tts.ok) K.tts.say(VB[vk].slice(2, 7).join(", ")); });
+  drawVb();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    olvas: () => [
+      { cap: "Olvasson. A felszólító mód jele általában j: tanul, tanuljon.", html: W("tanu<u>lj</u>on") },
+      { cap: "De ha az ige s, sz, z vagy dz végű, a j hasonul: olyan lesz, mint a tő utolsó betűje.", html: W("olvas + j + on → olva<u>ss</u>on", "s végű: ss") },
+      { cap: "Ugyanígy: néz, nézzen. Keres, keressen. Húz, húzzon.", html: W("né<u>zz</u>en · kere<u>ss</u>en · hú<u>zz</u>on") },
+      { cap: "Többjegyű betűnél csak az első jegy kettőződik: úszik, ússzon. Edz, eddzen.", html: W("ú<u>ssz</u>on · e<u>ddz</u>en") },
+      { cap: "Ugyanez a tárgyas ragozásban is: olvassuk, nézzük, keressük, játsszuk.", html: W("olva<u>ss</u>uk · né<u>zz</u>ük · játs<u>sz</u>uk") }
+    ],
+    tanit: () => [
+      { cap: "Tanítson. A tanít t végű ige. Mi áll a t előtt? Hosszú í.", html: W("tan<u>ít</u>") },
+      { cap: "Ha a t előtt hosszú magánhangzó vagy mássalhangzó áll (de nem s vagy sz), a t megmarad, és a jel s lesz: ts.", html: W("taní<u>t</u> + <u>s</u> + on = taní<u>ts</u>on") },
+      { cap: "Ugyanígy: segítsen, javítson, fűtsön, értsen, töltsön.", html: W("segí<u>ts</u>en · ér<u>ts</u>en · töl<u>ts</u>ön") },
+      { cap: "De a d végű küld nem ilyen: ott j a jel, küldjön.", html: W("kül<u>dj</u>ön", "d végű: j") }
+    ],
+    lat: () => [
+      { cap: "Fusson. A fut t végű, és a t előtt rövid magánhangzó áll: u.", html: W("f<u>u</u>t") },
+      { cap: "Ilyenkor a t-ből is s lesz, a jelből is s: ss. Fuss, fusson.", html: W("fu<u>ss</u>on", "nem: futson") },
+      { cap: "Ugyanígy: köt, kössön. Nyit, nyisson. Nevet, nevessen. Alkot, alkosson.", html: W("kö<u>ss</u>ön · nyi<u>ss</u>on · neve<u>ss</u>en") },
+      { cap: "A lát és a bocsát hosszú á-s, mégis így viselkedik: lásson, bocsásson. Ezt meg kell jegyezni.", html: W("lá<u>ss</u>on · bocsá<u>ss</u>on", "kivétel: lát, bocsát") }
+    ],
+    valaszt: () => [
+      { cap: "Válasszon. A választ szt végű ige.", html: W("vála<u>szt</u>") },
+      { cap: "Az st és szt végű igéknél a t kimarad, és a felszólító alak a t nélküli tőből készül: válasz-.", html: W("válasz + sz + on = vála<u>ssz</u>on", "nem: választson") },
+      { cap: "Ugyanígy: fest, fessen. Ragaszt, ragasszon. Ereszt, eresszen.", html: W("fe<u>ss</u>en · raga<u>ssz</u>on · ere<u>ssz</u>en") }
+    ],
+    tanitjuk: () => [
+      { cap: "Tanítjuk vagy tanítsuk? Mindkettő jó szó, csak mást jelent!", html: W("tanítjuk ↔ tanítsuk") },
+      { cap: "Tanítjuk: kijelentő mód. Most csináljuk, ez a tény. Minden nap tanítjuk a kutyát.", html: W("taní<u>tj</u>uk", "kijelentő: tény") },
+      { cap: "Tanítsuk: felszólító mód. Kérés, javaslat. Tanítsuk meg a kutyát ülni!", html: W("taní<u>ts</u>uk", "felszólító: kérés") },
+      { cap: "Ugyanígy: látjuk és lássuk, értjük és értsük, ütjük és üssük.", html: W("lá<u>tj</u>uk ↔ lá<u>ss</u>uk · é<u>rtj</u>ük ↔ é<u>rts</u>ük") },
+      { cap: "Próba: tegyél elé egy hogy-ot, és egy kérést. Azt kérem, hogy tanítsuk. Ha így jó, felszólító.", html: W("Azt kérem, hogy … taní<u>ts</u>uk") }
+    ]
+  };
+  const MET = { olvas: "olvasson", tanit: "tanítson", lat: "lásson, fusson", valaszt: "válasszon", tanitjuk: "tanítjuk vagy tanítsuk?" };
+  const PB = { m: "olvas" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mi a felszólító mód?", h:
+      "<p>Akkor használjuk, ha <b>kérünk, utasítunk, javaslunk</b> vagy valamit szeretnénk: <b>Tanulj!</b> Mondd meg neki, hogy <b>jöjjön</b>. <b>Játsszunk!</b></p>" +
+      "<p>A felszólító mód jele a legtöbb igénél <b>j</b>. De az ige végétől függően más alakot is felvehet: s, sz, z, dz, gy.</p>" +
+      "<div class='note'><b>A lecke kérdése:</b> mi az ige utolsó hangja? Ebből tudod, hogyan kell írni.</div>" },
+    { k: "-j", t: "A legtöbb igénél: j", h:
+      "<p class='eq'>tanul → tanu<b>lj</b>on · ír → í<b>rj</b>on · kér → ké<b>rj</b>en · hagy → ha<b>gyj</b>on · küld → kül<b>dj</b>ön · fúj → fú<b>jj</b>on</p>" +
+      "<p>Kiejtve sokszor másképp hangzik ([tanujjon], [haggyon], [külgyön]), de írva a tő és a j is megmarad (4. lecke).</p>" +
+      "<p>A <b>jön</b> rendhagyó: jö<b>jj</b>ön, jö<b>jj</b>enek.</p>" },
+    { k: "s, sz, z, dz", t: "s, sz, z, dz végű ige: a j hasonul", h:
+      tbl(["ige", "felszólító", "tárgyas (kijelentő)"], [["olvas", "olva<b>ss</b>on", "olva<b>ss</b>uk"], ["keres", "kere<b>ss</b>en", "kere<b>ss</b>ük"], ["néz", "né<b>zz</b>en", "né<b>zz</b>ük"], ["húz", "hú<b>zz</b>on", "hú<b>zz</b>uk"], ["úszik", "ú<b>ssz</b>on", "–"], ["edz", "e<b>ddz</b>en", "e<b>ddz</b>ük"]]) +
+      "<p>Itt a felszólító és a kijelentő tárgyas alak <b>egyforma</b>: olvassuk, nézzük.</p>" + playBtn("olvas"), init: playInit },
+    { k: "t + ts", t: "t végű ige, előtte mássalhangzó (nem s, sz) vagy hosszú magánhangzó: ts", h:
+      "<p class='eq'>tanít → taní<b>ts</b>on · segít → segí<b>ts</b>en · javít → javí<b>ts</b>on · fűt → fű<b>ts</b>ön · ért → ér<b>ts</b>en · tölt → töl<b>ts</b>ön · felejt → felej<b>ts</b>en</p>" +
+      "<p>A t megmarad, a jel <b>s</b> lesz.</p>" + playBtn("tanit"), init: playInit },
+    { k: "t + ss", t: "Rövid magánhangzó + t, és a lát: ss", h:
+      "<p class='eq'>fut → fu<b>ss</b>on · köt → kö<b>ss</b>ön · nyit → nyi<b>ss</b>on · nevet → neve<b>ss</b>en · alkot → alko<b>ss</b>on · hallgat → hallga<b>ss</b>on · siet → sie<b>ss</b>en</p>" +
+      "<p>A t is s-sé válik, a jel is s: <b>ss</b>. Kivétel: a <b>lát</b> és a <b>bocsát</b> is így: lá<b>ss</b>on, bocsá<b>ss</b>on.</p>" +
+      "<div class='mistake'><b>futson, látson, nyitson</b> → fusson, lásson, nyisson.</div>" + playBtn("lat"), init: playInit },
+    { k: "st, szt", t: "st és szt végű ige: a t kimarad", h:
+      "<p class='eq'>fest → fe<b>ss</b>en · választ → vála<b>ssz</b>on · ragaszt → raga<b>ssz</b>on · ereszt → ere<b>ssz</b>en · oszt → o<b>ssz</b>on</p>" +
+      "<div class='mistake'><b>választson, festsen</b> → válasszon, fessen.</div>" + playBtn("valaszt"), init: playInit },
+    { k: "Rendhagyó", t: "eszik, iszik, lesz, tesz, vesz, visz, hisz", h:
+      tbl(["ige", "felszólító"], [["eszik", "e<b>gy</b>él, e<b>gy</b>en, e<b>gy</b>ünk"], ["iszik", "i<b>gy</b>ál, i<b>gy</b>on"], ["lesz", "le<b>gy</b>ek, le<b>gy</b>en"], ["tesz", "te<b>gy</b>ük, te<b>gy</b>étek"], ["vesz", "ve<b>gy</b>él, ve<b>gy</b>en"], ["visz", "vi<b>gy</b>ük, vi<b>gy</b>étek"], ["hisz", "hi<b>ggy</b>en (két g!)"]]) },
+    { k: "Rövid alak", t: "Rövid alak: írd, nézd, edd, tedd", h:
+      "<p>Ha valakit arra kérsz, hogy egy bizonyos dolgot (<b>azt</b>) csináljon, rövid alakot is használhatsz, <b>-d</b>-vel:</p>" +
+      "<p class='eq'>írd · nézd · olvasd · tanítsd · lásd · válaszd · játszd</p>" +
+      "<p>Az eszik, iszik, tesz, vesz, visz, hisz rövid alakja <b>dd</b>: <b>edd, idd, tedd, vedd, vidd, hidd</b>.</p>" +
+      "<p>A hosszabb alak is jó: írjad, nézzed, tegyed (de egy d-vel!).</p>" },
+    { k: "Kijelentő ↔ felszólító", t: "tanítjuk vagy tanítsuk?", h:
+      tbl(["kijelentő (tény)", "felszólító (kérés)"], [["tanítjuk", "tanítsuk"], ["látjuk", "lássuk"], ["értjük", "értsük"], ["ütjük", "üssük"], ["festjük", "fessük"], ["eszünk", "együnk"], ["visszük", "vigyük"]]) +
+      "<p><b>Próba:</b> mondd elé: <i>Azt kérem, hogy…</i> Ha így értelmes, felszólító kell.</p>" +
+      "<div class='note'>Az s, sz, z végűeknél a tárgyas alak egyforma (<b>olvassuk, nézzük</b>), de az alanyi nem: <b>olvasunk ↔ olvassunk</b>, <b>játszunk ↔ játsszunk</b>. A visz, tesz, vesz is más: <b>visszük ↔ vigyük</b>.</div>" + playBtn("tanitjuk"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>olvasjon, nézjen</b> → olvasson, nézzen.</div>" +
+      "<div class='mistake'><b>futson, látson, nyitsd</b> → fusson, lásson, nyisd.</div>" +
+      "<div class='mistake'><b>választson, festsen</b> → válasszon, fessen.</div>" +
+      "<div class='mistake'><b>játszunk!</b> (kérés) → játsszunk! A játszunk kijelentő: most is játszunk.</div>" +
+      "<div class='mistake'><b>Azt kérte, hogy tanítjuk</b> → tanítsuk.</div>" +
+      "<div class='mistake'><b>higyjen, tegyjen, ted</b> → higgyen, tegyen, tedd.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Nézd az ige végét</span><span>s, sz, z → kettőzés (olvasson) · t → ts vagy ss · st, szt → a t kimarad · más → j</span></div>" +
+      "<div class='trick'><span class='t'>Rövid vagy hosszú a t előtt?</span><span>fut (rövid) → fusson · tanít (hosszú) → tanítson · lát: kivétel, lásson</span></div>" +
+      "<div class='trick'><span class='t'>Hogy-próba</span><span>„Azt kérem, hogy…” Ha belefér: felszólító (tanítsuk, lássuk).</span></div>" +
+      "<div class='trick'><span class='t'>Játsszunk!</span><span>A tő játsz-, ehhez jön még egy sz: ssz. A ts is ott marad: játsszunk.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const FS = [   // [ige, személy, jó, [rossz], magyarázat]
+    [["tanul", "ő", "tanuljon", ["tanujjon", "tanulljon"], "tanul + j + on: a felszólító mód jele j."], ["ír", "te", "írj", ["írly", "irj"], "ír + j: a jel j."],
+     ["lép", "ő", "lépjen", ["lépon", "lépjjen"], "lép + j + en."], ["hagy", "ő", "hagyjon", ["haggyon", "hagyon"], "hagy + j + on: kiejtve [haggyon], írva hagyjon."],
+     ["jön", "ő", "jöjjön", ["jöjön", "jönjön"], "A jön rendhagyó: jöjjön."], ["kér", "ő", "kérjen", ["kérjjen", "kéren"], "kér + j + en."],
+     ["dob", "ő", "dobjon", ["dobbon", "dopjon"], "dob + j + on."], ["olvas", "ő", "olvasson", ["olvasjon", "olvason"], "s végű ige: a j hasonul, ss."],
+     ["keres", "ő", "keressen", ["keresjen", "keresen"], "s végű ige: ss."], ["néz", "ő", "nézzen", ["nézjen", "nézen"], "z végű ige: zz."],
+     ["húz", "ő", "húzzon", ["húzjon", "húzon"], "z végű ige: zz."], ["főz", "mi", "főzzünk", ["főzjünk", "főszünk"], "z végű ige: zz."],
+     ["mos", "ők", "mossanak", ["mosjanak", "mosanak"], "s végű ige: ss."]],
+    [["tanít", "ő", "tanítson", ["tanítjon", "tanítton"], "Hosszú í + t: ts."], ["segít", "ő", "segítsen", ["segítjen", "segíccsen"], "Hosszú í + t: ts."],
+     ["javít", "te", "javíts", ["javítj", "javíccs"], "Hosszú í + t: ts."], ["ért", "ő", "értsen", ["értjen", "érccsen"], "Mássalhangzó + t: ts."],
+     ["tölt", "ő", "töltsön", ["töltjön", "tölccsön"], "Mássalhangzó + t: ts."], ["küld", "ő", "küldjön", ["küldsön", "külggyön"], "d végű ige: j a jel."],
+     ["fut", "ő", "fusson", ["futson", "fuson"], "Rövid u + t: ss."], ["köt", "ő", "kössön", ["kötsön", "kösön"], "Rövid ö + t: ss."],
+     ["nyit", "te", "nyiss", ["nyits", "nyis"], "Rövid i + t: ss."], ["nevet", "ő", "nevessen", ["nevetsen", "neveszen"], "Rövid e + t: ss."],
+     ["lát", "ő", "lásson", ["látson", "láson"], "A lát kivétel: ss, mint a rövid magánhangzó után."], ["alkot", "mi", "alkossunk", ["alkotsunk", "alkosunk"], "Rövid o + t: ss."],
+     ["hallgat", "ő", "hallgasson", ["hallgatson", "hallgason"], "Rövid a + t: ss."], ["fest", "ő", "fessen", ["festsen", "fesen"], "st végű ige: a t kimarad, ss."],
+     ["választ", "ő", "válasszon", ["választson", "válaszjon"], "szt végű ige: a t kimarad, ssz."], ["ragaszt", "te", "ragassz", ["ragaszts", "ragasz"], "szt végű ige: ssz."],
+     ["ereszt", "ő", "eresszen", ["eresztsen", "ereszen"], "szt végű ige: ssz."]],
+    [["eszik", "te", "egyél", ["eszél", "egyjél"], "eszik → egyél: gy."], ["iszik", "te", "igyál", ["iszál", "igyjál"], "iszik → igyál."],
+     ["lesz", "ő", "legyen", ["leszjen", "legyjen"], "lesz → legyen."], ["tesz", "ő", "tegyen", ["tesszen", "tegyjen"], "tesz → tegyen."],
+     ["vesz", "te", "vegyél", ["veszjél", "vegyjél"], "vesz → vegyél."], ["visz", "ő", "vigyen", ["visszen", "vigyjen"], "visz → vigyen."],
+     ["hisz", "ő", "higgyen", ["higyen", "hisszen"], "hisz → higgyen: hosszú gy (ggy)."], ["játszik", "ő", "játsszon", ["játszon", "játszjon"], "A tő játsz-, sz végű: ssz. A ts megmarad."],
+     ["úszik", "ő", "ússzon", ["úszjon", "ússzjon"], "sz végű: ssz."], ["edz", "ő", "eddzen", ["edzen", "edzjen"], "dz végű: ddz."],
+     ["eszik", "te + azt (rövid)", "edd", ["ed", "eszd"], "Rövid alak: edd."], ["iszik", "te + azt (rövid)", "idd", ["id", "iszd"], "Rövid alak: idd."],
+     ["tesz", "te + azt (rövid)", "tedd", ["ted", "teszd"], "Rövid alak: tedd."], ["visz", "te + azt (rövid)", "vidd", ["vid", "viszd"], "Rövid alak: vidd."],
+     ["ír", "te + azt (rövid)", "írd", ["írdd", "írjd"], "Rövid alak: írd, egy d."], ["tanít", "te + azt (rövid)", "tanítsd", ["tanítd", "taníccsd"], "tanít + s + d = tanítsd."],
+     ["lát", "te + azt (rövid)", "lásd", ["látsd", "láttsd"], "lát: lás + d = lásd."], ["játszik", "te + azt (rövid)", "játszd", ["játsszd", "játsd"], "játsz + d = játszd."]]
+  ];
+  const TR = [   // tárgyas ragozás, kijelentő mód
+    [["tanul", "mi (azt)", "tanuljuk", ["tanujjuk", "tanulyuk"], "tanul + juk: a j megmarad."], ["lát", "ő (azt)", "látja", ["láttya", "látya"], "lát + ja."],
+     ["ad", "ők (azt)", "adják", ["aggyák", "adgyák"], "ad + ják."], ["ért", "mi (azt)", "értjük", ["értyük", "érttyük"], "ért + jük."],
+     ["hagy", "mi (azt)", "hagyjuk", ["haggyuk", "hagyuk"], "hagy + juk."], ["tanít", "ők (azt)", "tanítják", ["taníttyák", "tanítyák"], "tanít + ják."]],
+    [["olvas", "mi (azt)", "olvassuk", ["olvasjuk", "olvasuk"], "s végű ige: a j hasonul, ss."], ["néz", "mi (azt)", "nézzük", ["nézjük", "nézük"], "z végű ige: zz."],
+     ["mos", "ő (azt)", "mossa", ["mosja", "mosa"], "s végű ige: ss."], ["keres", "mi (azt)", "keressük", ["keresjük", "keresük"], "s végű ige: ss."],
+     ["húz", "ő (azt)", "húzza", ["húzja", "húza"], "z végű ige: zz."], ["visz", "mi (azt)", "visszük", ["viszjük", "viszük"], "sz végű ige: ssz."],
+     ["edz", "mi (azt)", "eddzük", ["edzjük", "edzük"], "dz végű ige: ddz."], ["játszik", "mi (azt)", "játsszuk", ["játszjuk", "játszuk"], "játsz + juk: ssz."],
+     ["hoz", "ők (azt)", "hozzák", ["hozják", "hozák"], "z végű ige: zz."]]
+  ];
+  TR.push(TR[0].concat(TR[1]));
+  const KF = [
+    [["Azt szeretném, hogy {tanítsuk|tanítjuk} meg Petit sakkozni.", "Kívánság: felszólító, tanítsuk."], ["Minden nap {tanítjuk|tanítsuk} a kutyát.", "Tény: kijelentő, tanítjuk."],
+     ["{Lássuk|Látjuk} csak, mit tudsz!", "Felszólítás: lássuk."], ["Innen jól {látjuk|lássuk} a pályát.", "Tény: látjuk."],
+     ["Az edző azt kérte, hogy {üssük|ütjük} erősebben a labdát.", "Kérés: üssük."], ["Most már {értjük|értsük} a szabályt.", "Tény: értjük."],
+     ["Az edző azt kérte, hogy {értsük|értjük} meg a szabályt.", "Kérés: értsük."], ["Anya azt mondta, hogy {fessük|festjük} ki a szobát.", "Kérés: fessük."],
+     ["Most {festjük|fessük} a kerítést, ezért ne nyúlj hozzá!", "Tény: festjük."], ["Kérlek, {segíts|segítesz} nekem!", "Kérés: segíts."],
+     ["Mindig {segítesz|segíts} nekem, ha elakadok.", "Tény: segítesz."], ["Mondd meg neki, hogy {várjon|vár} meg!", "Kérés: várjon."]],
+    [["Éhes vagyok, {együnk|eszünk} valamit!", "Javaslat: együnk."], ["Este mindig együtt {eszünk|együnk}.", "Tény: eszünk."],
+     ["{Vigyük|Visszük} le a szemetet, mielőtt anya hazaér!", "Javaslat: vigyük."], ["Minden héten mi {visszük|vigyük} le a szemetet.", "Tény: visszük."],
+     ["{Tegyük|Tesszük} félre a telefonokat!", "Javaslat: tegyük."], ["Óra előtt a telefonokat a táskába {tesszük|tegyük}.", "Tény: tesszük."],
+     ["{Játsszunk|Játszunk} még egy kört!", "Javaslat: játsszunk."], ["Szünetben mindig focit {játszunk|játsszunk}.", "Tény: játszunk."],
+     ["Az edző azt mondta, hogy {eddzünk|edzünk} többet.", "Kérés: eddzünk."], ["Hetente háromszor {edzünk|eddzünk}.", "Tény: edzünk."]]
+  ];
+  KF.push(KF[0].concat(KF[1]));
+  const S = [
+    [["{Olvasson|Olvasjon} mindenki hangosan!", "s végű ige: olvasson."], ["Kérlek, {nézd/nézzed|nézzd} meg a házi feladatomat!", "Rövid alak: néz + d = nézd."],
+     ["Mondd meg Petinek, hogy {jöjjön|jöjön} le az udvarra.", "jön → jöjjön."], ["{Keressük|Keresjük} meg együtt a hibát!", "s végű ige: keressük."],
+     ["A tanár azt kérte, hogy {tanuljunk|tanujjunk} többet.", "tanul + j + unk."], ["{Mossatok|Mosjatok} kezet ebéd előtt!", "s végű ige: mossatok."],
+     ["Holnap {főzzünk|főzjünk} valami finomat!", "z végű ige: főzzünk."], ["{Húzd/Húzzad|Húzzd} fel a cipzárt, mert hideg van!", "Rövid alak: húz + d = húzd."],
+     ["{Írj/Írjál|Írly} nekem, ha hazaértél!", "ír + j = írj."]],
+    [["{Tanítsd/Tanítsad|Tanítd} meg nekem ezt a trükköt!", "tanít + s + d = tanítsd."], ["A tanár kérte, hogy {segítsünk|segíccsünk} a padok elrendezésében.", "segít + s + ünk."],
+     ["{Nyisd/Nyissad|Nyitsd} ki az ablakot, mert meleg van!", "Rövid i + t: nyis-, nyisd."], ["{Fuss/Fussál|Futs} gyorsabban, mert lekésünk!", "Rövid u + t: fuss."],
+     ["Azt akarom, hogy {lássátok|látsátok} az új rajzomat.", "lát → lássátok."], ["{Válassz|Választs} egy számot egytől tízig!", "szt végű: válassz."],
+     ["{Fessük|Festsük} ki a kerítést zöldre!", "st végű: fessük."], ["Ne {nevess/nevessél|nevets} ki senkit!", "Rövid e + t: nevess."],
+     ["{Értsd/Értsed|Érsd} meg végre, hogy ez fontos!", "ért + s + d = értsd."], ["Kérlek, {kösd/kössed|kötsd} be a cipőfűződet!", "Rövid ö + t: kösd."]],
+    [["{Egyél|Eszél} valamit, mielőtt elindulsz!", "eszik → egyél."], ["{Igyál|Iszál} egy pohár vizet!", "iszik → igyál."],
+     ["{Legyél/Légy|Leszél} pontos, mert nem várunk!", "lesz → legyél."], ["{Tedd/Tegyed|Ted} le a telefont, és figyelj!", "Rövid alak: tedd."],
+     ["{Vidd/Vigyed|Vid} ki a szemetet!", "Rövid alak: vidd."], ["Ne {higgy/higgyél|higyj} el mindent, amit az interneten olvasol!", "hisz → higgy."],
+     ["{Játsszunk|Játszunk} még egy kört!", "Javaslat: játsszunk (a játszunk kijelentő)."], ["Az edző azt mondta, hogy {eddzünk|edzünk} többet.", "Kérés: eddzünk."],
+     ["{Ússz/Ússzál|Úszj} a part felé!", "úszik → ússz."], ["{Edd/Egyed|Ed} meg a levest, mert kihűl!", "Rövid alak: edd."]]
+  ];
+  const types = [
+    { id: "felsz", name: "Felszólító alak", gen(l){
+      const t = pick(FS[l - 1]);
+      return H.choiceTask("Felszólító mód: <span class='num'>" + esc(t[0]) + "</span> · " + esc(t[1]), t[2], t[3], "<p><b>" + esc(t[2]) + "</b>. " + t[4] + "</p>", "Nem ez. " + t[4]);
+    } },
+    { id: "targy", name: "Tárgyas: -juk vagy -suk?", gen(l){
+      const t = pick(TR[l - 1]);
+      return H.choiceTask("Kijelentő mód, tárgyas ragozás: <span class='num'>" + esc(t[0]) + "</span> · " + esc(t[1]), t[2], t[3], "<p><b>" + esc(t[2]) + "</b>. " + t[4] + "</p>", "Nem ez. " + t[4]);
+    } },
+    { id: "kf", name: "Kijelentő vagy felszólító?", gen: l => H.sentChoice(pick(KF[l - 1])) },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) }
+  ];
+  K.practice($("#practice"), { id: "h-felsz", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.felsz, player: pb, print: "tollbamondasok.html#felsz" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Az ige vége</th><th>Felszólító mód</th></tr>" + [
+    ["a legtöbb ige: j", "tanuljon, írjon, hagyjon, küldjön · jön: jöjjön"], ["s, sz, z, dz: kettőzés", "olvasson, nézzen, ússzon, eddzen"],
+    ["mássalhangzó (de nem s, sz) vagy hosszú magánhangzó + t: ts", "tanítson, segítsen, értsen, töltsön"], ["rövid magánhangzó + t, és a lát, bocsát: ss", "fusson, kössön, nyisson, lásson"],
+    ["st, szt: a t kimarad", "fessen, válasszon, ragasszon"], ["eszik, iszik, lesz, tesz, vesz, visz: gy", "egyél, igyál, legyen, tegyen, vegyél, vigyél"],
+    ["hisz: ggy", "higgyen, higgy"], ["rövid alak (azt): -d", "írd, nézd, tanítsd, lásd, válaszd"],
+    ["… eszik, iszik, tesz, vesz, visz, hisz: dd", "edd, idd, tedd, vedd, vidd, hidd"], ["kijelentő ↔ felszólító", "tanítjuk ↔ tanítsuk · látjuk ↔ lássuk · eszünk ↔ együnk"]]
+    .map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

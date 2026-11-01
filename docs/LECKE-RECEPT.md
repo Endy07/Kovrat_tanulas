@@ -424,3 +424,105 @@ szándékos hibákkal (tavaj, korcsojapálya, ojan, hejet, mosojjal, fojtatta, m
 - **Linuxon a pre-commit hook nem fut:** a `.githooks/pre-commit` a repóban 100644-es (nem futtatható), Windowson ez nem számít.
   Felhős klónban: `git config core.hooksPath .githooks` és `chmod +x .githooks/pre-commit` (a módváltozást ne commitold), vagy
   HTML-es commit után kézzel `sh tools/bump-version.sh` és egy verzió-commit (2026-11-01-én így történt).
+
+### A 2026. 11. 01-i 5. helyesírás-lecke (hasonulások)
+
+Eredmény: `helyesiras-hasonulasok` 600/600 (5 típus × 3 szint × 40), 12 dia, 17 lejátszó-kocka, 390 px rendben, JS-hiba nincs.
+A közös modul változása miatt újrafuttatva: j/ly 600/600, betűk 600/600, magánhangzók 480/480, mássalhangzók 480/480,
+tollbamondások hibátlan; `helyesiras-check.js` 354 ellenőrzés, hiba nélkül. Tollbamondás-próba 6 szándékos hasonulási hibával
+(egésségnapot, ablagban, ezben, minnyájan, azomban, Azkor): mind a 6 a „Hasonulás (szóelemzés)” csoportba került.
+
+- **Pontszámot csak teljes listából írj.** A 4. leckében a toldalék j-jének pontja elsőre 51. lett, mert a szabályzat oldalának
+  kivonatában egy szomszédos pont száma tapadt a táblázathoz; helyesen 55. A 47–60. pont listáját egyben kérve derült ki
+  („List the numbered points from 47 to 60 … first sentence … examples”). Új leckénél előbb ezt a listát kérd le.
+- **A hasonulás-felismerő (`hasonKey`) a többi hibatípus után fut**, különben elnyelné a kettőzési (házal) és a többjegyű betűs
+  (sinte ~ szinte) hibákat. Az sz–z és az s–zs külön osztály, ezért a sinte/szinte nem hasonulás.
+- **Rossz alakként létező szó:** jégé, vízé, kőé, emberé (birtokos -é), szível, dobal, ara, ere, ezre. Ezek kimaradtak a gombokból.
+- **Hosszú kiejtés a kártyán** ([baráccság]) 390 px-en a széléig ért: a mono betű `clamp(1rem,4.6vw,1.3rem)` és `overflow-wrap:anywhere`.
+  A tesztelő ezt nem jelzi (nincs túllógás), csak a képernyőképen látszik.
+
+### A 2026. 11. 01-i 6. helyesírás-lecke (felszólító mód)
+
+Eredmény: `helyesiras-felszolito` 600/600, 11 dia, 16 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva a modul miatt:
+hasonulások 600/600, j/ly 600/600, betűk 600/600, magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan;
+`helyesiras-check.js` 402 ellenőrzés, hiba nélkül. Tollbamondás-próba 5 szándékos hibával: futsatok, sietsen, választsunk →
+„Felszólító mód (ige)”; Vigyázatok, játszunk → „Mássalhangzó hossza” (ez is jó szabály: a kettőzést felejtette el).
+
+- **A pontszámokat most is egyben kértük le** (36–46. és 76–82.), így nem csúszott el egy sem.
+- **Kijelentő ↔ felszólító feladatnál mindkét gomb létező szó** (tanítjuk/tanítsuk): itt ez a lényeg, a mondat dönt; a
+  „rossz alak ne legyen létező szó” szabály a hiánypótlásra és az alakképző gombokra vonatkozik (ott: főzünk, válaszon, agyon kimaradt).
+- **Új hibatípus a felismerőben:** `felszKey` (ts/sts/szts → ss/ssz, s/z + j → kettőzés), a hasonulás előtt, a kettőzés után.
+
+### A 2026. 11. 01-i 7. helyesírás-lecke (igekötők)
+
+Eredmény: `helyesiras-igekotok` 480/480 (4 típus × 3 szint × 40), 10 dia, 11 lejátszó-kocka, 390 px rendben, JS-hiba nincs.
+Újrafuttatva mind a hat korábbi helyesírás-lecke (600/600 ×4, 480/480 ×2) és a tollbamondások, hibátlanul; `helyesiras-check.js` 448
+ellenőrzés. Tollbamondás-próba 5 szándékos hibával (haza értem, meg csináltam → Egybeírás; írtammeg, megkell, beis → Különírás).
+
+- **Több szóból álló jó válasz** (csináld meg, meg is csinálom) a `H.sentFix`-ben és a választós gombokon is működik; a tesztelő a
+  „Jó válasz” teljes szövegét írja be.
+- **A kötőjel-hiba** (megmegállt) elsőre „Egyéb elírás” volt: a `classify` most a kötőjel nélküli egyezést előbb nézi (`kotojel`).
+
+### A 2026. 11. 01-i 8. helyesírás-lecke (összetett szavak és számok)
+
+Eredmény: `helyesiras-osszetett` 480/480, 11 dia, 14 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a hét korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 491 ellenőrzés. Tollbamondás-próba 5 szándékos hibával
+(labdarúgóbajnokság, dél után, sötét zöld, piros fehér, két gólos): mind az „Egybeírás” vagy a „Kötőjel” csoportba került.
+
+- **Generált feladatnál a gombok egyediségét külön ellenőrizd** (Node-ban, több ezer sorsolással): a kerek ezresnél (kétezer) és a
+  kétezer alatti számnál az egybe-/kötőjeles változat egybeesett volna a jóval. A tesztelő ezt nem veszi észre, mert az első egyező
+  gombot nyomja meg.
+- **A `.nb input` szabály a pipát is elkapta** (széles lett): az azonosítóra (`#nbi`) szűkíts. A tesztelő ezt sem jelzi, csak a kép.
+
+### A 2026. 11. 01-i 9. helyesírás-lecke (kis- és nagybetű)
+
+Eredmény: `helyesiras-nagybetu` 480/480, 11 dia, 13 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 8 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 534 ellenőrzés. Tollbamondás-próba 5 szándékos hibával
+(Júliusban, balatonhoz, Sétányhoz, Német, Balatoni): mind a „Kis- vagy nagybetű” csoportba került.
+
+- **Két kivonat, két számozás:** ugyanarra a kérdésre a szabályzat oldalának kivonata egyszer 10-zel kisebb pontszámokat adott. A
+  kereszthivatkozások („Vö. 166.”) döntöttek. Ha a számok nem stimmelnek a hivatkozásokkal, ne írd be őket ellenőrzés nélkül.
+- **A `H.sentFix` elfogadta a rossz kis-/nagybetűt** (régi engedékenység, a mondat eleji szó miatt): a kis-/nagybetűs leckében ez hiba
+  lett volna. A tesztelő nem vette észre, mert mindig a jó alakot írja be; csak egy célzott próba (`t.check("Hétfőn")`) mutatta meg.
+- **A mondat eleji szó elfedi a szabályt:** a tollbamondásban a hónap és a nap ne a mondat elején álljon (ott úgyis nagy).
+- **Friss közigazgatási változás:** a „vármegye” 2026. október 1-jétől újra „megye”. Elsőre kihagytuk a megyés példát, mert a 2023-as
+  állapotra emlékeztünk; Endi javította. Ami a tudásunk lezárása után változhatott (nevek, intézmények, szabályok), azt nézd meg frissen.
+
+### A 2026. 11. 01-i 10. helyesírás-lecke (a vessző)
+
+Eredmény: `helyesiras-vesszo` 480/480, 11 dia, 13 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 9 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 576 ellenőrzés. Célzott próba: a vesszőrakó jó és rossz
+megoldásra; a tollbamondás két kihagyott vesszője az „Írásjel” csoportba került; az írásjel-kimondás a vessző-csoportnál ki, máshol be.
+
+- **Ugyanazon az oldalon a # váltás nem tölt újra** (Playwright `goto` csak hash-változásnál): a gyűjtőoldal próbájánál új lap kell.
+- **A választható vesszőt** (értelmező után, 249. b) ne tedd tollbamondásba: a gép a jó megoldást is hibának számolná.
+- **A mintamondatot is ellenőrizd a saját szabályoddal:** „Anna, gyere ide és segíts!” elsőre hibásan került a vesszőrakóba (két
+  tagmondat: …ide, és segíts!).
+
+### A 2026. 11. 01-i 11. helyesírás-lecke (gyakori tévesztések)
+
+Eredmény: `helyesiras-tevesztesek` 480/480, 12 dia, 12 lejátszó-kocka, 390 px rendben, JS-hiba nincs. Újrafuttatva mind a 10 korábbi
+helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 627 ellenőrzés. Célzott próba: a hibavadász (3 talált, 2 kimaradt,
+1 fölösleges jelölés helyesen jelezve); tollbamondás szándékos hibákkal: hossz, j/ly, kettőzés, kötőjel, írásjel, szópár csoportokba.
+
+- **A „Hibás szó” feladat levágja a záró pontot** (`/[.,!?]$/`): ponttal végződő jó választ (pl., kb., stb.) ne tegyél bele.
+- **A dia címébe ne tegyél linket:** a `K.deck` a címet a pont-gomb `aria-label`-jébe is beírja (HTML-lel együtt). A link a dia szövegébe való.
+- **Rövidítést ne tegyél tollbamondásba:** a felolvasó nem „például”-t mond a pl. helyett.
+
+### Lektori kör az 5–11. leckén (2026. 11. 01.)
+
+Három párhuzamos lektor-alügynök (2–3 lecke mindegyiknek, „ne módosíts, csak listát adj”, hibánként: hely · baj · javítás · biztos/bizonytalan).
+Kb. 5 perc alatt végeztek, összesen kb. 40 tétel, ebből a biztosakat és a jól indokolt bizonytalanokat javítottuk. Utána mind a 11 lecke
+újratesztelve (hibátlan), `helyesiras-check.js` 629.
+
+- **Amit a gépi teszt nem lát, a lektor igen:** rossz kiejtésjelölés, rossz gombként létező szó, a kettős alakok (tegyed, avval) el nem
+  fogadása, választható írásjel a tollbamondásban vagy a „Tedd ki” feladatban, és a saját szabályunknak ellentmondó mintamondat.
+- **A Firecrawl-keret egy lektori körre épp elég volt;** a lektorok kifogytak belőle. Legközelebb egy lektor egyszerre kérje le a teljes
+  szükséges pontsort.
+
+### Szintfelmérő (2026. 11. 01.)
+
+- **A háttérszerver leállítása (`pkill -f "http.server 8765"`) a saját bash-parancsot is megölheti** (a parancssorában benne van a
+  minta): az utána következő lépések nem futnak le. A `pkill` mindig a parancs **legvégén** álljon, vagy PID alapján állítsd le.
+- Egyedi felületnél (nincs `.practice`) a `lesson-test.js` csak a szélességet és a JS-hibát nézi; a működést célzott Playwright-próba
+  igazolja (itt: hibátlan kitöltés a forrásból kiolvasott jó válaszokkal, hibás kitöltés, előzmény újratöltés után).

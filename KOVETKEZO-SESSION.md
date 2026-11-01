@@ -1,5 +1,90 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-01 (a helyesírás-leckesor kész)
+
+**A PR #2-ben (beolvasztásra vár):** az 5–11. lecke, legutóbb a **11. (gyakori tévesztések,** `helyesiras-tevesztesek.html`**)**,
+28 új tollbamondás (összesen 44). **A tervezett 11 leckés helyesírás-sor teljes.** Tesztek: a 11 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 627/627.
+
+**Lektori kör kész (2026-11-01):** az 5–11. lecke átnézve és javítva, a 9. lecke pontszámai helyesek.
+**Szintfelmérő kész** (`helyesiras-szintfelmero.html`, a kezdőlapon a helyesírás-csoport elején), szintén a PR #2-ben.
+
+**Javasolt folytatás:**
+1. A PR #2 beolvasztása és élő ellenőrzés.
+2. Ha megjött Kovrat chatje: hibastatisztika, és a 11. lecke + tollbamondások igazítása.
+3. Python-folytatás (elágazás, ciklus, lista), ha az iskola odaér.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 reggel
+
+**A PR #2-ben (beolvasztásra vár):** az 5–10. lecke, legutóbb a **10. (a vessző,** `helyesiras-vesszo.html`**)**, 24 új tollbamondás
+(összesen 40). Tesztek: a 10 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 576/576.
+
+**Következő:** a 11. lecke, gyakori tévesztések (muszáj, egyelőre / egyenlőre, mindig, kíváncsi, eggyel, stb., pl., az -e kérdőszó).
+Ha megjött Kovrat chatje, előbb a hibastatisztika, és a 11. lecke abból épüljön.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 hajnal
+
+**A PR #2-ben (beolvasztásra vár):** az 5–9. lecke, legutóbb a **9. (kis- és nagybetű,** `helyesiras-nagybetu.html`**)**, 20 új
+tollbamondás (összesen 36). Tesztek: a 9 helyesírás-lecke mind hibátlan, `helyesiras-check.js` 534/534.
+
+**Következő:** a 10. lecke, a vessző (AkH 239–255.?). ⚠️ A pontszámokat egyben kérd le, és a kereszthivatkozásokkal ellenőrizd
+(a 9. leckénél két kivonat 10-zel eltért). A 10. leckétől a tollbamondás kikapcsolhatja az írásjelek kimondását (terv).
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 késő éjjel
+
+**A PR #2-ben (beolvasztásra vár):** az 5–8. lecke (hasonulások, felszólító mód, igekötők, **összetett szavak és számok**,
+`helyesiras-osszetett.html`), 16 új tollbamondás (összesen 32). Tesztek: a 8 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 491/491.
+
+**Következő:** a 9. lecke, nagy kezdőbetű és tulajdonnevek (AkH 140–205., válogatva). A pontokat előbb egyben kérd le.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel
+
+**A PR #2-ben (beolvasztásra vár):** az 5. (hasonulások), a 6. (felszólító mód) és a **7. lecke (igekötők,** `helyesiras-igekotok.html`**)**,
+12 új tollbamondás (összesen 28), új hibatípusok: `hason`, `felsz`, `kotojel`. Tesztek: a 7 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 448/448.
+
+**Következő:** 7/b (összetett szavak, számok: AkH 99–138., 291.) vagy 8. (nagy kezdőbetű). A pontokat előbb egyben kérd le.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 este
+
+**A PR #2-ben (beolvasztásra vár):** az 5. lecke (hasonulások) és a **6. lecke (felszólító mód,** `helyesiras-felszolito.html`**)**,
+8 új tollbamondás (összesen 24), két új hibatípus (`hason`, `felsz`). Tesztek: a 6 helyesírás-lecke mind hibátlan (600/600 ×4,
+480/480 ×2), `helyesiras-check.js` 402/402.
+
+**Következő:** a 7. lecke, egybe- és különírás, **benne külön rész az igekötőkről** (Endi kérése). A pontokat (AkH 99–138.)
+előbb egyben kérd le, és nézd meg az igekötők pontjait külön.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 délután
+
+**Élesben:** a 4. lecke (j vagy ly), PR #1, `25ed352`. **Kész, PR-ra vár** (`claude/dreamy-hopper-52jouj`, a `main`-ről újraindítva):
+az 5. lecke (`helyesiras-hasonulasok.html`), 4 új tollbamondás (`H.TEXTS.hason` h1–h3, `vegyes` v5; összesen 20), új hibatípus
+(`hason`), és a j/ly-lecke forrásának javítása (AkH 55., nem 51.).
+
+**Tesztek:** `helyesiras-check.js` 354/354 · `lesson-test.js` 40-nel: hasonulások 600/600, j/ly 600/600, betűk 600/600,
+magánhangzók 480/480, mássalhangzók 480/480, tollbamondások hibátlan · tollbamondás-próba 6/6 a jó csoportba.
+
+**Döntésre vár:** a PR beolvasztása (Endi). Utána élőben ellenőrizni (`version.json`, a lecke).
+
+**Javasolt folytatás:** 6. lecke: felszólító mód és tárgyas ragozás (játsszon, eddz, lássa, tanítsa, fusson; AkH 42–43., 54–57., 80–81.
+— a pontszámokat előbb teljes listából ellenőrizd), vagy ha megjött a chat, előbb a hibastatisztika.
+**Endi kérése (2026-11-01):** „Legyen nem elváló igekötők is majd.” → a 7. leckében (egybe-/különírás) külön rész az
+igekötőkről (megcsinálom ↔ meg is csinálom, nem csinálom meg). ⚠️ Ha Endi külön leckét vagy a 6. leckébe szánta, kérdezd meg.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-11-01 (felhős próbafutás)
 
 **Kész a `claude/dreamy-hopper-52jouj` ágon (nincs a `main`-ben, élesítésre vár):** a 4. helyesírás-lecke

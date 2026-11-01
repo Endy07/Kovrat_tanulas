@@ -1,0 +1,272 @@
+<!--@HEAD-->
+<title>A vessző</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.vs{font-family:var(--body);font-weight:700;font-size:clamp(1.15rem,5vw,1.5rem);color:#fff;line-height:2.1}
+.vg{display:inline-block;min-width:1.1em;height:1.3em;vertical-align:baseline;margin:0 1px;border:0;border-bottom:3px dotted #3A4656;background:none;color:#FFB01F;font:inherit;font-weight:800;padding:0;cursor:pointer}
+.vg[data-on="1"]{border-bottom-color:#FFB01F}
+.vg.ok{color:#5BD08A;border-bottom-color:#5BD08A}.vg.bad{color:#F2796C;border-bottom-color:#F2796C}
+.vtabs{display:flex;flex-wrap:wrap;gap:8px}
+.vtabs button{background:#151B23;border:1.5px solid #3A4656;border-radius:12px;color:#DCE3EC;padding:6px 12px;font-family:var(--body);font-weight:700}
+.vtabs button[aria-pressed="true"]{border-color:#FFB01F;color:#FFB01F}
+.vmsg{color:#DCE3EC;min-height:1.4em}
+.gap{display:inline-block;min-width:1.2em;border-bottom:3px solid var(--accent);text-align:center;color:var(--accent)}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 10. lecke</span>
+  <h1>A vessző: hová kell, hová nem?</h1>
+  <p class="lead">Azt mondta<b>,</b> hogy jön. Hazamentem<b>,</b> és megírtam a leckét. De: almát és körtét vettem (itt nincs vessző). Megtanulod, mikor kell vessző a tagmondatok közé, a felsorolásba, a megszólítás és az indulatszó mellé, és mikor nem. Ettől a leckétől a tollbamondás már nem mondja ki az írásjeleket.</p>
+  <div class="panel">
+    <span class="eyebrow">Tedd ki a vesszőket: kattints a pontozott helyekre!</span>
+    <div class="vtabs" id="vt"></div>
+    <div class="vs" id="vs"></div>
+    <div class="row"><button class="btn primary" id="vchk">Ellenőrzés</button></div>
+    <p class="vmsg" id="vm" aria-live="polite"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="tag" aria-selected="true">tagmondatok</button>
+    <button class="tab" data-m="es" aria-selected="false">és: kell vagy nem?</button>
+    <button class="tab" data-m="felsor" aria-selected="false">felsorolás</button>
+    <button class="tab" data-m="megsz" aria-selected="false">Peti, gyere!</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. tagmondatok (hogy, mert, ami, ha, amikor), és az és: két tagmondat vagy két szó · 2. felsorolás, de, sőt, mint, páros kötőszók (vagy…, vagy; nemcsak…, hanem) · 3. megszólítás, indulatszó, közbevetés, értelmező, két kötőszó egymás mellett. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>Ebben a leckében a gép <b>nem mondja ki</b> az írásjeleket: neked kell kitalálnod, hová kerül vessző. (Ha nehéz, bekapcsolhatod.) Figyelj: amikor, hogy, mert, aki; és két tagmondat között; felsorolás; megszólítás; jaj; nemcsak…, hanem; mint.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Tagmondatok között mindig</span><span>…, hogy · …, mert · …, ami · …, aki · …, ha · …, amikor · …, de · …, és (ha két tagmondatot köt)</span></div>
+    <div class="trick"><span class="t">Nem kell</span><span>két szó között az és, s, meg, vagy előtt: almát és körtét · Peti vagy Anna</span></div>
+    <div class="trick"><span class="t">Mindig kell</span><span>de, sőt, hanem előtt · mint (hasonlítás) előtt · vagy…, vagy · sem…, sem · nemcsak…, hanem</span></div>
+    <div class="trick"><span class="t">Megszólítás, indulatszó</span><span>Peti, gyere ide! · Gyere ide, Peti! · Most pedig, gyerekek, figyeljetek! · Jaj, elfelejtettem!</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 240–243. pont (az írásjelek, mondatvégi írásjel), 244. pont (vessző a tagmondatok között, az és előtt, mint), 248. pont (felsorolás, de, sőt, páros kötőszók; az és két mondatrész között), 249. pont (értelmező), 250. pont (ahol nem kell: mint tanút), 251–252. pont (közbevetés), 254–256. pont (megszólítás, levél eleji megszólítás), 261. pont (indulatszó), 262. pont (két kötőszó egymás mellett) · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: vesszőrakó (^ = jelölt hely, ,^ = ide kell vessző) ---------- */
+  const VS = [
+    "Amikor^ hazaértem,^ a kutyánk^ az ajtóban várt.",
+    "Peti azt mondta,^ hogy^ holnap^ eljön.",
+    "Vettem almát,^ körtét^ és^ szilvát.",
+    "Hazamentem,^ és^ megírtam^ a leckét.",
+    "Anna,^ gyere ide,^ és^ segíts!",
+    "Nemcsak^ okos,^ hanem^ szorgalmas is."
+  ];
+  let vk = 0;
+  function drawVs(){
+    $("#vt").innerHTML = VS.map((_, k) => '<button data-k="' + k + '" aria-pressed="' + (k === vk) + '">' + (k + 1) + ". mondat</button>").join("");
+    const parts = VS[vk].split("^");
+    let h = "";
+    parts.forEach((p, i) => { h += esc(p.replace(/,$/, "")); if (i < parts.length - 1) h += '<button class="vg" data-g="' + i + '" data-want="' + (p.endsWith(",") ? 1 : 0) + '" data-on="0" aria-label="vessző helye"></button>'; });
+    $("#vs").innerHTML = h; $("#vm").textContent = "";
+  }
+  $("#vt").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (b){ vk = Number(b.dataset.k); drawVs(); } });
+  $("#vs").addEventListener("click", e => { const g = e.target.closest(".vg"); if (!g) return; g.dataset.on = g.dataset.on === "1" ? "0" : "1"; g.textContent = g.dataset.on === "1" ? "," : ""; g.classList.remove("ok", "bad"); });
+  $("#vchk").addEventListener("click", () => {
+    let bad = 0;
+    $$("#vs .vg").forEach(g => { const ok = g.dataset.on === g.dataset.want; g.classList.toggle("ok", ok && g.dataset.want === "1"); g.classList.toggle("bad", !ok); if (!ok){ bad++; g.textContent = ","; } });
+    $("#vm").textContent = bad ? "Hibás helyek: " + bad + ". A pirosnál vagy hiányzik, vagy fölösleges a vessző." : "Hibátlan! Minden vessző a helyén.";
+  });
+  drawVs();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw" style="font-size:clamp(1.2rem,5.5vw,1.8rem)">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    tag: () => [
+      { cap: "Azt mondta, hogy jön. Ebben a mondatban két ige van: mondta és jön. Két ige, két tagmondat.", html: W("Azt <u>mondta</u> · hogy <u>jön</u>") },
+      { cap: "A tagmondatok határára mindig vessző kerül.", html: W("Azt mondta<u>,</u> hogy jön.", "tagmondatok között: vessző") },
+      { cap: "A második tagmondat sokszor ezekkel kezdődik: hogy, mert, ami, aki, amikor, ha, de, ezért.", html: W("…<u>,</u> hogy · …<u>,</u> mert · …<u>,</u> aki · …<u>,</u> ha") },
+      { cap: "Ha a mellékmondat elöl áll, ott is vessző választja el: Amikor hazaértem, már mindenki aludt.", html: W("Amikor hazaértem<u>,</u> már mindenki aludt.") }
+    ],
+    es: () => [
+      { cap: "Almát és körtét vettem. Itt az és két szót köt össze: almát, körtét. Nem kell vessző.", html: W("almát és körtét", "két szó: nincs vessző") },
+      { cap: "Hazamentem, és megírtam a leckét. Itt az és két tagmondatot köt össze: hazamentem, megírtam. Vessző kell!", html: W("Hazamentem<u>,</u> és megírtam a leckét.", "két tagmondat: vessző") },
+      { cap: "Hogyan döntsd el? Keresd az igéket! Ha az és két oldalán egy-egy ige van, két tagmondat: vessző.", html: W("Elmentem a boltba<u>,</u> és vettem kenyeret.") },
+      { cap: "Ugyanez igaz a vagy, s, meg szóra: Most indulsz, vagy maradsz még? De: Kenyeret vagy kiflit kérsz?", html: W("Most indulsz<u>,</u> vagy maradsz? · kenyeret vagy kiflit") }
+    ],
+    felsor: () => [
+      { cap: "Felsorolásban a tagok közé vessző kerül: almát, körtét, szilvát.", html: W("almát<u>,</u> körtét<u>,</u> szilvát") },
+      { cap: "Az utolsó elé, ha és áll ott, nem kell vessző: almát, körtét és szilvát.", html: W("almát, körtét és szilvát", "és előtt: nincs vessző") },
+      { cap: "De a de, sőt, illetve előtt mindig van vessző: szép, de drága.", html: W("szép<u>,</u> de drága · gyors<u>,</u> sőt nagyon gyors") },
+      { cap: "A páros kötőszóknál a második elé: vagy ezt, vagy azt. Nemcsak okos, hanem szorgalmas is.", html: W("vagy ezt<u>,</u> vagy azt · nemcsak okos<u>,</u> hanem szorgalmas") },
+      { cap: "A mint előtt, ha hasonlítunk: Magasabb, mint a bátyja. De: Petit mint kapust dicsérték (kapusként): itt nincs vessző.", html: W("Magasabb<u>,</u> mint a bátyja. · Petit mint kapust") }
+    ],
+    megsz: () => [
+      { cap: "Peti, gyere ide! Akit megszólítunk, azt vesszővel választjuk el.", html: W("Peti<u>,</u> gyere ide!") },
+      { cap: "Ha a végén áll: Gyere ide, Peti! Ha a közepén: Most pedig, gyerekek, figyeljetek! Ilyenkor két oldalán is vessző.", html: W("Gyere ide<u>,</u> Peti! · Most pedig<u>,</u> gyerekek<u>,</u> figyeljetek!") },
+      { cap: "Az indulatszó után is: Jaj, elfelejtettem a kulcsomat! Hé, várj meg!", html: W("Jaj<u>,</u> elfelejtettem! · Hé<u>,</u> várj meg!") },
+      { cap: "A mondatba ékelt szó két oldalán: Bence, sajnos, nem tud eljönni.", html: W("Bence<u>,</u> sajnos<u>,</u> nem tud eljönni.") }
+    ]
+  };
+  const MET = { tag: "tagmondatok", es: "és: kell vagy nem?", felsor: "felsorolás", megsz: "Peti, gyere!" };
+  const PB = { m: "tag" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mire jó a vessző?", h:
+      "<p>A vessző megmutatja, hol ér véget egy gondolat, és hol kezdődik a következő. Ugyanaz a mondat mást jelenthet vesszővel és nélküle:</p>" +
+      "<p class='eq'>Együnk, gyerekek! (hívjuk őket enni) · Együnk gyerekek! (hm…)</p>" +
+      "<div class='note'><b>Ettől a leckétől</b> a tollbamondás nem mondja ki az írásjeleket: neked kell tudnod, hová kerül vessző.</div>" },
+    { k: "Mondat vége", t: "A mondat végén: pont, kérdőjel, felkiáltójel", h:
+      tbl(["mondatfajta", "írásjel", "példa"], [["kijelentő", ".", "Ma hideg van."], ["kérdő", "?", "Ki látta? Szereted a zenét?"], ["felkiáltó, felszólító, óhajtó", "!", "Gyere ide! Bárcsak sikerülne!"]]) +
+      "<p>Összetett mondatban a <b>főmondat</b> dönt: Szeretném tudni, mi a baja<b>.</b> (a főmondat kijelentő) · Mondd meg neki, hogy jöjjön<b>!</b> (felszólító)</p>" },
+    { k: "Tagmondatok", t: "A tagmondatok között mindig vessző", h:
+      "<p>Ahány ige, annyi tagmondat. A határukon <b>mindig</b> vessző van, akár van kötőszó, akár nincs:</p>" +
+      "<p class='eq'>Tudom, hogy holnap dolgozat lesz. · Nem mentem, mert fájt a lábam. · Az a fiú, aki mellettem ül, a barátom. · Ha esik, otthon maradunk. · Jött, látott, győzött.</p>" + playBtn("tag"), init: playInit },
+    { k: "és", t: "Az és előtt: két tagmondat vagy két szó?", h:
+      tbl(["két tagmondat: vessző", "két szó: nincs vessző"], [["Hazamentem<b>,</b> és megírtam a leckét.", "Almát és körtét vettem."], ["Most indulsz<b>,</b> vagy maradsz még?", "Kenyeret vagy kiflit kérsz?"], ["Elestem<b>,</b> s megütöttem a térdem.", "Peti és Anna együtt jöttek."]]) +
+      "<p><b>Próba:</b> keresd az igéket az és két oldalán. Ha mindkét oldalon van ige, vessző kell.</p>" + playBtn("es"), init: playInit },
+    { k: "Felsorolás", t: "Felsorolás: vessző, de az és előtt nem", h:
+      "<p class='eq'>Vettünk almát, körtét és szilvát. · Szeretett volna valami újat, szépet, nagyot alkotni.</p>" +
+      "<p>A <b>de, sőt, illetve, hanem</b> előtt viszont mindig van vessző: <b>szép, de drága</b> · <b>elhibázott, sőt veszélyes</b>.</p>" + playBtn("felsor"), init: playInit },
+    { k: "Párban", t: "Páros kötőszók és a mint", h:
+      "<ul><li>A párban álló kötőszók közül a második elé vessző: <b>vagy ezt, vagy azt</b> · <b>sem a tollamat, sem a ceruzámat</b> · <b>hol esik, hol süt</b> · <b>nemcsak okos, hanem szorgalmas is</b>.</li>" +
+      "<li>A <b>mint</b> előtt, ha hasonlítunk: <b>Magasabb, mint a bátyja.</b> · <b>Fehér lett, mint a fal.</b></li>" +
+      "<li>De ha a mint azt jelenti, hogy <i>-ként</i>, nincs vessző: <b>Petit mint csapatkapitányt mindenki tisztelte.</b></li></ul>" },
+    { k: "Megszólítás", t: "Megszólítás és indulatszó", h:
+      "<p class='eq'>Peti, gyere ide! · Gyere ide, Peti! · Most pedig, gyerekek, figyeljetek!</p>" +
+      "<p class='eq'>Jaj, elfelejtettem a kulcsomat! · Hé, várj meg! · Hova mész, hé?</p>" +
+      "<p>Levél elején a megszólítás után felkiáltójel vagy vessző: <b>Kedves Bence!</b> vagy <b>Kedves Bence,</b></p>" + playBtn("megsz"), init: playInit },
+    { k: "Beékelve", t: "Közbevetés és értelmező", h:
+      "<ul><li>A mondatba ékelt szó vagy tagmondat két oldalán vessző: <b>Bence, sajnos, nem tud eljönni.</b> · <b>Anna, bár fáradt volt, végigfutotta a távot.</b></li>" +
+      "<li>Az értelmező (ami pontosítja, ki az): <b>Petit, a szomszédomat kerestem.</b> · <b>A polgármesternek, Kiss Pálnak a javaslatára…</b></li></ul>" },
+    { k: "Két kötőszó", t: "Ha két kötőszó kerül egymás mellé", h:
+      "<p>Csak az <b>első</b> elé teszünk vesszőt:</p>" +
+      "<p class='eq'>Hívtak, de mert hideg volt, nem mentem el. · Elfáradt, s mikor egy forráshoz ért, megpihent.</p>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Azt mondta hogy jön.</b> → Azt mondta, hogy jön.</div>" +
+      "<div class='mistake'><b>Almát, és körtét vettem.</b> → Almát és körtét vettem.</div>" +
+      "<div class='mistake'><b>Hazamentem és megírtam.</b> → Hazamentem, és megírtam.</div>" +
+      "<div class='mistake'><b>Szia Peti!</b> → Szia, Peti!</div>" +
+      "<div class='mistake'><b>Magasabb mint a bátyja.</b> → Magasabb, mint a bátyja.</div>" +
+      "<div class='mistake'><b>Nemcsak okos hanem szorgalmas.</b> → Nemcsak okos, hanem szorgalmas.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Számold az igéket</span><span>Két ige = két tagmondat = vessző a határon.</span></div>" +
+      "<div class='trick'><span class='t'>Az és két oldala</span><span>Ige van mindkét oldalon? Vessző. Csak egy-egy szó? Nincs.</span></div>" +
+      "<div class='trick'><span class='t'>Kinek szólsz?</span><span>A nevét vesszővel válaszd el: Szia, Peti!</span></div>" +
+      "<div class='trick'><span class='t'>Olvasd fel</span><span>Ahol a beszédben szünetet tartasz, sokszor vessző kell (de az és előtt figyelj!).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  // [mondat, ahol „|” a kérdéses hely, kell-e vessző, magyarázat]
+  const V = [
+    [["Tudom| hogy holnap dolgozatot írunk.", 1, "Két tagmondat (tudom, írunk): vessző (244. a)."], ["Nem mentem focizni| mert fájt a lábam.", 1, "mert: új tagmondat, vessző."],
+     ["Az a fiú| aki mellettem ül, a legjobb barátom.", 1, "aki: új tagmondat, vessző."], ["Almát| és körtét vettem.", 0, "Az és két szót köt össze: nincs vessző (248. d)."],
+     ["Hazamentem| és megírtam a leckét.", 1, "Az és két tagmondatot köt össze: vessző (244. b)."], ["Peti| és Anna együtt jöttek.", 0, "Két szó között az és előtt nincs vessző."],
+     ["Elmentem a boltba| és vettem kenyeret.", 1, "Két tagmondat (elmentem, vettem): vessző."], ["Ha esik az eső| otthon maradunk.", 1, "A ha-s tagmondat után vessző."],
+     ["Amikor hazaértem| már mindenki aludt.", 1, "Két tagmondat: vessző."], ["Kenyeret| vagy kiflit kérsz?", 0, "Két szó között a vagy előtt nincs vessző."],
+     ["Most indulsz| vagy maradsz még?", 1, "A vagy két tagmondatot köt össze: vessző."], ["Szeretek olvasni| de ma nincs kedvem.", 1, "de: új tagmondat, vessző."],
+     ["Ma reggel| nagy eső esett.", 0, "Egy tagmondat, nincs határ: nincs vessző."]],
+    [["Vettünk almát| körtét és szilvát.", 1, "Felsorolás: vessző (248. a)."], ["Vettünk almát, körtét| és szilvát.", 0, "Felsorolásban az és előtt nincs vessző."],
+     ["Szép| de drága cipőt láttam.", 1, "A de előtt mindig vessző (248. c)."], ["Gyors| sőt nagyon gyors volt.", 1, "A sőt előtt vessző."],
+     ["Magasabb| mint a bátyja.", 1, "Hasonlítás: a mint előtt vessző (244. c)."], ["Fehér lett| mint a fal.", 1, "Hasonlítás: vessző."],
+     ["Petit| mint csapatkapitányt mindenki tisztelte.", 0, "A mint itt azt jelenti: csapatkapitányként. Nincs vessző (250. b)."], ["Vagy most jössz| vagy itthagyunk.", 1, "Páros kötőszó: a második elé vessző (248. f)."],
+     ["Sem a tollamat| sem a ceruzámat nem találom.", 1, "Páros kötőszó: vessző."], ["Nemcsak okos| hanem szorgalmas is.", 1, "nemcsak…, hanem: vessző."],
+     ["Hol esik| hol süt a nap.", 1, "Páros kötőszó: vessző."], ["A piros| meg a kék ceruzámat keresem.", 0, "Két szó között a meg előtt nincs vessző."]],
+    [["Peti| gyere ide!", 1, "Megszólítás: vessző (255)."], ["Gyere ide| Peti!", 1, "Megszólítás a végén: vessző."],
+     ["Most pedig| gyerekek, figyeljetek!", 1, "Beékelt megszólítás: két oldalán vessző (256)."], ["Jaj| elfelejtettem a kulcsomat!", 1, "Indulatszó után vessző (261)."],
+     ["Bence| sajnos, nem tud eljönni.", 1, "Közbevetés: vesszők közé (251)."], ["Anna| bár fáradt volt, végigfutotta a távot.", 1, "Beékelt tagmondat: vesszők közé (252)."],
+     ["Petit| a szomszédomat kerestem.", 1, "Értelmező: vessző (249. a)."], ["Hívtak| de mert hideg volt, nem mentem el.", 1, "Két kötőszó egymás mellett: az első elé vessző (262)."],
+     ["Hívtak, de| mert hideg volt, nem mentem el.", 0, "Két kötőszó egymás mellett: csak az első elé kell vessző (262)."], ["Szia| Anna!", 1, "Megszólítás: vessző."],
+     ["Hé| várj meg!", 1, "Indulatszó után vessző."], ["Te magad| mondtad.", 0, "A maga mellett nem kell vessző (249. d)."]]
+  ];
+  const fill = (s, on) => s.replace("|", on ? "," : "");
+  const END = [
+    [["Ki látta", "?", "Kérdő mondat: kérdőjel."], ["Holnap esni fog", ".", "Kijelentő mondat: pont."], ["Gyere ide", "!", "Felszólító mondat: felkiáltójel."], ["Szereted a zenét", "?", "Kérdés: kérdőjel."],
+     ["Bárcsak sikerülne", "!", "Óhajtó mondat: felkiáltójel."], ["Ma hideg van", ".", "Kijelentő mondat: pont."], ["Tilos a fűre lépni", "!", "Felszólító mondat: felkiáltójel."], ["Mikor kezdődik a meccs", "?", "Kérdés: kérdőjel."]],
+    [["Szeretném tudni, mi a baja", ".", "A főmondat (szeretném tudni) kijelentő: pont (243)."], ["Mondd meg neki, hogy holnap jöjjön", "!", "A főmondat (mondd meg) felszólító: felkiáltójel."],
+     ["Vajon tudja már, hogy nyertünk", "?", "A főmondat kérdő: kérdőjel."], ["Sokat késik, ne várjunk rá tovább", "!", "Az utolsó tagmondat felszólító: felkiáltójel (242)."],
+     ["Esik a hó, mégis fekete az utca", ".", "Az utolsó tagmondat kijelentő: pont."], ["Induljunk már, miért várnánk tovább", "?", "Az utolsó tagmondat kérdő: kérdőjel."],
+     ["Kértem, hogy azonnal menjen haza", ".", "A főmondat (kértem) kijelentő: pont."], ["Folytasd ott, ahol abbahagytad", "!", "A főmondat felszólító: felkiáltójel."]]
+  ];
+  END.push(END[0].concat(END[1]));
+  const cmpNorm = s => String(s).trim().replace(/\s+/g, " ").replace(/\s+([,.!?])/g, "$1");
+  const types = [
+    { id: "kell", name: "Kell vessző?", gen(l){
+      const t = pick(V[l - 1]), shown = esc(t[0]).replace("|", "<span class='gap'>?</span>"), good = t[1] ? "Kell vessző" : "Nem kell vessző";
+      return H.choiceTask("Kell ide vessző?<div class='sent'>" + shown + "</div>", good, [t[1] ? "Nem kell vessző" : "Kell vessző"], "<p class='sent'>" + esc(fill(t[0], t[1])) + "</p><p>" + t[2] + "</p>", "Nem ez. " + t[2]);
+    } },
+    { id: "mondat", name: "Melyik mondat a jó?", gen(l){
+      const t = pick(V[l - 1]);
+      return H.choiceTask("Melyik mondat helyes?", fill(t[0], t[1]), [fill(t[0], !t[1])], "<p>" + t[2] + "</p>", "Nem ez. " + t[2]);
+    } },
+    { id: "tedd", name: "Tedd ki a vesszőket!", gen(l){
+      // a választható vesszős mondatok (értelmező után, közbevetés: AkH 249. b, 251.) itt kimaradnak
+      const OPT = /^(Petit\||Bence\||Anna\|)/;
+      let t; do { t = pick(V[l - 1]); } while (!fill(t[0], t[1]).includes(",") || OPT.test(t[0]));
+      const right = fill(t[0], t[1]), bare = right.replace(/,/g, "");
+      return { q: "Írd le a mondatot, és tedd ki a vesszőket!<div class='sent'>" + esc(bare) + "</div>", kind: "input", ph: "a mondat vesszőkkel", answer: esc(right),
+        sol: "<p>" + t[2] + "</p>",
+        check: v => {
+          const a = cmpNorm(v), b = cmpNorm(right);
+          if (a === b) return { ok: true, msg: "Helyes!" };
+          if (a.replace(/,/g, "") !== b.replace(/,/g, "")) return { ok: false, msg: "A szavaknak is pontosan egyezniük kell. Másold le a mondatot, és csak vesszőket tegyél bele." };
+          const need = (b.match(/,/g) || []).length, have = (a.match(/,/g) || []).length;
+          return { ok: false, msg: have < need ? "Hiányzik vessző. " + t[2] : have > need ? "Fölösleges vessző van benne." : "A vessző rossz helyen van. " + t[2] };
+        } };
+    } },
+    { id: "veg", name: "Mondat végén", gen(l){
+      const t = pick(END[l - 1]), others = [".", "?", "!"].filter(x => x !== t[1]);
+      return H.choiceTask("Milyen írásjel kerül a mondat végére?<div class='sent'>" + esc(t[0]) + "<span class='gap'>?</span></div>", t[1], others, "<p class='sent'>" + esc(t[0] + t[1]) + "</p><p>" + t[2] + "</p>", "Nem ez. " + t[2]);
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-vesszo", types, play: playTo });
+
+  /* ---------- Tollbamondás: az írásjeleket alapból nem mondja ki ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.vesszo, player: pb, print: "tollbamondasok.html#vesszo", punct: false });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Hol?</th><th>Példa</th></tr>" + [
+    ["tagmondatok között: mindig", "Tudom, hogy jön. · Ha esik, otthon maradunk."], ["és, s, meg, vagy + tagmondat: vessző", "Hazamentem, és megírtam a leckét."],
+    ["és, s, meg, vagy két szó között: nincs", "almát és körtét · Peti vagy Anna"], ["felsorolás: vessző (az és előtt nem)", "almát, körtét és szilvát"],
+    ["de, sőt, illetve, hanem előtt: mindig", "szép, de drága · nemcsak okos, hanem szorgalmas"], ["páros kötőszók: a második előtt", "vagy ezt, vagy azt · sem…, sem · hol…, hol"],
+    ["mint (hasonlítás): vessző", "Magasabb, mint a bátyja. · de: Petit mint kapust"], ["megszólítás", "Peti, gyere ide! · Gyere ide, Peti!"],
+    ["indulatszó után", "Jaj, elfelejtettem! · Hé, várj!"], ["közbevetés, értelmező: két oldalán", "Bence, sajnos, nem jön. · Petit, a szomszédomat"],
+    ["mondat vége", "kijelentő . · kérdő ? · felszólító, óhajtó !"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + esc(r[1]) + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

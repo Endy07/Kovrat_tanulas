@@ -29,9 +29,10 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly (2026. 11. 01.) · a 16 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
+| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód · 7. igekötők · 8. összetett szavak és számok · 9. kis- és nagybetű · 10. vessző · 11. gyakori tévesztések (2026. 11. 01.) · a 44 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
-| `docs/helyesiras-terv.md` | A helyesírás-leckesor terve (10 lecke), sorrend és indok, ✅/⚠️. |
+| `helyesiras-szintfelmero.html` | Helyesírási szintfelmérő (2026. 11. 01.): 22 kérdés (leckénként 2, véletlenül 54-ből), a végén ajánlott leckék, eredmény-előzmény (localStorage), összefoglaló Endinek. |
+| `docs/helyesiras-terv.md` | A helyesírás-leckesor terve (11 lecke, mind kész), sorrend és indok, ✅/⚠️. |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
 | `docs/leckek-terv.md`, `docs/tanrend-10.md` | A leckék sorrendje és indoka; a 10. évfolyam tanrend-vázlata (lecke nélkül). |
 | `version.json` | Az aktuális verzió-időbélyeg. Az oldalak ebből tudják, hogy van-e újabb változat. **Kézzel ne írd**, a pre-commit hook állítja. |
@@ -192,15 +193,89 @@ alján ott a pontok listája.
 ### Helyesírás 4. lecke: j vagy ly (2026. 11. 01., felhős próbafutás a pulttól)
 
 Endi (a pulton át): „Akkor a javaslatod elfogadom, próbáljuk ki a Kovrat következő leckéjén.” Felhős (claude.ai/code) session,
-a `claude/dreamy-hopper-52jouj` ágon; a `main`-be nem került, az élesítést Endi hagyja jóvá.
+a `claude/dreamy-hopper-52jouj` ágon. **Élesben** 2026-11-01 (PR #1, Endi olvasztotta be: `25ed352`, Pages `success`, élő `version.json` egyezik).
 
 - **Lecke:** `helyesiras-j-ly` — szócsalád-böngésző a hero-ban, 14 dia, 4 lejátszott fogódzó, 5 gyakorlótípus × 3 szint (j vagy ly?,
-  Melyik a jó?, Hibás szó, Szócsalád/toldalék, Kakukktojás), tollbamondás (j1–j3), puska; forrás: AkH 88., 51., 56–57., 92–93.
+  Melyik a jó?, Hibás szó, Szócsalád/toldalék, Kakukktojás), tollbamondás (j1–j3), puska; forrás: AkH 88., 55–57., 92–93. (az 55. elsőre tévesen 51. volt, javítva)
   (a 88. pont szövege szó szerint ellenőrizve, `docs/helyesiras-terv.md`).
 - **Közös modul:** `CAT.jly` a leckére mutat; a j/ly-normalizáló az lj-t és a jj-t is kezeli (tanujj ~ tanulj); új szövegek: `jly`
   csoport (3) és `v4` (vegyes, 1–4. lecke).
 - **A tesztelő felhőben is fut:** `KOVRAT_URL=http://127.0.0.1:8765/ node tools/lessons/lesson-test.js <név> 40` (helyi
   `python3 -m http.server 8765` mellett; Linuxon a képek a repó `.playwright-mcp/` mappájába mennek). Windowson változatlan.
+- **A felhős push** elsőre 403 volt: a Claude GitHub Appnak írási jog kellett az Endy07 fiókon (Endi beállította, „All repositories”).
+
+### Helyesírás 5. lecke: hasonulások (2026. 11. 01. délután)
+
+Endi: „Ahogy javaslod, mehet minden.” Ugyanazon az ágon, a `main`-ről újraindítva; PR-ral, a beolvasztás Endié.
+
+- **Lecke:** `helyesiras-hasonulasok` — kiejtés–írás kártyák a hero-ban, 12 dia, 4 lejátszott bontás (népdal, egészség, házzal,
+  ebben), 5 gyakorlótípus × 3 szint (Hogyan írjuk?, Bontsd szét!, -val/-vé/ez/az, Melyik a jó?, Hibás szó), tollbamondás (h1–h3), puska;
+  forrás: AkH 41., 48–60., 82–83., 90.
+- **Közös modul:** új hibatípus, `hason` (Hasonulás, szóelemzés): hangosztályokkal veti össze a beírt és a helyes alakot
+  (`hasonKey`); új szövegek: `hason` (3) és `v5` (vegyes, 1–5. lecke) — összesen 20.
+
+### Helyesírás 6. lecke: felszólító mód (2026. 11. 01. este)
+
+Endi: „Mehet, ahogy javaslod.” Ugyanarra az ágra, a még nyitott PR #2-be.
+
+- **Lecke:** `helyesiras-felszolito` — igealak-táblázat a hero-ban (10 ige × 5 személy + rövid alak), 11 dia, 5 lejátszott szabály
+  (olvasson, tanítson, lásson/fusson, válasszon, tanítjuk ↔ tanítsuk), 5 gyakorlótípus × 3 szint (Felszólító alak, Tárgyas: -juk vagy
+  -suk?, Kijelentő vagy felszólító?, Melyik a jó?, Hibás szó), tollbamondás (f1–f3), puska; forrás: AkH 38., 42–44., 55–57., 76–81.
+- **Közös modul:** új hibatípus, `felsz` (Felszólító mód, ige; `felszKey`); új szövegek: `felsz` (3) és `v6` — összesen 24.
+- **Endi kérése:** „Legyen nem elváló igekötők is majd.” → a 7. lecke az igekötőké lett (`docs/helyesiras-terv.md`).
+
+### Helyesírás 7. lecke: igekötők (2026. 11. 01. éjjel)
+
+Endi: „Mehet, ahogy javaslod.” Ugyanarra az ágra, a még nyitott PR #2-be.
+
+- **Lecke:** `helyesiras-igekotok` — „az igekötő vándorol” a hero-ban (7 mondat, a szabály betűjével), 10 dia, 4 lejátszott szabály,
+  4 gyakorlótípus × 3 szint (Egybe vagy külön?, Hogyan írjuk?, Melyik mondat a jó?, Hibás rész), tollbamondás (i1–i3), puska;
+  forrás: AkH 120. a)–e). Az összetett szavak és a számok egy későbbi leckébe kerültek (7/b).
+- **Közös modul:** az egybe-/különírás hibatípus a leckére mutat; új típus: `kotojel` (megmegállt ~ meg-megállt); új szövegek: `igek`
+  (3) és `v7` — összesen 28.
+
+### Helyesírás 8. lecke: összetett szavak és számok (2026. 11. 01. éjjel)
+
+Endi: „Szuper, így értettem, mehetünk tovább, ahogy javaslod.” (Az igekötős értelmezést megerősítette.) Ugyanabba a PR #2-be.
+
+- **Lecke:** `helyesiras-osszetett` — számíró a hero-ban (1–99 999, évszám kapcsoló), 11 dia, 4 lejátszott szabály, 4 gyakorlótípus ×
+  3 szint (Egybe, külön vagy kötőjel?, Melyik a jó?, Hibás rész, Számok betűvel — generált), tollbamondás (o1–o3), puska;
+  forrás: AkH 94–95., 101–113., 116–119., 139., 291.
+- **Közös modul:** a Kötőjel hibatípus általános lett (mellérendelés, tulajdonnév, betűszó, 6 szótag, számok); új szövegek: `ossz` (3)
+  és `v8` — összesen 32. A terv számozása eltolódott: 9. nagybetű, 10. vessző, 11. gyakori tévesztések.
+
+### Helyesírás 9. lecke: kis- és nagybetű (2026. 11. 01. hajnal)
+
+Endi: „Folytasd, kérlek.” Ugyanabba a PR #2-be.
+
+- **Lecke:** `helyesiras-nagybetu` — tippkártyák a hero-ban ([h/H]étfő), 11 dia, 4 lejátszott szabály, 4 gyakorlótípus × 3 szint
+  (Kicsi vagy nagy?, Az -i képzős alak, Melyik a jó?, Hibás szó), tollbamondás (n1–n3), puska; forrás: AkH 144–145., 153., 163–166.,
+  170–200. ⚠️ A pontszámokat kereszthivatkozásokkal azonosítottuk (két kivonat 10-zel eltért), lásd `docs/helyesiras-terv.md`.
+- **Közös modul:** a `H.sentFix` már nem fogadja el a rossz kis-/nagybetűs alakot; a „Kis- vagy nagybetű” hibatípus a leckére mutat;
+  új szövegek: `nagy` (3) és `v9` — összesen 36.
+- **A megye:** 2026. október 1-jétől újra megye (nem vármegye); Endi szólt, a lecke ezt tanítja.
+
+### Helyesírás 10. lecke: a vessző (2026. 11. 01. reggel)
+
+Endi: „Minden mehet, ahogy javaslod.” Ugyanabba a PR #2-be.
+
+- **Lecke:** `helyesiras-vesszo` — vesszőrakó a hero-ban (6 mondat, kattintható helyek, ellenőrzés), 11 dia, 4 lejátszott szabály,
+  4 gyakorlótípus × 3 szint (Kell vessző?, Melyik mondat a jó?, Tedd ki a vesszőket!, Mondat végén), tollbamondás (k1–k3), puska;
+  forrás: AkH 240–244., 248–252., 255–256., 261–262.
+- **Közös modul:** a tollbamondás `punct: false` opcióval alapból nem mondja ki az írásjeleket (a vesszőleckében és a gyűjtőoldal
+  vessző-csoportjában); az Írásjel hibatípus a leckére mutat; új szövegek: `vesszo` (3) és `v10` — összesen 40.
+
+### Helyesírás 11. lecke: gyakori tévesztések (2026. 11. 01.) — a tervezett sor vége
+
+Endi: „Mehet, ahogy javaslod.” Ugyanabba a PR #2-be.
+
+- **Lecke:** `helyesiras-tevesztesek` — hibavadász a hero-ban (két chatüzenet, koppintható szavak), 12 dia (hibánként a lecke linkjével),
+  4 lejátszott szabály, 4 gyakorlótípus × 3 szint (Melyik a jó?, Hibás szó, Melyik mondat a jó?, Rövidítés, -e), tollbamondás (g1–g3, írásjel-
+  kimondás nélkül), puska; forrás: a 2–10. lecke pontjai, és 38., 248., 263., 278–284. (⚠️ az utóbbiak kivonatból).
+- **Közös modul:** új hibatípus, `szopar` (egyelőre ↔ egyenlőre); új szövegek: `tev` (3) és `v11` — összesen 44.
+- ⚠️ Kovrat chatje nem jött meg, ezért a hibák általánosak. Ha megjön, a hibastatisztika alapján igazítjuk.
+- **Lektori kör (2026-11-01):** három független lektor az 5–11. leckén; a javítások listája `docs/helyesiras-terv.md` végén. A 9. lecke
+  pontszámai az élő szövegen ellenőrizve helyesek.
 
 ## Döntések és indokaik
 
@@ -247,8 +322,9 @@ a `claude/dreamy-hopper-52jouj` ágon; a `main`-be nem került, az élesítést 
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 - **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`).
-  A **4. lecke (j/ly)** és 4 új tollbamondás kész a `claude/dreamy-hopper-52jouj` ágon (2026-11-01), élesítésre vár. Következő:
-  az 5. lecke (hasonulások), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
+  A **4. lecke (j/ly)** élesben (2026-11-01, PR #1). Az **5–11. lecke** (hasonulások, felszólító mód, igekötők, összetett szavak és számok, kis- és nagybetű, vessző, gyakori tévesztések) kész a `claude/dreamy-hopper-52jouj` ágon, a PR #2 beolvasztására vár. **A tervezett helyesírás-leckesor teljes.**
+  A lektori kör kész és javítva; a **szintfelmérő** (`helyesiras-szintfelmero.html`) is ebben a PR-ban. Következő: ha megjön a chat (`C:\KOVRAT\chat\`),
+  a hibastatisztika (`docs/helyesiras-hibak.md`); a szintfelmérő eredményei (Endinek másolható összefoglaló) addig is mutatják Kovrat gyenge pontjait.
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).

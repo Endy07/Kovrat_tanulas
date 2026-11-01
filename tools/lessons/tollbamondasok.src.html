@@ -61,8 +61,15 @@
   const { $, $$, esc } = K;
   const FOCUS = { betuk: "Többjegyű betűk (cs, gy, ny, sz, zs, dz, dzs), hosszú kettős betűk (ssz, ggy, lly).", maganhangzok: "-ból, -ről, -tól (hosszú) · -ul, -ül, -szor, -kor, -ig (rövid) · -ít (hosszú) · rövidülő tövek.",
     massalhangzok: "Múlt idő (-tt, -t), középfok (-bb), névutók (alatt, előtt), hosszú többjegyű betűk, kettőzött szavak (itt, akkor, éppen).",
-    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–4. lecke szabályai vegyesen." };
-  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html" };
+    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–11. lecke szabályai vegyesen.",
+    tev: "Gyakori tévesztések: kíváncsi, eljössz-e, muszáj, mindig, egyelőre, mondd, hadd, egészség, eggyel, egyáltalán, mindjárt, helyett, tetszik. Az írásjeleket itt ne mondd ki!",
+    vesszo: "A vessző: amikor, hogy, mert, aki; és két tagmondat között; felsorolás; megszólítás; jaj; nemcsak…, hanem; mint. Az írásjeleket itt ne mondd ki!",
+    nagy: "Kis- és nagybetű: júliusban, Balaton, balatoni, német, augusztus huszadikán, A Pál utcai fiúk, Egri csillagok, Nemzeti Sport, Kossuth tér, Déri Múzeum, debreceni.",
+    ossz: "Összetett szavak: labdarúgó-bajnokság, délután, kétgólos, pálya mellett, bableves, rántott hús, tv-műsor, Petőfi-szobor, Duna-part, földalatti, hazafelé.",
+    igek: "Igekötők: hazaértem, leültem, nem írtam meg, meg kell írnom, be is fejeztem, vissza-visszajött, el is ment, meg-megálltunk, nemsokára.",
+    felsz: "Felszólító mód: fussatok, siessen, válasszunk, játsszunk, süssön, tegyünk, felejtsétek, hívjon · kijelentő: visszük.",
+    hason: "Szóelemzés: egészség, község, népdal, színpad, mindnyájan, barátság, egyszer · ebben, akkor, azzal · kézzel, dobozzal, ronggyal." };
+  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html", igek: "helyesiras-igekotok.html", ossz: "helyesiras-osszetett.html", nagy: "helyesiras-nagybetu.html", vesszo: "helyesiras-vesszo.html", tev: "helyesiras-tevesztesek.html" };
   const keys = Object.keys(H.TEXTS);
   // nyomtatható lista
   $("#all").innerHTML = keys.map(g => '<h2 id="' + g + '">' + esc(H.GROUPS[g]) + "</h2>" +
@@ -76,7 +83,7 @@
   $("#grp").innerHTML = keys.map(g => '<button class="tab" data-g="' + g + '">' + esc(H.GROUPS[g]) + "</button>").join("");
   function show(){
     $$("#grp .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.g === S.g)));
-    H.dictation($("#dict"), { texts: H.TEXTS[S.g] });
+    H.dictation($("#dict"), { texts: H.TEXTS[S.g], punct: !["vesszo", "tev"].includes(S.g) });
   }
   $("#grp").addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (b){ S.g = b.dataset.g; show(); } });
   show();

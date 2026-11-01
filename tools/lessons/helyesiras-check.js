@@ -47,6 +47,53 @@ eq(H.sortAbc(["egy", "egyfelé", "egyféle"]), ["egy", "egyfelé", "egyféle"], 
   .flat().forEach(h => eq(H.hyph(h.replace(/-/g, "")), h, "hyph " + h));
 eq(H.letterCount("gally"), 4, "betűszám gally"); eq(H.letterCount("osztállyal"), 8, "betűszám osztállyal");
 
+// hasonulás (5. lecke): AkH 50–52., 57–58., 60., 82–83., 90.
+[["nébdal", "népdal"], ["ablagban", "ablakban"], ["azomban", "azonban"], ["külömben", "különben"], ["egésség", "egészség"], ["kösség", "község"],
+ ["baráccság", "barátság"], ["szabaccság", "szabadság"], ["eccer", "egyszer"], ["minnyájan", "mindnyájan"], ["teccik", "tetszik"], ["jáccik", "játszik"],
+ ["mingyárt", "mindjárt"], ["röktön", "rögtön"], ["házval", "házzal"], ["ezben", "ebben"], ["azkor", "akkor"], ["aggya", "adja"], ["víszszint", "vízszint"]]
+  .forEach(([t, r]) => eq(H.classify(t, r), ["hason"], "classify " + t + "/" + r));
+eq(H.classify("Eccer", "egyszer"), ["kis", "hason"], "classify Eccer/egyszer");
+eq(H.classify("házal", "házzal"), ["kettoz"], "classify házal/házzal");
+
+// felszólító mód (6. lecke): AkH 76–80.
+[["futsatok", "fussatok"], ["sietsen", "siessen"], ["választsunk", "válasszunk"], ["festsen", "fessen"], ["olvasjon", "olvasson"], ["nézjen", "nézzen"], ["látson", "lásson"]]
+  .forEach(([t, r]) => eq(H.classify(t, r), ["felsz"], "classify " + t + "/" + r));
+eq(H.classify("játszunk", "játsszunk"), ["kettoz"], "classify játszunk/játsszunk");
+
+// igekötők (7. lecke): AkH 120.
+const sum7 = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
+eq(sum7("Holnap meg csinálom.", "Holnap megcsinálom."), ["egybe:meg csinálom>megcsinálom:egybe"], "align meg csinálom");
+eq(sum7("Csináldmeg most!", "Csináld meg most!"), ["kulon:Csináldmeg>Csináld meg:kulon"], "align csináldmeg");
+eq(sum7("Holnap megfogom írni.", "Holnap meg fogom írni."), ["kulon:megfogom>meg fogom:kulon"], "align megfogom");
+
+eq(sum7("A busz megmegállt.", "A busz meg-megállt."), ["sub:megmegállt>meg-megállt:kotojel"], "align megmegállt");
+eq(sum7("A busz meg megállt.", "A busz meg-megállt."), ["egybe:meg megállt>meg-megállt:egybe+kotojel"], "align meg megállt");
+eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom");
+
+// összetett szavak (8. lecke): AkH 108., 112–113.
+eq(sum7("Dél után edzés volt.", "Délután edzés volt."), ["egybe:Dél után>Délután:egybe"], "align dél után");
+eq(sum7("Láttuk a Petőfi szobrot.", "Láttuk a Petőfi-szobrot."), ["egybe:Petőfi szobrot>Petőfi-szobrot:egybe+kotojel"], "align Petőfi szobrot");
+eq(sum7("A ház mellet.", "A ház mellett."), ["sub:mellet>mellett:kettoz"], "align mellet");
+
+// kis- és nagybetű (9. lecke)
+eq(sum7("Jövő Hétfőn dolgozatot írunk.", "Jövő hétfőn dolgozatot írunk."), ["sub:Hétfőn>hétfőn:kis"], "align Hétfőn");
+eq(sum7("A Petőfi Utcában lakunk.", "A Petőfi utcában lakunk."), ["sub:Utcában>utcában:kis"], "align Utcában");
+eq(sum7("Nyáron a balatonnál voltunk.", "Nyáron a Balatonnál voltunk."), ["sub:balatonnál>Balatonnál:kis"], "align balatonnál");
+
+// vessző (10. lecke)
+eq(sum7("Azt mondta hogy jön.", "Azt mondta, hogy jön."), ["del:>,:irasjel"], "align hiányzó vessző");
+eq(sum7("Almát, és körtét vettem.", "Almát és körtét vettem."), ["ins:,>:irasjel"], "align fölösleges vessző");
+
+// gyakori tévesztések (11. lecke)
+[["mindíg", "mindig", ["hossz"]], ["kiváncsi", "kíváncsi", ["hossz"]], ["muszály", "muszáj", ["jly"]], ["akor", "akkor", ["kettoz"]], ["mond", "mondd", ["kettoz"]],
+ ["had", "hadd", ["kettoz"]], ["egyel", "eggyel", ["kettoz"]], ["egésség", "egészség", ["hason"]], ["tudode", "tudod-e", ["kotojel"]]]
+  .forEach(([t, r, c]) => eq(H.classify(t, r), c, "classify " + t + "/" + r));
+eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom 11");
+eq(H.classify("Egyenlőre", "Egyelőre"), ["szopar"], "classify egyenlőre");
+
+// választható jó alak a mondatos feladatban (lektori javítás)
+{ const P = H.sentParse("{Tedd/Tegyed|Ted} le!"); eq([P.good, P.goods, P.bad], ["Tedd", ["Tedd", "Tegyed"], ["Ted"]], "sentParse alternatíva"); eq(H.sentGood("{Tedd/Tegyed|Ted} le!"), "Tedd le!", "sentGood alternatíva"); }
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");

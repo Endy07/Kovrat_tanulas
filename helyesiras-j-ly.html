@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101003454">
+<meta name="kovrat-version" content="20261101052657">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -357,15 +357,19 @@ const H = (function(){
                   .replace(/([bcdfghjklmnprstvz])\1/gi, "$1")
   };
   const CAT = {
-    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, csapat) nagybetűvel kezdődik, a többi kisbetűvel." },
+    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, folyó, intézmény, cím első szava) nagybetűvel kezdődik. Kisbetűs: a napok, hónapok, ünnepek, népek, nyelvek neve és az -i képzős alak (debreceni).", href: "helyesiras-nagybetu.html" },
     hossz:  { n: "Magánhangzó hossza", d: "Rövid vagy hosszú magánhangzó: i/í, o/ó, ö/ő, u/ú, ü/ű (a/á, e/é). Mondd ki lassan, és figyeld a szabályokat (-ból/-ről hosszú, -ul/-ül rövid…).", href: "helyesiras-maganhangzok.html" },
     ekezet: { n: "Ékezet", d: "Kimaradt vagy rossz az ékezet (o/ö/ő, u/ü/ű). Más betű, más szó: sor ≠ sör, kor ≠ kör.", href: "helyesiras-maganhangzok.html" },
     jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (folyik, király, hely, olyan, gólya); kivétel a muszáj. A toldalék j-je mindig j (tanulj, látja).", href: "helyesiras-j-ly.html" },
     kettoz: { n: "Mássalhangzó hossza", d: "Egy vagy két betű? A hosszú mássalhangzót kettőzve írjuk (itt, mellett, akkor); a többjegyűnél szón belül csak az első jegyet (hosszú, asszony), összetett szó határán teljesen (jegygyűrű).", href: "helyesiras-massalhangzok.html" },
+    hason:  { n: "Hasonulás (szóelemzés)", d: "Másképp mondjuk, mint írjuk. Bontsd szét a szót, és a tövet meg a toldalékot írd le: népdal, azonban, egészség, barátság, mindnyájan, házzal, ebben.", href: "helyesiras-hasonulasok.html" },
+    felsz:  { n: "Felszólító mód (ige)", d: "t végű igénél ts (tanítson, értsen) vagy ss (fusson, lásson); st, szt végűnél a t kimarad (fessen, válasszon); s, sz, z végűnél kettőzés (olvasson, nézzen).", href: "helyesiras-felszolito.html" },
     tobbj:  { n: "Többjegyű betű", d: "A cs, dz, dzs, gy, ly, ny, sz, ty, zs egy-egy betű: minden jegyét le kell írni (dzseki, nem dzeki).", href: "helyesiras-betuk-elvalasztas.html" },
-    egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő az ige előtt: megcsinálom; összetett szó: számítógép).", href: "" },
-    kulon:  { n: "Különírás", d: "Ezt két szóba kell írni.", href: "" },
-    irasjel:{ n: "Írásjel", d: "Pont, vessző, kérdőjel. A mondat végére írásjel kell; a vessző a tagmondatok közé (a két tagmondatot összekötő és, de, mert, hogy elé is); a két szót összekötő és elé nem kell.", href: "" },
+    egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő közvetlenül az ige előtt: megcsinálom, elment; összetett szó: délután, bableves, kétéves; lásd a 7. és a 8. leckét).", href: "helyesiras-igekotok.html" },
+    kulon:  { n: "Különírás", d: "Ezt két szóba kell írni (pl. igekötő az ige után vagy ha szó van közte: csináld meg, meg is csinálom, meg fogom írni; nem tudom).", href: "helyesiras-igekotok.html" },
+    kotojel:{ n: "Kötőjel", d: "Kötőjel kell: ismételt igekötő (meg-megáll), mellérendelés (ide-oda, piros-fehér), tulajdonnév vagy betűszó + köznév (Petőfi-szobor, tv-műsor), hosszú összetett szó (labdarúgó-bajnokság), szám kétezer fölött (kétezer-egy).", href: "helyesiras-osszetett.html" },
+    szopar: { n: "Összekevert szópár", d: "Két létező szó, más jelentéssel: egyelőre (most még) ↔ egyenlőre (egyforma részre). Nézd meg, melyik illik a mondatba!", href: "helyesiras-tevesztesek.html" },
+    irasjel:{ n: "Írásjel", d: "Pont, vessző, kérdőjel. A mondat végére írásjel kell; a vessző a tagmondatok közé (a két tagmondatot összekötő és, de, mert, hogy elé is); a két szót összekötő és elé nem kell.", href: "helyesiras-vesszo.html" },
     hiany:  { n: "Kimaradt szó", d: "Ez a szó kimaradt. Ha nem hallottad jól, hallgasd meg újra a mondatot.", href: "" },
     tobblet:{ n: "Fölösleges szó", d: "Ez a szó nincs a szövegben.", href: "" },
     eliras: { n: "Egyéb elírás", d: "Más betű került a szóba. Olvasd el lassan, betűnként.", href: "" }
@@ -376,13 +380,43 @@ const H = (function(){
     for (let i = start; i < arr.length; i++){ cur.push(arr[i]); subsets(arr, k, i + 1, cur, out); cur.pop(); }
   }
   const SUBS = (() => { const o = []; for (let k = 1; k <= 4; k++) subsets(ORDER, k, 0, [], o); return o.filter(s => !(s.includes("hossz") && s.includes("ekezet"))); })();
+  /* Hasonulás (AkH 50–52., 57–58., 60., 82–83.): a kiejtett és az írt alak „hangosztálya” egyezik-e.
+     Zöngés–zöngétlen pár egy osztály; az n, m, ny egy osztály; sz–z és s–zs, c–dz és cs–dzs külön osztály;
+     t/d/ty/gy + sz/s → c/cs (barátság ~ baráccság, egyszer ~ eccer); t/d + j → gy (mindjárt ~ mingyárt);
+     két sziszegő hang egyforma lesz (egészség ~ egésség); n után kiesik a t/d (mindnyájan ~ minnyájan);
+     mássalhangzó után a -val/-vel v-je hasonul (házval ~ házzal); az ez/az z-je hasonul (ezben ~ ebben).
+     Végül az egyforma osztályok sorozata egy elemmé olvad. Csak a többi hibatípus után nézzük. */
+  const HC = { p: "P", b: "P", t: "T", d: "T", k: "K", g: "K", f: "F", v: "F", sz: "S1", z: "S1", s: "S2", zs: "S2", c: "C1", dz: "C1", cs: "C2", dzs: "C2", ty: "Y", gy: "Y", n: "N", m: "N", ny: "N" };
+  function hasonKey(w){
+    const L = letters(lower(w)), raw = L.map(x => x.l), c = L.map(x => x.v ? x.l : (HC[x.l] || x.l));
+    const S = x => x === "S1" || x === "S2", CC = x => x === "C1" || x === "C2", cons = i => i >= 0 && i < c.length && !L[i].v && /[a-zőű]/.test(raw[i]);
+    if ((raw[0] === "e" || raw[0] === "a") && raw[1] === "z" && cons(2)) c[1] = c[2];          // ezben ~ ebben, azkor ~ akkor
+    for (let i = 1; i < c.length - 1; i++) if (raw[i] === "v" && cons(i - 1) && L[i + 1].v) c[i] = c[i - 1];   // házval ~ házzal
+    for (let i = 0; i < c.length - 1; i++){
+      if ((c[i] === "T" || c[i] === "Y") && S(c[i + 1])){ c[i] = c[i + 1] === "S1" ? "C1" : "C2"; c[i + 1] = c[i]; }
+      else if ((c[i] === "T" || c[i] === "Y") && CC(c[i + 1])) c[i] = c[i + 1];
+      else if (c[i] === "T" && raw[i + 1] === "j"){ c[i] = "Y"; c[i + 1] = "Y"; }
+      else if (S(c[i]) && S(c[i + 1])) c[i] = c[i + 1];
+    }
+    for (let i = 1; i < c.length - 1; i++) if (c[i] === "T" && c[i - 1] === "N" && cons(i + 1)) c[i] = "N";
+    const out = [];
+    c.forEach((x, i) => { if (!(out.length && out[out.length - 1] === x && !L[i].v)) out.push(x); });
+    return out.join("|");
+  }
+  // Felszólító mód (AkH 76–80.): futsatok ~ fussatok, sietsen ~ siessen, választsunk ~ válasszunk, festsen ~ fessen, olvasjon ~ olvasson
+  const felszKey = w => lower(w).replace(/szts/g, "ssz").replace(/sts/g, "ss").replace(/ts/g, "ss").replace(/([sz])j/g, "$1$1");
   // mely átalakítások teszik egyenlővé a beírt és a helyes szót? (a legkevesebb, ami elég)
+  const SZOPAR = [["egyelőre", "egyenlőre"]];
   function classify(typed, right){
     if (typed === right) return [];
+    if (SZOPAR.some(p => p.includes(lower(typed)) && p.includes(lower(right)) && lower(typed) !== lower(right))) return ["szopar"];
+    if (typed.includes("-") !== right.includes("-") && typed.replace(/-/g, "") === right.replace(/-/g, "")) return ["kotojel"];
     for (const s of SUBS){
       const f = x => s.reduce((acc, k) => NORM[k](acc), x);
       if (f(typed) === f(right)) return s.slice();
     }
+    if (felszKey(typed) === felszKey(right)) return ["felsz"];
+    if (hasonKey(typed) === hasonKey(right)) return (typed[0] !== right[0] && lower(typed[0]) === lower(right[0])) ? ["kis", "hason"] : ["hason"];
     const a = letters(typed), b = letters(right);
     if (a.length === b.length && a.every((x, i) => x.l === b[i].l || ((x.l.length > 1 || b[i].l.length > 1) && x.l[0] === b[i].l[0]))) return ["tobbj"];
     {
@@ -485,11 +519,12 @@ const H = (function(){
     return { parts, tail: item.slice(last) };
   }
   const gapWord = item => item.replace(/\[([^\]|]+)(\|[^\]]*)?\]/g, "$1");
+  // „{jó|rossz}”; a jó helyén „/” jelöli a szintén elfogadott alakot: „{Tedd/Tegyed|Ted}” (a gomb és a megoldás az elsőt mutatja)
   function sentParse(s){
-    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|");
-    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: alts[0], bad: alts.slice(1) };
+    const m = s.match(/\{([^}]+)\}/), alts = m[1].split("|"), goods = alts[0].split("/");
+    return { pre: s.slice(0, m.index), post: s.slice(m.index + m[0].length), good: goods[0], goods, bad: alts.slice(1) };
   }
-  const sentGood = s => s.replace(/\{([^}|]+)[^}]*\}/g, "$1");
+  const sentGood = s => s.replace(/\{([^}|\/]+)[^}]*\}/g, "$1");
   function choiceTask(q, good, others, sol, bad){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : bad }) };
@@ -518,9 +553,9 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good || (t.toLowerCase() === S.good.toLowerCase() && !/^[A-ZÁÉÍÓÖŐÚÜŰ]/.test(S.good))) return { ok: true, msg: "Helyes!" };
-        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: a mondat első szava nagybetűvel kezdődik." };
+        if (S.goods.includes(t)) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
+        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
         const c = classify(t, S.good);
         return { ok: false, msg: c.includes("eliras") ? "Nem jó. Keresd meg a hibás szót, és írd le helyesen." : "Majdnem jó, de még mindig hibás: " + c.map(x => CAT[x].n.toLowerCase()).join(", ") + "." };
@@ -610,6 +645,146 @@ const H = (function(){
         "Ekkor eszembe jutott az edzőm tanácsa, hogy minden lépést gondoljak végig.",
         "Végül döntetlen lett, és a teljes osztály megtapsolt minket." ] }
     ],
+    hason: [
+      { id: "h1", t: "Egészségnap", s: [
+        "Pénteken egészségnapot tartottak az iskolában.",
+        "Az ablakban kiírták, hogy ebben az évben mindnyájan részt veszünk.",
+        "A tornateremben egy orvos beszélt arról, mitől lesz erős a szív.",
+        "Azt mondta, hogy a sport fontos, azonban a pihenés sem maradhat el.",
+        "Akkor elhatároztam, hogy ezentúl kevesebbet ülök a gép előtt." ] },
+      { id: "h2", t: "A népdalverseny", s: [
+        "Csütörtökön népdalversenyt rendeztek a község művelődési házában.",
+        "Az osztályunkból hárman léptek színpadra.",
+        "Réka egyszer sem hibázott, pedig nagyon izgult.",
+        "Különben is ő a legbátrabb közülünk, ezért senki sem lepődött meg a győzelmén.",
+        "A barátságos zsűri azzal búcsúzott, hogy jövőre is várják a csapatot." ] },
+      { id: "h3", t: "A nagy takarítás", s: [
+        "Szombaton anyával kitakarítottuk a lakást.",
+        "Az ablakpárkányt nedves ronggyal töröltem le.",
+        "A régi füzeteimet egy nagy dobozzal vittem le a pincébe.",
+        "Ekkora rendetlenséget még sosem láttam, de mindnyájan segítettünk.",
+        "Végül a bátyám kézzel írt egy táblát, és kiragasztotta az ajtóra." ] }
+    ],
+    felsz: [
+      { id: "f1", t: "Az edzés előtt", s: [
+        "Az edző hangosan szólt nekünk, hogy álljunk sorba.",
+        "Először fussatok két kört, aztán nyújtsatok alaposan!",
+        "Vigyázzatok egymásra, és senki ne siessen!",
+        "Ha elfáradtatok, igyatok egy kis vizet.",
+        "Utána válasszunk két csapatot, és játsszunk egy meccset." ] },
+      { id: "f2", t: "Levél a nagymamának", s: [
+        "Anya megkért, hogy írjak egy levelet a nagymamának.",
+        "Azt írtam neki, hogy vigyázzon magára, és sokat pihenjen.",
+        "Megkértem, hogy süssön nekünk a kedvenc süteményéből.",
+        "A végére odaírtam, hogy hívjon fel, ha unatkozik.",
+        "A levelet holnap együtt visszük el a postára." ] },
+      { id: "f3", t: "Kirándulás előtt", s: [
+        "A tanárnő elmondta, mit tegyünk a hátizsákba.",
+        "Vegyetek fel kényelmes cipőt, és hozzatok esőkabátot!",
+        "Ne felejtsétek otthon a vizet és a szendvicset!",
+        "Az erdőben maradjatok együtt, és figyeljetek egymásra.",
+        "Ha valaki eltéved, azonnal hívja fel a tanárnőt." ] }
+    ],
+    igek: [
+      { id: "i1", t: "A házi feladat", s: [
+        "Délután hazaértem, és rögtön leültem tanulni.",
+        "A matekleckét gyorsan megcsináltam, de a fogalmazást nem írtam meg.",
+        "Anya azt mondta, hogy vacsora előtt meg kell írnom.",
+        "Leírtam az első mondatot, aztán többször is átírtam.",
+        "Végül be is fejeztem, és elégedetten kapcsoltam ki a lámpát." ] },
+      { id: "i2", t: "Az elveszett kulcs", s: [
+        "Reggel nem találtam a kulcsomat, pedig mindent átnéztem.",
+        "Kinéztem az ablakon, és benéztem az ágy alá is.",
+        "Az öcsém vissza-visszajött, hogy segítsen keresni.",
+        "Végül anya szólt, hogy nézzek be a kabátom zsebébe.",
+        "Ott volt, de akkorra már a busz el is ment." ] },
+      { id: "i3", t: "A kirándulás vége", s: [
+        "Délután elindultunk lefelé a hegyről.",
+        "Útközben meg-megálltunk, hogy kifújjuk magunkat.",
+        "Peti azt mondta, hogy soha többé nem jön el ilyen hosszú túrára.",
+        "Nemsokára azonban megérkeztünk a buszhoz, és mindenki felszállt.",
+        "Hazafelé már Peti is azt kérdezte, mikor megyünk el újra." ] }
+    ],
+    ossz: [
+      { id: "o1", t: "A labdarúgó-bajnokság", s: [
+        "Az iskolai labdarúgó-bajnokság döntőjét délután rendezték.",
+        "A kapus sötétzöld mezt, a csatárok piros-fehér csíkos mezt viseltek.",
+        "Az első félidő után kétgólos előnyben voltunk.",
+        "A szünetben a szurkolók forró teát ittak a pálya mellett.",
+        "Végül a kupát a polgármester adta át a győztes csapatnak." ] },
+      { id: "o2", t: "Születésnap", s: [
+        "A nagymamám idén ünnepelte a hetvenedik születésnapját.",
+        "A konyhában bableves, rántott hús és csokoládétorta készült.",
+        "Én egy aranyszínű képkeretet vettem neki ajándékba.",
+        "A nagypapa egy régi tv-műsorról mesélt, amelyet fiatalon nagyon szeretett.",
+        "Késő este mindenki fáradtan, de boldogan ment haza." ] },
+      { id: "o3", t: "A városnézés", s: [
+        "Az osztályunk szombaton egynapos kiránduláson vett részt Budapesten.",
+        "Délelőtt megnéztük a Petőfi-szobrot és az Országházat.",
+        "Egy kis Duna-parti vendéglőben ebédeltünk.",
+        "Délután a földalattival utaztunk, ami nagyon tetszett mindenkinek.",
+        "Hazafelé a vonaton már mindenki aludt." ] }
+    ],
+    nagy: [
+      { id: "n1", t: "Nyári szünet", s: [
+        "A családommal júliusban a Balatonhoz utaztunk.",
+        "Siófokon laktunk egy kis panzióban, közel a Petőfi sétányhoz.",
+        "Egy hétvégén átkompoztunk Tihanyba, és megnéztük az apátságot.",
+        "A szomszéd szobában egy kedves német család lakott.",
+        "A tűzijátékot augusztus huszadikán a balatoni parton néztük." ] },
+      { id: "n2", t: "Az iskolai könyvtár", s: [
+        "Kedden a könyvtárban kikölcsönöztem A Pál utcai fiúk című regényt.",
+        "Molnár Ferenc könyvét a nagymamám is nagyon szerette.",
+        "A könyvtáros néni ajánlotta az Egri csillagokat is.",
+        "Péntekenként a Nemzeti Sportot is elolvasom, mert érdekel a foci.",
+        "A könyvtárban decemberben karácsonyi vásárt rendeznek." ] },
+      { id: "n3", t: "Vendég Debrecenben", s: [
+        "Az unokatestvérem Szegedről jött hozzánk látogatóba.",
+        "Szombaton megmutattam neki a Nagytemplomot és a Kossuth teret.",
+        "Délután a Déri Múzeumban egy egyiptomi kiállítást néztünk meg.",
+        "Este a Nagyerdőn sétáltunk, és fagyit ettünk.",
+        "Vasárnap reggel a debreceni vasútállomásról indult haza." ] }
+    ],
+    vesszo: [
+      { id: "k1", t: "A meccs után", s: [
+        "Amikor véget ért a meccs, mindenki az öltözőbe sietett.",
+        "Peti azt mondta, hogy ma ő volt a legjobb játékos.",
+        "Az edző megdicsért minket, és megígérte, hogy jövő héten pizzázni megyünk.",
+        "Hazafelé Annával és Gergővel beszélgettem, mert ők is a mi utcánkban laknak.",
+        "Otthon gyorsan lezuhanyoztam, megvacsoráztam, és lefeküdtem aludni." ] },
+      { id: "k2", t: "Levél a barátomnak", s: [
+        "Nagyon örültem a levelednek, Bence.",
+        "Képzeld, a hétvégén meglátogattuk a nagymamámat, aki most is palacsintát sütött.",
+        "Ettem túrósat, lekvárosat és kakaósat is.",
+        "Jaj, a végén annyit ettem, hogy alig tudtam felállni!",
+        "Írj nekem minél hamarabb, mert nagyon kíváncsi vagyok, mi van veled!" ] },
+      { id: "k3", t: "A kirándulás", s: [
+        "Szombaton nemcsak az osztályunk, hanem a párhuzamos osztály is kirándulni ment.",
+        "Az út elején a tanárnő megszámolt minket, mert senkit sem akart otthon felejteni.",
+        "Gyalog mentünk fel a hegyre, de visszafelé már busszal jöttünk.",
+        "Olyan magasra másztunk, mint még soha.",
+        "Fent megettük a szendvicseinket, és gyönyörködtünk a kilátásban." ] }
+    ],
+    tev: [
+      { id: "g1", t: "Üzenet a barátomnak", s: [
+        "Kíváncsi vagyok, eljössz-e holnap a meccsre.",
+        "Muszáj lesz korán indulnunk, mert a busz mindig késik.",
+        "Egyelőre nem tudom, hány órakor kezdődik a játék.",
+        "Mondd meg Petinek is, hogy hadd jöjjön velünk!",
+        "Ha mégsem érsz rá, írj nekem egy üzenetet!" ] },
+      { id: "g2", t: "Az edzés", s: [
+        "Az edző azt mondta, hogy az egészség a legfontosabb.",
+        "Ezért mindig alaposan bemelegítünk, mielőtt játszani kezdünk.",
+        "Ma eggyel több kört futottunk, mint a múlt héten.",
+        "Nem tudom, miért, de egyáltalán nem fáradtam el.",
+        "Mindjárt vége az edzésnek, és akkor mehetünk haza." ] },
+      { id: "g3", t: "A kirándulásra", s: [
+        "A tanárnő megkérdezte, hogy van-e mindenkinél víz.",
+        "Vigyünk magunkkal szendvicset, gyümölcsöt és egy kis csokit!",
+        "Az út körülbelül tíz kilométer, ezért kényelmes cipőt kell húzni.",
+        "Peti helyett ma Anna vezeti a csoportot, mert ő ismeri a legjobban az utat.",
+        "Nagyon tetszett a kirándulás, szívesen elmennék újra." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -634,10 +809,52 @@ const H = (function(){
         "Ott minden iskola bemutatja, milyen szakmákat lehet nála tanulni.",
         "Engem leginkább a szoftverfejlesztés érdekel, mert szeretek programozni.",
         "A barátom szerint muszáj lesz korán indulnunk, mert hosszú a sor.",
-        "Ha jól sikerül, otthon büszkén mesélem el, mit láttam." ] }
+        "Ha jól sikerül, otthon büszkén mesélem el, mit láttam." ] },
+      { id: "v5", t: "Az új kutya", s: [
+        "Tavaly ősszel a barátságos szomszédunk egy kis kutyát hozott haza.",
+        "A kutya azóta minden reggel hangos ugatással ébreszt mindnyájunkat.",
+        "Egyszer kiszökött a kertből, és az utcán szaladgált.",
+        "Akkor az egész ház kiabált, mire végre visszajött.",
+        "Most már egy magasabb kerítés vigyáz rá, hogy ne szökjön ki." ] },
+      { id: "v6", t: "Horgászat", s: [
+        "A hétvégén a nagybátyám megtanított minket horgászni.",
+        "Azt mondta, hogy üljünk csendben, és figyeljük a vizet.",
+        "Egyszer hirtelen megmozdult az úszó, és a bot is meghajlott.",
+        "A nagybátyám segített, hogy lassan kihúzzuk a halat a partra.",
+        "Akkora halat még sosem láttam, ezért le is fényképeztük." ] },
+      { id: "v7", t: "Az új számítógép", s: [
+        "Tavaly ősszel egy új számítógépet kaptam a szüleimtől.",
+        "Az első héten szinte minden este együtt játszottunk a bátyámmal.",
+        "Egyszer azonban lefagyott, és nem akart újraindulni.",
+        "Kikapcsoltam, vártam egy kicsit, aztán újra bekapcsoltam.",
+        "Szerencsére minden működött, ezért nem kellett elvinni a szervizbe." ] },
+      { id: "v8", t: "Kosárlabdaedzés", s: [
+        "Tegnap délután a barátommal elmentünk a sportcsarnokba.",
+        "Egy háromórás kosárlabdaedzésen vettünk részt.",
+        "Az edző azt kérte, hogy fussunk le még két kört.",
+        "Utána megittunk egy-egy pohár vizet.",
+        "Hazafelé megbeszéltük, hogy jövő héten is eljövünk." ] },
+      { id: "v9", t: "Iskolai ünnepség", s: [
+        "Az iskolában március tizenötödikén ünnepséget tartottak.",
+        "A műsorban egy kilencedikes lány elszavalta a Nemzeti dalt.",
+        "Utána a kórus népdalokat énekelt, és mindannyian felálltunk.",
+        "Az igazgató azt mondta, hogy legyünk büszkék a magyar történelemre.",
+        "Hazafelé megbeszéltük, hogy jövőre mi is szerepelni fogunk." ] },
+      { id: "v10", t: "Séta a kutyával", s: [
+        "Tegnap délután, amikor hazaértem, a kutyánk az ajtóban várt.",
+        "Azonnal kivittem sétálni, mert egész nap egyedül volt.",
+        "A parkban találkoztunk a szomszéd lánnyal és a kiskutyájával.",
+        "A két kutya ide-oda szaladgált, és nagyon jól érezte magát.",
+        "Hazafelé megbeszéltük, hogy holnap is együtt megyünk sétálni." ] },
+      { id: "v11", t: "Telefon a nagymamától", s: [
+        "Tegnap este felhívott a nagymamám, és megkérdezte, hogyan telt a hetem.",
+        "Elmondtam neki, hogy a helyesírási leckéket már majdnem mind megcsináltam.",
+        "Nagyon örült, és azt mondta, hogy büszke rám.",
+        "Megígértem neki, hogy a következő levelemben egyetlen hibát sem fogok ejteni.",
+        "Kíváncsi vagyok, sikerül-e." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vesszo: "A vessző", tev: "Gyakori tévesztések", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");
@@ -659,14 +876,14 @@ const H = (function(){
   function dictation(root, o){
     const esc = K.esc, $ = K.$, $$ = K.$$;
     const list = o.texts, player = o.player;
-    const S = { k: 0, n: -1, punct: true };
+    const S = { k: 0, n: -1, punct: o.punct !== false };   // a 10. (vessző) leckétől alapból nem mondja ki az írásjeleket
     root.innerHTML =
       '<div class="dict">' +
       '<div class="tabs" role="tablist" aria-label="Szöveg">' + list.map((x, i) => '<button class="tab" data-d="' + i + '">' + (i + 1) + ". " + esc(x.t) + "</button>").join("") + "</div>" +
       '<div class="dict-bar"><button class="btn primary" data-a="say">▶ Első mondat</button><button class="btn" data-a="again" disabled>↺ Újra ezt</button>' +
       '<button class="btn" data-a="slow" disabled>🐢 Darabonként</button>' +
       '<select data-a="rate" aria-label="Tempó"><option value=".7">Lassú</option><option value=".85" selected>Normál</option><option value="1">Gyorsabb</option></select>' +
-      '<label class="dict-chk"><input type="checkbox" data-a="punct" checked> Az írásjeleket is mondja</label></div>' +
+      '<label class="dict-chk"><input type="checkbox" data-a="punct"' + (S.punct ? " checked" : "") + '> Az írásjeleket is mondja</label></div>' +
       '<div class="dict-stat" aria-live="polite"></div>' +
       '<p class="warn" hidden style="color:var(--bad)">Ezen az eszközön nincs magyar felolvasó hang. Edge böngészőben biztosan működik, vagy Endi felolvassa a nyomtatható lapról.</p>' +
       '<textarea class="dict-in" rows="7" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" aria-label="Ide írd a tollbamondást" placeholder="Ide írd, amit hallasz. Mondatonként halad: ha végeztél egy mondattal, nyomd meg a „Következő mondat” gombot."></textarea>' +
@@ -821,7 +1038,7 @@ if (typeof module !== "undefined") module.exports = H;
     <div class="trick"><span class="t">-val, -vel</span><span>j végű: bajjal, fejjel, olajjal · ly végű: osztállyal, hellyel, királlyal, mosollyal · gally + val = gallyal</span></div>
     <div class="trick"><span class="t">Gyakori hibák</span><span>muszáj (nem muszály) · folyik (nem fojik) · olyan (nem ojan) · hülye (nem hüje) · teljes (nem telyes) · tanulj (nem tanuly)</span></div>
   </div>
-  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 88. pont (j és ly: a–c), 51. és 56–57. pont (a toldalék j-je: tanulja, állj, látja, adja), 92–93. pont (osztállyal, gallyal) · helyesiras.mta.hu</p>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 88. pont (j és ly: a–c), 55–57. pont (a toldalék j-je: tanulja, állj, látja, adja), 92–93. pont (osztállyal, gallyal) · helyesiras.mta.hu</p>
 </section>
 
 </div>

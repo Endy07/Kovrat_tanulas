@@ -30,14 +30,15 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 1 | **Betűk, ábécé, elválasztás** | 3–15., 223–238. | Alap: mi számít egy betűnek (cs, dzs), ábécérend, szótag. Az elválasztás a kézzel írt dolgozatban kell. | ✅ kész |
 | 2 | **Magánhangzók hossza** (i/í, o/ó, ö/ő, u/ú, ü/ű) | 4–6., 20–24., 27., 31., 34–35. | A leggyakoribb hiba (ékezet), és jól tanítható: sok toldalék mindig hosszú vagy mindig rövid. | ✅ kész |
 | 3 | **Mássalhangzók hossza** | 7., 9., 36–38., 46., 59., 87., 92–93. | Itt, akkor, lesz, kisebb: chatben is sokat tévesztett szavak; a hosszú többjegyű betű az 1. leckére épül. | ✅ kész |
-| 4 | **j vagy ly** | 88., 51., 56–57., 92–93. | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | ✅ kész (2026. 11. 01.) |
-| 5 | **Kiejtés és szóelemzés: hasonulások** | 17–19., 48–60., 82–83. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | tervezett |
-| 6 | **Igék: felszólító mód és tárgyas ragozás** | 42–43., 54–57., 80–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | tervezett |
-| 7 | **Egybe- és különírás** | 99–138. (válogatva) | Igekötő (megcsinálom, de meg is csinálom), összetett szavak, jelentésváltozás, számok (kétezerig egybe). Chatben valószínűleg ez a sok hiba. ⚠️ | tervezett |
-| 8 | **Nagy kezdőbetű és tulajdonnevek** | 139–205. (válogatva) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
-| 9 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
-| 10 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 4 × 3 + 4 vegyes = 16 |
+| 4 | **j vagy ly** | 88., 55–57., 92–93. | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | ✅ kész, élesben (2026. 11. 01.) |
+| 5 | **Kiejtés és szóelemzés: hasonulások** | 41., 48–60., 82–83., 90. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | ✅ kész (2026. 11. 01.) |
+| 6 | **Igék: felszólító mód és tárgyas ragozás** | 38., 42–44., 55–57., 76–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | ✅ kész (2026. 11. 01.) |
+| 7 | **Igekötők: egybe vagy külön** (Endi kérése, 2026. 11. 01.) | 120. a)–e) | Mikor egybe (megcsinálom, elmegyek), mikor külön (csináld meg, nem csinálom meg, meg is csinálom, meg fogom csinálni), ismételt igekötő (meg-megáll), igekötő vagy határozószó (abbahagyta ↔ abba tette); a nem (nem tudom, nemsokára). Chatben valószínűleg sok a hiba. ⚠️ | ✅ kész (2026. 11. 01.) |
+| 8 | **Összetett szavak és számok** | 94–95., 101–113., 116–119., 139., 291. | Jelző + főnév vagy összetétel (gyors írás ↔ gyorsírás), jelöletlen kapcsolat (kéményseprő), névutó (ház mellett ↔ délután), kötőjel (ide-oda, Petőfi-szobor, tv-műsor), anyagnév, számnév + képző, színnév, a 6 szótag szabály, számok (kétezerig egybe, fölötte kötőjel, évszám egybe). | ✅ kész (2026. 11. 01.) |
+| 9 | **Kis- és nagy kezdőbetű, tulajdonnevek** | 144–145., 153., 163–166., 170–200. (⚠️ kivonatból) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | ✅ kész (2026. 11. 01.) |
+| 10 | **Központozás: a vessző** | 240–244., 248–252., 255–256., 261–262. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | ✅ kész (2026. 11. 01.) |
+| 11 | **Gyakori tévesztések** | a 2–10. lecke pontjai; 38., 248., 263., 278–284. (⚠️ az utóbbiak kivonatból) | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | ✅ kész (2026. 11. 01.) |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 11 × 3 + 11 vegyes = 44 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -72,12 +73,137 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
   b) egy szótagú szó végén ly csak néhányban (boly, foly(ik), hely, mély, moly, súly, süly, gally), a névmásokban ly (ilyen, olyan,
   milyen, amely); több szótagú szó végén legtöbbször ly (kivétel: lakáj, muszáj, papagáj), de az -aj, -ej végűek többsége j (kivétel:
   karvaly, pehely, tavaly, zsindely); c) -lya, -lye végű szavak (kivétel: bója, cserje, héja, perje).
-- ✅ A toldalék j-je: AkH 51. (tanulja, állj, ítéljük, beszéljetek) és 56–57. (partja, látja, adja, hordja). ⚠️ Az 51. pont számát a
-  szabályzat oldalának kivonatából olvastuk ki, a táblázat egyezik.
+- ✅ A toldalék j-je: AkH 55. (tanulja, állj, ítéljük, beszéljetek) és 56–57. (partja, látja, adja, hordja). Elsőre tévesen 51.
+  állt itt és a lecke alján (a kivonatban egy szomszédos pont száma tapadt a táblázathoz); 2026. 11. 01-én a 48–60. pont
+  teljes listájával javítva. Az 51. az n hasonulása (azonban).
 - ✅ -val/-vel: osztállyal, hellyel (92.), gally + val = gallyal (93.). Elválasztás: süly-lyed, osz-tály-lyal (226. f, a gép számolja).
 - Gyakorlótípusok: j vagy ly? (hiánypótlás, a pár mindig kézzel, egyik rossz alak sem létező szó) · Melyik a jó? · Hibás szó a
   mondatban · Szócsalád, toldalék · Kakukktojás (négy hiányos szóból egybe más betű kerül). Tollbamondás: j1–j3 és a vegyes v4.
 - A `H.classify` j/ly-normalizálója bővült: az lj és a jj is egy alakra kerül (tanujj ~ tanulj, fojjon ~ folyjon, osztájjal ~ osztállyal).
+
+## Az 5. lecke (hasonulások), 2026. 11. 01.
+
+- ✅ A pontok a szabályzat 47–60. pontjának listájából (helyesiras.mta.hu): 48. szóelemző írás · 50. zöngésség (ablakban, népdal,
+  vízszint, adhat) · 51. az n [m]/[ny] (azonban, szénpor, tanmenet, öngyújtó) · 52. teljes hasonulás (átcsap, község, egészség) ·
+  53–57. a j hasonulása és összeolvadása (4. lecke) · 58. t/d/gy + s/sz összeolvadás (barátság, egyszer, költség, nagyság) ·
+  59. rövidülés (3. lecke) · 60. kiesés (mindnyájan, csukd be, most sincs).
+- ✅ -val, -vel, -vá, -vé: 41. (babával, kővé; dobbal, emberré, szénnel) és 82. ⚠️ A 82. pont címét („A -val, -vel és a -vá, -vé
+  alakmódosulásai”) kivonatból olvastuk, a 41. pont szövege hivatkozik rá.
+- ✅ az, ez: 83. (abba, ahhoz, akkor, avval v. azzal, akkora, efféle). A „de: ezt, azt, ezért” a szabályból következik (a tárgyrag
+  és a magánhangzós toldalék nem okoz hasonulást) — ⚠️ a szabályzat ezt külön példával nem mondja ki.
+- ✅ Hagyomány: 90. (tetszik, játszik, mindjárt, rögtön, utca).
+- Gyakorlótípusok: Hogyan írjuk? (kiejtésből) · Bontsd szét! · -val, -vé, ez, az · Melyik a jó? · Hibás szó a mondatban.
+  Tollbamondás: h1–h3 és a vegyes v5.
+- Új hibatípus a tollbamondásban: **Hasonulás (szóelemzés)** (`H.classify` → `hason`), a többi típus után nézzük, így a régi
+  besorolások nem változtak (minden régi ellenőrzés átment).
+
+## A 6. lecke (felszólító mód), 2026. 11. 01.
+
+- ✅ A pontok a szabályzat 36–46. és 76–82. pontjának listájából: 38. (-d, -dd: írd, nézd; edd, idd) · 42. (a felszólító mód jele:
+  -j, -jj a jön-nél, a tő végi mássalhangzóval azonos hang; eszik… -gy; hisz: ggy) · 43. (tárgyas: mossuk, nézzük) · 44. (kettős alakok:
+  dobj – dobjál, írd – írjad) · 76. (mássalhangzó vagy hosszú magánhangzó + t: ts — tanítson, fűts) · 77. (rövid magánhangzó + t, lát,
+  bocsát: ss — kössétek, lássuk) · 78. (st, szt: a t nélküli tőből — fessen, válasszon) · 79–80. (s, sz, z, dz) · 81. (lesz, tesz, vesz,
+  visz, eszik, iszik: gy).
+- Gyakorlótípusok: Felszólító alak · Tárgyas: -juk vagy -suk? · Kijelentő vagy felszólító? (tanítjuk ↔ tanítsuk, mondatban) · Melyik a jó? ·
+  Hibás szó. Tollbamondás: f1–f3 és a vegyes v6. Új hibatípus: **Felszólító mód (ige)** (futsatok ~ fussatok, választsunk ~ válasszunk).
+- ⚠️ A „Kijelentő vagy felszólító?” típusban mindkét gomb létező szó: ez szándékos, a mondat dönt.
+
+## A 7. lecke (igekötők), 2026. 11. 01.
+
+- ✅ AkH 120. a) közvetlenül az ige (igenév) előtt egybe, és a belőle képzett főnév is (megtartás); az igekötők listája (abba, agyon,
+  alá, át, be, bele … végig, vissza) · b) az ige után külön · c) ha szó van közte, külön (el ne késs, újjá is építjük, közre kell
+  bocsátani, haza szabad menni) · d) ismételt igekötő kötőjellel, egybe az igével (meg-megállt, vissza-visszatérve) · e) a határozószói
+  szerep kiemelésekor külön (abba tette ↔ abbahagyta, ide jött ↔ idejött, fenn maradt ↔ fennmarad, félre állt ↔ félreállt).
+- ⚠️ A nem tudom, nemsokára, nemrég, nemcsak, nemhogy alakok a helyesírási szótárból valók; a pontszámukat nem kértük le.
+- Gyakorlótípusok: Egybe vagy külön? · Hogyan írjuk? · Melyik mondat a jó? · Hibás rész a mondatban. Tollbamondás: i1–i3 és a vegyes v7.
+- A tollbamondás egybe-/különírás típusai most a leckére mutatnak; új típus: **Kötőjel** (megmegállt ~ meg-megállt).
+- „Nem elváló igekötők” (Endi): úgy értettük, hogy az igekötő írása legyen a téma; az egybeírt (nem elváló) és a külön írt esetek
+  egyaránt benne vannak. ⚠️ Ha Endi mást értett rajta, igazítjuk.
+
+## A 8. lecke (összetett szavak és számok), 2026. 11. 01.
+
+- A tervben eredetileg 7/b volt; a folyamatos számozás miatt 8. lett, a nagybetű 9., a vessző 10., a gyakori tévesztések 11.
+- ✅ Pontok a szabályzat 99–140. pontjának listájából: 94–95. (az összetétel, jelentésváltozás: gyors írás ↔ gyorsírás, jelző lámpa ↔
+  jelzőlámpa, sok szög ↔ sokszög) · 101–103. (mellérendelés: süt-főz, ide-oda; ikerszók: irul-pirul ↔ csigabiga) · 105–106. (jelzős,
+  raggal jelölt kapcsolat: külön) · 108. (névutó külön, de délután, hazafelé, földalatti) · 109–110. (jelöletlen: kéményseprő, napsugár,
+  iskolaudvar) · 111. (jelentéstömörítés: bableves, motorcsónak, hófehér) · 112–113. (Petőfi-szobor, tv-műsor) · 116. (anyagnév: aranygyűrű,
+  de bőr pénztárca) · 117. (kétéves, háromlábú) · 119. (színnév: sötétzöld) · 139. (hat szótag fölött, legalább 3 tag: kötőjel) ·
+  291. (kétezer fölött a hármas csoportok közé kötőjel, kivéve az évszámot).
+- A számíró és a „Számok betűvel” feladat ugyanazzal a függvénnyel ír (`num`), a szabályzat példáin ellenőrizve (2001, 47 563);
+  a gombok egyediségét 9000 sorsolás igazolta. A százas helyén nincs 1 (ezeregyszáz ~ ezerszáz kettőssége miatt).
+- ⚠️ A „kettő a szám végén, két a belsejében” a köznyelvi szokás; a szabályzat pontszámát nem kértük le.
+
+## A 9. lecke (kis- és nagybetű), 2026. 11. 01.
+
+- ⚠️ **A pontszámok:** a szabályzat oldalából két külön kivonat két, egymástól 10-zel eltérő számozást adott (például a személynevek
+  143. vagy 153.). A kereszthivatkozások döntöttek: a 140. pont „Vö. 166.”-ja a Kossuth-nóta szabályára mutat, a Ferenc körút
+  „Vö. 181.”-e a közterületekre. Ez alapján: 144. (ünnepek), 145. (népnevek), 153. (személynevek), 163. (állandó jelző), 164. (Zsófi néni),
+  166. (Kossuth-szobor), 170. (állatnevek), 171. (tárgynevek), 172–183. (földrajzi nevek, közterületek), 184. (csillagok), 186–194.
+  (intézmények, pályaudvarok, rendezvények, márkák), 196–200. (címek). A mondatkezdő nagybetű pontszámát nem találtuk meg.
+  Egy friss, teljes lekérdezéssel érdemes újra ellenőrizni.
+- A tartalom (melyik nagy, melyik kicsi) a kivonatok példáiból való, és mindkét kivonatban egyezett.
+- A megye: 2023-tól vármegye volt, de az Alaptörvény 17. módosítása és a 2026. évi XLIX. törvény nyomán **2026. október 1-jétől újra megye**
+  (Endi szólt, a Telex 2026. 10. 01-i cikke megerősíti). A lecke a megye alakot tanítja (Hajdú-Bihar megye, Hajdú-Bihar megyei).
+  A „Lengyelország Kelet-Európában” vitatható volt, Ukrajna lett.
+- Gyakorlótípusok: Kicsi vagy nagy? · Az -i képzős alak · Melyik a jó? · Hibás szó. Tollbamondás: n1–n3 és a vegyes v9.
+- **Javítás a közös modulban:** a `H.sentFix` eddig elfogadta a rossz kis-/nagybetűs alakot, ha a jó szó kisbetűs volt (a „Hétfőn” átment
+  a „hétfőn” helyett). Most csak a pontos alak jó; a kis-/nagybetű eltérésre célzott üzenet jön. Mind a 9 lecke újratesztelve.
+
+## A 10. lecke (a vessző), 2026. 11. 01.
+
+- ✅ Pontok a szabályzat 239–262. pontjának listájából, a 240. pont kereszthivatkozásaival egyeztetve (a vesszőnél: 96., 101. a–b,
+  244., 248–256., 261–262., 274.): 241–243. (mondatvégi írásjel, a főmondat dönt) · 244. a) tagmondatok határán mindig, b) az és, s, meg,
+  vagy előtt is, ha tagmondatot vezet be, c) mint (hasonlítás) · 248. a) felsorolás, c) de, sőt, illetőleg előtt, d) két mondatrész
+  között az és, s, meg, vagy előtt nincs, f) páros kötőszók · 249. értelmező (d: maga, mind mellett nincs) · 250. b) mint = -ként: nincs ·
+  251–252. közbevetés · 255–256. megszólítás · 261. indulatszó · 262. két kötőszó egymás mellett: csak az első elé.
+- A tollbamondás **ettől a leckétől alapból nem mondja ki az írásjeleket** (`H.dictation(..., { punct: false })`, a gyűjtőoldalon a
+  vessző-csoportnál); bekapcsolható. A régi leckéknél változatlan.
+- Az értelmező utáni vessző (249. b) választható, ezért a tollbamondás-szövegekbe nem tettünk értelmezőt (különben a jó megoldás is hibának számítana).
+- Gyakorlótípusok: Kell vessző? · Melyik mondat a jó? · Tedd ki a vesszőket! (begépelős) · Mondat végén. Tollbamondás: k1–k3 és a vegyes v10.
+
+## A 11. lecke (gyakori tévesztések), 2026. 11. 01. — a tervezett sor vége
+
+- Ismétlő lecke: minden hibánál megmondja, melyik szabály és melyik lecke (2–10.) dönt. Új anyag: szópárok (egyelőre ↔ egyenlőre,
+  helyett ↔ helyet, hadd ↔ had), rövidítések (pl., stb., kb., ill., u., dr.; km, kg, cm pont nélkül), a stb. előtt nincs vessző (248. d
+  analógiája, a 248. b szövege szerint), az -e kérdőszó kötőjellel (263.).
+- ⚠️ **Kovrat chatje még nem jött meg**, ezért a hibák általános chat-hibák, nem az ő saját hibái. Ha megjön: hibastatisztika
+  (`docs/helyesiras-hibak.md`, csak típusok), és ehhez igazítjuk a 11. lecke példáit és a tollbamondásokat.
+- A rövidítések nem kerültek tollbamondásba (a felolvasó rosszul ejti őket), és a „Hibás szó” feladatba sem (a záró pontot az
+  ellenőrző levágja).
+- Gyakorlótípusok: Melyik a jó? · Hibás szó · Melyik mondat a jó? · Rövidítés, -e. Hero: hibavadász két chatüzenettel.
+  Tollbamondás: g1–g3 (írásjel-kimondás nélkül) és a vegyes v11. Új hibatípus: **Összekevert szópár** (egyelőre ↔ egyenlőre).
+
+## Lektori kör az 5–11. leckén (2026. 11. 01.)
+
+Három független lektor (alügynök) nézte át a leckéket és a tollbamondásokat az AkH 12 szövege alapján (a 9–11. lecke lektora a
+helyesiras.mta.hu élő szövegét olvasta). Javítva:
+- **5. lecke:** kiejtésjelölés [készfej] (nem [késfej]), [vísszint], [külömpség] (különb + ség), [baráccságos]; rossz gomb „babbal”
+  (létező szó) → „babaval”; „azzal/avval” mindkettő elfogadva.
+- **6. lecke:** [külgyön]; a „nem lehet hibázni” megjegyzés helyett: olvasunk ↔ olvassunk, játszunk ↔ játsszunk; ts szabály: „de nem s, sz”;
+  két jó gombos mondatok egyértelművé téve (Lássuk csak…; Az edző azt kérte, hogy értsük…); rossz gomb „lessen/lessél, vesszél, lépen”
+  (létező szavak) cserélve; a beírós feladat elfogadja a kettős alakokat (tegyed, írjál, légy…).
+- **7. lecke:** „el akarok menni” rossz példa volt (c eset) → „nem akarok elmenni”; a „megfogom ≠ meg fogom” trükk pontosítva; „A labda nem
+  esett le, hanem fenn maradt”; 107. pont (nemsokára).
+- **8. lecke:** a 2. szint leírása; hadsereg, búbánat: összeforrott összetétel (nem ikerszó); a 6 szótagos szabály egységesen; hazafelé,
+  délután egyértelmű; 102. a), 114. pont.
+- **9. lecke:** Kelet-Európa: világtáj + tulajdonnév; Csendes-óceán: egyik tag sem tulajdonnév; a kivétel-trükk pontosítva; a rendezvény
+  nagybetűs alakja elfogadható, ezért kikerült a feladatokból; „Corvin Mozi” nem rossz gomb többé; „Hogyan írjuk a mondat közepén?”.
+  **A pontszámok helyesek** (a lektor az élő szövegen ellenőrizte), a ⚠️ törölve.
+- **10. lecke:** „válaszd el” (nem választsd); itthagyunk; 254. pont; a választható vesszős mondatok (értelmező, közbevetés) kikerültek
+  a „Tedd ki a vesszőket” feladatból.
+- **11. lecke:** „eggyel: a gy megkettőződik”; a hero-üzenet természetesebb; 38. és 62. pont; ⚠️ törölve.
+- **Tollbamondás:** a levél eleji megszólítás (k2) helyett a mondat végére került (ott nincs választható írásjel); a felszólító mondatok
+  felkiáltójelet kaptak (g1, g3); v11 címe „Telefon a nagymamától”; i1, o3, v5 természetesebb.
+- **Közös modul:** `H.sentParse` a jó alak mellett elfogad szintén helyes alakot is („{Tedd/Tegyed|Ted}”).
+
+## Szintfelmérő (2026. 11. 01.)
+
+- `helyesiras-szintfelmero.html`: 22 kérdés, leckénként 2, véletlenül egy 54 elemes készletből (a leckék lektorált feladataiból). A végén:
+  eredmény, leckénkénti pontszám, ajánlott leckék (a leggyengébb elöl), a hibás válaszok magyarázattal, Endinek másolható összefoglaló,
+  és az előzmények (localStorage, legfeljebb 10). Nincs jegy, nincs időkorlát.
+- Részben pótolja a chat-statisztikát: Kovrat saját hibáiból mutatja a gyenge pontokat, a chat szövege nélkül.
+- Ellenőrizve: minden elemnek egy jó válasza van; hibátlan kitöltés 5 × 22/22; hibás kitöltésnél a jó leckéket ajánlja; az előzmény
+  újratöltés után megmarad; 390 px, sötét téma, JS-hiba nincs.
 
 ## Ellenőrzés
 

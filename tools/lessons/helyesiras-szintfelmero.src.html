@@ -1,0 +1,176 @@
+<!--@HEAD-->
+<title>Helyesírási szintfelmérő</title>
+<style>
+.fm{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.fm .q{font-size:clamp(1.1rem,4.6vw,1.3rem);line-height:1.6}
+.fm .gap{display:inline-block;min-width:2.2em;border-bottom:3px solid var(--accent);text-align:center;color:var(--accent)}
+.fm .bar{height:8px;border-radius:6px;background:var(--line);overflow:hidden}
+.fm .bar i{display:block;height:100%;background:var(--accent)}
+.fm .meta{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.fm .opts{display:flex;flex-direction:column;gap:8px}
+.fm .opt{text-align:left;font-size:1.1rem;overflow-wrap:anywhere}
+.res-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.res-row .sc{font-family:var(--mono);font-weight:700}
+.res-row.bad .sc{color:var(--bad)}.res-row.ok .sc{color:var(--ok, #2E9E5B)}
+.rec{display:flex;flex-direction:column;gap:8px}
+.rec a{display:block;padding:10px 14px;border-radius:12px;background:var(--accent-soft);text-decoration:none;font-weight:700;color:var(--ink)}
+.endi{font-family:var(--mono);font-size:.9rem;white-space:pre-wrap;background:var(--accent-soft);border-radius:12px;padding:12px;overflow-wrap:anywhere}
+.hist{width:100%;border-collapse:collapse;font-size:.95rem}
+.hist td,.hist th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.miss{font-size:.95rem;color:var(--muted)}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · szintfelmérő</span>
+  <h1>Hol tartok helyesírásból?</h1>
+  <p class="lead">22 rövid kérdés mind a 11 helyesírás-lecke anyagából, leckénként kettő. Nincs jegy és nincs időkorlát. A végén megmutatja, melyik leckéket érdemes átnézned, és a böngésződ megjegyzi az eredményt, hogy később összevethesd. Minden indításkor más kérdéseket kapsz.</p>
+</header>
+
+<section class="section-head">
+  <div class="fm" id="fm"></div>
+</section>
+
+<section class="section-head" id="histbox" hidden>
+  <span class="eyebrow">Korábbi eredményeid</span><h2>Így fejlődtél</h2>
+  <div class="ptwrap"><table class="hist" id="hist"></table></div>
+  <p class="src">Az eredmények csak ezen az eszközön, ebben a böngészőben vannak meg.</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, esc, shuffle } = K;
+  const LESSONS = [
+    [1, "Betűk, ábécé, elválasztás", "helyesiras-betuk-elvalasztas.html"], [2, "Magánhangzók hossza", "helyesiras-maganhangzok.html"],
+    [3, "Mássalhangzók hossza", "helyesiras-massalhangzok.html"], [4, "j vagy ly", "helyesiras-j-ly.html"], [5, "Hasonulások", "helyesiras-hasonulasok.html"],
+    [6, "Felszólító mód", "helyesiras-felszolito.html"], [7, "Igekötők", "helyesiras-igekotok.html"], [8, "Összetett szavak és számok", "helyesiras-osszetett.html"],
+    [9, "Kis- és nagybetű", "helyesiras-nagybetu.html"], [10, "A vessző", "helyesiras-vesszo.html"], [11, "Gyakori tévesztések", "helyesiras-tevesztesek.html"]
+  ];
+  // [lecke, kérdés („___” = a hiányzó rész), jó, [rossz], magyarázat] — a leckék lektorált feladataiból
+  const POOL = [
+    [1, "Hány betűből áll ez a szó: asszony?", "5", ["6", "7"], "a, sz, sz, o, ny: az ssz két sz."],
+    [1, "Hány betűből áll ez a szó: dzsungel?", "6", ["7", "8"], "A dzs egy betű: dzs, u, n, g, e, l."],
+    [1, "Hogyan választjuk el: hosszú?", "hosz-szú", ["hos-szú", "ho-sszú"], "Elválasztáskor az ssz-ből sz-sz lesz."],
+    [1, "Hogyan választjuk el: poggyász?", "pogy-gyász", ["pog-gyász", "poggy-ász"], "Elválasztáskor a ggy-ből gy-gy lesz."],
+    [1, "Melyik szó áll előbb ábécérendben?", "cukor", ["csalit"], "A c előbb jön, mint a cs."],
+    [2, "Melyik a helyes? A könyvet a ___ vettem ki.", "táskából", ["táskábol"], "A -ból, -ből mindig hosszú."],
+    [2, "Melyik a helyes? A versenyen ___ lettem.", "tizedik", ["tízedik"], "tíz, de tizedik: a hosszú í megrövidül."],
+    [2, "Melyik a helyes? Már jól beszélek ___.", "angolul", ["angolúl"], "Az -ul, -ül mindig rövid."],
+    [2, "Melyik a helyes? A ___ néni megdicsért.", "tanító", ["tanitó"], "Az -ít képző hosszú: tanít, tanító."],
+    [3, "Melyik a helyes? ___ indulunk, ha kész vagy.", "Akkor", ["Akor"], "akkor: két k."],
+    [3, "Melyik a helyes? Ez a doboz ___, mint az enyém.", "kisebb", ["kissebb"], "kis → kisebb: egy s, két b."],
+    [3, "Melyik a helyes? Holnap ___ a dolgozat.", "lesz", ["lessz"], "lesz: egy sz."],
+    [3, "Melyik a helyes? ___ megyünk az uszodába.", "Busszal", ["Buszal"], "busz + val: a v hasonul, ssz."],
+    [3, "Melyik a helyes? ___ kell írni a dolgozatot.", "Tollal", ["Tolllal"], "Három egyforma betű helyett kettő."],
+    [4, "Melyik a helyes? Holnap ___ korán kelnem.", "muszáj", ["muszály"], "muszáj: j-vel, kivétel."],
+    [4, "Melyik a helyes? A Tisza lassan ___.", "folyik", ["fojik"], "folyik: ly."],
+    [4, "Melyik a helyes? Az ___ kirándulni megyünk.", "osztállyal", ["osztájjal"], "osztály + val: lly."],
+    [4, "Melyik a helyes? ___ nyáron a Balatonnál voltunk.", "Tavaly", ["Tavaj"], "tavaly: ly, kivétel."],
+    [4, "Melyik a helyes? Ez egy ___ vicc volt.", "hülye", ["hüje"], "hülye: ly."],
+    [5, "Melyik a helyes? Jó ___ kívánok!", "egészséget", ["egésséget"], "egész + ség: sz és s is."],
+    [5, "Melyik a helyes? A kórus egy ___ énekelt.", "népdalt", ["nébdalt"], "nép + dal: a p marad."],
+    [5, "Melyik a helyes? Szerettem volna menni, ___ esett.", "azonban", ["azomban"], "azon + ban: az n marad."],
+    [5, "Melyik a helyes? A levelet ___ írtam.", "kézzel", ["kézel"], "kéz + vel: zz."],
+    [5, "Melyik a helyes? ___ a dobozban vannak a játékaim.", "Ebben", ["Ezben"], "ez + ben: ebben."],
+    [6, "Melyik a helyes? ___ gyorsabban, mert lekésünk!", "Fuss", ["Futs"], "Rövid u + t: ss."],
+    [6, "Melyik a helyes? Azt kérte, hogy ___ meg Petit sakkozni.", "tanítsuk", ["tanítjuk"], "Kérés: felszólító mód, tanítsuk."],
+    [6, "Melyik a helyes? ___ egy számot egytől tízig!", "Válassz", ["Választs"], "szt végű ige: a t kimarad, ssz."],
+    [6, "Melyik a helyes? ___ mindenki hangosan!", "Olvasson", ["Olvasjon"], "s végű ige: ss."],
+    [6, "Melyik a helyes? Gyere, ___ még egy kört!", "játsszunk", ["játszunk"], "Javaslat: játsszunk (a játszunk kijelentő)."],
+    [7, "Melyik a helyes? Holnap ___ a házi feladatot.", "megcsinálom", ["meg csinálom"], "Közvetlenül az ige előtt: egybe."],
+    [7, "Melyik a helyes? Holnap ___ a levelet.", "meg fogom írni", ["megfogom írni"], "A fogom közte áll: külön."],
+    [7, "Melyik a helyes? Ma nem ___ a leckét.", "csinálom meg", ["csinálommeg"], "Az ige után: külön."],
+    [7, "Melyik a helyes? A busz ___ a dombon.", "meg-megállt", ["megmegállt"], "Ismételt igekötő: kötőjel."],
+    [7, "Melyik a helyes? ___, hol hagytam a kulcsomat.", "Nem tudom", ["Nemtudom"], "A nem az ige előtt külön."],
+    [8, "Melyik a helyes? ___ edzésre megyek.", "Délután", ["Dél után"], "Napszak: egybe."],
+    [8, "Melyik a helyes? Megnéztük a ___.", "Petőfi-szobrot", ["Petőfi szobrot"], "Tulajdonnév + köznév: kötőjel."],
+    [8, "Melyik a helyes? A húgom ___ lett.", "kétéves", ["két éves"], "Számnév + -s: egybe."],
+    [8, "Hogyan írjuk betűvel: 2001 (forint)?", "kétezer-egy", ["kétezeregy"], "Kétezer fölött kötőjel."],
+    [8, "Melyik a helyes? Megnyertük a ___.", "labdarúgó-bajnokságot", ["labdarúgóbajnokságot"], "3 tag, 6 szótag fölött: kötőjel."],
+    [9, "Melyik a helyes? Jövő ___ dolgozatot írunk.", "hétfőn", ["Hétfőn"], "A napok neve kisbetűs."],
+    [9, "Melyik a helyes? A ___ piacon vásároltunk.", "debreceni", ["Debreceni"], "Az -i képzős alak kisbetűs."],
+    [9, "Melyik a helyes? Most olvasom ___ című regényt.", "A Pál utcai fiúk", ["A Pál Utcai Fiúk"], "Könyvcím: csak az első szó és a név nagy."],
+    [9, "Melyik a helyes? A ___ lakunk.", "Petőfi utcában", ["Petőfi Utcában"], "Az utca kicsi."],
+    [9, "Melyik a helyes? Ukrajna ___ van.", "Kelet-Európában", ["kelet-Európában"], "Világtáj + tulajdonnév: mindkettő nagy."],
+    [10, "Melyik mondat a helyes?", "Azt mondta, hogy jön.", ["Azt mondta hogy jön."], "Tagmondatok között vessző."],
+    [10, "Melyik mondat a helyes?", "Almát és körtét vettem.", ["Almát, és körtét vettem."], "Két szó között az és előtt nincs vessző."],
+    [10, "Melyik mondat a helyes?", "Hazamentem, és megírtam a leckét.", ["Hazamentem és megírtam a leckét."], "Két tagmondat: az és előtt vessző."],
+    [10, "Melyik mondat a helyes?", "Szia, Peti!", ["Szia Peti!"], "Megszólítás: vessző."],
+    [10, "Melyik mondat a helyes?", "Magasabb, mint a bátyja.", ["Magasabb mint a bátyja."], "Hasonlítás: a mint előtt vessző."],
+    [11, "Melyik a helyes? ___ nem tudok jönni.", "Egyelőre", ["Egyenlőre"], "egyelőre = most még."],
+    [11, "Melyik a helyes? ___ meg neki, hogy várjon!", "Mondd", ["Mond"], "mond + d: mondd."],
+    [11, "Melyik a helyes? ___ menjek el én is!", "Hadd", ["Had"], "hadd: két d."],
+    [11, "Melyik a helyes? ___, hány óra van?", "Tudod-e", ["Tudode"], "Az -e kötőjellel."],
+    [11, "Melyik a helyes? ___ elfelejtem a jelszavamat.", "Mindig", ["Mindíg"], "mindig: rövid i."]
+  ];
+  const KEY = "kovrat-hfelmero";
+  const load = () => { try { return JSON.parse(K.store.get(KEY) || "[]"); } catch (e) { return []; } };
+  const save = h => { try { K.store.set(KEY, JSON.stringify(h.slice(-10))); } catch (e) {} };
+  const S = { items: [], i: 0, ans: [] };
+
+  function pickTest(){
+    const out = [];
+    LESSONS.forEach(L => out.push(...shuffle(POOL.filter(p => p[0] === L[0])).slice(0, 2)));
+    return shuffle(out).map(p => ({ p, opts: shuffle([p[2]].concat(p[3])) }));
+  }
+  const qHtml = s => esc(s).replace("___", "<span class='gap'>?</span>");
+
+  function start(){ S.items = pickTest(); S.i = 0; S.ans = []; show(); }
+  function intro(){
+    const h = load(), last = h[h.length - 1];
+    $("#fm").innerHTML = "<p>22 kérdés, kb. 5–8 perc. Gondold végig nyugodtan, és ne nézz meg semmit közben: így lesz pontos az eredmény.</p>" +
+      (last ? "<p class='meta'>Legutóbb (" + esc(last.d) + "): " + last.score + " / " + last.n + "</p>" : "") +
+      "<div class='row'><button class='btn primary' data-a='start'>▶ Indítás</button></div>";
+    drawHist();
+  }
+  function show(){
+    const it = S.items[S.i], n = S.items.length;
+    $("#fm").innerHTML = "<div class='meta'>" + (S.i + 1) + ". kérdés / " + n + "</div><div class='bar'><i style='width:" + Math.round(S.i / n * 100) + "%'></i></div>" +
+      "<div class='q'>" + qHtml(it.p[1]) + "</div><div class='opts'>" + it.opts.map((o, k) => "<button class='opt' data-o='" + k + "'>" + esc(o) + "</button>").join("") + "</div>";
+  }
+  function answer(k){
+    const it = S.items[S.i];
+    S.ans.push({ l: it.p[0], ok: it.opts[k] === it.p[2], it, got: it.opts[k] });
+    S.i++;
+    if (S.i < S.items.length) show(); else result();
+  }
+  function result(){
+    const per = LESSONS.map(L => { const a = S.ans.filter(x => x.l === L[0]); return { L, ok: a.filter(x => x.ok).length, n: a.length }; });
+    const score = S.ans.filter(x => x.ok).length, n = S.ans.length;
+    const weak = per.filter(x => x.ok < x.n).sort((a, b) => a.ok - b.ok || a.L[0] - b.L[0]);
+    const d = new Date(), ds = d.getFullYear() + ". " + String(d.getMonth() + 1).padStart(2, "0") + ". " + String(d.getDate()).padStart(2, "0") + ".";
+    const h = load(); h.push({ d: ds, score, n, per: per.map(x => x.ok) }); save(h);
+    const endi = "Helyesírási szintfelmérő, " + ds + "\nEredmény: " + score + " / " + n + "\n" +
+      (weak.length ? "Gyakorolni: " + weak.map(x => x.L[0] + ". " + x.L[1] + " (" + x.ok + "/" + x.n + ")").join(", ") : "Minden leckéből hibátlan.");
+    $("#fm").innerHTML =
+      "<div class='feedback " + (score === n ? "ok" : "bad") + "'>Eredmény: " + score + " / " + n + " (" + Math.round(score / n * 100) + "%)</div>" +
+      (weak.length ? "<h3>Ezeket a leckéket nézd át</h3><div class='rec'>" + weak.map(x => "<a href='" + x.L[2] + "'>" + x.L[0] + ". " + esc(x.L[1]) + " · " + x.ok + "/" + x.n + " →</a>").join("") + "</div>"
+                   : "<p>Minden leckéből hibátlan! Most jöhetnek a <a href='tollbamondasok.html'>tollbamondások</a>.</p>") +
+      "<h3>Leckénként</h3><div>" + per.map(x => "<div class='res-row " + (x.ok < x.n ? "bad" : "ok") + "'><span>" + x.L[0] + ". " + esc(x.L[1]) + "</span><span class='sc'>" + x.ok + "/" + x.n + "</span></div>").join("") + "</div>" +
+      (score < n ? "<h3>A hibás válaszok</h3>" + S.ans.filter(x => !x.ok).map(x => "<p class='miss'>" + qHtml(x.it.p[1]) + "<br><s>" + esc(x.got) + "</s> → <b>" + esc(x.it.p[2]) + "</b>. " + esc(x.it.p[4]) + "</p>").join("") : "") +
+      "<h3>Endinek</h3><div class='endi' id='endi'>" + esc(endi) + "</div>" +
+      "<div class='row'><button class='btn' data-a='copy'>Másolás</button><button class='btn primary' data-a='start'>Új felmérő</button></div>";
+    drawHist();
+  }
+  function drawHist(){
+    const h = load();
+    $("#histbox").hidden = !h.length;
+    if (!h.length) return;
+    $("#hist").innerHTML = "<tr><th>Dátum</th><th>Eredmény</th><th>A leggyengébb</th></tr>" + h.slice().reverse().map(r => {
+      const min = Math.min(...r.per), w = r.per.map((v, i) => v === min && v < 2 ? LESSONS[i][0] + "." : null).filter(Boolean);
+      return "<tr><td>" + esc(r.d) + "</td><td>" + r.score + " / " + r.n + "</td><td>" + (w.length ? w.join(", ") + " lecke" : "–") + "</td></tr>"; }).join("");
+  }
+  $("#fm").addEventListener("click", e => {
+    const o = e.target.closest("[data-o]"); if (o){ answer(Number(o.dataset.o)); return; }
+    const b = e.target.closest("[data-a]"); if (!b) return;
+    if (b.dataset.a === "start") start();
+    else if (b.dataset.a === "copy"){ try { navigator.clipboard.writeText($("#endi").textContent); b.textContent = "Kimásolva ✓"; } catch (err) { b.textContent = "Jelöld ki és másold"; } }
+  });
+  intro();
+})();
+</script>
+<!--@UPDATE-->
