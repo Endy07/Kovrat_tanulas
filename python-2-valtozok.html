@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101084705">
+<meta name="kovrat-version" content="20261101091634">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -752,7 +752,7 @@ const K = (function(){
 </script>
 <style>
 /* A Python-sorozat közös stílusa (a <!--@PYJS--> jelölő hozza be) */
-.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre{font-variant-ligatures:none}
+.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre,.vs,.vs pre,.tb,code{font-variant-ligatures:none}
 .slide .eq{white-space:normal}
 .src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
 .src div{padding:0 14px;white-space:pre}
@@ -931,7 +931,7 @@ const PYCORE = (function(){
   function judge(T, code, rs){
     for (let k = 0; k < T.tests.length; k++){
       const t = T.tests[k], r = rs[k], ins = t.ins || [];
-      const pre = k ? "Az első próbára jó volt, de a másodikra nem. " : "";
+      const pre = !k ? "" : k === 1 ? "Az első próbára jó volt, de a másodikra nem. " : "Az előző próbákra jó volt, de " + az(k + 1) + (k + 1) + ". próbára nem. ";
       if (r.err) return { ok: false, k, why: pre + "A program hibával állt le." };
       if (r.used < ins.length) return { ok: false, k, why: pre + "A programod csak " + r.used + " adatot kért be az input()-tal, de " + ins.length + " kellene." };
       if (t.exact != null){
@@ -950,6 +950,7 @@ const PYCORE = (function(){
           return { ok: false, k, why: pre + why };
         }
       }
+      for (const x of (t.not || [])) if (String(r.out).includes(x)) return { ok: false, k, why: pre + "Erre a bemenetre ezt nem kellene kiírnia: " + fmtE(x) + ". Nézd meg a feltételt: melyik ág fut le?" };
       for (const [n, ty, val] of (t.vars || [])){
         const v = varOf(r, n);
         if (!v) return { ok: false, k, why: "Nincs a programodban " + n + " nevű változó. Pontosan így nevezd el (kisbetűvel, ékezet nélkül)." };
@@ -1069,6 +1070,9 @@ const P = (function(){
     if (/can't multiply sequence by non-int/.test(m)) return "Szöveget csak egész számmal lehet szorozni (\"ha\" * 3). Szöveget szöveggel nem.";
     if (/invalid literal for int\(\)/.test(m)) return "Az int() csak egész számot tud átalakítani. Tizedes törthöz float() kell (és pont, nem vessző: 3.5); betűt nem lehet számmá alakítani.";
     if (/could not convert string to float/.test(m)) return "Ez nem szám. Tizedesvessző helyett pontot írj: 3.5.";
+    if (/expected ':'/.test(m)) return "Hiányzik a kettőspont a sor végéről: if feltétel: (az elif és az else után is kell).";
+    if (/expected an indented block/.test(m)) return "A kettőspont utáni sornak beljebb kell kezdődnie (4 szóköz, a VS Code-ban Tab): ez tartozik az if alá.";
+    if (/unindent does not match/.test(m)) return "A behúzás nem egyezik: az egy blokkba tartozó sorok pontosan ugyanannyi szóközzel kezdődjenek.";
     if (etype === "IndentationError") return /unexpected indent/.test(m) ? "Szóköz (vagy tabulátor) van a sor elején. Az egyszerű utasítások a sor legelején kezdődnek." : "Behúzási hiba: a kettőspont utáni sor 4 szóközzel beljebb kezdődik.";
     if (etype === "SyntaxError") return "Szintaktikai hiba: a Python nem érti a sort. Nézd meg a zárójeleket, az idézőjeleket és a vesszőket. A hiba gyakran a jelzett sorban vagy közvetlenül előtte van.";
     if (etype === "ZeroDivisionError") return "Nullával osztottál.";
@@ -1138,7 +1142,7 @@ const P = (function(){
     while (rs.length < T.tests.length) rs.push(rs[rs.length - 1]);
     const j = C.judge(T, code, rs), r = rs[j.k || 0];
     const shown = (T.tests[j.k || 0].ins || []).length ? " (Bemenet: " + T.tests[j.k || 0].ins.map(x => '"' + esc(x) + '"').join(", ") + ")" : "";
-    if (j.ok) return { ok: true, msg: "Helyes!" + (T.tests.length > 1 ? " Két különböző bemenetre is jó eredményt adott." : "") + term(rs[0].segs) };
+    if (j.ok) return { ok: true, msg: "Helyes!" + (T.tests.length === 2 ? " Két különböző bemenetre is jó eredményt adott." : T.tests.length > 2 ? " Mind " + C.az(T.tests.length) + T.tests.length + " próbabemenetre jó eredményt adott." : "") + term(rs[0].segs) };
     return { ok: false, msg: esc(j.why) + shown + term(r.segs, r.err, r.line) };
   }
   const STARTER = "# Írd ide a programot\n";

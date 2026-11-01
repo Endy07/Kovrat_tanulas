@@ -1,6 +1,27 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 4. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 5. lecke)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–4. lecke (PR #5, #6, #7; a pult mindhármat ellenőrizte).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **5. Feltételek: if, elif, else**
+  (`python-5-elagazas`): összehasonlítás, `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and`/`or`/`not`, egymásba
+  ágyazás, behúzás a VS Code-ban (szerkesztőrajz). 13 dia, 4 levezetés, 6 feladattípus. A közös modul bővült (próba `not` mezője,
+  több próbabemenet, hibatippek a kettőspontra és a behúzásra, nincs ligatúra a kódrajzokon).
+- **Tesztek:** `py-check --verify 40 python-5-elagazas` 3726 futás, 0 hiba (a többi lecke 20-szal újrafuttatva, 0 hiba); `lesson-test 40`
+  (Pyodide-dal) az 1–5. leckén hibátlan, 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után a **6. lecke: `while`** (`python-6-while`), a terv szerint. Figyelj: a végtelen ciklust
+a futtató 6 mp után leállítja; a py-check-nek nincs időkorlátja, a generált ciklusok mindig álljanak meg.
+
+**Felhős teszt Pyodide-dal:** `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, `KOVRAT_PYODIDE=<…>/package`
+(recept, utolsó szakasz). Ha az ág PR-jét beolvasztották: `git merge origin/main` az ágba (a force-push itt tiltott), új PR.
+
+**Endi döntésére vár:** az 5. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 4. lecke)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–3. lecke (PR #5 `7ea784c`, PR #6 `869ae3f`; a pult mindkettőt ellenőrizte).

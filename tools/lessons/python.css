@@ -1,5 +1,5 @@
 /* A Python-sorozat közös stílusa (a <!--@PYJS--> jelölő hozza be) */
-.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre{font-variant-ligatures:none}
+.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre,.vs,.vs pre,.tb,code{font-variant-ligatures:none}
 .slide .eq{white-space:normal}
 .src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
 .src div{padding:0 14px;white-space:pre}

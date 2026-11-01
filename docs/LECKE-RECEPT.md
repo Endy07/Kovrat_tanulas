@@ -555,3 +555,13 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 - **Névelő sorszám előtt** a modulban: `Az(n)` / `az(n)` („Az 1. sor”, „az 5. sorban”).
 - **Pyodide 3.12 ↔ helyi CPython 3.13:** a hibaüzenetek szövege kicsit eltér, ezért a `py-check` csak a hiba **fajtáját** (`etype`)
   veti össze, a szövegét nem; a magyar tippek mindkét változat szövegére illeszkednek.
+
+### A Python-sorozat 3–5. leckéje (2026. 11. 01.)
+
+- **A LOGIC blokkon kívüli kód (levezetés, dia) csak azt látja, amit a LOGIC visszaad.** Az 5. leckében a `JEGYKOD` nem volt
+  exportálva: a py-check hibátlan volt (az csak a LOGIC-ot futtatja), a tesztelő a „JS-hibák” sorban jelezte, és a lejátszó-kockák
+  száma is kevesebb lett. Mindig nézd a JS-hibák sorát és a kockaszámot.
+- **Kódrajzon nincs ligatúra:** a JetBrains Mono a `>=`-t `≥`-vé olvasztja; a `python.css` minden kódrajzra kikapcsolja.
+- **Ágakat ellenőrző „Írd meg!”:** a próbák `exp`-je a kötelező szó, a `not` a másik ág szava (a „páros” benne van a „nem páros”-ban
+  is, ezért a `not` dönt); legyen próba minden ágra és a határokra (18, 85, 2000/1900).
+- **Ha a PR-t beolvasztották, a force-push itt tiltott:** `git merge origin/main` az ágba, és új PR.

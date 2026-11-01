@@ -47,7 +47,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 2 | **Változók és típusok** | `python-2-valtozok` | értékadás (`=` jobbról balra), felülírás, `x = x + 1`, névszabályok, `int` `float` `str` `bool`, `type()`, `"5"` ↔ `5`, `int()` `str()` `float()`, f-string | ✅ kész (2026. 11. 01.) |
 | 3 | **Adatbekérés: `input` és a típusváltás** | `python-3-input` | `input()` mindig szöveg, `int(input())`, `float(input())`, a kérdező szöveg, több bemenet, a program váza (bekérés → számolás → kiírás), `ValueError`, a VS Code terminálja | ✅ kész (2026. 11. 01.) |
 | 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan), a Python mint számológép a VS Code-ban | ✅ kész (2026. 11. 01.) |
-| 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | tervezett |
+| 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | ✅ kész (2026. 11. 01.) |
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | tervezett |
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | tervezett |
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | tervezett |
@@ -130,8 +130,10 @@ ha az iskola odaér.
   `and`, `or`, `not`; páros-páratlan, jegy pontszámból, intervallum (`10 <= x <= 20`).
 - **Tipikus hibák:** `=` a `==` helyett (`SyntaxError`); kimaradt kettőspont; rossz behúzás (`IndentationError`, vagy rossz
   ág fut); `elif`-sorrend (a `>= 2` előbb, mint a `>= 4`); `if x == 1 or 2` (mindig igaz); szöveg és szám összehasonlítása.
-- **Feladattípusok:** Igaz vagy hamis? · Melyik ág fut? · Mit ír ki? · Írd meg! (több bemenettel, minden ágat kipróbálva) ·
-  Hibakereső.
+- **Feladattípusok (kész):** Igaz vagy hamis? · Melyik ág fut? · Mit ír ki? · Írd meg! (3–5 bemenettel: minden ág és a határok;
+  a kimenetben a kért szó legyen benne, a másik ágé ne) · Milyen hibát ad? · Javítsd ki!
+- **VS Code:** dia és levezetés a behúzásról (kettőspont után Enter → automatikus behúzás, Tab/Shift+Tab, Spaces: 4, vezetővonalak).
+- ⚠️ A ponthatárok (85/70/55/40) csak példák; a lecke kimondja, hogy az iskolában a tanár határai érvényesek.
 
 ### 6. Ismétlés feltétellel: `while`
 
