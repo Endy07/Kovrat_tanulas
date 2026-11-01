@@ -305,6 +305,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   azt nem tudjuk, volt-e már `if`, ezért a sorozat semmit nem tételez fel. Ugyanabba a PR-be (#5): **3. Adatbekérés: input és a
   típusváltás** (`python-3-input`: 11 dia, 3 levezetés, köztük „A VS Code-ban”, 6 típus: Mit ír ki?, Melyik kell?, Milyen típusú
   lesz?, Írd meg! két bemenettel, Milyen hibát ad? bemenettel, Javítsd ki!).
+  Lektor: 12 pont (egy szakmai: a Hibák-táblázat egyik kódjából hiányzott a `b`), mind javítva; a „Milyen hibát ad?” rossz válaszának
+  tippje leckénként megadható (`P.hiba(t, pool, tip)`). PR #5 közben beolvadt, ezért az ág a `main`-nel összefésülve, új PR.
 
 ## Döntések és indokaik
 
