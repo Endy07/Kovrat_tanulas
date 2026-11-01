@@ -526,3 +526,32 @@ Kb. 5 perc alatt végeztek, összesen kb. 40 tétel, ebből a biztosakat és a j
   minta): az utána következő lépések nem futnak le. A `pkill` mindig a parancs **legvégén** álljon, vagy PID alapján állítsd le.
 - Egyedi felületnél (nincs `.practice`) a `lesson-test.js` csak a szélességet és a JS-hibát nézi; a működést célzott Playwright-próba
   igazolja (itt: hibátlan kitöltés a forrásból kiolvasott jó válaszokkal, hibás kitöltés, előzmény újratöltés után).
+
+### A 2026. 11. 01-i Python-sorozat (1–2. lecke): közös modul, Pyodide a felhőben
+
+**Közös modul:** `tools/lessons/python.js` + `python.css`, a forrásban `<!--@PYJS-->` a `<!--@KITJS-->` **után** (a `P` a `K`-t
+használja). Blokkok: `/*@HARNESS*/` (a Python-keret, `PY_HARNESS`), `/*@PYCORE*/` (DOM nélküli: `judge`, `diffExact`, `kiirCheck`,
+`cmpOut`, `stripCom`); a `py-check.js` mindkettőt Node-ban kiértékeli. A lecke `/*@LOGIC*/` blokkja `banks`-ot ad vissza:
+`{ id, kind: "kiir"|"write"|"hiba"|"tipus"|"nev", L: [szint1, szint2, szint3] }`, és `EX`-et (a diák példái, `err`-rel a szándékos hiba).
+
+```bash
+node tools/lessons/py-check.js --verify 40 python-2-valtozok    # valódi Python: minden sablon × szint × 40
+python3 -m http.server 8765 --bind 127.0.0.1 &                   # a repó gyökeréből
+npm pack pyodide@0.27.7 && tar xzf pyodide-0.27.7.tgz             # egy üres mappában (a scratchpadben); a package/ kell
+KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lessons/lesson-test.js python-2-valtozok 40
+```
+
+- **A felhős gép a jsDelivr-t nem éri el** (a proxy 403-at ad), de az npm-et igen. Az npm-es `pyodide@0.27.7` csomag (pyodide.js,
+  .asm.js, .wasm, python_stdlib.zip, lock) elég a sima Pythonhoz. A tesztelő `KOVRAT_PYODIDE`-dal a `context.route`-on át
+  szolgálja ki; ez a blob-URL-es **Web Worker** kéréseit is elkapja. A `lesson-test.js`-ben a `URL` név foglalt (a lecke címe):
+  `globalThis.URL` kell.
+- **Ha a feladat-generátor kivételt dob, a tesztelő hamisan átmegy:** a régi feladat marad a dobozban, és azt ellenőrzi újra
+  (`pick(pick(…))` hiba a 2. leckében: 30/30 jött ki, közben `pageerror`). **Mindig nézd a „JS-hibák” sort is**, ne csak a számokat.
+- **A „Mit ír ki?” többsoros:** egyedi feladatfajta szövegmezővel (`P.kiir`), a tesztelő kódosnak látja (üres mező nem megy át).
+- **Szándékosan hibás program a „Javítsd ki!”-ban:** a `starter` a hibás kód; a `py-check` ellenőrzi, hogy a hibás kód **nem**
+  megy át, a minta átmegy. A „Milyen hibát ad?” mellé `fix` is kerül, és a javított kódnak hiba nélkül kell futnia.
+- **Kézzel beírt eredmény ellen:** `must` elem lehet `{ test(src) }` objektum is; az `outside(/\d\s*\*\s*\d/)` az idézőjeleken kívül
+  keres (a gép számoljon), az `nPrint(1)` a print-ek számát nézi; a változók típusát és értékét a keret adja (`tests[k].vars`).
+- **Névelő sorszám előtt** a modulban: `Az(n)` / `az(n)` („Az 1. sor”, „az 5. sorban”).
+- **Pyodide 3.12 ↔ helyi CPython 3.13:** a hibaüzenetek szövege kicsit eltér, ezért a `py-check` csak a hiba **fajtáját** (`etype`)
+  veti össze, a szövegét nem; a magyar tippek mindkét változat szövegére illeszkednek.

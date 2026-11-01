@@ -25,6 +25,13 @@ const SHOTS = process.env.KOVRAT_SHOTS || (process.platform === "win32" ? "C:/xa
     try { localStorage.setItem("kovrat-tts", "0"); } catch (e) {}
     try { if (window.speechSynthesis){ window.speechSynthesis.speak = () => {}; } } catch (e) {}
   });
+  // Pyodide helyi mappából (felhős gép: a jsDelivr nem érhető el): KOVRAT_PYODIDE=<a pyodide@0.27.7 npm-csomag mappája>
+  if (process.env.KOVRAT_PYODIDE) await ctx.route(/cdn\.jsdelivr\.net\/pyodide\/v[\d.]+\/full\/[^?]*/, r => {
+    const f = path.join(process.env.KOVRAT_PYODIDE, new globalThis.URL(r.request().url()).pathname.split("/").pop());
+    if (!fs.existsSync(f)) return r.fulfill({ status: 404, body: "" });
+    const ct = f.endsWith(".wasm") ? "application/wasm" : f.endsWith(".js") ? "text/javascript" : f.endsWith(".json") ? "application/json" : "application/octet-stream";
+    return r.fulfill({ status: 200, body: fs.readFileSync(f), headers: { "content-type": ct, "access-control-allow-origin": "*" } });
+  });
   const page = await ctx.newPage();
   const errs = [];
   page.on("pageerror", e => errs.push("pageerror: " + e.message));

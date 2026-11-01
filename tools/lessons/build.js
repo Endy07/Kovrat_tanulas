@@ -25,7 +25,9 @@ for (const n of names) {
        .replace("<!--@KITJS-->", () => "<script>\n" + js + "</script>")
        .replace("<!--@UPDATE-->", () => "<script>\n" + upd + "</script>")
        // helyesírás-leckék: a közös helyesírás-készlet (betűk, elválasztás, ábécérend, tollbamondás)
-       .replace("<!--@HJS-->", () => "<style>\n" + rd("helyesiras.css") + "</style>\n<script>\n" + rd("helyesiras.js") + "</script>");
+       .replace("<!--@HJS-->", () => "<style>\n" + rd("helyesiras.css") + "</style>\n<script>\n" + rd("helyesiras.js") + "</script>")
+       // Python-sorozat: a közös Python-modul (futtató, ellenőrzés, feladatfajták)
+       .replace("<!--@PYJS-->", () => "<style>\n" + rd("python.css") + "</style>\n<script>\n" + rd("python.js") + "</script>");
   fs.writeFileSync(path.join(root, n + ".html"), s);
   console.log("kész:", n + ".html", Math.round(s.length / 1024) + " KB");
 }
