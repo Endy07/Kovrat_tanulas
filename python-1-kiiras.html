@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101081533">
+<meta name="kovrat-version" content="20261101082019">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -907,7 +907,7 @@ const PYCORE = (function(){
       if (a == null) return { line: n, why: "A kimenet rövidebb a vártnál. Ez a sor hiányzik: " + (b === "" ? "egy üres sor" : b) };
       if (b == null) return { line: n, why: "A kimenetben több sor van, mint kellene. Fölösleges: " + (a === "" ? "egy üres sor" : a) };
       if (a.toLowerCase() === b.toLowerCase()) return { line: n, why: Az(n) + n + ". sorban a kis- és nagybetű eltér. Vártam: " + b + " · Kiírta: " + a };
-      if (noSp(a) === noSp(b)) return { line: n, why: Az(n) + n + ". sorban a szóközök eltérnek (a pont most szóközt jelöl). Vártam: " + vis(b) + " · Kiírta: " + vis(a) };
+      if (noSp(a) === noSp(b)) return { line: n, why: Az(n) + n + ". sorban a szóközök eltérnek (a · most szóközt jelöl). Vártam: " + vis(b) + " · Kiírta: " + vis(a) };
       if (noPunct(a) === noPunct(b)) return { line: n, why: Az(n) + n + ". sorban egy írásjel eltér. Vártam: " + b + " · Kiírta: " + a };
       if (a === "" || b === "") return { line: n, why: a === "" ? Az(n) + n + ". sor üres, pedig ezt vártam: " + b : Az(n) + n + ". sorba üres sor kellene (üres print()), de ezt írta ki: " + a };
       return { line: n, why: Az(n) + n + ". sor nem egyezik. Vártam: " + b + " · Kiírta: " + a };
@@ -920,7 +920,7 @@ const PYCORE = (function(){
   const fstr = /\bf["']/;
   const fmtE = e => typeof e === "number" ? String(e) : '"' + e + '"';
   const varOf = (r, n) => (r.vars || []).find(v => v[0] === n);
-  const TYPE_HU = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai)", list: "list (lista)", NoneType: "None" };
+  const TYPE_HU = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai érték)", list: "list (lista)", NoneType: "None" };
 
   /* ---- Bírálat: a feladat (T) és a futások eredménye (rs) alapján. { ok, k, why } ---- */
   // T.tests[k]: { ins, exact?, exp?, vars?: [[név, típus, érték]] } · T.must / T.mustNot: [[regex, üzenet]] · T.fstr: kell-e f-string
@@ -986,7 +986,10 @@ const PYCORE = (function(){
 
   // Python-szám kiírása: a float mindig tizedesponttal (4.0)
   const pyF = x => Number.isInteger(x) ? x.toFixed(1) : String(x);
-  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis };
+    // névelő név elé: „az Anna”, „a Bence”
+  const azW = w => /^[aeiouáéíóöőúüű]/i.test(String(w)) ? "az " : "a ";
+  const AzW = w => azW(w) === "az " ? "Az " : "A ";
+  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW };
 })();
 /*@/PYCORE*/
 
@@ -1046,13 +1049,15 @@ const P = (function(){
       if (/^(true|false)$/.test(n)) return "Az igaz és a hamis nagy kezdőbetűvel: True, False.";
       return "Nincs ilyen nevű változó" + (n ? ": " + n : "") + ". Ha szöveget akartál kiírni, tedd idézőjelbe" + (n ? ": \"" + n + "\"" : "") + ". Ha változó, előbb adj neki értéket (és ugyanígy írd: a kis- és nagybetű is számít).";
     }
-    if (/unterminated string literal|EOL while scanning/.test(m)) return "Hiányzik a záró idézőjel. A szöveg elején és végén is kell: \"Szia\".";
+    if (/unterminated string literal|EOL while scanning/.test(m)) return "Hiányzik a záró idézőjel. A szöveg elején és végén is kell: \"Szia\". Ha a szövegben aposztróf van, tedd dupla idézőjelbe: \"It's\".";
     if (/was never closed|unexpected EOF/.test(m)) return "Hiányzik egy záró zárójel. Minden nyitó zárójelhez kell egy záró: print(\"Szia\").";
     if (/unmatched '\)'/.test(m)) return "Fölösleges záró zárójel, vagy hiányzik a nyitó.";
     if (/invalid character/.test(m)) return "Furcsa karakter van a kódban. Gyakran a Wordből másolt „okos” idézőjel: csak az egyenes \" vagy ' jó.";
     if (/Missing parentheses in call to 'print'/.test(m)) return "A print után zárójel kell: print(\"Szia\").";
     if (/invalid decimal literal/.test(m)) return "Szám után betű: a változó neve nem kezdődhet számmal (nev2 jó, 2nev nem). Tizedes törtnél pontot írj: 3.5.";
-    if (/cannot assign to literal|cannot assign to expression|cannot assign to function call/.test(m)) return "Az értékadásnál balra a változó neve áll, jobbra az érték: x = 5 (nem 5 = x).";
+    if (/cannot assign to (True|False|None)/.test(m)) return "A True, a False és a None foglalt szó, nem lehet változónév.";
+    if (/cannot assign to expression/.test(m)) return "A változó neve nem tartalmazhat kötőjelet vagy más műveleti jelet: uj-ar helyett uj_ar. (Vagy fordítva írtad az értékadást? Balra a név: x = 5.)";
+    if (/cannot assign to literal|cannot assign to function call/.test(m)) return "Az értékadásnál balra a változó neve áll, jobbra az érték: x = 5 (nem 5 = x).";
     if (/Maybe you meant '==' or ':=' instead of '='|invalid syntax. Maybe you meant/.test(m)) return "Az = értékadás; az egyenlőség vizsgálata ==. Itt valószínűleg vessző vagy operátor hiányzik.";
     if (/Perhaps you forgot a comma/.test(m)) return "Két érték között hiányzik a vessző (vagy a +). Például: print(\"Kor:\", 15).";
     if (/can only concatenate str/.test(m)) return "Szöveghez számot nem lehet +-szal hozzáfűzni. Írd vesszővel (print(\"Kor:\", 15)), f-stringgel, vagy alakítsd szöveggé: str(15).";
@@ -1065,7 +1070,7 @@ const P = (function(){
     if (etype === "ZeroDivisionError") return "Nullával osztottál.";
     if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez.";
     if (etype === "IndexError") return "Nincs ilyen indexű elem. Az index 0-tól len(s) − 1-ig megy.";
-    if (etype === "AttributeError") return "Nincs ilyen metódus. Kisbetűvel írd, és ne felejtsd el a zárójelet: upper().";
+    if (etype === "AttributeError") return "Nincs ilyen metódus ennek a típusnak, vagy elírtad (kisbetűvel: upper).";
     if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például print = …)?";
     if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";
     if (etype === "Timeout") return "Lehet, hogy végtelen ciklus van a programban.";
@@ -1163,10 +1168,11 @@ const P = (function(){
   const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", "": "nincs hiba" };
   // „Milyen hibát ad?”: t = { code, err, sol }, a választható hibák listája (pool)
   function hiba(t, pool){
-    const good = ERRS[t.err], others = K.shuffle(pool.filter(e => e !== t.err)).slice(0, 3).map(e => ERRS[e]);
+    // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza
+    const good = ERRS[t.err], others = K.shuffle(pool.filter(e => e !== t.err && !(t.err === "IndentationError" && e === "SyntaxError"))).slice(0, 3).map(e => ERRS[e]);
     return choice("Milyen hibát ad ez a program, ha lefuttatod?<pre class='code'>" + esc(t.code) + "</pre>", good, others,
       "<p>" + (t.err ? "<b>" + t.err + "</b>: " + ERR_HU[t.err] + ". " : "") + t.sol + "</p>",
-      l => "Nem ez. " + (l === ERRS[""] ? "Ez a program nem fut le hibátlanul. " : "") + "Olvasd végig a sort betűről betűre: zárójel, idézőjel, kis- és nagybetű, szóköz a sor elején.");
+      l => !t.err ? "Nem ez. Ez a program hibátlanul lefut." : "Nem ez. " + (l === ERRS[""] ? "Ez a program nem fut le hibátlanul. " : "") + "Olvasd végig a sort betűről betűre: zárójel, idézőjel, kis- és nagybetű, szóköz a sor elején.");
   }
 
   /* ---------- Diák: futtatható példák a hero futtatójába ---------- */
@@ -1266,8 +1272,8 @@ const P = (function(){
       [
         () => { const m = pick(MOND); return { q: "Írd ki pontosan ezt a mondatot:<pre class='code'>" + esc(m) + "</pre>", code: 'print("' + m + '")', tests: exact(m), ex: "A szöveg idézőjelbe kerül, az idézőjel a print zárójelébe." }; },
         () => { const [m1, m2] = shuffle(MOND).slice(0, 2); return { q: "Írd ki ezt a két sort:<pre class='code'>" + esc(J(m1, m2)) + "</pre>", code: J('print("' + m1 + '")', 'print("' + m2 + '")'), tests: exact(J(m1, m2)), ex: "Minden print új sorba ír: két sorhoz két print kell." }; },
-        () => { const n = pick(NEV), k = rnd(13, 16); return { q: "Írd ki egymás alá ezt a két dolgot: a <b>" + n + "</b> nevet, alá pedig a <b>" + k + "</b> számot!<pre class='code'>" + esc(J(n, String(k))) + "</pre>", code: J('print("' + n + '")', "print(" + k + ")"), tests: exact(J(n, String(k))), ex: "A név szöveg (idézőjelben), a szám idézőjel nélkül is írható. (print(\"" + k + "\") is ugyanezt írná ki.)" }; },
-        () => { const a = rnd(11, 99), b = rnd(11, 99); return { q: "Írd ki a " + a + " és a " + b + " összegét úgy, hogy a gép számolja ki! A kimenet csak a szám legyen.", code: "print(" + a + " + " + b + ")", tests: exact(String(a + b)), must: [[outside(/\d\s*\+\s*\d/), "a gép számolja ki: a + jel a print zárójelében, idézőjel nélkül legyen."]], ex: "Idézőjel nélkül a gép kiszámolja: print(" + a + " + " + b + ")." }; }
+        () => { const n = pick(NEV), k = rnd(13, 16); return { q: "Írd ki egymás alá ezt a két dolgot: " + C.azW(n) + "<b>" + n + "</b> nevet, alá pedig a <b>" + k + "</b> számot!<pre class='code'>" + esc(J(n, String(k))) + "</pre>", code: J('print("' + n + '")', "print(" + k + ")"), tests: exact(J(n, String(k))), ex: "A név szöveg (idézőjelben), a szám idézőjel nélkül is írható. (print(\"" + k + "\") is ugyanezt írná ki.)" }; },
+        () => { const a = rnd(11, 99), b = rnd(11, 99); return { q: "Írd ki " + C.az(a) + a + " és " + C.az(b) + b + " összegét úgy, hogy a gép számolja ki! A kimenet csak a szám legyen.", code: "print(" + a + " + " + b + ")", tests: exact(String(a + b)), must: [[outside(/\d\s*\+\s*\d/), "a gép számolja ki: a + jel a print zárójelében, idézőjel nélkül legyen."]], ex: "Idézőjel nélkül a gép kiszámolja: print(" + a + " + " + b + ")." }; }
       ],
       [
         () => { const a = rnd(12, 199), b = rnd(3, 12); return { q: "Írd ki pontosan ebben a formában, és a szorzatot a gép számolja ki:<pre class='code'>" + a + " * " + b + " = " + a * b + "</pre>", code: 'print("' + a + " * " + b + ' =", ' + a + " * " + b + ")", tests: exact(a + " * " + b + " = " + a * b), must: [[outside(/\d\s*\*\s*\d/), "a szorzást a gép végezze: a * jel az idézőjelen kívül is szerepeljen, például print(\"" + a + " * " + b + " =\", " + a + " * " + b + ")."]], ex: "Az első érték szöveg (ez magyarázat), a második számolás. A vessző közéjük szóközt tesz." }; },
@@ -1295,7 +1301,7 @@ const P = (function(){
           { code: 'print("' + m + '")', err: "", sol: "Ez a program jó: idézőjelben a szöveg, zárójelben az idézőjel." },
           { code: ' print("' + m + '")', err: "IndentationError", fix: 'print("' + m + '")', sol: "Szóköz van a sor elején. Az utasítás a sor legelején kezdődik." }]); },
         () => { const n = pick(NEV); return pick([
-          { code: "print(" + n + ")", err: "NameError", fix: 'print("' + n + '")', sol: "Idézőjel nélkül a " + n + " egy változó neve lenne, de ilyen változó nincs. Szövegként: print(\"" + n + "\")." },
+          { code: "print(" + n + ")", err: "NameError", fix: 'print("' + n + '")', sol: "Idézőjel nélkül " + C.azW(n) + n + " egy változó neve lenne, de ilyen változó nincs. Szövegként: print(\"" + n + "\")." },
           { code: 'print("' + n + '")', err: "", sol: "Ez jó: a név idézőjelben van, tehát szöveg." }]); },
         () => { const a = rnd(2, 30), b = rnd(2, 30); return pick([
           { code: "print(" + a + " + " + b + ")", err: "", sol: "Számok összeadása: hibátlan, kiírja: " + (a + b) + "." },
@@ -1324,7 +1330,7 @@ const P = (function(){
           { code: "print(" + a + " / 0)", err: "ZeroDivisionError", fix: "print(" + a + " / " + b + ")", sol: "Nullával nem lehet osztani, ez futás közbeni hiba." },
           { code: "print(" + a + " +)", err: "SyntaxError", fix: "print(" + a + " + " + b + ")", sol: "A + után hiányzik a szám." },
           { code: "print(" + a + " * " + b + "))", err: "SyntaxError", fix: "print(" + a + " * " + b + ")", sol: "Eggyel több záró zárójel van, mint nyitó." },
-          { code: 'print("' + a + '" + ' + b + ")", err: "TypeError", fix: "print(" + a + " + " + b + ")", sol: "Az idézőjeles " + a + " szöveg, a " + b + " szám: ezeket nem lehet összeadni." },
+          { code: 'print("' + a + '" + ' + b + ")", err: "TypeError", fix: "print(" + a + " + " + b + ")", sol: "Az idézőjeles " + a + " szöveg, " + C.az(b) + b + " szám: ezeket nem lehet összeadni." },
           { code: "print(" + a + ", " + b + ', sep="-")', err: "", sol: "Hibátlan: kiírja " + a + "-" + b + "." }]); },
         () => { const m = pick(MOND); return pick([
           { code: J('print("Első sor")', "# " + m, 'print("Utolsó sor")'), err: "", sol: "A középső sor megjegyzés (#), a gép átugorja; nincs hiba." },
@@ -1349,14 +1355,14 @@ const P = (function(){
         () => { const a = rnd(11, 60), b = rnd(2, 9); return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + (a * b) + "</pre>De hibás. Javítsd ki!", starter: pick(["print(" + a + " x " + b + ")", "print(" + a + " * " + b, "Print(" + a + " * " + b + ")"]) + "\n", code: "print(" + a + " * " + b + ")", tests: exact(String(a * b)), must: [[outside(/\d\s*\*\s*\d/), "a szorzást a gép végezze (" + a + " * " + b + ")."]], ex: "A szorzás jele a *, a print kisbetűs, és a zárójelnek párban kell lennie." }; }
       ],
       [
-        () => { const k = rnd(13, 17), n = pick(NEV); const o = J("Név: " + n, "Kor: " + k); const bug = pick([['print("Kor:" ' + k + ")", "hiányzott a vessző"], ['print("Kor: " + ' + k + ")", "szöveghez számot nem lehet +-szal fűzni: vessző kell"]]);
+        () => { const k = rnd(13, 17), n = pick(NEV); const o = J("Név: " + n, "Kor: " + k); const bug = pick([['print("Kor:" ' + k + ")", "hiányzott a vessző"], ['print("Kor: " + ' + k + ")", "szöveghez számot nem lehet +-szal fűzni, vessző kell"]]);
           return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + esc(o) + "</pre>De hibás. Javítsd ki!", starter: J('print("Név:", "' + n + '")', bug[0]) + "\n", code: J('print("Név:", "' + n + '")', 'print("Kor:", ' + k + ")"), tests: exact(o), ex: "A 2. sorban " + bug[1] + ": print(\"Kor:\", " + k + ")." }; },
         () => { const n = pick(NEV); const o = "Szia, " + n + "!"; return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + esc(o) + "</pre>De mást ír ki. Javítsd ki!", starter: 'print("Szia," + "' + n + '!")\n', code: 'print("Szia,", "' + n + '!")', tests: exact(o), ex: "A + szóköz nélkül fűz össze: „Szia," + n + "!” lett. Vesszővel (vagy a szövegbe tett szóközzel) jó." }; },
-        () => { const [m1, m2] = shuffle(MOND).slice(0, 2); const o = J(m1, "", m2); return { q: "Ennek a programnak ezt a három sort kellene kiírnia (a középső üres):<pre class='code'>" + esc(o) + "</pre>De hibás. Javítsd ki!", starter: J('print("' + m1 + '")', "print", 'print("' + m2 + '")') + "\n", code: J('print("' + m1 + '")', "print()", 'print("' + m2 + '")'), tests: exact(o), ex: "A print zárójel nélkül nem fut le: üres sorhoz print() kell." }; }
+        () => { const [m1, m2] = shuffle(MOND).slice(0, 2); const o = J(m1, "", m2); return { q: "Ennek a programnak ezt a három sort kellene kiírnia (a középső üres):<pre class='code'>" + esc(o) + "</pre>De mást ír ki. Javítsd ki!", starter: J('print("' + m1 + '")', "print", 'print("' + m2 + '")') + "\n", code: J('print("' + m1 + '")', "print()", 'print("' + m2 + '")'), tests: exact(o), ex: "Zárójel nélkül a print nem hívódik meg: hibát sem ad, csak nem csinál semmit. Üres sorhoz print() kell." }; }
       ],
       [
         () => { const [m1, m2] = shuffle(MOND).slice(0, 2); const b1 = pick(BUG.slice(0, 4))(m1), b2 = pick(BUG.slice(0, 4))(m2); const o = J(m1, m2);
-          return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + esc(o) + "</pre>De két hiba is van benne. Javítsd ki mindkettőt!", starter: J(b1[0], b2[0]) + "\n", code: J('print("' + m1 + '")', 'print("' + m2 + '")'), tests: exact(o), ex: "Az 1. sorban " + b1[1] + ", a 2. sorban " + b2[1] + ". A SyntaxError miatt a gép egyszerre csak az elsőt jelzi: javíts, futtass újra." }; },
+          return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + esc(o) + "</pre>De két hiba is van benne. Javítsd ki mindkettőt!", starter: J(b1[0], b2[0]) + "\n", code: J('print("' + m1 + '")', 'print("' + m2 + '")'), tests: exact(o), ex: "Az 1. sorban " + b1[1] + ", a 2. sorban " + b2[1] + ". A gép egyszerre csak egy hibát jelez: javíts, futtass újra." }; },
         () => { const a = distinct(() => rnd(10, 59), 3); return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>" + a.join(":") + "</pre>De mást ír ki. Javítsd ki úgy, hogy egy print maradjon!", starter: "print(" + a.join(", ") + ")\n", code: "print(" + a.join(", ") + ', sep=":")', tests: exact(a.join(":")), must: [[nPrint(1), "egy print maradjon."]], ex: "Alapból szóköz kerül az értékek közé; a sep=\":\" kettőspontot tesz." }; },
         () => { const n = pick(NEV); return { q: "Ennek a programnak ezt kellene kiírnia:<pre class='code'>It's " + n + "!</pre>De hibás. Javítsd ki!", starter: "print('It's " + n + "!')\n", code: "print(\"It's " + n + "!\")", tests: exact("It's " + n + "!"), ex: "Az aposztróf lezárja a szimpla idézőjeles szöveget. Dupla idézőjellel jó." }; }
       ]
@@ -1387,7 +1393,7 @@ const P = (function(){
       { cap: "Az első sor megjegyzés, mert kettőskereszttel kezdődik. A gép átugorja, nem ír ki semmit.", html: srcHtml(src, 1) + outBox("") },
       { cap: "A második sor egy print. Az idézőjelek közötti szöveget kiírja a képernyőre, az idézőjel nélkül.", html: srcHtml(src, 2) + outBox("Szia, világ!") },
       { cap: "A harmadik sor is print: új sorba ír, az előző alá.", html: srcHtml(src, 3) + outBox("Szia, világ!\nEz a második sor.") },
-      { cap: "A negyedikben nincs idézőjel: ez számolás. A gép kiszámolja a kettő meg hármat, és az eredményt írja ki: 5.", html: srcHtml(src, 4) + outBox("Szia, világ!\nEz a második sor.\n5") },
+      { cap: "A negyedikben nincs idézőjel: ez számolás. A gép kiszámolja, mennyi kettő meg három, és az eredményt írja ki: 5.", html: srcHtml(src, 4) + outBox("Szia, világ!\nEz a második sor.\n5") },
       { cap: "Elfogytak a sorok, a program véget ért. A kimenet három sor, mert három print volt.", html: srcHtml(src, 0) + outBox("Szia, világ!\nEz a második sor.\n5") }
     ];
   }

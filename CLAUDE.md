@@ -297,6 +297,9 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
 - **Ellenőrizve:** `py-check.js --verify 40` (1.: 2517 futás, 2.: 3413 futás, valódi CPython 3.13, mind jó: a „Mit ír ki?” egyezik,
   a hibák tényleg azok, a minták átmennek, a hibás kiinduló kódok nem, a diák példái futnak); `lesson-test.js` 40-nel, **a
   böngészőben futó Pyodide-dal** (a felhős gép a jsDelivr-t nem éri el: `KOVRAT_PYODIDE` helyi npm-csomagból szolgálja ki).
+- **Lektori kör (2026-11-01):** egy friss szemű lektor 27 pontot talált (névelő és toldalék szám vagy név után, pl. „2027-ben”,
+  „5-ször”, „az Anna”; félrevezető hibatippek; a puszta `print` nem hiba; az IndentationError és a SyntaxError ne legyen egymás
+  rossz válasza); mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
