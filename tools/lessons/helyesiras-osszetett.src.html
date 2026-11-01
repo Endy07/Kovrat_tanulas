@@ -1,0 +1,262 @@
+<!--@HEAD-->
+<title>Összetett szavak és számok</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.nb{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#nbi{font-family:var(--mono);font-size:1.2rem;width:9em;padding:8px 10px;border-radius:10px;border:1.5px solid #3A4656;background:#0A0E13;color:#DCE3EC}
+.nb label{display:flex;gap:6px;align-items:center;color:#8C99AA;font-size:.95rem}
+.nbo{font-family:var(--body);font-weight:700;font-size:clamp(1.15rem,5.5vw,1.7rem);color:#fff;overflow-wrap:anywhere;min-height:1.5em}
+.nbo u{color:#FFB01F;text-decoration-thickness:3px;text-underline-offset:5px}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 8. lecke</span>
+  <h1>Összetett szavak és számok: egybe, külön vagy kötőjel?</h1>
+  <p class="lead"><b>Gyors írás</b> vagy <b>gyorsírás</b>? <b>Labdarúgó-bajnokság</b> vagy <b>labdarúgóbajnokság</b>? <b>Kétezer-egy</b> vagy <b>kétezeregy</b>? Megtanulod, mikor lesz két szóból egy, mikor marad kettő, és mikor kell kötőjel.</p>
+  <div class="panel">
+    <span class="eyebrow">Számíró: írj be egy számot (1–99 999)</span>
+    <div class="nb"><input id="nbi" inputmode="numeric" value="2026" aria-label="Szám"><label><input type="checkbox" id="nby"> évszám</label></div>
+    <div class="nbo" id="nbo" aria-live="polite"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem" id="nbn"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Egybe, külön vagy kötőjel?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="gyors" aria-selected="true">gyors írás, gyorsírás</button>
+    <button class="tab" data-m="kemeny" aria-selected="false">kéményseprő</button>
+    <button class="tab" data-m="hat" aria-selected="false">6 szótag, 3 tag</button>
+    <button class="tab" data-m="szam" aria-selected="false">kétezer-egy</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. jelzős szerkezet vagy összetett szó (piros alma, gyorsírás), jelöletlen kapcsolat (kéményseprő), névutó (ház mellett, de délután) · 2. kötőjel: mellérendelés (ide-oda), tulajdonnév (Petőfi-szobor), betűszó (tv-műsor), anyagnév, számnév + képző (kétéves), színnév · 3. a hat szótag, három tag szabály (labdarúgó-bajnokság), számok kétezer fölött, évszám. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj: labdarúgó-bajnokság, délután, kétgólos, pálya mellett, bableves, rántott hús, tv-műsor, Petőfi-szobor, földalatti, hazafelé.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Új jelentés: egybe</span><span>gyorsírás, jelzőlámpa, sokszög, szárazföld, forgószél, ezermester</span></div>
+    <div class="trick"><span class="t">Elhagyott rag: egybe</span><span>kéményseprő (kéményt seprő), napsugár (a nap sugara), iskolaudvar, hátúszó</span></div>
+    <div class="trick"><span class="t">Kötőjel</span><span>ide-oda, süt-főz · Petőfi-szobor, Duna-part · tv-műsor, EU-tag · labdarúgó-bajnokság (6 szótag fölött, 3 tag)</span></div>
+    <div class="trick"><span class="t">Számok</span><span>Kétezerig egybe: ezerkilencszázkilencvenkilenc · fölötte kötőjel: kétezer-egy · de évszám egybe: kétezerhuszonhat</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 94–95. pont (az összetétel, jelentésváltozás), 101–103. pont (mellérendelés, ikerszók), 105–111. pont (jelzős, jelöletlen és jelentéstömörítő kapcsolatok, névutók), 112–113. pont (tulajdonnév, betűszó + köznév), 116–117., 119. pont (anyagnév, számnév + képző, színnevek), 139. pont (hat szótag), 291. pont (számok) · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, rnd, esc } = K;
+
+  /* ---------- Számok betűvel (AkH 291.): kétezerig egybe, fölötte a hármas csoportok közé kötőjel; évszám egybe ---------- */
+  const U = ["", "egy", "kettő", "három", "négy", "öt", "hat", "hét", "nyolc", "kilenc"], U2 = ["", "egy", "két", "három", "négy", "öt", "hat", "hét", "nyolc", "kilenc"];
+  const T0 = ["", "tíz", "húsz", "harminc", "negyven", "ötven", "hatvan", "hetven", "nyolcvan", "kilencven"], TP = ["", "tizen", "huszon", "harminc", "negyven", "ötven", "hatvan", "hetven", "nyolcvan", "kilencven"];
+  function lo(n, end){   // 0–999; end: a szám vége (ott „kettő”, máshol „két”)
+    const h = Math.floor(n / 100), r = n % 100, t = Math.floor(r / 10), u = r % 10;
+    let s = h ? (h === 1 ? "száz" : U2[h] + "száz") : "";
+    if (r) s += u ? TP[t] + (end ? U[u] : U2[u]) : T0[t];
+    return s;
+  }
+  function parts(n, year){   // [ezres rész, többi]; a kötőjel helye
+    const th = Math.floor(n / 1000), rest = n % 1000;
+    const a = th === 0 ? "" : th === 1 ? "ezer" : lo(th, false) + "ezer", b = lo(rest, true);
+    return { a, b, hy: !!(a && b && n > 2000 && !year) };
+  }
+  const num = (n, year) => { const p = parts(n, year); return p.a + (p.hy ? "-" : "") + p.b; };
+
+  function drawNb(){
+    const n = Number(String($("#nbi").value).replace(/\s/g, "")), y = $("#nby").checked;
+    if (!Number.isInteger(n) || n < 1 || n > 99999){ $("#nbo").textContent = "1 és 99 999 közötti egész számot írj!"; $("#nbn").textContent = ""; return; }
+    const p = parts(n, y);
+    $("#nbo").innerHTML = esc(p.a) + (p.hy ? "<u>-</u>" : "") + esc(p.b);
+    $("#nbn").textContent = n <= 2000 ? "Kétezerig egybeírjuk." : y ? "Évszám: kétezer fölött is egybe." : p.hy ? "Kétezer fölött az ezres után kötőjel." : "Kerek ezres: egybe.";
+  }
+  $("#nbi").addEventListener("input", drawNb); $("#nby").addEventListener("change", drawNb);
+  drawNb();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    gyors: () => [
+      { cap: "Gyors írás: írás, ami gyors. A két szó jelentése együtt pontosan ennyi. Külön írjuk.", html: W("gyors írás", "jelző + főnév: külön") },
+      { cap: "Gyorsírás: egy különleges írásfajta, rövidítő jelekkel. Új jelentés lett belőle, ezért egybe.", html: W("gyorsírás", "új jelentés: egybe") },
+      { cap: "Ugyanígy: jelző lámpa (bármilyen lámpa, ami jelez), de jelzőlámpa (a közlekedési lámpa). Sok szög, de sokszög (a síkidom).", html: W("jelzőlámpa · sokszög · szárazföld") },
+      { cap: "A piros alma, a jobb kéz, az általános iskola: ezek csak azt jelentik, amit a két szó. Külön.", html: W("piros alma · jobb kéz · általános iskola", "külön") }
+    ],
+    kemeny: () => [
+      { cap: "Kéményt seprő ember. Itt van rag: kéményt. Ilyenkor külön írjuk.", html: W("kémény<u>t</u> seprő", "raggal: külön") },
+      { cap: "Ha a rag elmarad, a két szó egybeolvad: kéményseprő.", html: W("kéményseprő", "rag nélkül: egybe") },
+      { cap: "Ugyanígy: a nap sugara, de napsugár. Az iskolának az udvara, de iskolaudvar. Háton úszó, de hátúszó.", html: W("napsugár · iskolaudvar · hátúszó") },
+      { cap: "És ha a kapcsolatot csak hosszabban lehet elmondani: bableves (babból főzött leves), motorcsónak, hófehér. Egybe.", html: W("bableves · motorcsónak · hófehér", "jelentéstömörítés: egybe") }
+    ],
+    hat: () => [
+      { cap: "Labdarúgó-bajnokság. Három szóból áll: labda, rúgó, bajnokság.", html: W("labda + rúgó + bajnokság") },
+      { cap: "Számoljuk meg a szótagokat: lab-da-rú-gó-baj-nok-ság. Hét szótag.", html: W("lab-da-rú-gó-baj-nok-ság = 7") },
+      { cap: "A szabály: ha legalább három szóból áll, és hatnál több szótagú, a két fő rész közé kötőjel kerül.", html: W("labdarúgó<u>-</u>bajnokság", "3 tag, 6 szótag fölött: kötőjel") },
+      { cap: "Hat szótagig egybe: gép-ko-csi-ve-ze-tő, hat szótag. Gépkocsivezető.", html: W("gépkocsivezető (6) · tűzoltólaktanya (6)", "6 szótagig: egybe") },
+      { cap: "Két szóból álló szónál nincs kötőjel, akármilyen hosszú: szoftverfejlesztő, számítógép.", html: W("szoftverfejlesztő · számítógép", "csak 2 tag: egybe") }
+    ],
+    szam: () => [
+      { cap: "Kétezerig minden számot egybeírunk: ezerkilencszázkilencvenkilenc.", html: W("ezerkilencszázkilencvenkilenc", "kétezerig: egybe") },
+      { cap: "Kétezer fölött, ha az ezres után még folytatódik, kötőjel kerül az ezres után: kétezer-egy.", html: W("kétezer<u>-</u>egy · háromezer<u>-</u>négyszázötven") },
+      { cap: "A kerek ezres egybe marad: kétezer, tízezer, negyvenezer.", html: W("kétezer · tízezer · negyvenezer") },
+      { cap: "Kivétel az évszám: azt kétezer fölött is egybeírjuk. Kétezerhuszonhat.", html: W("kétezerhuszonhat (évszám)", "évszám: egybe") },
+      { cap: "És a végén: kettő, de a szám belsejében két. Tizenkettő, de kétszáz, kétezer.", html: W("tizenkettő · kétszáz · kétezer") }
+    ]
+  };
+  const MET = { gyors: "gyors írás, gyorsírás", kemeny: "kéményseprő", hat: "6 szótag, 3 tag", szam: "kétezer-egy" };
+  const PB = { m: "gyors" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mikor lesz két szóból egy?", h:
+      "<p>Két szó állhat egymás mellett <b>külön</b> (piros alma), összeolvadhat <b>egy szóvá</b> (gyorsírás), vagy <b>kötőjellel</b> kapcsolódhat (ide-oda).</p>" +
+      "<p>Három fő ok, amiért egybeírjuk: <b>1.</b> új jelentés lett belőle; <b>2.</b> elmaradt a rag (kéményt seprő → kéményseprő); <b>3.</b> a hagyomány (aranygyűrű, ötéves).</p>" },
+    { k: "Jelentés", t: "Új jelentés: egybe", h:
+      tbl(["külön (amit a két szó mond)", "egybe (új jelentés)"], [["gyors írás", "<b>gyorsírás</b> (írásfajta)"], ["jelző lámpa", "<b>jelzőlámpa</b> (közlekedési lámpa)"], ["sok szög", "<b>sokszög</b> (síkidom)"], ["a földön futó", "<b>földönfutó</b> (hajléktalan)"], ["meleg ágy", "<b>melegágy</b> (a kertészetben)"]]) +
+      "<p>A jelző és a főnév általában külön: <b>piros alma, jobb kéz, általános iskola, érett gyümölcs</b>.</p>" + playBtn("gyors"), init: playInit },
+    { k: "Rag nélkül", t: "Ha elmarad a rag: egybe", h:
+      tbl(["raggal: külön", "rag nélkül: egybe"], [["kéményt seprő", "<b>kéményseprő</b>"], ["a nap sugara", "<b>napsugár</b>"], ["autót mentő", "<b>autómentő</b>"], ["háton úszó", "<b>hátúszó</b>"], ["az iskolának az udvara", "<b>iskolaudvar</b>"], ["félig kész", "<b>félkész</b>"]]) +
+      "<p>Ha az összetételt csak hosszabban tudjuk elmagyarázni, az is egybe: <b>bableves, motorcsónak, emlékkönyv, csigalépcső, hófehér</b>.</p>" + playBtn("kemeny"), init: playInit },
+    { k: "Névutó", t: "Névutó: külön, de vannak kivételek", h:
+      "<p>A névutó (mellett, alatt, előtt, nélkül, szerint) külön szó: <b>ház mellett, föld alatt, idő előtt, munka nélkül, szó szerint</b>. Az -i képzővel is: <b>föld alatti, idő előtti</b>.</p>" +
+      "<p>Ha új jelentése lett, egybe: <b>délelőtt, délután, hazafelé, visszafelé, napközben, rendszerint, földalatti</b> (a metró), <b>munkanélküli</b> (főnév).</p>" },
+    { k: "Mellérendelés", t: "Ide-oda, süt-főz: kötőjel", h:
+      "<p>Ha két egyenrangú szó együtt mást jelent, és mindkettő toldalékot kap, kötőjel kell: <b>ide-oda, süt-főz, sütnek-főznek, ég-föld, keze-lába</b>.</p>" +
+      "<p>Ikerszók: <b>irul-pirul, dimbes-dombos, hébe-hóba</b>. De ha csak a végük kap toldalékot, egybe: <b>csigabiga, limlom, terefere, hadsereg, búbánat</b>.</p>" },
+    { k: "Tulajdonnév", t: "Tulajdonnév és betűszó + köznév: kötőjel", h:
+      "<p class='eq'>Petőfi-szobor · Budapest-térkép · Afrika-kutató · Duna-part</p>" +
+      "<p class='eq'>tv-műsor · EU-tagság · USB-kábel</p>" +
+      "<p>A tulajdonnév nagybetűs marad, a köznév kicsi: <b>Petőfi-szobor</b>.</p>" },
+    { k: "Hagyomány", t: "Anyagnév, számnév, színnév: egybe", h:
+      tbl(["fajta", "egybe", "de"], [["anyagnév + főnév", "aranygyűrű, kőfal, gyapjúsál, faház", "bőr pénztárca (a pénztárca összetett)"], ["számnév + -s, -ú, -i, -nyi", "kétéves, háromlábú, ötágú, többoldalas", "két év (képző nélkül)"], ["színnév", "sötétzöld, világoskék, halványlila", "–"]]) },
+    { k: "6 szótag", t: "Hosszú összetett szó: a hat szótag szabály", h:
+      "<p>Ha egy összetett szó <b>legalább három szóból</b> áll, és <b>hatnál több szótagú</b>, a két fő rész közé kötőjel kerülhet:</p>" +
+      tbl(["hat szótagig: egybe", "hat fölött: kötőjel"], [["gépkocsivezető (6)", "<b>labdarúgó-bajnokság</b> (7)"], ["tűzoltólaktanya (6)", "<b>számítógép-hálózat</b> (7)"], ["cseppkőbarlang (4)", "<b>munkaerő-nyilvántartás</b> (8)"]]) +
+      "<p>Ha csak két szóból áll, akkor sincs kötőjel, ha hosszú: <b>szoftverfejlesztő</b>.</p>" + playBtn("hat"), init: playInit },
+    { k: "Számok", t: "Számok betűvel", h:
+      tbl(["szám", "betűvel", "miért"], [["1999", "ezerkilencszázkilencvenkilenc", "kétezerig egybe"], ["2000", "kétezer", "kerek: egybe"], ["2001", "kétezer-egy", "kétezer fölött kötőjel"], ["3450", "háromezer-négyszázötven", "az ezres után kötőjel"], ["2026 (évszám)", "kétezerhuszonhat", "évszám: egybe"]]) +
+      "<p>A szám végén <b>kettő</b>, belül <b>két</b>: tizenkettő, de kétszáz, kétezer. Próbáld ki fent a számíróval!</p>" + playBtn("szam"), init: playInit },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>dél után, haza felé</b> → délután, hazafelé.</div>" +
+      "<div class='mistake'><b>Petőfi szobor, tv műsor</b> → Petőfi-szobor, tv-műsor.</div>" +
+      "<div class='mistake'><b>két éves, sötét zöld</b> → kétéves, sötétzöld.</div>" +
+      "<div class='mistake'><b>pirosalma, általánosiskola</b> → piros alma, általános iskola.</div>" +
+      "<div class='mistake'><b>labdarúgóbajnokság</b> → labdarúgó-bajnokság.</div>" +
+      "<div class='mistake'><b>kétezeregy forint</b> → kétezer-egy forint.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mást jelent együtt?</span><span>Ha igen: egybe (gyorsírás). Ha csak a kettő együtt: külön (gyors írás).</span></div>" +
+      "<div class='trick'><span class='t'>Odatehetsz ragot?</span><span>kéményt seprő → külön; kéményseprő → egybe.</span></div>" +
+      "<div class='trick'><span class='t'>Név vagy rövidítés?</span><span>Kötőjel: Petőfi-szobor, tv-műsor.</span></div>" +
+      "<div class='trick'><span class='t'>Számold a szótagot</span><span>3 tag és 6 fölött: kötőjel (labdarúgó-bajnokság).</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const C = [   // [leírás, jó, [rossz], magyarázat]
+    [["gyors + írás (írásfajta, rövidítő jelekkel)", "gyorsírás", ["gyors írás", "gyors-írás"], "Új jelentés: egybe (AkH 95.)."], ["gyors + írás (az írás gyors)", "gyors írás", ["gyorsírás", "gyors-írás"], "Csak a két szó jelentése: külön."],
+     ["piros + alma", "piros alma", ["pirosalma", "piros-alma"], "Jelző + főnév: külön (AkH 105.)."], ["általános + iskola", "általános iskola", ["általánosiskola", "általános-iskola"], "Jelző + főnév: külön."],
+     ["kémény + seprő (rag nélkül)", "kéményseprő", ["kémény seprő", "kémény-seprő"], "Elmaradt a rag (kéményt seprő): egybe (AkH 109.)."], ["nap + sugár", "napsugár", ["nap sugár", "nap-sugár"], "a nap sugara → napsugár: egybe."],
+     ["iskola + udvar", "iskolaudvar", ["iskola udvar", "iskola-udvar"], "Rag nélkül: egybe (AkH 110.)."], ["bab + leves", "bableves", ["bab leves", "bab-leves"], "Jelentéstömörítő összetétel: egybe (AkH 111.)."],
+     ["dél + után (napszak)", "délután", ["dél után", "dél-után"], "Új jelentés: egybe (AkH 108.)."], ["ház + mellett", "ház mellett", ["házmellett", "ház-mellett"], "Névutó: külön (AkH 108.)."],
+     ["haza + felé", "hazafelé", ["haza felé", "haza-felé"], "Egybe (AkH 108.)."], ["munka + nélkül", "munka nélkül", ["munkanélkül", "munka-nélkül"], "Névutó: külön."],
+     ["motor + csónak", "motorcsónak", ["motor csónak", "motor-csónak"], "Jelentéstömörítő összetétel: egybe."]],
+    [["ide + oda", "ide-oda", ["ideoda", "ide oda"], "Mellérendelés, mindkettő toldalékolható: kötőjel (AkH 101.)."], ["süt + főz", "süt-főz", ["sütfőz", "süt főz"], "Mellérendelés: kötőjel."],
+     ["irul + pirul", "irul-pirul", ["irulpirul", "irul pirul"], "Ikerszó, mindkét tag toldalékolható: kötőjel (AkH 103.)."], ["csiga + biga", "csigabiga", ["csiga-biga", "csiga biga"], "Ikerszó, csak a végén toldalékolható: egybe (AkH 103.)."],
+     ["Petőfi + szobor", "Petőfi-szobor", ["Petőfi szobor", "Petőfiszobor"], "Tulajdonnév + köznév: kötőjel (AkH 112.)."], ["Duna + part", "Duna-part", ["Duna part", "Dunapart"], "Tulajdonnév + köznév: kötőjel."],
+     ["tv + műsor", "tv-műsor", ["tv műsor", "tvműsor"], "Betűszó + köznév: kötőjel (AkH 113.)."], ["EU + tagság", "EU-tagság", ["EU tagság", "EUtagság"], "Betűszó + köznév: kötőjel."],
+     ["arany + gyűrű", "aranygyűrű", ["arany gyűrű", "arany-gyűrű"], "Anyagnév + egyszerű főnév: egybe (AkH 116.)."], ["kő + fal", "kőfal", ["kő fal", "kő-fal"], "Anyagnév: egybe."],
+     ["bőr + pénztárca", "bőr pénztárca", ["bőrpénztárca", "bőr-pénztárca"], "A pénztárca összetett szó, ezért az anyagnév külön (AkH 116.)."], ["két + éves", "kétéves", ["két éves", "két-éves"], "Számnév + -s képzős szó: egybe (AkH 117.)."],
+     ["három + lábú", "háromlábú", ["három lábú", "három-lábú"], "Számnév + -ú: egybe."], ["sötét + zöld", "sötétzöld", ["sötét zöld", "sötét-zöld"], "Színnév: egybe (AkH 119.)."],
+     ["világos + kék", "világoskék", ["világos kék", "világos-kék"], "Színnév: egybe."]],
+    [["labda + rúgó + bajnokság (7 szótag)", "labdarúgó-bajnokság", ["labdarúgóbajnokság", "labdarúgó bajnokság"], "3 tag, 6 szótag fölött: kötőjel a fő határon (AkH 139.)."],
+     ["gép + kocsi + vezető (6 szótag)", "gépkocsivezető", ["gépkocsi-vezető", "gépkocsi vezető"], "Hat szótagig egybe (AkH 139.)."], ["tűz + oltó + laktanya (6 szótag)", "tűzoltólaktanya", ["tűzoltó-laktanya", "tűzoltó laktanya"], "Hat szótagig egybe."],
+     ["számító + gép + hálózat (7 szótag)", "számítógép-hálózat", ["számítógéphálózat", "számítógép hálózat"], "3 tag, 7 szótag: kötőjel."], ["munka + erő + nyilvántartás (8 szótag)", "munkaerő-nyilvántartás", ["munkaerőnyilvántartás", "munkaerő nyilvántartás"], "3 tag, 8 szótag: kötőjel."],
+     ["szoftver + fejlesztő", "szoftverfejlesztő", ["szoftver-fejlesztő", "szoftver fejlesztő"], "Csak két tag: nincs kötőjel, egybe."], ["csepp + kő + barlang", "cseppkőbarlang", ["cseppkő-barlang", "cseppkő barlang"], "4 szótag: egybe."],
+     ["kosár + labda + edzés (6 szótag)", "kosárlabdaedzés", ["kosárlabda-edzés", "kosárlabda edzés"], "Hat szótag: még egybe."]]
+  ];
+  const S = [
+    [["A kórus egy {népdalt|nép dalt} is elénekelt.", "Összetett szó: egybe."], ["{Délután|Dél után} edzésre megyek.", "Napszak: egybe."], ["A kutya a {ház mellett|házmellett} alszik.", "Névutó: külön."],
+     ["{Hazafelé|Haza felé} megálltunk egy boltnál.", "Egybe."], ["Kérek egy {piros almát|pirosalmát}!", "Jelző + főnév: külön."], ["Az {iskolaudvaron|iskola udvaron} focizunk.", "Rag nélkül: egybe."],
+     ["A {kéményseprő|kémény seprő} szerencsét hoz.", "Egybe."], ["Ebédre {bableves|bab leves} lesz.", "Egybe."], ["Az {általános iskolában|általánosiskolában} sokat tanultam.", "Jelző + főnév: külön."],
+     ["Egy napig sem bírok {munka nélkül|munkanélkül}.", "Névutó: külön."]],
+    [["A gyerekek {ide-oda|ideoda} szaladgáltak.", "Mellérendelés: kötőjel."], ["Megnéztük a {Petőfi-szobrot|Petőfi szobrot}.", "Tulajdonnév + köznév: kötőjel."], ["Este egy jó {tv-műsort|tv műsort} láttunk.", "Betűszó + köznév: kötőjel."],
+     ["A húgom {kétéves|két éves} lett.", "Számnév + -s: egybe."], ["{Sötétzöld|Sötét zöld} pulóvert vettem.", "Színnév: egybe."], ["Anya egy {aranygyűrűt|arany gyűrűt} kapott.", "Anyagnév: egybe."],
+     ["A {Duna-parton|Duna parton} sétáltunk.", "Tulajdonnév + köznév: kötőjel."], ["Egy {háromlábú|három lábú} széken ültem.", "Számnév + -ú: egybe."], ["Kaptam egy {bőr pénztárcát|bőrpénztárcát}.", "A pénztárca összetett: az anyagnév külön."],
+     ["A csapatunk {irult-pirult|irulpirult} a dicsérettől.", "Ikerszó: kötőjel."]],
+    [["Megnyertük a {labdarúgó-bajnokságot|labdarúgóbajnokságot}.", "3 tag, 6 szótag fölött: kötőjel."], ["Az apukám {gépkocsivezető|gépkocsi-vezető}.", "6 szótag: egybe."],
+     ["Az iskola {számítógép-hálózata|számítógéphálózata} lassú.", "3 tag, 6 szótag fölött: kötőjel."], ["Szeretnék {szoftverfejlesztő|szoftver-fejlesztő} lenni.", "Csak két tag: egybe."],
+     ["A {cseppkőbarlangban|cseppkő-barlangban} hideg volt.", "Egybe."], ["A jegy {kétezer-ötszáz|kétezerötszáz} forint.", "Kétezer fölött kötőjel."], ["{Kétezerhuszonhatban|Kétezer-huszonhatban} kezdtem a technikumot.", "Évszám: egybe."],
+     ["A teremben {ezerkétszáz|ezer-kétszáz} ember fér el.", "Kétezerig egybe."]]
+  ];
+  // számok: 1. kétezerig · 2. kétezer fölött · 3. vegyes és évszám (a százas helyén nincs 1, hogy az ezeregyszáz/ezerszáz kettőssége ne zavarjon)
+  function genNum(l){
+    const h = () => pick([0, 2, 3, 4, 5, 6, 7, 8, 9]);
+    if (l === 1) return { n: 1000 + h() * 100 + rnd(1, 99), y: false };
+    if (l === 2){ const n = rnd(2, 49) * 1000 + h() * 100 + rnd(1, 99); return { n, y: false }; }
+    return pick([{ n: rnd(2001, 2099), y: true }, { n: rnd(2001, 2099), y: false }, { n: rnd(2, 9) * 1000, y: false }, { n: rnd(1201, 1999), y: false }].filter(x => Math.floor(x.n / 100) % 10 !== 1));
+  }
+  const types = [
+    { id: "hogyan", name: "Egybe, külön vagy kötőjel?", gen(l){
+      const t = pick(C[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás rész a mondatban", gen: l => H.sentFix(pick(S[l - 1])) },
+    { id: "szam", name: "Számok betűvel", gen(l){
+      let g = genNum(l); for (let i = 0; i < 20 && Math.floor(g.n / 100) % 10 === 1; i++) g = genNum(l);
+      const p = parts(g.n, g.y), good = num(g.n, g.y), joined = p.a + p.b, hyph = p.a && p.b ? p.a + "-" + p.b : null, spaced = p.a && p.b ? p.a + " " + p.b : null;
+      const others = p.b ? [joined, hyph, spaced].filter(x => x && x !== good) : [p.a.replace(/ezer$/, " ezer"), p.a.replace(/ezer$/, "-ezer")];
+      const why = g.n <= 2000 ? "Kétezerig egybe." : g.y ? "Évszám: kétezer fölött is egybe." : p.hy ? "Kétezer fölött az ezres után kötőjel." : "Kerek ezres: egybe.";
+      return H.choiceTask("Írd betűvel: <span class='num'>" + g.n + "</span>" + (g.y ? " (évszám)" : ""), good, others.slice(0, 2), "<p><b>" + esc(good) + "</b>. " + why + "</p>", "Nem ez. " + why);
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-ossz", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.ossz, player: pb, print: "tollbamondasok.html#ossz" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Szabály</th><th>Példa</th></tr>" + [
+    ["jelző + főnév: külön", "piros alma, általános iskola, jobb kéz"], ["új jelentés: egybe", "gyorsírás, jelzőlámpa, sokszög, szárazföld"],
+    ["elmaradt rag: egybe", "kéményseprő, napsugár, iskolaudvar, hátúszó"], ["jelentéstömörítés: egybe", "bableves, motorcsónak, hófehér"],
+    ["névutó: külön", "ház mellett, munka nélkül, föld alatti"], ["… de egybe", "délután, délelőtt, hazafelé, napközben, földalatti (metró)"],
+    ["mellérendelés, ikerszó: kötőjel", "ide-oda, süt-főz, irul-pirul · de: csigabiga, hadsereg"], ["tulajdonnév, betűszó + köznév: kötőjel", "Petőfi-szobor, Duna-part, tv-műsor, EU-tagság"],
+    ["anyagnév, számnév + képző, színnév: egybe", "aranygyűrű, kétéves, sötétzöld"], ["3 tag, 6 szótag fölött: kötőjel", "labdarúgó-bajnokság · de: gépkocsivezető"],
+    ["számok: kétezerig egybe, fölötte kötőjel", "ezerkilencszáz · kétezer-egy · évszám: kétezerhuszonhat"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

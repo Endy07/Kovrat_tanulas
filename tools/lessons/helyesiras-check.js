@@ -70,6 +70,11 @@ eq(sum7("A busz megmegállt.", "A busz meg-megállt."), ["sub:megmegállt>meg-me
 eq(sum7("A busz meg megállt.", "A busz meg-megállt."), ["egybe:meg megállt>meg-megállt:egybe+kotojel"], "align meg megállt");
 eq(sum7("Nemtudom, hol van.", "Nem tudom, hol van."), ["kulon:Nemtudom>Nem tudom:kulon"], "align nemtudom");
 
+// összetett szavak (8. lecke): AkH 108., 112–113.
+eq(sum7("Dél után edzés volt.", "Délután edzés volt."), ["egybe:Dél után>Délután:egybe"], "align dél után");
+eq(sum7("Láttuk a Petőfi szobrot.", "Láttuk a Petőfi-szobrot."), ["egybe:Petőfi szobrot>Petőfi-szobrot:egybe+kotojel"], "align Petőfi szobrot");
+eq(sum7("A ház mellet.", "A ház mellett."), ["sub:mellet>mellett:kettoz"], "align mellet");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");
