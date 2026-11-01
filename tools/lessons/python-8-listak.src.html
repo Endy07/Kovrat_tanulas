@@ -1,0 +1,383 @@
+<!--@HEAD-->
+<title>Python 8: listák</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-vars{padding:8px 12px;font-size:.82rem;color:#9da5b4;line-height:1.6}
+.vs-vars b{color:#9cdcfe;font-weight:400}
+.vs-vars i{color:#b5cea8;font-style:normal}
+.vs-vars .sub{padding-left:1.4em}
+.lst{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--mono);margin:8px 0}
+.lst span{display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--line);border-radius:8px;padding:4px 8px;min-width:2.6em}
+.lst small{font-size:.7rem;color:var(--muted)}
+.lst span.on{border-color:var(--led);background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.lst span.ok{border-color:var(--ok)}
+.pb-stage .lst small{color:#8C99AA}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 8. lecke</span>
+  <h1>Listák</h1>
+  <p class="lead">Eddig egy változóban egy érték volt. A <b>lista</b> sok értéket tárol egy névvel, sorban: <code>jegyek = [5, 4, 3, 5]</code>. Minden elemnek van egy sorszáma, az <b>index</b>, és 0-tól indul. A listán for ciklussal végig lehet menni, és így működnek a programozási tételek: összegzés, megszámlálás, maximum, eldöntés, kiválogatás.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írd át a lista elemeit, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> a <a href="python-7-for.html">7. lecke</a> (for, range) és az <a href="python-5-elagazas.html">5.</a> (if). <b>Ebben a leckében:</b> lista létrehozása, index (és negatív index), <code>len</code>, <code>append</code>, bejárás <code>for</code>-ral, <code>sum</code>, <code>max</code>, <code>min</code>, <code>in</code>, és a tételek Pythonban. A <a href="programozasi-tetelek.html">Programozási tételek</a> lecke ugyanezt pszeudokóddal mutatja.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. Írd át a lista elemeit, és nézd meg, mi változik!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="index" aria-selected="true">Az index</button>
+    <button class="tab" data-m="max" aria-selected="false">Maximumkiválasztás</button>
+    <button class="tab" data-m="valogat" aria-selected="false">Kiválogatás</button>
+    <button class="tab" data-m="vs" aria-selected="false">A lista a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. Az „Írd meg!” feladatokban a számokat így kérd be: előbb a darabszámot, aztán egyenként a számokat, és tedd őket listába (<code>append</code>). A gép több bemenettel lefuttatja a programodat. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Index 0-tól</span><span>Az első elem <code>lista[0]</code>, az utolsó <code>lista[-1]</code>, vagyis <code>lista[len(lista) - 1]</code>.</span></div>
+    <div class="trick"><span class="t">append</span><span><code>lista.append(x)</code> a végére tesz egy elemet. <b>Nem</b> kell elé értékadás!</span></div>
+    <div class="trick"><span class="t">Bejárás</span><span>Az elemek kellenek: <code>for x in lista</code>. Az index is kell: <code>for i in range(len(lista))</code>.</span></div>
+    <div class="trick"><span class="t">Maximum</span><span>Kezdőérték a lista első eleme (nem 0!), aztán minden elemmel összeveted.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-7-for.html">← 7. lecke: for</a>
+    <a class="btn" href="programozasi-tetelek.html">Programozási tételek</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\s==\s/g, " egyenlő-e "], [/\+=/g, " plusz egyenlő "], [/\s%\s/g, " maradéka "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    const APP = has(/\.append\s*\(/, "a számokat append-del tedd a listába.");
+    const FOR = has(/\bfor\b/, "használj for ciklust.");
+    const L = a => "[" + a.join(", ") + "]";
+    const Lq = a => "[" + a.map(x => "'" + x + "'").join(", ") + "]";
+    const sum = a => a.reduce((p, q) => p + q, 0);
+    const nums = (n, lo, hi) => Array.from({ length: n }, () => rnd(lo, hi));
+    const distinct = (n, lo, hi) => shuffle(Array.from({ length: hi - lo + 1 }, (_, k) => lo + k)).slice(0, n);
+    const NEV = ["Anna", "Bence", "Lili", "Máté", "Réka", "Dani", "Petra", "Zoli"];
+    const GYUM = ["alma", "körte", "szilva", "barack", "szőlő", "dinnye"];
+    // a bekérés váza: darabszám, aztán a számok listába
+    const BEKER = ['n = int(input("Hány szám? "))', "szamok = []", "for i in range(n):", I('szamok.append(int(input("Szám: ")))')];
+    const ins = a => [S(a.length)].concat(a.map(S));
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("jegyek = [5, 4, 3, 5, 4]", "print(jegyek)", "print(f\"Az első jegy: {jegyek[0]}\")", "print(f\"Jegyek száma: {len(jegyek)}\")", "print(f\"Átlag: {sum(jegyek) / len(jegyek)}\")") },
+      letrehoz: { code: J("szamok = [3, 8, 1, 6]", 'nevek = ["Anna", "Bence", "Lili"]', "ures = []", "print(szamok)", "print(nevek)", "print(len(szamok), len(nevek), len(ures))") },
+      index: { code: J('gyumolcs = ["alma", "körte", "szilva", "barack"]', "print(gyumolcs[0])", "print(gyumolcs[2])", "print(gyumolcs[-1])", "print(gyumolcs[len(gyumolcs) - 1])") },
+      modosit: { code: J("szamok = [3, 8, 1]", "szamok[1] = 10", "print(szamok)", "szamok.append(7)", "print(szamok)", "print(len(szamok))") },
+      bejar: { code: J("jegyek = [5, 4, 3, 5]", "for j in jegyek:", I("print(j)"), "for i in range(len(jegyek)):", I('print(f"{i}. helyen: {jegyek[i]}")')) },
+      beker: { code: J(...BEKER, "print(szamok)"), ins: ["4", "12", "7", "30", "5"] },
+      fv: { code: J("szamok = [12, 7, 30, 5]", "print(sum(szamok))", "print(max(szamok))", "print(min(szamok))", "print(7 in szamok)", "print(8 in szamok)") },
+      osszegzes: { code: J("szamok = [12, 7, 30, 5]", "osszeg = 0", "for x in szamok:", I("osszeg += x"), 'print(f"Összeg: {osszeg}, átlag: {osszeg / len(szamok)}")') },
+      szamlalas: { code: J("jegyek = [5, 2, 4, 5, 3, 5, 1]", "db = 0", "for j in jegyek:", I("if j == 5:"), I(I("db += 1")), 'print(f"Ötösök száma: {db}")') },
+      maximum: { code: J("szamok = [12, 7, 30, 5]", "legnagyobb = szamok[0]", "hely = 0", "for i in range(len(szamok)):", I("if szamok[i] > legnagyobb:"), I(I("legnagyobb = szamok[i]")), I(I("hely = i")), 'print(f"A legnagyobb: {legnagyobb}, a helye (index): {hely}")') },
+      eldontes: { code: J("jegyek = [5, 4, 3, 5]", "van = False", "for j in jegyek:", I("if j == 1:"), I(I("van = True")), "if van:", I('print("Van egyes.")'), "else:", I('print("Nincs egyes.")')) },
+      valogat: { code: J("szamok = [12, 7, 30, 5, 18, 9]", "parosak = []", "for x in szamok:", I("if x % 2 == 0:"), I(I("parosak.append(x)")), 'print(f"A páros számok: {parosak}")') },
+      hibaI: { code: J("szamok = [3, 8, 1]", "print(szamok[3])"), err: "IndexError" },
+      hibaA: { code: J("szamok = [3, 8]", "szamok = szamok.append(1)", "print(szamok)") }
+    };
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const a = nums(rnd(3, 5), 1, 30), k = rnd(0, a.length - 1); return { code: J("szamok = " + L(a), "print(szamok[" + k + "])"), ans: S(a[k]), sol: "Az index 0-tól indul: szamok[" + k + "] = " + a[k] + " (a sorban ez " + C.az(k + 1) + (k + 1) + ". elem)." }; },
+        () => { const a = nums(rnd(3, 6), 1, 30); return pick([{ code: J("szamok = " + L(a), "print(len(szamok))"), ans: S(a.length), sol: "A len az elemek száma: " + a.length + "." }, { code: J("szamok = " + L(a), "print(szamok[-1])"), ans: S(a[a.length - 1]), sol: "A -1 index az utolsó elem." }]); },
+        () => { const g = shuffle(GYUM).slice(0, 3); return { code: J("gyumolcs = " + Lq(g), "for x in gyumolcs:", I("print(x)")), ans: g.join("\n"), sol: "A for sorban végigmegy az elemeken." }; }
+      ],
+      [
+        () => { const a = nums(3, 1, 9), x = rnd(10, 20); return { code: J("szamok = " + L(a), "szamok.append(" + x + ")", "print(szamok)", "print(len(szamok))"), ans: J(L(a.concat([x])), S(a.length + 1)), sol: "Az append a lista végére teszi az új elemet; így eggyel hosszabb lesz." }; },
+        () => { const a = nums(4, 1, 20); return pick([{ code: J("szamok = " + L(a), "print(sum(szamok))"), ans: S(sum(a)), sol: "A sum az elemek összege: " + a.join(" + ") + " = " + sum(a) + "." }, { code: J("szamok = " + L(a), "print(max(szamok), min(szamok))"), ans: Math.max(...a) + " " + Math.min(...a), sol: "A legnagyobb és a legkisebb elem." }]); },
+        () => { const a = nums(4, 1, 9), k = rnd(0, 3), v = rnd(10, 20); const b = a.slice(); b[k] = v; return { code: J("szamok = " + L(a), "szamok[" + k + "] = " + v, "print(szamok)"), ans: L(b), sol: "Index szerint felülírható egy elem: " + C.az(k) + k + ". indexű elem " + v + " lett." }; },
+        () => { const a = nums(4, 1, 9), x = rnd(1, 9); return { code: J("szamok = " + L(a), "print(" + x + " in szamok)"), ans: a.includes(x) ? "True" : "False", sol: "Az in megmondja, benne van-e az elem a listában." }; }
+      ],
+      [
+        () => { const a = nums(rnd(4, 6), 1, 20); const s = []; a.forEach((x, i) => { if (i % 2 === 0) s.push(x); }); return { code: J("szamok = " + L(a), "for i in range(0, len(szamok), 2):", I('print(szamok[i], end=" ")')), ans: s.join(" ") + " ", sol: "Az i értékei: 0, 2, 4…: a páros indexű elemeket írja ki." }; },
+        () => { const a = nums(rnd(5, 7), 1, 20), h = rnd(8, 14); const r = a.filter(x => x > h); return { code: J("szamok = " + L(a), "nagyok = []", "for x in szamok:", I("if x > " + h + ":"), I(I("nagyok.append(x)")), "print(nagyok)", "print(len(nagyok))"), ans: J(L(r), S(r.length)), sol: "Kiválogatás: csak a " + C.nal(h) + " nagyobb elemek kerülnek az új listába." }; },
+        () => { const a = distinct(rnd(4, 6), 1, 30); let mx = a[0], h = 0; a.forEach((x, i) => { if (x > mx){ mx = x; h = i; } }); return { code: J("szamok = " + L(a), "legnagyobb = szamok[0]", "hely = 0", "for i in range(len(szamok)):", I("if szamok[i] > legnagyobb:"), I(I("legnagyobb = szamok[i]")), I(I("hely = i")), "print(legnagyobb, hely)"), ans: mx + " " + h, sol: "Maximumkiválasztás: a legnagyobb érték " + mx + ", az indexe " + h + "." }; },
+        () => { const a = nums(4, 1, 9); return { code: J("szamok = " + L(a), "b = szamok", "b.append(0)", "print(len(szamok))"), ans: S(a.length + 1), sol: "Csapda: a b = szamok nem másol, a b ugyanarra a listára mutat. Ezért az append a szamok-ot is bővíti." }; }
+      ]
+    ];
+
+    /* ---- „Melyik elem?” (index; a py-check kiírja) ---- */
+    const IDX = [
+      [
+        () => { const g = shuffle(GYUM).slice(0, rnd(4, 5)), k = rnd(0, g.length - 1); return { code: J("gyumolcs = " + Lq(g), "print(gyumolcs[" + k + "])"), ans: g[k], sol: "Az index 0-tól indul: gyumolcs[" + k + "] = " + g[k] + "." }; }
+      ],
+      [
+        () => { const g = shuffle(GYUM).slice(0, rnd(4, 5)), k = rnd(1, g.length); return { code: J("gyumolcs = " + Lq(g), "print(gyumolcs[-" + k + "])"), ans: g[g.length - k], sol: "A negatív index hátulról számol: -1 az utolsó, -2 az utolsó előtti." }; },
+        () => { const n = shuffle(NEV).slice(0, rnd(4, 5)); return { code: J("nevek = " + Lq(n), "print(nevek[len(nevek) - 1])"), ans: n[n.length - 1], sol: "A len(nevek) - 1 az utolsó index." }; }
+      ],
+      [
+        () => { const a = distinct(5, 0, 4); return { code: J("a = " + L(a), "print(a[a[0]])"), ans: S(a[a[0]]), sol: "Belülről kifelé: a[0] = " + a[0] + ", aztán a[" + a[0] + "] = " + a[a[0]] + "." }; },
+        () => { const a = nums(5, 1, 9); return { code: J("a = " + L(a), "i = len(a) // 2", "print(a[i])"), ans: S(a[2]), sol: "len(a) = 5, 5 // 2 = 2: a középső elem." }; }
+      ]
+    ];
+
+    /* ---- „Melyik tétel?” (fogalmi kérdés) ---- */
+    const TET = ["Összegzés", "Megszámlálás", "Maximumkiválasztás", "Eldöntés", "Kiválogatás"];
+    const TETEL = [
+      [["Mennyi az osztály tanulóinak összes zsebpénze?", 0], ["Hány ötöse van Kovratnak?", 1], ["Melyik a legmagasabb hőmérséklet a héten?", 2], ["Van-e egyes a jegyek között?", 3], ["Melyik számok párosak? (egy új listába)", 4]],
+      [["Mennyi a jegyek átlaga? (Ehhez előbb az összegük kell.)", 0], ["Hány nap volt fagy (0 fok alatt)?", 1], ["Ki futotta a legrövidebb időt? (minimum is ide tartozik)", 2], ["Elérte-e valaki a 100 pontot?", 3], ["Kik a 18 évesnél idősebbek? (a nevük kell egy listában)", 4]],
+      [["Hány pontot ért el összesen a csapat a 10 fordulóban?", 0], ["Hány szó kezdődik nagybetűvel a listában?", 1], ["Melyik helyen (indexen) áll a legnagyobb szám?", 2], ["Minden jegy legalább kettes? (vagyis: van-e egyes?)", 3], ["Melyik termékek drágábbak 1000 Ft-nál? (egy új listába)", 4]]
+    ];
+
+    /* ---- „Írd meg!” ---- */
+    const WRITE = [
+      [
+        () => { const a = nums(rnd(3, 5), 1, 50); return { q: "Hozz létre egy listát ezekkel a számokkal: " + a.join(", ") + ". Írd ki f-stringgel az első és az utolsó elemét, meg a lista hosszát (az indexelést és a len()-t használd)!",
+          code: J("szamok = " + L(a), 'print(f"Első: {szamok[0]}")', 'print(f"Utolsó: {szamok[-1]}")', 'print(f"Hossz: {len(szamok)}")'), tests: [{ ins: [], exp: [a[0], a[a.length - 1], a.length] }], must: [has(/\[\s*0\s*\]/, "az első elem: szamok[0]."), has(/len\s*\(/, "a hosszat a len() adja.")], fstr: true, ex: "Az index 0-tól indul; az utolsó: szamok[-1]." }; },
+        () => ({ q: "Kérd be előbb, hány számot ad meg a felhasználó, aztán a számokat egyenként, és tedd őket egy listába (append)! A végén írd ki a listát.",
+          code: J(...BEKER, "print(szamok)"), tests: [nums(3, 1, 20), nums(5, 1, 99)].map(a => ({ ins: ins(a), exp: [{ s: L(a) }] })), must: [INP, APP, FOR], ex: "Üres lista (szamok = []), aztán a for ciklusban szamok.append(…)." }),
+        () => { const g = shuffle(GYUM).slice(0, 4); return { q: "Hozz létre egy listát ezekkel a gyümölcsökkel: " + g.join(", ") + ". Írd ki for ciklussal mindet, egymás alá!",
+          code: J("gyumolcs = " + Lq(g).replace(/'/g, '"'), "for x in gyumolcs:", I("print(x)")), tests: [{ ins: [], exact: g.join("\n") }], must: [FOR, has(/\[/, "a gyümölcsök egy listában legyenek.")], ex: "for x in gyumolcs: sorban végigmegy az elemeken." }; }
+      ],
+      [
+        () => ({ q: "Kérj be számokat (előbb a darabszámot, aztán egyenként a számokat), tedd őket listába, és írd ki f-stringgel az összegüket és az átlagukat! Használd a sum() és a len() függvényt.",
+          code: J(...BEKER, 'print(f"Összeg: {sum(szamok)}")', 'print(f"Átlag: {sum(szamok) / len(szamok)}")'), tests: [nums(3, 1, 20), nums(5, 1, 99)].map(a => ({ ins: ins(a), exp: [sum(a), sum(a) / a.length] })), must: [INP, APP, has(/sum\s*\(/, "használd a sum()-ot."), has(/len\s*\(/, "használd a len()-t.")], fstr: true, ex: "Az átlag: sum(szamok) / len(szamok)." }),
+        () => { const h = pick([5, 10, 50]); return { q: "Kérj be számokat (előbb a darabszámot, aztán egyenként), és írd ki f-stringgel, hány közülük nagyobb " + C.nal(h) + "! (Megszámlálás.)",
+          code: J(...BEKER, "db = 0", "for x in szamok:", I("if x > " + h + ":"), I(I("db += 1")), 'print(f"Darab: {db}")'), tests: [nums(4, 1, 2 * h), nums(6, 1, 2 * h)].map(a => ({ ins: ins(a), exp: [a.filter(x => x > h).length] })), must: [INP, APP, FOR], fstr: true, ex: "Számláló: db = 0, és a ciklusban if-fel db += 1." }; },
+        () => ({ q: "Kérj be számokat (előbb a darabszámot, aztán egyenként), és írd ki f-stringgel a legnagyobbat és a legkisebbet! Használd a max() és a min() függvényt.",
+          code: J(...BEKER, 'print(f"Legnagyobb: {max(szamok)}, legkisebb: {min(szamok)}")'), tests: [distinct(3, 1, 50), distinct(5, -20, 99)].map(a => ({ ins: ins(a), exp: [Math.max(...a), Math.min(...a)] })), must: [INP, APP, has(/max\s*\(/, "használd a max()-ot."), has(/min\s*\(/, "használd a min()-t.")], fstr: true, ex: "A max() és a min() egy egész listát is kaphat." })
+      ],
+      [
+        () => ({ q: "Kérj be számokat (előbb a darabszámot, aztán egyenként), és írd ki f-stringgel a legnagyobbat <b>és az indexét</b>! Most ne a max()-ot használd, hanem a maximumkiválasztás tételét (kezdőérték: az első elem).",
+          code: J(...BEKER, "legnagyobb = szamok[0]", "hely = 0", "for i in range(len(szamok)):", I("if szamok[i] > legnagyobb:"), I(I("legnagyobb = szamok[i]")), I(I("hely = i")), 'print(f"Legnagyobb: {legnagyobb}, index: {hely}")'),
+          tests: [distinct(4, 1, 50), distinct(6, -30, 99)].map(a => { const mx = Math.max(...a); return { ins: ins(a), exp: [mx, a.indexOf(mx)] }; }), must: [INP, APP, FOR], mustNot: [has(/max\s*\(/, "most a tétellel dolgozz, ne a max()-szal.")], fstr: true, ex: "Kezdőérték az első elem (nem 0, mert a számok negatívak is lehetnek); ha nagyobbat találsz, megjegyzed az értékét és az indexét." }),
+        () => ({ q: "Kérj be számokat (előbb a darabszámot, aztán egyenként), és válogasd ki a páros számokat egy új listába! Írd ki az új listát.",
+          code: J(...BEKER, "parosak = []", "for x in szamok:", I("if x % 2 == 0:"), I(I("parosak.append(x)")), "print(parosak)"), tests: [nums(5, 1, 30), nums(6, 1, 99)].map(a => ({ ins: ins(a), exp: [{ s: L(a.filter(x => x % 2 === 0)) }] })), must: [INP, APP, FOR], ex: "Kiválogatás: üres új lista, és a feltételnek megfelelő elemeket append-del beleteszed." }),
+        () => { const k = pick([1, 5]); return { q: "Kérd be a jegyeket (előbb a darabszámot, aztán egyenként), és döntsd el, van-e közöttük " + (k === 1 ? "egyes" : "ötös") + "! Írd ki: <b>Van</b> vagy <b>Nincs</b>. (Eldöntés; használhatod az in-t is.)",
+          code: J(...BEKER, "if " + k + " in szamok:", I('print("Van")'), "else:", I('print("Nincs")')), tests: (() => { const a = nums(4, 2, 4), b = nums(4, 2, 4); b[rnd(0, 3)] = k; return [{ ins: ins(a), exp: [{ s: "Nincs" }], not: ["Van"] }, { ins: ins(b), exp: [{ s: "Van" }], not: ["Nincs"] }]; })(), must: [INP, APP], ex: "Eldöntés: " + k + " in szamok, vagy egy van = False változó, amelyet a ciklus True-ra állít, ha megtalálja." }; }
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const a = nums(3, 1, 9); return pick([
+          { code: J("szamok = " + L(a), "print(szamok[3])"), err: "IndexError", fix: J("szamok = " + L(a), "print(szamok[2])"), sol: "Három elem van, az indexek 0, 1, 2. A 3-as index már nincs." },
+          { code: J("szamok = " + L(a), "print(szamok[-1])"), err: "", sol: "Hibátlan: az utolsó elem." },
+          { code: J("szamok = " + L(a), "print(szamok[len(szamok)])"), err: "IndexError", fix: J("szamok = " + L(a), "print(szamok[len(szamok) - 1])"), sol: "Az utolsó index len(szamok) - 1." }]); },
+        () => { const a = nums(3, 1, 9); return pick([
+          { code: J("szamok = " + L(a), "szamok.append(4)", "print(szamok)"), err: "", sol: "Hibátlan." },
+          { code: J("szamok = " + L(a), "szamok = szamok + 4"), err: "TypeError", fix: J("szamok = " + L(a), "szamok.append(4)"), sol: "Listához számot nem lehet +-szal adni: append kell." }]); }
+      ],
+      [
+        () => { const a = nums(3, 1, 9); return pick([
+          { code: J("szamok = " + L(a), "szamok = szamok.append(5)", "szamok.append(6)"), err: "AttributeError", fix: J("szamok = " + L(a), "szamok.append(5)", "szamok.append(6)"), sol: "Az append nem ad vissza semmit (None). A szamok = szamok.append(5) után a szamok értéke None, és annak nincs append-je." },
+          { code: J("szamok = " + L(a), "osszeg = 0", "for x in szamok:", I("osszeg += x"), "print(osszeg)"), err: "", sol: "Hibátlan összegzés." }]); },
+        () => pick([
+          { code: J('jegyek = ["5", "4", "3"]', "print(sum(jegyek))"), err: "TypeError", fix: J("jegyek = [5, 4, 3]", "print(sum(jegyek))"), sol: "A lista elemei szövegek (idézőjelben); szöveget nem lehet összeadni a sum-mal." },
+          { code: J("jegyek = [5, 4, 3]", "print(sum(jegyek) / len(jegyek))"), err: "", sol: "Hibátlan átlag." },
+          { code: J("print(lista[0])"), err: "NameError", fix: J("lista = [1, 2]", "print(lista[0])"), sol: "Nincs lista nevű változó." }])
+      ],
+      [
+        () => pick([
+          { code: J("szamok = []", "print(max(szamok))"), err: "ValueError", fix: J("szamok = [3]", "print(max(szamok))"), sol: "Üres listának nincs legnagyobb eleme." },
+          { code: J("szamok = []", "legnagyobb = szamok[0]"), err: "IndexError", fix: J("szamok = [3]", "legnagyobb = szamok[0]"), sol: "Üres listának nincs 0. eleme sem." },
+          { code: J("szamok = []", "print(sum(szamok))"), err: "", sol: "Hibátlan: az üres lista összege 0." }]),
+        () => pick([
+          { code: J("szamok = [3, 8, 1]", "for i in range(len(szamok) + 1):", I("print(szamok[i])")), err: "IndexError", fix: J("szamok = [3, 8, 1]", "for i in range(len(szamok)):", I("print(szamok[i])")), sol: "A range(len(szamok) + 1) eggyel túlszalad: az utolsó i = 3, ilyen index nincs." },
+          { code: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(szamok[x])")), err: "IndexError", fix: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(x)")), sol: "A for x in szamok az ELEMEKET adja (3, 8, 1), nem az indexeket. A szamok[8] nincs." }])
+      ]
+    ];
+    const HPOOL = ["", "IndexError", "TypeError", "AttributeError", "NameError", "ValueError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => { const a = nums(rnd(3, 5), 1, 50); return { q: "Ennek a programnak a lista utolsó elemét kellene kiírnia, de hibával leáll. Javítsd ki!",
+          starter: J("szamok = " + L(a), "print(szamok[len(szamok)])") + "\n", code: J("szamok = " + L(a), "print(szamok[-1])"), tests: [{ ins: [], exact: S(a[a.length - 1]) }], ex: "Az utolsó index len(szamok) - 1, röviden -1." }; },
+        () => ({ q: "Ennek a programnak a bekért számokat egy listába kellene tennie, és kiírnia, de hibával leáll. Javítsd ki!",
+          starter: J('n = int(input("Hány szám? "))', "szamok = []", "for i in range(n):", I('szamok = szamok.append(int(input("Szám: ")))'), "print(szamok)") + "\n", code: J(...BEKER, "print(szamok)"), tests: [nums(3, 1, 20), nums(4, 1, 99)].map(a => ({ ins: ins(a), exp: [{ s: L(a) }] })), ex: "Az append nem ad vissza semmit: elég a szamok.append(…), értékadás nélkül." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak a bekért számok összegét kellene kiírnia, de rossz eredményt ad. Javítsd ki!",
+          starter: J(...BEKER, "for x in szamok:", I("osszeg = 0"), I("osszeg += x"), 'print(f"Összeg: {osszeg}")') + "\n", code: J(...BEKER, "osszeg = 0", "for x in szamok:", I("osszeg += x"), 'print(f"Összeg: {osszeg}")'), tests: [nums(3, 1, 20), nums(5, 1, 99)].map(a => ({ ins: ins(a), exp: [sum(a)] })), ex: "A nullázás a ciklus elé kell." }),
+        () => ({ q: "Ennek a programnak a bekért számok legnagyobbikát kellene kiírnia, de ha minden szám negatív, 0-t ír ki. Javítsd ki!",
+          starter: J(...BEKER, "legnagyobb = 0", "for x in szamok:", I("if x > legnagyobb:"), I(I("legnagyobb = x")), 'print(f"Legnagyobb: {legnagyobb}")') + "\n", code: J(...BEKER, "legnagyobb = szamok[0]", "for x in szamok:", I("if x > legnagyobb:"), I(I("legnagyobb = x")), 'print(f"Legnagyobb: {legnagyobb}")'), tests: [distinct(4, -50, -1), distinct(5, -20, 60)].map(a => ({ ins: ins(a), exp: [Math.max(...a)] })), ex: "A kezdőérték a lista első eleme legyen, ne 0: ha minden szám negatív, a 0 egyik elemnél sem lesz kisebb." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak ki kellene írnia minden elemet az indexével (például: <code>0: 12</code>), de hibával leáll. Javítsd ki!",
+          starter: J("szamok = [12, 7, 30, 5]", "for i in szamok:", I('print(f"{i}: {szamok[i]}")')) + "\n", code: J("szamok = [12, 7, 30, 5]", "for i in range(len(szamok)):", I('print(f"{i}: {szamok[i]}")')), tests: [{ ins: [], exact: "0: 12\n1: 7\n2: 30\n3: 5" }], ex: "A for i in szamok az elemeket adja; az indexekhez for i in range(len(szamok)) kell." }),
+        () => ({ q: "Ennek a programnak a páros számokat kellene kiválogatnia egy új listába, de két hiba is van benne. Javítsd ki!",
+          starter: J(...BEKER, "for x in szamok:", I("parosak = []"), I("if x % 2 == 0:"), I(I("parosak = parosak.append(x)")), "print(parosak)") + "\n", code: J(...BEKER, "parosak = []", "for x in szamok:", I("if x % 2 == 0:"), I(I("parosak.append(x)")), "print(parosak)"), tests: [[4, 7, 10, 3], nums(6, 1, 99)].map(a => ({ ins: ins(a), exp: [{ s: L(a.filter(x => x % 2 === 0)) }] })), ex: "Az új lista a ciklus előtt jön létre (különben minden körben kiürül), és az append elé nem kell értékadás." })
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "idx", kind: "kiir", L: IDX },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, IDX, TET, TETEL, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, IDX, TET, TETEL, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: [], rows: 5 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  const lst = (a, on, ok) => '<div class="lst">' + a.map((x, i) => '<span class="' + (i === on ? "on" : ok && ok.includes(i) ? "ok" : "") + '"><small>' + i + "</small>" + esc(x) + "<small>" + (i - a.length) + "</small></span>").join("") + "</div>";
+  const vsv = rows => '<div class="vs"><div class="vs-bar"><span>RUN AND DEBUG › VARIABLES</span></div><div class="vs-vars">' + rows + "</div></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function indexFrames(){
+    const g = ["alma", "körte", "szilva", "barack"];
+    return [
+      { cap: "Egy lista négy elemmel. Minden elemnek van sorszáma, ez az index: fent a pozitív, 0-tól; lent a negatív, hátulról.", html: '<pre class="code">gyumolcs = ["alma", "körte", "szilva", "barack"]</pre>' + lst(g, -1) },
+      { cap: "gyumolcs[0] az első elem: alma. Az index nullától indul, nem egytől!", html: lst(g, 0) + outBox("alma") },
+      { cap: "gyumolcs[2] a harmadik elem: szilva.", html: lst(g, 2) + outBox("szilva") },
+      { cap: "A len(gyumolcs) az elemek száma: 4. Az utolsó index ennél eggyel kisebb, 3.", html: lst(g, 3) + '<p class="big">len(gyumolcs) = 4</p>' },
+      { cap: "Az utolsó elemet rövidebben is elérheted: gyumolcs[-1], ez a barack. A -2 az utolsó előtti.", html: lst(g, 3) + outBox("barack") },
+      { cap: "A gyumolcs[4] már nincs: négy elemnél az indexek 0-tól 3-ig mennek. Ez IndexError.", html: lst(g, -1) + '<p class="big" style="color:var(--bad)">gyumolcs[4] → IndexError</p>' }
+    ];
+  }
+  function maxFrames(){
+    const a = [12, 7, 30, 5], src = EX.maximum.code.split("\n");
+    return [
+      { cap: "Maximumkiválasztás: melyik a legnagyobb szám, és hol van? A kezdőérték a lista első eleme, 12, a helye 0.", html: srcHtml(src, 3) + lst(a, 0) + varTbl({ legnagyobb: 12, hely: 0 }) },
+      { cap: "i = 1: a 7 nagyobb, mint 12? Nem. Nem változik semmi.", html: srcHtml(src, 5) + lst(a, 1) + varTbl({ i: 1, legnagyobb: 12, hely: 0 }) },
+      { cap: "i = 2: a 30 nagyobb, mint 12? Igen! Ez az új legnagyobb, a helye 2.", html: srcHtml(src, 7) + lst(a, 2) + varTbl({ i: 2, legnagyobb: 30, hely: 2 }) },
+      { cap: "i = 3: az 5 nagyobb, mint 30? Nem.", html: srcHtml(src, 5) + lst(a, 3) + varTbl({ i: 3, legnagyobb: 30, hely: 2 }) },
+      { cap: "Vége a ciklusnak. A legnagyobb a 30, az indexe 2. Miért nem 0 a kezdőérték? Mert ha minden szám negatív, a 0 egyiknél sem lenne kisebb, és rossz eredményt kapnánk.", html: srcHtml(src, 8) + lst(a, 2) + outBox("A legnagyobb: 30, a helye (index): 2") }
+    ];
+  }
+  function valogatFrames(){
+    const a = [12, 7, 30, 5, 18, 9], src = EX.valogat.code.split("\n"); const F = [{ cap: "Kiválogatás: a páros számokat egy új listába tesszük. Az új lista kezdetben üres.", html: srcHtml(src, 2) + lst(a, -1) + varTbl({ parosak: "[]" }) }];
+    const p = [];
+    a.forEach((x, i) => { const even = x % 2 === 0; if (even) p.push(x); F.push({ cap: "Az elem: " + x + ". " + (even ? "Páros, ezért bekerül az új listába." : "Páratlan, kimarad."), html: srcHtml(src, even ? 5 : 4) + lst(a, i, a.map((y, k) => k < i && y % 2 === 0 ? k : -1)) + varTbl({ parosak: "[" + p.join(", ") + "]" }) }); });
+    F.push({ cap: "Kész: a páros számok listája 12, 30 és 18. Az eredeti lista nem változott.", html: srcHtml(src, 6) + outBox("A páros számok: [12, 30, 18]") });
+    return F;
+  }
+  function vsFrames(){
+    return [
+      { cap: "A VS Code hibakeresőjében a lista a Variables panelen jelenik meg, egy kis nyíllal.", html: vsv("▸ <b>szamok</b> = <i>[12, 7, 30, 5]</i>") },
+      { cap: "Ha a nyílra kattintasz, kinyílik: minden elem külön sorban, az indexével. A len is ott van.", html: vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>len()</b> = <i>4</i></div>") },
+      { cap: "Lépésenként futtatva (F10) látod, ahogy az append új elemet tesz a végére: most az ötödik, a 4-es indexen.", html: vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5, 18]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>4</b> = <i>18</i><br><b>len()</b> = <i>5</i></div>") }
+    ];
+  }
+  const MET = { index: "Az index", max: "Maximumkiválasztás", valogat: "Kiválogatás", vs: "A lista a VS Code-ban" };
+  const MF = { index: indexFrames, max: maxFrames, valogat: valogatFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "index" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "Mi a lista?", h:
+      ex("letrehoz") +
+      "<ul><li>A lista <b>szögletes zárójelben</b> áll, az elemeket vessző választja el: <code>[3, 8, 1, 6]</code>.</li><li>Lehet benne szám, szöveg, bármi; az üres lista: <code>[]</code>.</li><li>A <code>len(lista)</code> az elemek száma.</li><li>A <code>print(lista)</code> szögletes zárójelben, vesszővel írja ki.</li></ul>" },
+    { k: "Index", t: "Az index: hányadik elem?", h:
+      ex("index") +
+      lst(["alma", "körte", "szilva", "barack"], -1) +
+      "<ul><li>Az első elem indexe <b>0</b>: <code>gyumolcs[0]</code>.</li><li>Az utolsó: <code>gyumolcs[len(gyumolcs) - 1]</code>, röviden <code>gyumolcs[-1]</code>.</li><li>Nem létező index: <b>IndexError</b>.</li></ul>" + playBtn("index") },
+    { k: "Módosítás", t: "Elem felülírása és append", h:
+      ex("modosit") +
+      "<ul><li><code>szamok[1] = 10</code>: az 1-es indexű elem helyére 10 kerül.</li><li><code>szamok.append(7)</code>: a lista <b>végére</b> tesz egy új elemet.</li><li>Az append-et <b>nem</b> kell értékadásba tenni: a <code>szamok = szamok.append(7)</code> után a szamok értéke None lesz!</li></ul>" },
+    { k: "Bejárás", t: "Végigmenni a listán", h:
+      ex("bejar") +
+      "<ul><li><code>for j in jegyek:</code> az <b>elemeket</b> adja sorban. Ez a gyakoribb, egyszerűbb.</li><li><code>for i in range(len(jegyek)):</code> az <b>indexeket</b> adja (0, 1, 2…); az elem: <code>jegyek[i]</code>. Akkor kell, ha a hely is érdekes.</li></ul>" },
+    { k: "Bekérés", t: "Számok bekérése listába", h:
+      ex("beker") +
+      "<ol><li>Előbb a darabszám: <code>n = int(input(…))</code>.</li><li>Üres lista: <code>szamok = []</code>.</li><li>Egy for ciklus n-szer bekér egy számot, és <code>append</code>-del a lista végére teszi.</li></ol><p>A gyakorló feladatokban mindig így kérd be a számokat.</p>" },
+    { k: "Függvények", t: "sum, max, min, in", h:
+      ex("fv") +
+      "<ul><li><code>sum(lista)</code>: az összeg; <code>max</code>, <code>min</code>: a legnagyobb, a legkisebb.</li><li><code>x in lista</code>: benne van-e (True vagy False).</li><li>Az átlag: <code>sum(lista) / len(lista)</code>.</li><li>Üres listára a max és a min hibát ad (ValueError).</li></ul>" },
+    { k: "Összegzés", t: "1. tétel: összegzés", h:
+      ex("osszegzes") + "<p>Ugyanaz, mint a sum, csak „kézzel”: gyűjtő változó 0-ról, és minden elemet hozzáadunk. A dolgozatban gyakran így kérik, hogy látszódjon, érted-e.</p>" },
+    { k: "Megszámlálás", t: "2. tétel: megszámlálás", h:
+      ex("szamlalas") + "<p>Számláló 0-ról; a ciklusban egy <code>if</code> dönti el, számít-e az elem, és ha igen, <code>db += 1</code>.</p>" },
+    { k: "Maximum", t: "3. tétel: maximumkiválasztás", h:
+      ex("maximum") +
+      "<ul><li>A kezdőérték a lista <b>első eleme</b>, nem 0! (Ha minden szám negatív, a 0 rossz eredményt adna.)</li><li>Ha nagyobbat találsz, megjegyzed az értékét, és ha kell, az indexét is.</li><li>A minimum ugyanígy, <code>&lt;</code>-szel.</li></ul>" + playBtn("max") },
+    { k: "Eldöntés", t: "4. tétel: eldöntés", h:
+      ex("eldontes") + "<p>Van-e olyan elem, amelyik…? Egy logikai változó (<code>van = False</code>) a ciklus előtt; ha találunk ilyet, True lesz. Egyszerű esetben az <code>in</code> is elég: <code>if 1 in jegyek:</code>.</p>" },
+    { k: "Kiválogatás", t: "5. tétel: kiválogatás", h:
+      ex("valogat") + "<p>Egy új, üres lista a ciklus előtt; a feltételnek megfelelő elemeket <code>append</code>-del beleteszed. Az eredeti lista nem változik.</p>" + playBtn("valogat") },
+    { k: "VS Code", t: "A lista a hibakeresőben", h:
+      vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>len()</b> = <i>4</i></div>") +
+      "<p>A 7. leckében tanult lépésenkénti futtatásnál (töréspont, F5, F10) a lista a <b>Variables</b> panelen látszik; a nyíllal kinyitható, és minden elem az indexével együtt jelenik meg. Így pontosan látod, mi van a listában, és mikor kerül bele új elem.</p>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
+      [["lista[len(lista)]", "IndexError", "lista[-1]"],
+       ["lista = lista.append(x)", "a lista None lesz", "lista.append(x)"],
+       ["lista + 5", "TypeError", "lista.append(5)"],
+       ["for x in lista: lista[x]", "IndexError (az x elem, nem index)", "for i in range(len(lista))"],
+       ["legnagyobb = 0", "negatív számoknál rossz", "legnagyobb = lista[0]"],
+       ["új lista a cikluson belül", "minden körben kiürül", "a ciklus elé"],
+       ["max([])", "ValueError (üres lista)", "előbb ellenőrizd: len(lista) > 0"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaI") + ex("hibaA") + "<p>A második példa nem ad hibát, de <code>None</code>-t ír ki: az append nem ad vissza semmit.</p>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "idx", name: "Melyik elem?", gen: l => { const t = pick(IDX[l - 1])(); const k = P.kiir(t, "Index"); k.q = "Melyik elemet írja ki? (Idézőjel nélkül írd be.)<pre class='code'>" + esc(t.code) + "</pre>"; return k; } },
+    { id: "tetel", name: "Melyik tétel?", gen(l){
+      const it = pick(TETEL[l - 1]);
+      return P.choice("Melyik programozási tétellel oldanád meg? <b>" + esc(it[0]) + "</b>", TET[it[1]], TET.filter((_, i) => i !== it[1]), "<p>" + ["Összegzés: az elemek összeadása egy gyűjtő változóba.", "Megszámlálás: hány elem felel meg egy feltételnek.", "Maximumkiválasztás: a legnagyobb (vagy a legkisebb) elem, és ha kell, a helye.", "Eldöntés: van-e legalább egy olyan elem (igen vagy nem).", "Kiválogatás: a feltételnek megfelelő elemek egy új listába."][it[1]] + "</p>", "Nem ez. Összeg → összegzés; hány darab → megszámlálás; legnagyobb/legkisebb → maximum; van-e → eldöntés; melyek (lista) → kiválogatás.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen: l => P.hiba(pick(HIBA[l - 1])(), HPOOL, "Nézd meg: létezik ez az index (0-tól len − 1-ig)? Szám vagy szöveg van a listában? Az append elé nem kell értékadás. Üres a lista?") },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-8-listak", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["lista = [3, 8, 1]", "lista létrehozása; üres: []"], ["lista[0] · lista[-1]", "az első · az utolsó elem"], ["len(lista)", "az elemek száma"], ["lista.append(x)", "x a lista végére (értékadás nélkül!)"], ["lista[1] = 10", "elem felülírása"], ["for x in lista:", "végig az elemeken"], ["for i in range(len(lista)):", "végig az indexeken"], ["sum · max · min · in", "összeg · legnagyobb · legkisebb · benne van-e"], ["sum(lista) / len(lista)", "átlag"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
