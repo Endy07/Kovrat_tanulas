@@ -50,12 +50,14 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 | [Magyar helyesírás 1.: betűk, ábécé, elválasztás](helyesiras-betuk-elvalasztas.html) | Többjegyű betűk, a 40 betűs ábécé, ábécérend (AkH 14.), elválasztás szótagolással és összetett szavaknál; betűbontó, ábécérendező, lejátszott elválasztás, tollbamondás |
 | [Magyar helyesírás 2.: magánhangzók hossza](helyesiras-maganhangzok.html) | i/í, o/ó, ö/ő, u/ú, ü/ű: megtanulandó szavak, mindig hosszú és mindig rövid toldalékok, rövidülő tövek (tíz – tizedik, víz – vizet), szópárok, tollbamondás |
 | [Magyar helyesírás 3.: mássalhangzók hossza](helyesiras-massalhangzok.html) | Kettőzés, hosszú többjegyű betűk, összetett szó határa (jegygyűrű, észszerű), múlt idő, középfok, névutók, három egyforma betű (tollal), -val/-vel; tollbamondás |
-| [Tollbamondások](tollbamondasok.html) | 12 szöveg: felolvasás mondatonként, összevetés hibatípusokkal (hossz, kettőzés, többjegyű betű, egybeírás, írásjel…), nyomtatható változat |
+| [Magyar helyesírás 4.: j vagy ly](helyesiras-j-ly.html) | Szócsaládok (hely, folyik, király, olyan), a szó vége (egy szótag: j, több: ly, -aj/-ej: j, -lya/-lye: ly), kivételek (muszáj, tavaly), a toldalék j-je (tanulj, látja, folyjon), -val/-vel (osztállyal, bajjal); tollbamondás |
+| [Tollbamondások](tollbamondasok.html) | 16 szöveg: felolvasás mondatonként, összevetés hibatípusokkal (hossz, kettőzés, többjegyű betű, egybeírás, írásjel…), nyomtatható változat |
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
-## Hol tartunk (2026. 10. 30.)
+## Hol tartunk (2026. 11. 01.)
 
+- **Új (2026. 11. 01.): helyesírás 4. lecke, j vagy ly**, és 4 új tollbamondás (3 j/ly-os, 1 vegyes; összesen 16). Külön ágon (`claude/dreamy-hopper-52jouj`), élesítés Endi jóváhagyásával.
 - **Új (2026. 10. 30.): magyar helyesírás.** Endi kérésére helyesírás-tananyag az alapoktól, az AkH 12 szerint: terv 10 leckével (`docs/helyesiras-terv.md`), az első 3 lecke kész, és 12 tollbamondás (a gép felolvassa, összeveti, megmondja a szabályt; nyomtatható is). Ha megjön Kovrat chatje, hibastatisztika alapján igazítjuk a sorrendet (a chat nem kerül a repóba).
 - **Új (2026. 10. 25.): Python-dolgozat lecke.** Kovrat Pythonból dolgozatot ír; a gyakorló feladatsor mind az 52 feladata bekerült, tananyaggal, új feladatokkal és böngészőben futó Pythonnal (Pyodide). Ebből tudjuk: **az iskolában már a 9.-ben, októberben Python van** (az országos programtanterv a 10.-re teszi).
 

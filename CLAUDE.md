@@ -29,7 +29,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · a 12 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
+| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly (2026. 11. 01.) · a 16 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
 | `docs/helyesiras-terv.md` | A helyesírás-leckesor terve (10 lecke), sorrend és indok, ✅/⚠️. |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
@@ -189,6 +189,19 @@ alján ott a pontok listája.
   `C:\KOVRAT\` mappán kívülre sem.
 - **Élesben** 2026-10-30-án (Endi igenjével a pulton át: push `3cfe37a..62ac1c0`, élő version.json egyezik).
 
+### Helyesírás 4. lecke: j vagy ly (2026. 11. 01., felhős próbafutás a pulttól)
+
+Endi (a pulton át): „Akkor a javaslatod elfogadom, próbáljuk ki a Kovrat következő leckéjén.” Felhős (claude.ai/code) session,
+a `claude/dreamy-hopper-52jouj` ágon; a `main`-be nem került, az élesítést Endi hagyja jóvá.
+
+- **Lecke:** `helyesiras-j-ly` — szócsalád-böngésző a hero-ban, 14 dia, 4 lejátszott fogódzó, 5 gyakorlótípus × 3 szint (j vagy ly?,
+  Melyik a jó?, Hibás szó, Szócsalád/toldalék, Kakukktojás), tollbamondás (j1–j3), puska; forrás: AkH 88., 51., 56–57., 92–93.
+  (a 88. pont szövege szó szerint ellenőrizve, `docs/helyesiras-terv.md`).
+- **Közös modul:** `CAT.jly` a leckére mutat; a j/ly-normalizáló az lj-t és a jj-t is kezeli (tanujj ~ tanulj); új szövegek: `jly`
+  csoport (3) és `v4` (vegyes, 1–4. lecke).
+- **A tesztelő felhőben is fut:** `KOVRAT_URL=http://127.0.0.1:8765/ node tools/lessons/lesson-test.js <név> 40` (helyi
+  `python3 -m http.server 8765` mellett; Linuxon a képek a repó `.playwright-mcp/` mappájába mennek). Windowson változatlan.
+
 ## Döntések és indokaik
 
 | Döntés | Miért |
@@ -233,8 +246,9 @@ alján ott a pontok listája.
   `version.json` egyezik, mind a 36 lecke elérhető. **Python-futtató a 10.-re: Pyodide** (CDN, lustán, csak a Python-leckéken);
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
-- **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`). Következő:
-  a 4. lecke (j/ly), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
+- **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`).
+  A **4. lecke (j/ly)** és 4 új tollbamondás kész a `claude/dreamy-hopper-52jouj` ágon (2026-11-01), élesítésre vár. Következő:
+  az 5. lecke (hasonulások), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).

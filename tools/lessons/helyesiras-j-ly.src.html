@@ -1,0 +1,311 @@
+<!--@HEAD-->
+<title>j vagy ly</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.fam{display:flex;flex-wrap:wrap;gap:8px}
+.fam button{background:#151B23;border:1.5px solid #3A4656;border-radius:12px;color:#DCE3EC;padding:8px 12px;font-family:var(--body);font-weight:700;font-size:1.05rem}
+.fam button[aria-pressed="true"]{border-color:#FFB01F;color:#FFB01F}
+.famw{display:flex;flex-wrap:wrap;gap:8px 16px;min-height:3em;align-items:baseline}
+.famw span{font-family:var(--body);font-weight:700;font-size:clamp(1.25rem,5.5vw,1.6rem);color:#fff}
+.famw u{color:#FFB01F;text-decoration-thickness:3px;text-underline-offset:5px}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 4. lecke</span>
+  <h1>j vagy ly?</h1>
+  <p class="lead"><b>Folyik</b> vagy <b>fojik</b>? <b>Muszáj</b> vagy <b>muszály</b>? A j és az ly ugyanúgy hangzik, ezért itt nem a fül dönt. Megtanulod a fontos szavakat és szócsaládokat, és azt a néhány fogódzót, amely mégis segít.</p>
+  <div class="panel">
+    <span class="eyebrow">Szócsaládok: válassz egy szót, és nézd meg a rokonait</span>
+    <div class="fam" id="fam"></div>
+    <div class="famw" id="famw" aria-live="polite"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem" id="famnote"></p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik fogódzó segít?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="szotag" aria-selected="true">baj vagy akadály?</button>
+    <button class="tab" data-m="golya" aria-selected="false">gólya</button>
+    <button class="tab" data-m="tanulj" aria-selected="false">tanulj</button>
+    <button class="tab" data-m="osztallyal" aria-selected="false">osztállyal</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. szavak és szócsaládok, amelyeket meg kell tanulni (hely, folyik, király, olyan, muszáj) · 2. a szó vége: egy szótag vagy több, -aj, -ej, -lya, -lye · 3. toldalékok: tanulj, látja, folyjon, osztállyal, bajjal. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj a j-re és az ly-ra: tavaly, olyan, helyet, korcsolyázni, osztállyal, királlyal, gondoljak.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Ly-os szócsaládok</span><span>hely, helyes, helyett, helyzet · folyik, folyó, folyosó, folyamat · király, királynő · ilyen, olyan, milyen · golyó · lyuk, lyukas</span></div>
+    <div class="trick"><span class="t">Mindig j</span><span>A toldalék j-je: -ja, -je, -juk, -jük, felszólító -j (barátja, látja, tanulja, tanulj, állj, adjon) · a legtöbb szó eleje (játék, jegy)</span></div>
+    <div class="trick"><span class="t">-val, -vel</span><span>j végű: bajjal, fejjel, olajjal · ly végű: osztállyal, hellyel, királlyal, mosollyal · gally + val = gallyal</span></div>
+    <div class="trick"><span class="t">Gyakori hibák</span><span>muszáj (nem muszály) · folyik (nem fojik) · olyan (nem ojan) · hülye (nem hüje) · teljes (nem telyes) · tanulj (nem tanuly)</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 88. pont (j és ly: a–c), 51. és 56–57. pont (a toldalék j-je: tanulja, állj, látja, adja), 92–93. pont (osztállyal, gallyal) · helyesiras.mta.hu</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, shuffle, esc } = K;
+
+  /* ---------- Hero: szócsaládok (AkH 88.) ---------- */
+  const u = w => esc(w).replace(/ly/g, "<u>ly</u>").replace(/j/g, "<u>j</u>");
+  const FAM = [
+    ["hely", ["hely", "helyes", "helyett", "helyzet", "helyi", "helyesírás", "elhelyez", "hellyel"], "A hely minden rokonában ly van. (A helyesírás szóban is!)"],
+    ["folyik", ["folyik", "folyó", "folyosó", "folyamat", "folyadék", "folyékony", "kifolyjon"], "A folyik családja végig ly-os. A kifolyjon végén a toldalék j-je áll: foly + jon."],
+    ["király", ["király", "királynő", "királyság", "királyi", "királlyal"], "Több szótagú szó végén legtöbbször ly: király, osztály, akadály."],
+    ["olyan", ["ilyen", "olyan", "milyen", "valamilyen", "semmilyen", "amely", "amelyik"], "A névmásokban ly: ilyen, olyan, milyen, amely (AkH 88. b)."],
+    ["lyuk", ["lyuk", "lyukas", "lyukaszt", "lyukad", "lyuggat"], "Szó elején csak a lyuk és a rokonai kezdődnek ly-nal. Minden más szó elején j."],
+    ["golyó", ["golyó", "golyós", "golyóstoll"], "golyó: ly. A golyóstoll is ebből a családból való."],
+    ["játék", ["játék", "játszik", "játékos", "játszótér", "játszma"], "Ellenpélda: ez a család j-vel íródik, a szó elején."]
+  ];
+  let famK = 0;
+  function drawFam(){
+    $("#fam").innerHTML = FAM.map((f, k) => '<button data-f="' + k + '" aria-pressed="' + (k === famK) + '">' + esc(f[0]) + "</button>").join("");
+    $("#famw").innerHTML = FAM[famK][1].map(w => "<span>" + u(w) + "</span>").join("");
+    $("#famnote").textContent = FAM[famK][2];
+  }
+  $("#fam").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (!b) return; famK = Number(b.dataset.f); drawFam(); if (K.tts.on && K.tts.ok) K.tts.say(FAM[famK][1].join(", ")); });
+  drawFam();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    szotag: () => [
+      { cap: "Baj vagy akadály? Mindkettő végén j hangot hallunk. Számoljuk meg a szótagokat!", html: W("ba<u>j</u> · akadá<u>ly</u>") },
+      { cap: "Baj: egy szótag. Az egy szótagú szavak végén többnyire j van: baj, fej, haj, száj, tej, vaj, zaj, díj, új.", html: W("ba<u>j</u> · fe<u>j</u> · szá<u>j</u> · te<u>j</u>", "egy szótag: többnyire j") },
+      { cap: "De van néhány egy szótagú szó ly-nal. Ezeket meg kell tanulni: hely, mély, súly, moly, gally.", html: W("he<u>ly</u> · mé<u>ly</u> · sú<u>ly</u> · mo<u>ly</u> · ga<u>lly</u>", "kivételek: meg kell tanulni") },
+      { cap: "Akadály: a-ka-dály, három szótag. A több szótagú szavak végén legtöbbször ly: akadály, osztály, király, bagoly, mosoly.", html: W("akadá<u>ly</u> · osztá<u>ly</u> · bago<u>ly</u>", "több szótag: legtöbbször ly") },
+      { cap: "Kivétel a muszáj és a papagáj. És ha a szó -aj vagy -ej végű, többnyire j: olaj, talaj, sóhaj, zörej.", html: W("muszá<u>j</u> · papagá<u>j</u> · ola<u>j</u> · tala<u>j</u>", "-aj, -ej: többnyire j") },
+      { cap: "De a tavaly és a pehely ly-nal íródik. Ezt is meg kell jegyezni.", html: W("tava<u>ly</u> · pehe<u>ly</u>") }
+    ],
+    golya: () => [
+      { cap: "Gólya. A szó vége: lya. Ilyenkor szinte mindig ly.", html: W("gó<u>ly</u>a") },
+      { cap: "Ugyanígy: ibolya, korcsolya, pocsolya, skatulya, csigolya, pálya.", html: W("ibo<u>ly</u>a · korcso<u>ly</u>a · pocso<u>ly</u>a · pá<u>ly</u>a", "-lya végű szavak") },
+      { cap: "És e-vel: hülye, gereblye. A hüje hibás!", html: W("hü<u>ly</u>e · gereb<u>ly</u>e", "-lye végű szavak") },
+      { cap: "Kevés kivétel van: bója, cserje. Ezek j-vel íródnak.", html: W("bó<u>j</u>a · cser<u>j</u>e", "kivétel") }
+    ],
+    tanulj: () => [
+      { cap: "Tanulj! Úgy mondjuk: tanujj. Mit írjunk?", html: W("[tanujj] → ?") },
+      { cap: "Bontsuk szét! Az ige: tanul. A felszólító mód jele: j. Ez a toldalék mindig j.", html: W("tanu<u>l</u> + <u>j</u>", "a tő l-je és a toldalék j-je") },
+      { cap: "Kiejtve összeolvadnak, írásban mindkettő megmarad: tanulj.", html: W("tanu<u>lj</u>", "nem: tanujj, nem: tanuly") },
+      { cap: "Ugyanígy: állj, ülj, beszélj, tanulja, ítéljük. Mindig a tő és a j.", html: W("á<u>llj</u> · ü<u>lj</u> · beszé<u>lj</u> · tanu<u>lj</u>a") },
+      { cap: "És a t, d végű szavaknál is: látja, adja, hagyja. Kiejtve [láttya], [aggya], [haggya], de írásban a tő és a j is megmarad.", html: W("lá<u>tj</u>a · a<u>dj</u>a · ha<u>gyj</u>a") },
+      { cap: "Ha a tő ly-os, az ly is marad: foly + jon = folyjon.", html: W("fo<u>ly</u> + <u>j</u>on = fo<u>lyj</u>on", "nem: fojjon") }
+    ],
+    osztallyal: () => [
+      { cap: "Osztály és a -val rag. A -val v-je hasonul: olyan lesz, mint az előtte álló hang.", html: W("osztály + val → osztály + lyal") },
+      { cap: "Két ly kerülne egymás mellé. A többjegyű betűnél csak az első jegyet kettőzzük: lly.", html: W("osztá<u>lly</u>al", "nem: osztájjal, nem: osztályal") },
+      { cap: "Ugyanígy: hellyel, királlyal, mosollyal.", html: W("he<u>lly</u>el · kirá<u>lly</u>al · moso<u>lly</u>al") },
+      { cap: "A j végű szavaknál két j: bajjal, fejjel, olajjal, díjjal.", html: W("ba<u>jj</u>al · fe<u>jj</u>el · ola<u>jj</u>al") },
+      { cap: "És a gally? Gally + lyal: három ly lenne, ezért csak kettőt írunk: gallyal.", html: W("ga<u>lly</u>al", "három egyforma helyett kettő") }
+    ]
+  };
+  const MET = { szotag: "baj vagy akadály?", golya: "gólya", tanulj: "tanulj", osztallyal: "osztállyal" };
+  const PB = { m: "szotag" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Két betű, egy hang", h:
+      "<p>A <b>j</b> és az <b>ly</b> ma ugyanúgy hangzik: [j]. A folyik szót úgy mondjuk, mint ha fojik lenne.</p>" +
+      "<p>Régen az ly más hang volt. A hang eltűnt, de az írás megtartotta a betűt: ez a <b>hagyomány</b>.</p>" +
+      "<div class='note'><b>Ezért itt nincs biztos szabály.</b> Az ly-os szavakat meg kell tanulni. Van viszont néhány fogódzó, ez a lecke ezeket mutatja meg. Ha nem vagy biztos, nézd meg a szótárban (helyesiras.mta.hu).</div>" },
+    { k: "Szó elején", t: "Szó elején szinte mindig j", h:
+      "<p>Szó elején <b>csak a lyuk</b> és a rokonai kezdődnek ly-nal:</p>" +
+      "<p class='eq'>lyuk · lyukas · lyukaszt · lyukad · lyuggat</p>" +
+      "<p>Minden más szó elején <b>j</b>: játék, jegy, jó, jön, június, jobb, jelszó.</p>" },
+    { k: "Egy szótag", t: "A szó végén: egy szótagú szó", h:
+      "<p>Az egy szótagú szavak végén <b>többnyire j</b>:</p>" +
+      "<p class='eq'>baj · díj · fáj · fej · haj · száj · tej · vaj · zaj · új</p>" +
+      "<p>Ly-nal csak néhány, ezeket <b>meg kell tanulni</b>:</p>" +
+      "<p class='eq'>hely · mély · súly · moly · gally · foly(ik)</p>" + playBtn("szotag"), init: playInit },
+    { k: "Több szótag", t: "A szó végén: több szótagú szó", h:
+      "<p>A több szótagú szavak végén <b>legtöbbször ly</b>:</p>" +
+      "<p class='eq'>akadály · bagoly · fogoly · harkály · kristály · mosoly · osztály · tartály · erkély · király · Mihály · Gergely</p>" +
+      "<div class='note'><b>Kivétel:</b> muszáj, papagáj. A <b>muszáj</b> a leggyakoribb hiba: j-vel írjuk!</div>" },
+    { k: "-aj, -ej", t: "Az -aj, -ej végű szavak", h:
+      "<p>Ha a szó <b>-aj</b> vagy <b>-ej</b> végű, többnyire <b>j</b>:</p>" +
+      "<p class='eq'>olaj · talaj · sóhaj · tolvaj · robaj · óhaj · zsivaj · zörej · csevej</p>" +
+      "<p><b>Kivétel</b>, ly-nal: <b>tavaly</b>, pehely, zsindely.</p>" },
+    { k: "-lya, -lye", t: "A -lya, -lye végű szavak", h:
+      "<p>Ez egy nagy szócsoport, szinte mindig <b>ly</b>:</p>" +
+      "<p class='eq'>gólya · ibolya · korcsolya · pocsolya · skatulya · csigolya · pálya · hülye · gereblye</p>" +
+      "<p>Kevés kivétel van, j-vel: bója, cserje.</p>" + playBtn("golya"), init: playInit },
+    { k: "Szócsalád", t: "Ha a szó ly-os, a rokonai is", h:
+      tbl(["a szó", "a rokonai"], [["hely", "helyes, helyett, helyzet, helyi, helyesírás"], ["folyik", "folyó, folyosó, folyamat, folyadék"], ["király", "királynő, királyság, királyi"], ["ilyen, olyan", "milyen, valamilyen, amely, amelyik"], ["golyó", "golyóstoll"], ["lyuk", "lyukas, lyukaszt"]]) +
+      "<p>A szótő nem változik: ha egyszer ly, akkor a toldalékos alakban is ly.</p>" },
+    { k: "Toldalék", t: "A toldalék j-je mindig j", h:
+      "<p>A j-vel kezdődő toldalékok <b>mindig j</b>-vel íródnak:</p>" +
+      "<ul><li>birtokos: barát<b>ja</b>, kert<b>je</b>, barát<b>juk</b></li><li>tárgyas: lát<b>ja</b>, tanul<b>ja</b>, ítél<b>jük</b></li><li>felszólító: tanul<b>j</b>, áll<b>j</b>, ad<b>j</b>, hagy<b>játok</b></li></ul>" +
+      tbl(["így mondjuk", "így írjuk"], [["[tanujj]", "<b>tanulj</b>"], ["[ájj]", "<b>állj</b>"], ["[láttya]", "<b>látja</b>"], ["[aggya]", "<b>adja</b>"], ["[haggyátok]", "<b>hagyjátok</b>"]]) + playBtn("tanulj"), init: playInit },
+    { k: "ly + j", t: "Ha a tő ly-os, és j-s toldalék jön", h:
+      "<p>Mindkettő megmarad: a tő ly-ja és a toldalék j-je.</p>" +
+      "<p class='eq'>foly + jon = folyjon · ki + foly + jon = kifolyjon</p>" +
+      "<p>A <b>teljes</b> szóban pedig l és j van, nem ly: te-l-j-es.</p>" },
+    { k: "-val, -vel", t: "-val, -vel: jj vagy lly", h:
+      tbl(["a szó vége", "-val, -vel", "példa"], [["j", "<b>jj</b>", "bajjal, fejjel, olajjal, díjjal"], ["ly", "<b>lly</b> (csak az l kettőzve)", "osztállyal, hellyel, királlyal, mosollyal"], ["lly", "három ly helyett kettő", "gally + val = gallyal"]]) +
+      "<p>A hosszú ly máshol is előfordul: <b>süllyed</b>, gally. (3. lecke: a többjegyű betűnél csak az első jegyet kettőzzük.)</p>" + playBtn("osztallyal"), init: playInit },
+    { k: "Elválasztás", t: "Az ly egy betű", h:
+      "<p>Az ly egy betű (1. lecke), ezért nem vágjuk szét:</p>" +
+      "<p class='eq'>go-lyó · ki-rály · he-lyes · fo-lyo-só · gó-lya</p>" +
+      "<p>A hosszú lly elválasztáskor két teljes ly lesz: <b>süly-lyed</b>, <b>galy-lyak</b>, <b>osz-tály-lyal</b>.</p>" },
+    { k: "Megtanulandó", t: "Szavak, amelyeket meg kell tanulni", h:
+      tbl(["ly", "j"], [["hely, mély, súly, folyik", "baj, fej, száj, tej, díj, új"], ["király, osztály, akadály, mosoly", "muszáj, papagáj"], ["ilyen, olyan, milyen, amely", "olaj, talaj, sóhaj, zörej"], ["gólya, pálya, korcsolya, hülye", "játék, jegy, jó (szó elején)"], ["tavaly, golyó, selyem, kályha", "teljes (l + j), tanulj, látja"]]) },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>muszály</b> → muszáj. Kivétel: j-vel!</div>" +
+      "<div class='mistake'><b>fojik, ojan, mijen, hüje</b> → folyik, olyan, milyen, hülye.</div>" +
+      "<div class='mistake'><b>kiráj, osztáj, tavaj</b> → király, osztály, tavaly.</div>" +
+      "<div class='mistake'><b>tanuly, tanujj, ájj</b> → tanulj, állj. A felszólító mód jele j.</div>" +
+      "<div class='mistake'><b>osztájjal, osztályal</b> → osztállyal.</div>" +
+      "<div class='mistake'><b>telyes</b> → teljes. Itt l és j van.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Keresd a családot</span><span>helyett → hely → ly. folyosó → folyik → ly.</span></div>" +
+      "<div class='trick'><span class='t'>Bontsd szét</span><span>tanulj = tanul + j · látja = lát + ja · folyjon = foly + jon. A toldalék j-je mindig j.</span></div>" +
+      "<div class='trick'><span class='t'>Számold a szótagot</span><span>Egy szótag: többnyire j (baj). Több szótag: többnyire ly (akadály), de -aj, -ej: j (olaj).</span></div>" +
+      "<div class='trick'><span class='t'>Gyűjtsd a kivételeket</span><span>muszáj, papagáj · hely, mély, súly · tavaly. Írd fel a füzeted hátuljára.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ----------
+     Hiánypótlás: a pár mindig kézzel megadva ([ly|j], [j|ly]); a rossz alak egyik sem létező szó (kétszer átnézve). */
+  const G = [
+    [["fo[ly|j]ik", "folyik: ly. A rokonai is: folyó, folyosó."], ["fo[ly|j]osó", "folyosó: a folyik családjából, ly."], ["fo[ly|j]amat", "folyamat: a folyik családjából, ly."],
+     ["he[ly|j]es", "helyes: a hely családjából, ly."], ["he[ly|j]ett", "helyett: a hely családjából, ly."], ["he[ly|j]zet", "helyzet: a hely családjából, ly."],
+     ["kirá[ly|j]", "király: ly. (Több szótagú szó végén legtöbbször ly.)"], ["kirá[ly|j]nő", "királynő: a király családjából, ly."], ["o[ly|j]an", "olyan: ly, mint az ilyen és a milyen."],
+     ["i[ly|j]en", "ilyen: ly."], ["mi[ly|j]en", "milyen: ly."], ["go[ly|j]ó", "golyó: ly."], ["[ly|j]uk", "lyuk: az egyetlen szó, amely ly-nal kezdődik."], ["[ly|j]ukas", "lyukas: a lyuk családjából, ly."],
+     ["muszá[j|ly]", "muszáj: j! Ez kivétel, a leggyakoribb hiba."], ["[j|ly]áték", "játék: szó elején j (ly-nal csak a lyuk kezdődik)."], ["[j|ly]egy", "jegy: szó elején j."],
+     ["hü[ly|j]e", "hülye: ly (-lye végű)."], ["gó[ly|j]a", "gólya: ly (-lya végű)."], ["pá[ly|j]a", "pálya: ly (-lya végű)."],
+     ["se[ly|j]em", "selyem: ly."], ["ká[ly|j]ha", "kályha: ly."], ["ba[j|ly]", "baj: j (egy szótagú szó)."], ["te[j|ly]", "tej: j (egy szótagú szó)."]],
+    [["fe[j|ly]", "fej: egy szótag, j."], ["ha[j|ly]", "haj: egy szótag, j."], ["szá[j|ly]", "száj: egy szótag, j."], ["va[j|ly]", "vaj: egy szótag, j."], ["za[j|ly]", "zaj: egy szótag, j."],
+     ["dí[j|ly]", "díj: egy szótag, j."], ["fá[j|ly]", "fáj: egy szótag, j."], ["mé[ly|j]", "mély: kivétel, egy szótagú, mégis ly."], ["sú[ly|j]", "súly: kivétel, egy szótagú, mégis ly."],
+     ["akadá[ly|j]", "akadály: több szótag, ly."], ["osztá[ly|j]", "osztály: több szótag, ly."], ["bago[ly|j]", "bagoly: több szótag, ly."], ["moso[ly|j]", "mosoly: több szótag, ly."],
+     ["kristá[ly|j]", "kristály: több szótag, ly."], ["fogo[ly|j]", "fogoly: több szótag, ly."], ["erké[ly|j]", "erkély: több szótag, ly."], ["tartá[ly|j]", "tartály: több szótag, ly."],
+     ["papagá[j|ly]", "papagáj: kivétel, j."], ["ola[j|ly]", "olaj: -aj végű, j."], ["tala[j|ly]", "talaj: -aj végű, j."], ["sóha[j|ly]", "sóhaj: -aj végű, j."], ["tolva[j|ly]", "tolvaj: -aj végű, j."],
+     ["zöre[j|ly]", "zörej: -ej végű, j."], ["roba[j|ly]", "robaj: -aj végű, j."], ["tava[ly|j]", "tavaly: kivétel, -aj végű, mégis ly."], ["pehe[ly|j]", "pehely: kivétel, -ej végű, mégis ly."],
+     ["ibo[ly|j]a", "ibolya: -lya végű, ly."], ["korcso[ly|j]a", "korcsolya: -lya végű, ly."], ["pocso[ly|j]a", "pocsolya: -lya végű, ly."], ["skatu[ly|j]a", "skatulya: -lya végű, ly."],
+     ["gereb[ly|j]e", "gereblye: -lye végű, ly."]],
+    [["tanu[lj|jj]a", "tanulja = tanul + ja: a tő l-je és a toldalék j-je is megmarad."], ["tanu[lj|ly]", "tanulj = tanul + j (felszólító mód). A toldalék j-je mindig j."],
+     ["á[llj|jj]", "állj = áll + j. Kiejtve [ájj], írva állj."], ["beszé[lj|jj]", "beszélj = beszél + j."], ["ü[lj|jj]", "ülj = ül + j."], ["íté[lj|jj]ük", "ítéljük = ítél + jük."],
+     ["lá[tj|tty]a", "látja = lát + ja. Kiejtve [láttya], írva látja."], ["a[dj|ggy]a", "adja = ad + ja. Kiejtve [aggya], írva adja."], ["ha[gyj|ggy]átok", "hagyjátok = hagy + játok."],
+     ["fo[lyj|jj]on", "folyjon = foly + jon: a tő ly-ja és a toldalék j-je is megmarad."], ["te[lj|ly]es", "teljes: l és j, nem ly."],
+     ["osztá[lly|jj]al", "osztály + val = osztállyal: hosszú ly, csak az l-t kettőzzük."], ["he[lly|jj]el", "hely + vel = hellyel."], ["kirá[lly|jj]al", "király + val = királlyal."],
+     ["moso[lly|jj]al", "mosoly + val = mosollyal."], ["ba[jj|lly]al", "baj + val = bajjal: j végű szó, két j."], ["ola[jj|lly]al", "olaj + val = olajjal."], ["fe[jj|lly]el", "fej + vel = fejjel."],
+     ["sü[lly|jj]ed", "süllyed: hosszú ly (lly)."], ["ga[lly|jj]ak", "gallyak: a gally szóban hosszú ly van."]]
+  ];
+  const S = [
+    [["Itt van egy szabad {hely|hej} az első sorban.", "hely: ly. Kivétel: egy szótagú, mégis ly."], ["{Olyan|Ojan} fáradt vagyok, hogy rögtön lefekszem.", "olyan: ly, mint az ilyen és a milyen."],
+     ["{Milyen|Mijen} jegyet kaptál a dolgozatra?", "milyen: ly."], ["Ez egy {hülye|hüje} vicc volt, mégis nevettünk.", "hülye: ly (-lye végű szó)."],
+     ["A {folyosón|fojosón} nem szabad szaladni.", "folyosó: a folyik családjából, ly."], ["A Tisza lassan {folyik|fojik} a híd alatt.", "folyik: ly."],
+     ["Holnap {muszáj|muszály} korán kelnem.", "muszáj: j! Ez kivétel."], ["Az új {játék|lyáték} egész délután lekötött.", "játék: szó elején j."],
+     ["A sakkban a {király|kiráj} a legfontosabb bábu.", "király: ly."], ["Az {ilyen|ijen} feladatokat már szeretem.", "ilyen: ly."],
+     ["Peti {helyett|hejett} ma én leszek a kapus.", "helyett: a hely családjából, ly."], ["Szünet után {folytatjuk|fojtatjuk} a játékot.", "folytat: ly."],
+     ["Elfogyott a {tej|tely} a hűtőből.", "tej: egy szótag, j."], ["Elveszett a {golyóstollam|gojóstollam}.", "golyóstoll: a golyó szóból, ly."]],
+    [["{Tavaly|Tavaj} nyáron a Balatonnál voltunk.", "tavaly: kivétel, ly."], ["Az utolsó {akadály|akadáj} egy magas fal volt.", "akadály: több szótag, ly."],
+     ["A {bagoly|bagoj} éjjel vadászik.", "bagoly: több szótag, ly."], ["Nagy {zaj|zaly} volt a tornateremben.", "zaj: egy szótag, j."],
+     ["Fáj a {fejem|felyem}, mert keveset aludtam.", "fej: egy szótag, j."], ["A {gólya|gója} ősszel délre repül.", "gólya: -lya végű, ly."],
+     ["Télen {korcsolyázni|korcsojázni} megyünk a jégpályára.", "korcsolya: -lya végű, ly."], ["Az esőben beleléptem egy {pocsolyába|pocsojába}.", "pocsolya: -lya végű, ly."],
+     ["Barátságos {mosoly|mosoj} jelent meg az arcán.", "mosoly: több szótag, ly."], ["A versenyen első {díjat|dílyat} nyertünk.", "díj: egy szótag, j."],
+     ["A {papagáj|papagály} megtanulta a nevemet.", "papagáj: kivétel, j."], ["Ez a kút nagyon {mély|méj}.", "mély: kivétel, egy szótagú, mégis ly."],
+     ["A táskám {súlya|súja} majdnem öt kiló.", "súly: kivétel, egy szótagú, mégis ly."], ["A kerékpár láncára {olajat|olalyat} kell cseppenteni.", "olaj: -aj végű, j."],
+     ["Az {osztályunk|osztájunk} megnyerte a focibajnokságot.", "osztály: több szótag, ly."]],
+    [["{Tanulj|Tanuly|Tanujj} többet a dolgozatra!", "tanulj = tanul + j. A felszólító mód jele mindig j."], ["{Állj|Ájj} meg a zebra előtt!", "állj = áll + j."],
+     ["Mindenki {tudja|tuggya} a választ.", "tudja = tud + ja. Kiejtve [tuggya], írva tudja."], ["Az edző kérte, hogy {beszéljünk|beszéjjünk} halkabban.", "beszéljünk = beszél + jünk."],
+     ["Az {osztállyal|osztájjal|osztályal} megyünk kirándulni.", "osztály + val = osztállyal."], ["A csapatunk egy {hellyel|hejjel} előrébb lépett a tabellán.", "hely + vel = hellyel."],
+     ["A szerelő {olajjal|olallyal} kente be a láncot.", "olaj + val = olajjal: két j."], ["A hajó lassan {süllyedni|süjjedni} kezdett.", "süllyed: hosszú ly (lly)."],
+     ["Zárd el a csapot, nehogy {kifolyjon|kifojjon} a víz!", "kifolyjon = ki + foly + jon."], ["{Teljes|Telyes} erőből rúgta a labdát.", "teljes: l és j."],
+     ["{Hagyjátok|Haggyátok} abba a kiabálást!", "hagyjátok = hagy + játok."], ["Az utolsó padból is {látja|láttya} a táblát.", "látja = lát + ja."],
+     ["A szél letört egy {gallyat|gajjat} a fáról.", "gally: hosszú ly."], ["A cipőmön egy {lyuk|juk} van.", "lyuk: az egyetlen ly-nal kezdődő szó."],
+     ["A sakkban a {királlyal|kirájjal} léptem utoljára.", "király + val = királlyal."]]
+  ];
+  const T = [
+    [["hely", "-es", "helyes", ["hejes", "hellyes"], "A hely minden rokona ly-os: helyes."], ["hely", "-zet", "helyzet", ["hejzet", "hellyzet"], "A hely minden rokona ly-os: helyzet."],
+     ["folyik", "-amat", "folyamat", ["fojamat", "follyamat"], "A folyik családja ly-os: folyamat."], ["folyik", "-osó", "folyosó", ["fojosó", "follyosó"], "A folyik családja ly-os: folyosó."],
+     ["király", "-ság", "királyság", ["kirájság", "királlyság"], "A király családja ly-os."], ["király", "-nő", "királynő", ["kirájnő", "királlynő"], "A király családja ly-os."],
+     ["ilyen, olyan", "kérdőszó", "milyen", ["mijen", "millyen"], "ilyen, olyan, milyen: mind ly-os."], ["lyuk", "-as", "lyukas", ["jukas", "lyukkas"], "A lyuk családja ly-nal kezdődik."],
+     ["játék", "-os", "játékos", ["lyátékos", "játékkos"], "A játék szó elején j van."], ["golyó", "+ toll", "golyóstoll", ["gojóstoll", "golyóstol"], "golyó: ly; a toll két l."],
+     ["pálya", "+ udvar", "pályaudvar", ["pájaudvar", "pállyaudvar"], "pálya: ly."]],
+    [["baj", "-ok", "bajok", ["balyok", "bajjok"], "baj: egy szótag, j."], ["fej", "-ek", "fejek", ["felyek", "fejjek"], "fej: egy szótag, j."],
+     ["osztály", "-ok", "osztályok", ["osztájok", "osztállyok"], "osztály: több szótag, ly."], ["bagoly", "-ok", "baglyok", ["bagjok", "baglok"], "A bagoly töve megrövidül (bagly-), de az ly marad: baglyok."],
+     ["akadály", "-t", "akadályt", ["akadájt", "akadállyt"], "akadály: ly, a tárgyrag egy t."], ["tavaly", "-i", "tavalyi", ["tavaji", "tavallyi"], "tavaly: kivétel, ly."],
+     ["olaj", "-os", "olajos", ["olalyos", "olajjos"], "olaj: -aj végű, j."], ["gólya", "-k", "gólyák", ["góják", "góllyák"], "gólya: -lya végű, ly."],
+     ["korcsolya", "-zik", "korcsolyázik", ["korcsojázik", "korcsollyázik"], "korcsolya: -lya végű, ly."], ["zaj", "-os", "zajos", ["zalyos", "zajjos"], "zaj: egy szótag, j."],
+     ["mély", "-ség", "mélység", ["méjség", "méllység"], "mély: kivétel, ly."], ["súly", "-os", "súlyos", ["sújos", "súllyos"], "súly: kivétel, ly."]],
+    [["tanul", "felszólító mód, te", "tanulj", ["tanujj", "tanuly"], "tanul + j: a felszólító mód jele j. [tanujj]-nak halljuk, de tanulj-nak írjuk."],
+     ["áll", "felszólító mód, te", "állj", ["ájj", "álly"], "áll + j = állj."], ["ül", "felszólító mód, te", "ülj", ["üjj", "üly"], "ül + j = ülj."],
+     ["lát", "tárgyas ragozás, ő", "látja", ["láttya", "látya"], "lát + ja = látja. [láttya]-nak halljuk."], ["ad", "felszólító mód, ő", "adjon", ["aggyon", "adgyon"], "ad + j + on = adjon."],
+     ["hagy", "tárgyas ragozás, ti", "hagyjátok", ["haggyátok", "hagyátok"], "hagy + játok = hagyjátok."], ["folyik", "felszólító mód, ő", "folyjon", ["fojjon", "follyon"], "foly + jon = folyjon: az ly és a j is megmarad."],
+     ["osztály", "-val", "osztállyal", ["osztájjal", "osztályal"], "A -val v-je hasonul: osztállyal (lly)."], ["hely", "-vel", "hellyel", ["hejjel", "helyel"], "hely + vel = hellyel."],
+     ["király", "-val", "királlyal", ["kirájjal", "királyal"], "király + val = királlyal."], ["baj", "-val", "bajjal", ["ballyal", "bajal"], "j végű szó: két j, bajjal."],
+     ["fej", "-vel", "fejjel", ["fellyel", "felyel"], "j végű szó: két j, fejjel."], ["gally", "-val", "gallyal", ["galllyal", "gajjal"], "Három ly helyett kettő: gallyal."],
+     ["mosoly", "-val", "mosollyal", ["mosojjal", "mosolyal"], "mosoly + val = mosollyal."]]
+  ];
+  // kakukktojás: a vonallal jelölt szavak közül egyben más betű kell (j vagy ly); csak az egyszerű j/ly hiányok
+  const simple = l => (l === 3 ? G[0].concat(G[1]) : G[l - 1]).map(x => ({ x, P: H.gapParse(x[0]) })).filter(o => o.P.parts.length === 1 && /^(j|ly)$/.test(o.P.parts[0].opts[0]));
+  const gapShow = P => P.parts[0].pre + "_" + P.tail;
+  const types = [
+    { id: "hiany", name: "j vagy ly?", gen: l => H.gapTask(pick(G[l - 1])) },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) },
+    { id: "told", name: "Szócsalád, toldalék", gen(l){
+      const t = pick(T[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span> + " + esc(t[1]), t[2], t[3], "<p><b>" + esc(t[2]) + "</b>. " + t[4] + "</p>", "Nem ez. " + t[4]);
+    } },
+    { id: "kakukk", name: "Kakukktojás", gen(l){
+      const pool = shuffle(simple(l)), odd = pick(["j", "ly"]), rest = odd === "j" ? "ly" : "j";
+      const one = pool.find(o => o.P.parts[0].opts[0] === odd), three = [];
+      for (const o of pool) if (o.P.parts[0].opts[0] === rest && three.length < 3 && !three.some(q => gapShow(q.P) === gapShow(o.P)) && gapShow(o.P) !== gapShow(one.P)) three.push(o);
+      const good = gapShow(one.P), all = [one].concat(three);
+      return H.choiceTask("Három szóba <b>" + rest + "</b> kerül, egybe <b>" + odd + "</b>. Melyik a kakukktojás?", good, three.map(o => gapShow(o.P)),
+        "<p>" + all.map(o => esc(H.gapWord(o.x[0]))).map((w, i) => i ? w : "<b>" + w + "</b>").join(" · ") + "</p><p>" + one.x[1] + "</p>", "Nem ez. Ebbe " + rest + " kerül. " + one.x[1].replace(/<[^>]+>/g, ""));
+    } }
+  ];
+  K.practice($("#practice"), { id: "h-jly", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.jly, player: pb, print: "tollbamondasok.html#jly" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Fogódzó</th><th>Példa</th></tr>" + [
+    ["Szó elején j (ly-nal csak a lyuk)", "játék, jegy · lyuk, lyukas"], ["Egy szótagú szó végén többnyire j", "baj, fej, száj, tej, díj, új"],
+    ["… kivétel: ly", "hely, mély, súly, moly, gally"], ["Több szótagú szó végén többnyire ly", "akadály, osztály, király, mosoly"],
+    ["… kivétel: j", "muszáj, papagáj"], ["-aj, -ej végű: többnyire j", "olaj, talaj, sóhaj, zörej (de: tavaly, pehely)"],
+    ["-lya, -lye végű: ly", "gólya, pálya, korcsolya, hülye"], ["Névmások: ly", "ilyen, olyan, milyen, amely"],
+    ["A szócsalád végig ly-os", "hely → helyes, helyett · folyik → folyosó"], ["A toldalék j-je mindig j", "tanulja, tanulj, állj, látja, adja"],
+    ["ly + j-s toldalék: mindkettő marad", "folyjon · teljes: l + j"], ["-val, -vel", "bajjal, fejjel · osztállyal, hellyel · gallyal"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->

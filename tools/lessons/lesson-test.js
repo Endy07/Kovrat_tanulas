@@ -4,17 +4,20 @@
 // (a „Jó válasz” átmegy-e; kódos feladatnál a kiinduló kód ne menjen át), próbadolgozat, 390 px-es szélesség, sötét téma.
 const { execSync } = require("child_process");
 const path = require("path");
-const groot = execSync("npm root -g").toString().trim();
-const { chromium } = require(path.join(groot, "playwright"));
+// a playwright: helyben vagy a globális csomagok közül (Windowson a globális)
+let chromium;
+try { ({ chromium } = require("playwright")); } catch (e) { ({ chromium } = require(path.join(execSync("npm root -g").toString().trim(), "playwright"))); }
 const name = process.argv[2], N = Number(process.argv[3] || 40);
 if (!name) { console.log("név kell"); process.exit(1); }
-const URL = "http://localhost/Kovrat/" + name + ".html";
-const SHOTS = "C:/xampp/htdocs/Kovrat/.playwright-mcp/";
+// más gépen (pl. felhős környezet): KOVRAT_URL=http://localhost:8000/ és KOVRAT_SHOTS=<mappa>/ (alapból a repó .playwright-mcp mappája)
+const URL = (process.env.KOVRAT_URL || "http://localhost/Kovrat/") + name + ".html";
+const SHOTS = process.env.KOVRAT_SHOTS || (process.platform === "win32" ? "C:/xampp/htdocs/Kovrat/.playwright-mcp/" : path.join(__dirname, "..", "..", ".playwright-mcp") + "/");
 
 (async () => {
   // a gépen lévő Chromium (a playwright saját letöltése nem kell)
-  const fs = require("fs"), msp = path.join(process.env.LOCALAPPDATA, "ms-playwright");
-  const exe = fs.readdirSync(msp).filter(d => /^chromium-\d+$/.test(d)).sort().reverse().map(d => path.join(msp, d, "chrome-win64", "chrome.exe")).find(p => fs.existsSync(p));
+  const fs = require("fs"), msp = path.join(process.env.LOCALAPPDATA || "/nincs", "ms-playwright");
+  fs.mkdirSync(SHOTS, { recursive: true });
+  const exe = !fs.existsSync(msp) ? undefined : fs.readdirSync(msp).filter(d => /^chromium-\d+$/.test(d)).sort().reverse().map(d => path.join(msp, d, "chrome-win64", "chrome.exe")).find(p => fs.existsSync(p));
   // némán: a felolvasás (Web Speech API) Windowson headless módban is kimondja a feliratokat
   const browser = await chromium.launch({ executablePath: exe, headless: true, args: ["--mute-audio"] });
   const ctx = await browser.newContext({ viewport: { width: 1200, height: 900 } });
