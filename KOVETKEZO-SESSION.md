@@ -1,6 +1,26 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 este (Python-sorozat: terv + 1–2. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 késő este (Python-sorozat: 3. lecke)
+
+**Hol tartunk:**
+- **Élesben (PR #5, Endi olvasztotta be: `7ea784c`):** a sorozatterv (`docs/python-terv.md`), a közös modul, az 1. és 2. lecke. A pult
+  Endi gépén is ellenőrizte (py-check, lesson-test, valódi jsDelivr-es Pyodide: rendben).
+- **Endi válaszai (2026-11-01):** az iskolában **VS Code**-ban dolgoznak; a `python-elozetes` új címe **„Python – gyors áttekintés”**;
+  nem tudjuk, volt-e már `if` → a sorozat az alapoktól halad, semmit nem tételez fel.
+- **Új PR-ban (ugyanaz az ág, a `main` beolvasztva):** **3. Adatbekérés: input és a típusváltás** (`python-3-input`), VS Code-os
+  terminálrajzzal és levezetéssel; az áttekintés új címe; az 1. lecke két mondata VS Code-ra igazítva.
+- **Tesztek:** `py-check --verify 40 python-3-input` 3487 futás, 0 hiba; `lesson-test 40` (Pyodide-dal): 3. lecke 720/720, 1. lecke
+  480/480, áttekintés 720/720; 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után a **4. lecke: műveletek és beépített függvények** (`python-4-muveletek`: `// % **`,
+műveleti sorrend, `+=`, `round`, `abs`, `max`, `min`), VS Code-os példákkal, a terv szerint.
+
+**Tanulság:** ha az ág PR-jét beolvasztották, a `--force-with-lease` push tiltott ebben a környezetben; helyette `git merge origin/main`
+az ágba, és új PR.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 este (Python-sorozat: terv + 1–2. lecke)
 
 **Hol tartunk:**
 - **Terv:** `docs/python-terv.md`, 10 lecke a nulláról (print → változók → input → műveletek → if → while → for → listák →

@@ -281,7 +281,7 @@
       { cap: "Ebben a programban a harmadik sorban hiba van: a Harmadik szó nincs idézőjelben. Nézzük, mi történik!", html: srcHtml(s1, 0) + outBox("") },
       { cap: "Az első két sor rendben van, lefut. A kimenetben már ott van két sor.", html: srcHtml(s1, 2) + outBox("Első sor\nMásodik sor") },
       { cap: "A harmadik sornál a gép megáll: nem ismeri a Harmadik nevet. Ez NameError. A negyedik sor már nem fut le.", html: srcHtml(s1, 3) + outBox("Első sor\nMásodik sor") + '<p class="big" style="color:var(--bad);margin-top:8px">NameError</p>' },
-      { cap: "Így néz ki a hibaüzenet a gépen, például IDLE-ben vagy Thonnyban. Alulról olvasd: a hiba fajtája és az üzenet, fölötte a sor száma.", html: tb },
+      { cap: "Így néz ki a hibaüzenet a VS Code termináljában. Alulról olvasd: a hiba fajtája és az üzenet, fölötte a sor száma.", html: tb },
       { cap: "Ebben a futtatóban rövidebb: a sor száma, a hiba, és alatta egy magyar tipp a javításhoz.", html: '<pre class="term">Első sor\nMásodik sor\n<span class="e">✖ 3. sor: NameError: name \'Harmadik\' is not defined</span>\n<span class="h">💡 ' + esc(P.hint("NameError", "NameError: name 'Harmadik' is not defined")) + "</span></pre>" },
       { cap: "Most a harmadik sorból hiányzik a záró idézőjel. Ez szintaktikai hiba: a Python nem érti a programot.", html: srcHtml(s2, 3) + outBox("") },
       { cap: "Szintaktikai hibánál a program el sem indul: még az első két sor sem fut le! A kimenet üres, csak a hibaüzenet jelenik meg.", html: '<pre class="term"><span class="e">✖ 3. sor: SyntaxError: unterminated string literal (detected at line 3)</span>\n<span class="h">💡 ' + esc(P.hint("SyntaxError", "SyntaxError: unterminated string literal")) + "</span></pre>" },
@@ -308,7 +308,7 @@
       "<p>A program <b>utasítások sora</b>, mint egy recept. A gép:</p><ol><li><b>fentről lefelé</b> halad, egyszerre egy sort hajt végre;</li><li><b>szó szerint</b> veszi, amit írtál: nem találgat, és nem javítja ki az elírást;</li><li>amit kiír, az a <b>kimenet</b>.</li></ol>" +
       ex("sorrend") + "<p>Cseréld fel a sorokat a futtatóban, és futtasd újra: a kimenet is felcserélődik.</p>" + playBtn("sorrend") },
     { k: "Futtatás", t: "Hol írod, és hol fut?", h:
-      "<ul><li>A Python-programot egy szövegfájlba írod (a neve <code>.py</code>-ra végződik), egy fejlesztőkörnyezetben: például IDLE, Thonny vagy VS Code. Ott a <b>Run</b> gomb (vagy az F5) futtatja.</li><li>Ezen az oldalon a fenti fekete dobozba írsz, és a <b>▶ Futtatás</b> gomb futtatja. A kimenet mellette jelenik meg.</li><li>Az első futtatáskor a böngésző letölti a Pythont (kb. 10 MB), ez fél percig is tarthat. Utána gyors.</li></ul>" +
+      "<ul><li>A Python-programot egy szövegfájlba írod (a neve <code>.py</code>-ra végződik), egy fejlesztőkörnyezetben. Az iskolában ez a <b>VS Code</b>: a jobb felső sarokban a ▶ gomb (Run Python File) futtatja, és a kimenet alul, a <b>terminálban</b> jelenik meg.</li><li>Ezen az oldalon a fenti fekete dobozba írsz, és a <b>▶ Futtatás</b> gomb futtatja. A kimenet mellette jelenik meg.</li><li>Az első futtatáskor a böngésző letölti a Pythont (kb. 10 MB), ez fél percig is tarthat. Utána gyors.</li></ul>" +
       "<div class='note'><b>Tipp:</b> kicsiben haladj. Írj egy-két sort, futtasd, nézd meg, mit csinál. Ha hibás, rögtön tudod, melyik sor rontotta el.</div>" },
     { k: "print", t: "A print: kiírás a képernyőre", h:
       "<p>A <code>print</code> kiírja, amit a zárójelébe teszel. A szöveget <b>idézőjelbe</b> kell tenni.</p>" + ex("print1") +
@@ -333,7 +333,7 @@
       ex("halado") +
       "<ul><li>A <code>\\n</code> a szövegben az <b>új sor jele</b>: ott sortörés lesz.</li><li>A <code>sep=\"-\"</code> megmondja, mi kerüljön az értékek közé (alapból szóköz).</li><li>Az <code>end=\" \"</code> megmondja, mi kerüljön a kiírás végére (alapból új sor). Ha nem új sor, a következő <code>print</code> ugyanabba a sorba ír.</li></ul>" },
     { k: "Hibaüzenet", t: "Hogyan olvasd el a hibaüzenetet?", h:
-      "<p>Ha a gép nem tudja végrehajtani a programot, <b>hibaüzenetet</b> ír. Ez nem baj: megmondja, mi a hiba, és hol. A gépen (IDLE, Thonny) így néz ki:</p>" +
+      "<p>Ha a gép nem tudja végrehajtani a programot, <b>hibaüzenetet</b> ír. Ez nem baj: megmondja, mi a hiba, és hol. A VS Code termináljában így néz ki:</p>" +
       '<pre class="tb">Traceback (most recent call last):\n  File "program.py", <span class="tl">line 3</span>, in &lt;module&gt;\n    print(Harmadik)\n          ^^^^^^^^\n<span class="tl">NameError: name \'Harmadik\' is not defined</span></pre>' +
       "<ol><li><b>Alulról olvasd.</b> Az utolsó sor a hiba fajtája (NameError) és az üzenet (a Harmadik név nincs megadva).</li><li>Fölötte: melyik sorban (line 3), és maga a sor, a hibás résznél kis kalapokkal (<code>^^^</code>).</li><li>Ez a futtató rövidebben írja: <b>✖ 3. sor: NameError…</b>, alatta egy 💡 magyar tipp.</li></ol>" +
       ex("hiba1") + "<p>Itt az első két sor lefutott, a negyedik már nem. <b>Szintaktikai hibánál</b> (SyntaxError) viszont egy sor sem fut le, mert a Python el sem kezdi:</p>" + ex("hiba2") + playBtn("hiba") },

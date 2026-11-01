@@ -1,0 +1,420 @@
+<!--@HEAD-->
+<title>Python 3: input</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-bar .run{color:#89d185;font-size:.95rem}
+.vs-tab{display:flex;gap:16px;background:#252526;padding:4px 12px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#9da5b4;border-top:1px solid #3c3c3c}
+.vs-tab b{color:#e7e7e7;border-bottom:1px solid #e7e7e7}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.5;font-family:var(--mono)}
+.vs .ps{color:#9da5b4}
+.vs .ty{color:#7fb8ff}
+.vs .er{color:#f48771}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.vs .code-l{color:#d4d4d4}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 3. lecke</span>
+  <h1>Adatbekérés: <code>input</code> és a típusváltás</h1>
+  <p class="lead">Eddig a program mindig ugyanazt írta ki. Az <code>input</code>-tal kérdezni tud: megáll, megvárja, amit a felhasználó begépel, és azzal dolgozik tovább. Egy fontos szabály: az <code>input</code> mindig <b>szöveget</b> ad, ezért a számokat át kell alakítani.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: a bemeneteket a „Bemenetek” mezőbe írd, soronként egyet</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az <a href="python-1-kiiras.html">1.</a> és a <a href="python-2-valtozok.html">2. lecke</a> (print, változók, típusok, <code>int()</code>, f-string). <b>Ebben a leckében:</b> az <code>input</code>, a kérdés szövege, <code>int(input(…))</code> és <code>float(input(…))</code>, több bemenet, a program váza, és hogyan megy mindez a <b>VS Code</b> termináljában.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát a bemenetekkel együtt, és le is futtatja. Írd át a bemeneteket, és futtasd újra!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="input" aria-selected="true">Mit csinál az input?</button>
+    <button class="tab" data-m="int" aria-selected="false">53 vagy 8?</button>
+    <button class="tab" data-m="vs" aria-selected="false">A VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. A „Mit ír ki?” feladatnál csak a <code>print</code> kimenetét írd be (a kérdést és a begépelt választ nem). Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép <b>két különböző bemenettel</b> is lefuttatja a programodat, és megnézi, jó-e az eredmény; a kiírt mondatod lehet más, mint a mintában, de az eredményt f-stringgel írd ki. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">input = szöveg</span><span>Akkor is, ha számot gépelsz be: <code>"15"</code>. Számoláshoz <code>int(…)</code> vagy <code>float(…)</code> kell köré.</span></div>
+    <div class="trick"><span class="t">Melyik kell?</span><span>Egész szám (kor, darab, ár) → <code>int</code>. Tizedes tört (magasság, átlag) → <code>float</code>. Név, szó, mondat → semmi.</span></div>
+    <div class="trick"><span class="t">A program váza</span><span>1. bekérés (típusváltással) · 2. számolás változóba · 3. kiírás f-stringgel.</span></div>
+    <div class="trick"><span class="t">VS Code</span><span>A kérdés a terminálban jelenik meg: kattints oda, gépeld be a választ, és nyomj Entert.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-2-valtozok.html">← 2. lecke: változók</a>
+    <a class="btn primary" href="python-dolgozat.html">Gyakorolj a dolgozat-leckén is →</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s\/\s/g, " osztva "], [/\s\*\s/g, " szorozva "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const NEV = ["Kovrat", "Anna", "Bence", "Lili", "Máté", "Réka", "Dani", "Petra", "Zoli", "Dóra"];
+    const SZIN = ["kék", "piros", "zöld", "fekete", "sárga", "lila"];
+    const ERE = ["ha", "la", "jó", "na", "py"];
+    const SZOR = { 2: "2-szer", 3: "3-szor", 4: "4-szer", 5: "5-ször", 6: "6-szor", 7: "7-szer", 8: "8-szor", 9: "9-szer" };
+    const BAN = y => [7, 9].includes(y % 10) ? "-ben" : "-ban";
+    const two = a => shuffle(a).slice(0, 2);
+    const S = x => String(x);
+    const tokS = s => ({ s }), tokL = s => ({ s, line: true });
+    const has = (re, m) => [re, m];
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    const INT = has(/int\s*\(/, "a számot alakítsd át: int(input(…)).");
+    const FLT = has(/float\s*\(/, "a tizedes törthöz float(input(…)) kell.");
+    // két próba: a két bemenet-lista különbözzön
+    const T2 = (i1, i2, f) => { let g = 0; while (i1.join("|") === i2.join("|") && g++ < 20) i2 = i2.map((x, k) => /^\d+$/.test(x) ? S(+x + 1 + k) : x); return [{ ins: i1, exp: f(i1) }, { ins: i2, exp: f(i2) }]; };
+    // tizedes tört két jeggyel, 0 és 5 nélkül (a kerekítés ne essen határra)
+    const dec = (lo, hi) => rnd(lo, hi) + "." + pick([1, 2, 3, 4, 6, 7, 8, 9]);
+
+    /* ---- A diák példái (a py-check lefuttatja a megadott bemenetekkel) ---- */
+    const EX = {
+      hero: { code: J('nev = input("Hogy hívnak? ")', 'kor = int(input("Hány éves vagy? "))', 'print(f"Szia, {nev}!")', 'print(f"Jövőre {kor + 1} éves leszel.")'), ins: ["Kovrat", "15"] },
+      elso: { code: J('nev = input("Hogy hívnak? ")', 'print(f"Szia, {nev}!")'), ins: ["Kovrat"] },
+      kerdes: { code: J('szin = input("Mi a kedvenc színed? ")', 'print(f"A {szin} szép szín.")', "", 'print("Mi a kedvenc ételed?")', "etel = input()", 'print(f"Én is szeretem: {etel}")'), ins: ["kék", "pizza"] },
+      szoveg: { code: J('a = input("Első szám: ")', 'b = input("Második szám: ")', "print(a + b)", "print(type(a))"), ins: ["5", "3"] },
+      szam: { code: J('a = int(input("Első szám: "))', 'b = int(input("Második szám: "))', 'print(f"Az összegük: {a + b}")', "print(type(a))"), ins: ["5", "3"] },
+      ketlepes: { code: J('szoveg = input("Hány éves vagy? ")', "kor = int(szoveg)", 'print(f"Tíz év múlva {kor + 10} leszel.")'), ins: ["15"] },
+      flt: { code: J('m = float(input("Magasságod méterben: "))', 'print(f"Centiméterben: {m * 100}")', 'print(f"Fele: {m / 2}")'), ins: ["1.5"] },
+      tobb: { code: J('vez = input("Vezetéknév: ")', 'ker = input("Keresztnév: ")', 'ev = int(input("Születési év: "))', 'print(f"{vez} {ker} idén {2026 - ev} éves lesz.")'), ins: ["Kiss", "Anna", "2011"] },
+      vaz: { code: J("# 1. bekérés", 'ar = int(input("Egy füzet ára (Ft): "))', 'db = int(input("Hány darab? "))', "# 2. számolás", "fizetendo = ar * db", "# 3. kiírás", 'print(f"Fizetendő: {fizetendo} Ft")'), ins: ["350", "4"] },
+      hibaT: { code: J('kor = input("Hány éves vagy? ")', 'print(f"Jövőre {kor + 1} éves leszel.")'), ins: ["15"], err: "TypeError" },
+      hibaV: { code: J('x = int(input("Egy szám: "))', "print(x * 2)"), ins: ["3.5"], err: "ValueError" },
+      hibaE: { code: J('a = int(input("Első: "))', 'b = int(input("Második: "))', "print(a + b)"), ins: ["5"], err: "EOFError" }
+    };
+
+    /* ---- „Mit ír ki?” (csak a print kimenete) ---- */
+    const KIIR = [
+      [
+        () => { const n = pick(NEV); return pick([
+          { code: J('nev = input("Neved: ")', 'print("Szia,", nev)'), ins: [n], ans: "Szia, " + n, sol: "Az input a begépelt szöveget adja: " + n + ". Ez kerül a nev változóba." },
+          { code: J("nev = input()", 'print(f"Szia, {nev}!")'), ins: [n], ans: "Szia, " + n + "!", sol: "Az input zárójele üres is lehet: akkor nem ír ki kérdést, csak vár." }]); },
+        () => { const k = rnd(10, 17), d = rnd(1, 9); return { code: J('kor = int(input("Kor: "))', "print(kor + " + d + ")"), ins: [S(k)], ans: S(k + d), sol: "Az int() számmá alakítja a \"" + k + "\" szöveget, így összeadható: " + k + " + " + d + " = " + (k + d) + "." }; },
+        () => { const s = pick(SZIN); return { code: J('szin = input("Kedvenc színed? ")', 'print("A kedvenc színed:", szin)'), ins: [s], ans: "A kedvenc színed: " + s, sol: "A kérdés és a begépelt válasz nem a print kimenete; csak a print sora számít." }; }
+      ],
+      [
+        () => { const a = rnd(1, 9), b = rnd(1, 9); return pick([
+          { code: J("a = input()", "b = input()", "print(a + b)"), ins: [S(a), S(b)], ans: S(a) + b, sol: "Csapda: az input szöveget ad, a + két szöveget összefűz: " + a + b + "." },
+          { code: J("a = int(input())", "b = int(input())", "print(a + b)"), ins: [S(a), S(b)], ans: S(a + b), sol: "Az int() miatt mindkettő szám: " + a + " + " + b + " = " + (a + b) + "." }]); },
+        () => { const x = rnd(2, 9), n = rnd(2, 4); return pick([
+          { code: J("x = input()", "print(x * " + n + ")"), ins: [S(x)], ans: S(x).repeat(n), sol: "Az x szöveg (\"" + x + "\"): a * ismétel, " + SZOR[n] + " egymás után." },
+          { code: J("x = int(input())", "print(x * " + n + ")"), ins: [S(x)], ans: S(x * n), sol: "Az x szám: " + x + " · " + n + " = " + x * n + "." }]); },
+        () => { const h = rnd(3, 9) * 2 + 1; return { code: J('m = float(input("Hossz: "))', "print(m / 2)"), ins: [S(h)], ans: S(h / 2), sol: "A float() tizedes törtté alakít; " + h + " / 2 = " + h / 2 + "." }; },
+        () => { const n = pick(NEV), k = rnd(13, 17); return { code: J("nev = input()", "kor = int(input())", 'print(f"{nev} {kor * 2}")'), ins: [n, S(k)], ans: n + " " + 2 * k, sol: "Az első bemenet a nev (szöveg), a második a kor (szám). A sorrend számít!" }; }
+      ],
+      [
+        () => { const a = rnd(2, 9), s = pick(ERE); return { code: J("szo = input()", "db = int(input())", "print(szo * db)"), ins: [s, S(a)], ans: s.repeat(a), sol: "Szöveg szorozva egész számmal: ismétlés, " + SZOR[a] + "." }; },
+        () => { const a = rnd(1, 9), b = rnd(1, 9); return { code: J("a = input()", "b = input()", "print(int(a + b) + 1)"), ins: [S(a), S(b)], ans: S(Number(S(a) + b) + 1), sol: "Előbb a két szöveg összefűződik (\"" + a + b + "\"), ezt alakítja számmá az int(), és ehhez ad egyet." }; },
+        () => { const x = rnd(2, 9); return { code: J("x = input()", "x = int(x)", "x = x + x", "print(x)"), ins: [S(x)], ans: S(2 * x), sol: "A második sorban az x már szám lett, így az x + x összeadás: " + 2 * x + "." }; },
+        () => { const a = rnd(1, 9), b = rnd(1, 9); return { code: J("a = float(input())", "b = int(input())", "print(a + b)"), ins: [S(a), S(b)], ans: C.pyF(a + b), sol: "A float() miatt az a változó tizedes tört lett (" + a + ".0), ezért az összeg is float: " + C.pyF(a + b) + "." }; },
+        () => { const n = pick(NEV), m = pick(NEV.filter(x => x !== n)); return { code: J('a = input("Első név: ")', 'b = input("Második név: ")', "a, b = b, a", 'print(f"{a} és {b}")'), ins: [n, m], ans: m + " és " + n, sol: "A két bemenet a-ba és b-be kerül, aztán megcseréljük őket." }; }
+      ]
+    ];
+
+    /* ---- „Milyen típusú lesz?” (bemenettel; a py-check ugyanazzal a bemenettel futtatja) ---- */
+    const TN = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai érték)" };
+    const TIPUS = [
+      [
+        () => { const k = S(rnd(10, 99)); return pick([{ pre: "x = input()", expr: "x", ins: [k], type: "str", why: "Az input mindig szöveget ad, számjegyekből is." }, { pre: "x = int(input())", expr: "x", ins: [k], type: "int", why: "Az int() egész számmá alakította." }]); },
+        () => { const n = pick(NEV); return { pre: "x = input()", expr: "x", ins: [n], type: "str", why: "Az input szöveget ad." }; }
+      ],
+      [
+        () => { const k = S(rnd(2, 9)); return pick([{ pre: "x = float(input())", expr: "x", ins: [k], type: "float", why: "A float() tizedes törtté alakította (egész számot is: " + k + ".0)." }, { pre: "x = input()", expr: "x * 2", ins: [k], type: "str", why: "Az x szöveg; szöveg * 2 ismétlés, az eredmény is szöveg." }, { pre: "x = int(input())", expr: "x / 2", ins: [k], type: "float", why: "Az x egész szám, de a / osztás eredménye mindig float." }]); },
+        () => { const k = dec(1, 9); return { pre: "x = input()", expr: "x", ins: [k], type: "str", why: "Az input szöveget ad, akkor is, ha tizedes törtet gépeltek be." }; }
+      ],
+      [
+        () => { const a = S(rnd(2, 9)), b = S(rnd(2, 9)); return pick([{ pre: J("a = input()", "b = int(input())"), expr: "a * b", ins: [a, b], type: "str", why: "Az a szöveg, a b egész szám: szöveg * egész szám ismétlés, az eredmény szöveg." }, { pre: J("a = int(input())", "b = float(input())"), expr: "a + b", ins: [a, b], type: "float", why: "Ha az egyik tag float, az összeg is float." }, { pre: J("a = input()", "b = input()"), expr: "int(a + b)", ins: [a, b], type: "int", why: "Előbb a két szöveg összefűződik, aztán az int() egész számmá alakítja." }]); },
+        () => { const k = S(rnd(10, 99)); return pick([{ pre: J("x = input()", "y = str(int(x) + 1)"), expr: "y", ins: [k], type: "str", why: "Számmá alakította, hozzáadott egyet, de a végén az str() újra szöveggé alakította." }, { pre: "x = int(input())", expr: 'f"{x} éves"', ins: [k], type: "str", why: "Az f-string mindig szöveget ad." }]); }
+      ]
+    ];
+
+    /* ---- „Melyik kell?” (nincs futtatás: fogalmi kérdés) ---- */
+    const MI = { i: "int(input(…))", f: "float(input(…))", s: "input(…) magában" };
+    const MELYIK = [
+      [["az életkorod (években)", "i", "Egész szám, számolni is akarunk vele."], ["a neved", "s", "A név szöveg: nem kell átalakítani."], ["hány testvéred van", "i", "Darabszám: egész szám."], ["a kedvenc színed", "s", "Szöveg."], ["egy termék ára forintban", "i", "Egész forint: int."], ["a lakóhelyed", "s", "Szöveg."]],
+      [["a testmagasságod méterben (például 1.75)", "f", "Tizedes tört: float. Az int(\"1.75\") ValueError lenne."], ["a hőmérséklet (például 21.5)", "f", "Tizedes tört: float."], ["egy dolgozat pontszáma (például 37)", "i", "Egész szám."], ["egy e-mail-cím", "s", "Szöveg."], ["a futásidőd másodpercben, tizedekkel (például 12.4)", "f", "Tizedes tört: float."], ["egy szó, amit visszafelé akarsz kiírni", "s", "Szöveg."]],
+      [["egy telefonszám (például 06301234567)", "s", "Szöveg: nem számolunk vele, és számként az eleje (0) elveszne."], ["egy házszám (például 12/A)", "s", "Szöveg: betű és perjel is lehet benne."], ["a jegyeid átlaga (például 4.25)", "f", "Tizedes tört: float."], ["a születési éved (például 2011)", "i", "Egész szám, például a kor kiszámolásához."], ["egy összeg euróban, centtel (például 12.99)", "f", "Tizedes tört: float."], ["egy jelszó (például abc123)", "s", "Szöveg: betűk és számok vegyesen, nem számolunk vele."]]
+    ];
+
+    /* ---- „Írd meg!”: két különböző bemenettel fut, a kimenetben a várt értékeket keresi ---- */
+    const WRITE = [
+      [
+        () => { const [n1, n2] = two(NEV); return { q: "Kérd be a felhasználó nevét, majd köszöntsd f-stringgel! Például ha a bemenet <b>" + n1 + "</b>, a kimenet:<pre class='code'>Szia, " + n1 + "!</pre>",
+          code: J('nev = input("Hogy hívnak? ")', 'print(f"Szia, {nev}!")'), tests: T2([n1], [n2], i => [tokS(i[0])]), must: [INP], fstr: true, ex: "A név szöveg: nem kell köré int()." }; },
+        () => { const d = pick([1, 5, 10]); return { q: "Kérd be a felhasználó életkorát (egész szám), és írd ki f-stringgel, hány éves lesz " + d + " év múlva!",
+          code: J('kor = int(input("Hány éves vagy? "))', 'print(f"' + d + ' év múlva {kor + ' + d + '} éves leszel.")'), tests: T2([S(rnd(10, 17))], [S(rnd(30, 70))], i => [+i[0] + d]), must: [INP, INT], fstr: true, ex: "Számolni csak számmal lehet: int(input(…))." }; },
+        () => ({ q: "Kérj be egy egész számot, és írd ki f-stringgel a kétszeresét!",
+          code: J('szam = int(input("Adj meg egy egész számot: "))', 'print(f"A kétszerese: {szam * 2}")'), tests: T2([S(rnd(3, 49))], [S(rnd(50, 500))], i => [2 * i[0]]), must: [INP, INT], fstr: true, ex: "int() nélkül a szöveg ismétlődne: \"7\" * 2 = 77." }),
+        () => { const [s1, s2] = two(SZIN); return { q: "Kérd be a felhasználó kedvenc színét, és írd ki f-stringgel, például így: <code>A kedvenc színed: kék</code>!",
+          code: J('szin = input("Mi a kedvenc színed? ")', 'print(f"A kedvenc színed: {szin}")'), tests: T2([s1], [s2], i => [tokS(i[0])]), must: [INP], fstr: true, ex: "Szöveghez nem kell átalakítás." }; }
+      ],
+      [
+        () => ({ q: "Kérj be két egész számot, és írd ki f-stringgel az összegüket és a szorzatukat!",
+          code: J('a = int(input("Az első szám: "))', 'b = int(input("A második szám: "))', 'print(f"Az összegük: {a + b}")', 'print(f"A szorzatuk: {a * b}")'), tests: T2([S(rnd(2, 30)), S(rnd(2, 30))], [S(rnd(31, 99)), S(rnd(2, 12))], i => [+i[0] + +i[1], i[0] * i[1]]), must: [INP, INT], fstr: true, ex: "Két input, mindkettő köré int()." }),
+        () => { const [n1, n2] = two(NEV); return { q: "Kérd be a felhasználó nevét és életkorát! Írd ki f-stringgel egy mondatban, hány éves lesz jövőre, például: <code>" + n1 + " jövőre 16 éves lesz.</code>",
+          code: J('nev = input("Neved: ")', 'kor = int(input("Korod: "))', 'print(f"{nev} jövőre {kor + 1} éves lesz.")'), tests: T2([n1, S(rnd(10, 17))], [n2, S(rnd(18, 60))], i => [tokS(i[0]), +i[1] + 1]), must: [INP, INT], fstr: true, ex: "A név maradhat szöveg, a kor köré int() kell." }; },
+        () => ({ q: "Kérd be a testmagasságot centiméterben (egész szám), és írd ki f-stringgel méterben (oszd el 100-zal)!",
+          code: J('cm = int(input("Magasságod centiméterben: "))', 'print(f"Méterben: {cm / 100}")'), tests: T2([S(rnd(150, 199))], [S(rnd(120, 149))], i => [i[0] / 100]), must: [INP, INT], fstr: true, ex: "A / tizedes törtet ad: 172 / 100 = 1.72." }),
+        () => ({ q: "Egy téglalap két oldalát kérd be (egész számok), és írd ki f-stringgel a területét (a · b) és a kerületét (2 · (a + b))!",
+          code: J('a = int(input("Az egyik oldal: "))', 'b = int(input("A másik oldal: "))', 'print(f"Terület: {a * b}")', 'print(f"Kerület: {2 * (a + b)}")'), tests: T2([S(rnd(2, 20)), S(rnd(2, 20))], [S(rnd(21, 60)), S(rnd(3, 15))], i => [i[0] * i[1], 2 * (+i[0] + +i[1])]), must: [INP, INT], fstr: true, ex: "A zárójel kell: 2 * (a + b)." }),
+        () => ({ q: "Kérj be egy tizedes törtet (például 2.5), és írd ki f-stringgel a háromszorosát!",
+          code: J('x = float(input("Egy tizedes tört: "))', 'print(f"A háromszorosa: {x * 3}")'), tests: T2([dec(1, 9)], [dec(10, 40)], i => [3 * i[0]]), must: [INP, FLT], fstr: true, ex: "Tizedes törthöz float() kell; az int(\"2.5\") ValueError." })
+      ],
+      [
+        () => ({ q: "Kérj be három egész számot (például dolgozatjegyeket), és írd ki f-stringgel az átlagukat!",
+          code: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'c = int(input("3. jegy: "))', "atlag = (a + b + c) / 3", 'print(f"Az átlag: {atlag}")'), tests: T2([S(rnd(1, 5)), S(rnd(1, 5)), S(rnd(1, 5))], [S(rnd(2, 5)), S(rnd(2, 5)), S(rnd(2, 5))], i => [(+i[0] + +i[1] + +i[2]) / 3]), must: [INP, INT], fstr: true, ex: "Zárójel kell: (a + b + c) / 3. Zárójel nélkül csak a c-t osztaná el." }),
+        () => { const cel = rnd(2026, 2030); return { q: "Kérd be a születési évet, és írd ki f-stringgel, hány éves lesz a felhasználó " + cel + BAN(cel) + "!",
+          code: J('ev = int(input("Születési éved: "))', 'print(f"' + cel + BAN(cel) + ' {' + cel + ' - ev} éves leszel.")'), tests: T2([S(rnd(2008, 2014))], [S(rnd(1970, 2000))], i => [cel - i[0]]), must: [INP, INT], fstr: true, ex: "A kivonás csak számmal megy: int(input(…))." }; },
+        () => { const [s1, s2] = two(ERE); return { q: "Kérj be egy szót és egy egész számot! Írd ki a szót annyiszor egymás után (egy sorban, szóköz nélkül), ahányszor a szám mondja. Például <code>ha</code> és <code>3</code> esetén: <code>hahaha</code>.",
+          code: J('szo = input("Egy szó: ")', 'db = int(input("Hányszor? "))', 'print(f"{szo * db}")'), tests: T2([s1, S(rnd(2, 5))], [s2, S(rnd(6, 9))], i => [tokL(i[0].repeat(+i[1]))]), must: [INP, INT], fstr: true, ex: "A szó maradjon szöveg, a szám legyen int: szöveg * int = ismétlés." }; },
+        () => ({ q: "Kérj be egy hőmérsékletet Celsius-fokban (tizedes tört is lehet), és írd ki f-stringgel Fahrenheitben! F = C · 1.8 + 32",
+          code: J('c = float(input("Hőmérséklet (°C): "))', "f = c * 1.8 + 32", 'print(f"{c} °C = {f} °F")'), tests: T2([S(rnd(-10, 40))], [dec(1, 30)], i => [i[0] * 1.8 + 32]), must: [INP, FLT], fstr: true, ex: "A tizedesjel pont: 1.8. A float() a tizedes bemenetet is elfogadja." }),
+        () => ({ q: "Kérd be egy termék árát (egész forint) és a darabszámot, majd a kifizetett összeget! Írd ki f-stringgel, mennyi a fizetendő, és mennyi a visszajáró!",
+          code: J('ar = int(input("Ár (Ft): "))', 'db = int(input("Darab: "))', 'fizetett = int(input("Fizetett összeg (Ft): "))', "fizetendo = ar * db", 'print(f"Fizetendő: {fizetendo} Ft")', 'print(f"Visszajáró: {fizetett - fizetendo} Ft")'),
+          tests: (() => { const mk = () => { const a = rnd(12, 99) * 10, d = rnd(2, 5); return [S(a), S(d), S(Math.ceil(a * d / 1000) * 1000 + pick([0, 1000]))]; }; return T2(mk(), mk(), i => [i[0] * i[1], i[2] - i[0] * i[1]]); })(), must: [INP, INT], fstr: true, ex: "Három input, mindhárom szám. Előbb a fizetendő, abból a visszajáró." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” (a megadott bemenettel) ---- */
+    const HIBA = [
+      [
+        () => { const k = S(rnd(10, 17)); return pick([
+          { code: J('kor = input("Kor: ")', "print(kor + 1)"), ins: [k], err: "TypeError", fix: J('kor = int(input("Kor: "))', "print(kor + 1)"), sol: "Az input szöveget ad (\"" + k + "\"): szöveghez nem lehet számot adni. int(input(…)) kell." },
+          { code: J('kor = int(input("Kor: "))', "print(kor + 1)"), ins: [k], err: "", sol: "Hibátlan: az int() számmá alakította." }]); },
+        () => { const d = dec(1, 9); return pick([
+          { code: J('x = int(input("Szám: "))', "print(x)"), ins: [d], err: "ValueError", fix: J('x = float(input("Szám: "))', "print(x)"), sol: "A \"" + d + "\" nem egész szám, az int() nem tudja átalakítani. Tizedes törthöz float() kell." },
+          { code: J('x = float(input("Szám: "))', "print(x)"), ins: [d], err: "", sol: "Hibátlan: a float() a tizedes törtet is átalakítja." }]); }
+      ],
+      [
+        () => { const k = S(rnd(10, 17)); return pick([
+          { code: J('kor = int(input("Kor: ")', "print(kor)"), ins: [k], err: "SyntaxError", fix: J('kor = int(input("Kor: "))', "print(kor)"), sol: "Két nyitó zárójel van, de csak egy záró. A végére két záró zárójel kell: int(input(\"Kor: \"))." },
+          { code: J('kor = int(input("Kor: "))', "print(kor)"), ins: [k], err: "", sol: "Hibátlan: két nyitó és két záró zárójel." }]); },
+        () => { const a = rnd(1, 9), b = rnd(1, 9); return pick([
+          { code: J("x = float(input())", "print(x)"), ins: [a + "," + b], err: "ValueError", sol: "A beírt " + a + "," + b + " vesszővel nem szám; ponttal kell beírni: " + a + "." + b + ". (A program jó, a bemenet rossz!)" },
+          { code: J("a = input()", "b = input()", "print(a - b)"), ins: [S(a), S(b)], err: "TypeError", fix: J("a = int(input())", "b = int(input())", "print(a - b)"), sol: "Két szöveget nem lehet kivonni egymásból. int() kell mindkettő köré." },
+          { code: J("a = input()", "b = input()", "print(a + b)"), ins: [S(a), S(b)], err: "", sol: "Nincs hibaüzenet, de a kimenet " + a + b + ", mert összefűzi a szövegeket. A program fut, csak rosszul számol!" }]); }
+      ],
+      [
+        () => { const n = pick(NEV); return pick([
+          { code: J('kor = int(input("Kor: "))', "print(kor)"), ins: [n], err: "ValueError", sol: "A felhasználó szám helyett nevet írt be: az int(\"" + n + "\") ValueError. (Ezt később, a try-jal lehet majd kezelni.)" },
+          { code: J('input("Neved: ")', 'print(f"Szia, {nev}!")'), ins: [n], err: "NameError", fix: J('nev = input("Neved: ")', 'print(f"Szia, {nev}!")'), sol: "Az input eredményét nem tette változóba, így nincs nev nevű változó. nev = input(…) kell." },
+          { code: J('nev = input("Neved: ")', 'print(f"Szia, {nev}!")'), ins: [n], err: "", sol: "Hibátlan." }]); },
+        () => { const k = S(rnd(2, 9)); return pick([
+          { code: J('x = input("Szám: ")', "print(x * 2)"), ins: [k], err: "", sol: "Nincs hiba: szöveg * 2 ismétlés, ezért " + k + k + " lesz a kimenet." },
+          { code: J('x = input("Szám: ")', "print(x * 2.5)"), ins: [k], err: "TypeError", fix: J('x = float(input("Szám: "))', "print(x * 2.5)"), sol: "Szöveget nem lehet tizedes törttel szorozni. float(input(…)) kell." },
+          { code: J('x = int(input("Szám: "))', "print(x / 0)"), ins: [k], err: "ZeroDivisionError", fix: J('x = int(input("Szám: "))', "print(x / 2)"), sol: "Nullával nem lehet osztani." }]); }
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "TypeError", "ValueError", "ZeroDivisionError"];
+
+    /* ---- „Javítsd ki!” (két bemenettel ellenőrizve) ---- */
+    const JAVIT = [
+      [
+        () => ({ q: "Ennek a programnak két egész szám összegét kellene kiírnia, de 5 és 3 bemenetre 53-at ír ki. Javítsd ki!",
+          starter: J('a = input("Első szám: ")', 'b = input("Második szám: ")', 'print(f"Az összeg: {a + b}")') + "\n", code: J('a = int(input("Első szám: "))', 'b = int(input("Második szám: "))', 'print(f"Az összeg: {a + b}")'),
+          tests: T2([S(rnd(2, 9)), S(rnd(2, 9))], [S(rnd(10, 60)), S(rnd(10, 60))], i => [+i[0] + +i[1]]), fstr: true, ex: "Kimaradt az int(): a két szöveget összefűzte. int(input(…)) mindkettőhöz." }),
+        () => { const [n1, n2] = two(NEV); return { q: "Ennek a programnak a beírt nevet kellene köszöntenie (például <code>Szia, " + n1 + "!</code>), de hibás. Javítsd ki!",
+          starter: J('input("Neved: ")', 'print(f"Szia, {nev}!")') + "\n", code: J('nev = input("Neved: ")', 'print(f"Szia, {nev}!")'), tests: T2([n1], [n2], i => [tokS(i[0])]), fstr: true, ex: "Az input eredményét változóba kell tenni: nev = input(…)." }; }
+      ],
+      [
+        () => ({ q: "Ennek a programnak a beírt életkorhoz 10-et kellene adnia, de hibás. Javítsd ki!",
+          starter: J('kor = int(input("Kor: ")', 'print(f"10 év múlva: {kor + 10}")') + "\n", code: J('kor = int(input("Kor: "))', 'print(f"10 év múlva: {kor + 10}")'), tests: T2([S(rnd(10, 17))], [S(rnd(20, 60))], i => [+i[0] + 10]), fstr: true, ex: "Hiányzott egy záró zárójel: int(input(\"Kor: \"))." }),
+        () => ({ q: "Ennek a programnak egy tizedes tört (például 2.5) kétszeresét kellene kiírnia, de 2.5 bemenetre hibával leáll. Javítsd ki!",
+          starter: J('x = int(input("Tizedes tört: "))', 'print(f"A kétszerese: {x * 2}")') + "\n", code: J('x = float(input("Tizedes tört: "))', 'print(f"A kétszerese: {x * 2}")'), tests: T2([dec(1, 9)], [dec(10, 50)], i => [2 * i[0]]), must: [FLT], fstr: true, ex: "Tizedes törthöz float() kell, nem int()." }),
+        () => ({ q: "Ennek a programnak ki kellene írnia a beírt szám háromszorosát, de nem a jót írja ki. Javítsd ki!",
+          starter: J('szam = input("Egy egész szám: ")', 'print(f"A háromszorosa: {szam * 3}")') + "\n", code: J('szam = int(input("Egy egész szám: "))', 'print(f"A háromszorosa: {szam * 3}")'), tests: T2([S(rnd(2, 9))], [S(rnd(10, 99))], i => [3 * i[0]]), must: [INT], fstr: true, ex: "Szövegként a * ismétel (\"4\" * 3 = 444). int() kell." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak három jegy átlagát kellene kiírnia, de két hiba is van benne. Javítsd ki mindkettőt!",
+          starter: J('a = int(input("1. jegy: "))', 'b = input("2. jegy: ")', 'c = int(input("3. jegy: "))', 'print(f"Átlag: {a + b + c / 3}")') + "\n", code: J('a = int(input("1. jegy: "))', 'b = int(input("2. jegy: "))', 'c = int(input("3. jegy: "))', 'print(f"Átlag: {(a + b + c) / 3}")'),
+          tests: T2([S(rnd(1, 5)), S(rnd(1, 5)), S(rnd(1, 5))], [S(rnd(2, 5)), S(rnd(2, 5)), S(rnd(2, 5))], i => [(+i[0] + +i[1] + +i[2]) / 3]), fstr: true, ex: "A b köré is int() kell, és zárójel kell az összeg köré: (a + b + c) / 3." }),
+        () => { const [n1, n2] = two(NEV); return { q: "Ennek a programnak a nevet és a kort kellene kiírnia, és hogy hány éves lesz jövőre (például: <code>" + n1 + " jövőre 16 éves lesz.</code>). Két hiba van benne. Javítsd ki!",
+          starter: J('nev = int(input("Neved: "))', 'kor = input("Korod: ")', 'print(f"{nev} jövőre {kor + 1} éves lesz.")') + "\n", code: J('nev = input("Neved: ")', 'kor = int(input("Korod: "))', 'print(f"{nev} jövőre {kor + 1} éves lesz.")'), tests: T2([n1, S(rnd(10, 17))], [n2, S(rnd(18, 60))], i => [tokS(i[0]), +i[1] + 1]), fstr: true, ex: "Fordítva volt: a név szöveg (nem kell int), a kor szám (int kell)." }; },
+        () => ({ q: "Ennek a programnak a beírt perceket kellene órában kiírnia (tizedes törtként, például 90 → 1.5), de hibás. Javítsd ki!",
+          starter: J('perc = input("Hány perc? ")', 'ora = perc / 60', 'print("Órában: {ora}")') + "\n", code: J('perc = int(input("Hány perc? "))', "ora = perc / 60", 'print(f"Órában: {ora}")'), tests: T2([S(pick([30, 90, 150, 210]))], [S(pick([45, 75, 135, 195]))], i => [i[0] / 60]), fstr: true, ex: "Két hiba: int() kell a bekéréshez, és kimaradt az f a print idézőjele elől." })
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "tipus", kind: "tipus", L: TIPUS },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, TIPUS, TN, MI, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, TIPUS, TN, MI, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+
+  /* ---------- Hero: futtató ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: EX.hero.ins, rows: 5 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- VS Code-terminál rajza ---------- */
+  // sorok: ["p", szöveg] parancssor · ["o", kimenet] · ["k", kérdés + begépelt válasz: [kérdés, válasz]] · ["e", hiba] · ["c"] villogó kurzor
+  const vs = (rows, file) => '<div class="vs"><div class="vs-bar"><span>' + esc(file || "program.py") + ' — VS Code</span><span class="run" title="Run Python File">▶</span></div><div class="vs-tab"><span>Problems</span><span>Output</span><b>Terminal</b></div><pre>' +
+    rows.map(r => r[0] === "p" ? '<span class="ps">PS C:\\Kovrat&gt;</span> ' + esc(r[1]) : r[0] === "k" ? esc(r[1]) + (r[2] == null ? '<span class="cur"> </span>' : '<span class="ty">' + esc(r[2]) + "</span>") : r[0] === "e" ? '<span class="er">' + esc(r[1]) + "</span>" : r[0] === "c" ? '<span class="ps">PS C:\\Kovrat&gt;</span> <span class="cur"> </span>' : esc(r[1])).join("\n") + "</pre></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function inputFrames(){
+    const src = EX.hero.code.split("\n");
+    return [
+      { cap: "Ez a program kérdez, és a válaszokkal dolgozik. Kövessük, mi történik, ha Kovrat a Kovrat nevet és a 15-öt írja be!", html: srcHtml(src, 0) + varTbl({}) },
+      { cap: "Az első sor kiírja a kérdést: Hogy hívnak? És itt a program megáll, vár. Addig nem megy tovább, amíg a felhasználó be nem gépel valamit, és Entert nem nyom.", html: srcHtml(src, 1) + vs([["p", "python program.py"], ["k", "Hogy hívnak? ", null]]) },
+      { cap: "Kovrat begépeli: Kovrat, és Entert nyom. Az input ezt a szöveget adja vissza, és ez kerül a nev változóba.", html: srcHtml(src, 1) + vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"]]) + varTbl({ nev: '"Kovrat"' }) },
+      { cap: "A második sor is kérdez, és vár. Kovrat beírja: 15. Az input ezt is szövegként adja: idézőjeles 15.", html: srcHtml(src, 2) + vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"], ["k", "Hány éves vagy? ", "15"]]) + '<p class="big" style="margin-top:8px">input(…) → <span class="led">"15"</span> (szöveg)</p>' },
+      { cap: "Az int ebből egész számot csinál, így a kor változóba már a 15-ös szám kerül, és számolni lehet vele.", html: srcHtml(src, 2) + varTbl({ nev: '"Kovrat"', kor: 15 }) },
+      { cap: "A harmadik sor kiírja a köszönést: Szia, Kovrat!", html: srcHtml(src, 3) + vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"], ["k", "Hány éves vagy? ", "15"], ["o", "Szia, Kovrat!"]]) },
+      { cap: "A negyedik sor kiszámolja: kor meg egy, vagyis 16. Kész, a terminál újra a parancsra vár.", html: srcHtml(src, 4) + vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"], ["k", "Hány éves vagy? ", "15"], ["o", "Szia, Kovrat!"], ["o", "Jövőre 16 éves leszel."], ["c"]]) }
+    ];
+  }
+  function intFrames(){
+    return [
+      { cap: "Két számot kérünk be, és össze akarjuk adni őket. A felhasználó az 5-öt és a 3-at írja be.", html: '<pre class="code">a = input("Első szám: ")\nb = input("Második szám: ")\nprint(a + b)</pre>' },
+      { cap: "Csakhogy az input szöveget ad: az a-ban idézőjeles 5, a b-ben idézőjeles 3 van.", html: varTbl({ a: '"5"', b: '"3"' }) },
+      { cap: "Két szöveg között a plusz jel összefűzés. Az eredmény 53, nem 8! Hibaüzenet sincs, csak rossz a szám.", html: outBox("53") + '<p class="big" style="margin-top:8px">"5" + "3" → <span style="color:var(--bad)">53</span></p>' },
+      { cap: "A javítás: az input köré int kerül. Az int a szövegből egész számot csinál.", html: '<pre class="code">a = int(input("Első szám: "))\nb = int(input("Második szám: "))\nprint(a + b)</pre>' + varTbl({ a: 5, b: 3 }) },
+      { cap: "Most már két szám összege: 8.", html: outBox("8") + '<p class="big" style="margin-top:8px">5 + 3 → <span class="led">8</span></p>' },
+      { cap: "Figyelj a zárójelekre: belül az input zárójele, kívül az inté. A végén két záró zárójel kell.", html: '<p class="big">int( input("Első szám: ") )</p>' }
+    ];
+  }
+  function vsFrames(){
+    const code = '<pre class="code">nev = input("Hogy hívnak? ")\nprint(f"Szia, {nev}!")</pre>';
+    return [
+      { cap: "Az iskolában VS Code-ban dolgoztok. A programot egy fájlba írod, a neve például program.py. A pont py a végén jelzi, hogy Python-program.", html: code },
+      { cap: "Futtatás: a jobb felső sarokban a háromszög, a Run Python File. Ilyenkor a terminálban egy hosszabb parancs jelenik meg, a Python teljes elérési útjával: ez rendben van. Vagy a terminálba magad is begépelheted: python program.py, és Enter.", html: vs([["p", "python program.py"]]) },
+      { cap: "A program kiírja a kérdést a terminálba, és vár. A villogó kurzor mutatja, hogy most te jössz.", html: vs([["p", "python program.py"], ["k", "Hogy hívnak? ", null]]) },
+      { cap: "Kattints a terminálba, ha nem ott villog a kurzor! Gépeld be a választ, és nyomj Entert.", html: vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"]]) },
+      { cap: "A program folytatódik, kiírja a köszönést. A végén a terminál újra a parancsra vár: a program véget ért.", html: vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"], ["o", "Szia, Kovrat!"], ["c"]]) },
+      { cap: "Ha hiba van, a terminálban piros szöveg jelenik meg: a Traceback. Ez egy másik program: a kor-t int nélkül kérte be, aztán hozzá akart adni egyet. Alulról olvasd: a hiba fajtája, az üzenet, fölötte a sor száma.", html: vs([["p", "python program.py"], ["k", "Hány éves vagy? ", "15"], ["e", 'Traceback (most recent call last):\n  File "C:\\Kovrat\\program.py", line 2, in <module>\n    print(f"Jövőre {kor + 1} éves leszel.")\n                    ~~~~^~~\nTypeError: can only concatenate str (not "int") to str'], ["c"]]) },
+      { cap: "Ebben a böngészős futtatóban nincs terminál, ezért a bemeneteket előre kell beírni a Bemenetek mezőbe, soronként egyet. A gép kékkel mutatja, mit gépelt volna be.", html: '<pre class="term">Hogy hívnak? <span class="i">Kovrat</span>\nSzia, Kovrat!</pre>' }
+    ];
+  }
+  const MET = { input: "Mit csinál az input?", int: "53 vagy 8?", vs: "A VS Code-ban" };
+  const MF = { input: inputFrames, int: intFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "input" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MET[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "A program kérdez: az input", h:
+      ex("elso") +
+      "<ol><li>Az <code>input(\"Hogy hívnak? \")</code> kiírja a kérdést, és <b>megáll</b>.</li><li>Vár, amíg a felhasználó begépel valamit, és megnyomja az <b>Entert</b>.</li><li>A begépelt szöveget <b>visszaadja</b>: ezt eltesszük egy változóba (<code>nev = …</code>), és később felhasználjuk.</li></ol>" + playBtn("input") },
+    { k: "VS Code", t: "Így megy a VS Code-ban", h:
+      vs([["p", "python program.py"], ["k", "Hogy hívnak? ", "Kovrat"], ["o", "Szia, Kovrat!"], ["c"]]) +
+      "<ul><li>A programot egy <code>.py</code> fájlba írod (például <code>program.py</code>), és mented (Ctrl+S).</li><li>Futtatás: jobb fent a <b>▶ Run Python File</b> gomb (a terminálban ilyenkor egy hosszabb parancs jelenik meg, a Python teljes elérési útjával), vagy a terminálba: <code>python program.py</code> és Enter.</li><li>Az <b>input kérdése a terminálban</b> jelenik meg (a képernyő alján). <b>Kattints oda</b>, gépeld be a választ, és nyomj Entert. Amíg nem írsz be semmit, a program vár.</li><li>Ezen az oldalon nincs terminál: a választ előre a <b>Bemenetek</b> mezőbe írod, soronként egyet. Kékkel látszik, mit „gépelt be” a gép.</li></ul>" + playBtn("vs") },
+    { k: "Kérdés", t: "A kérdés szövege", h:
+      ex("kerdes") +
+      "<ul><li>A kérdés az <code>input</code> zárójelébe kerül, idézőjelben. A <b>végére tegyél szóközt</b>, különben a válasz hozzáragad: <code>Hogy hívnak?Kovrat</code>.</li><li>Az input zárójele üres is lehet: <code>input()</code>. Ilyenkor nem ír ki semmit, csak vár. Ezért előtte egy <code>print</code> szokta megmondani, mit kell beírni.</li><li>Az első forma rövidebb és szebb: a kérdés és a válasz egy sorba kerül.</li></ul>" },
+    { k: "Szöveg!", t: "Az input mindig szöveget ad", h:
+      ex("szoveg") +
+      "<p>A felhasználó számot gépelt be, mégis <b>53</b> lett, nem 8. Mert az <code>input</code> mindig <b>szöveget</b> (str) ad, akkor is, ha számjegyeket gépeltél: <code>\"5\"</code> és <code>\"3\"</code>. Két szöveg között a <code>+</code> összefűzés.</p>" +
+      "<div class='mistake'><b>Hibaüzenet sincs!</b> A program lefut, csak rossz számot ír ki. Ezért mindig próbáld ki a programodat, és nézd meg, jó-e az eredmény.</div>" + playBtn("int") },
+    { k: "int", t: "Számhoz: int(input(…))", h:
+      ex("szam") +
+      "<ul><li>Az <code>int(…)</code> a szövegből egész számot csinál (2. lecke). Az <code>input</code> köré tesszük: <code>int(input(\"…\"))</code>.</li><li><b>Két záró zárójel</b> a végén: az egyik az inputé, a másik az inté.</li><li>Most már <code>a</code> és <code>b</code> is szám (int), a <code>+</code> összead: 8.</li></ul>" },
+    { k: "Két lépésben", t: "Két lépésben is lehet", h:
+      ex("ketlepes") +
+      "<p>Előbb szövegként kérjük be, aztán külön sorban alakítjuk számmá. Ugyanaz, mint az <code>int(input(…))</code>, csak hosszabb. Kezdetben ez segíthet megérteni, mi történik; később az egysoros formát használd.</p>" },
+    { k: "float", t: "Tizedes törthöz: float(input(…))", h:
+      ex("flt") +
+      "<ul><li>Ha a válasz tizedes tört lehet (magasság, átlag, hőmérséklet), <code>float(input(…))</code> kell.</li><li>Beíráskor is <b>pontot</b> használj: <code>1.75</code>. A vesszős <code>1,75</code> ValueError.</li><li>Az <code>int(\"1.75\")</code> is ValueError: az int csak egész számot tartalmazó szöveget tud átalakítani.</li></ul>" +
+      "<div class='ptwrap'><table class='pt'><tr><th>Mit kérsz be?</th><th>Így kérd be</th></tr><tr><td style='font-family:var(--body)'>egész szám: kor, darab, ár, év</td><td>int(input(\"…\"))</td></tr><tr><td style='font-family:var(--body)'>tizedes tört: magasság, átlag, hőmérséklet</td><td>float(input(\"…\"))</td></tr><tr><td style='font-family:var(--body)'>szöveg: név, szó, mondat, e-mail, telefonszám</td><td>input(\"…\")</td></tr></table></div>" },
+    { k: "Több adat", t: "Több bemenet egymás után", h:
+      ex("tobb") +
+      "<ul><li>Minden <code>input</code> egy választ vár, <b>sorban</b>: az első bemenet az első inputhoz, a második a másodikhoz kerül.</li><li>A futtatóban ezért a Bemenetek mezőben is ebben a sorrendben, soronként egy legyen.</li><li>Ha kevesebb bemenetet adsz meg, mint ahány input van, a futtató <b>EOFError</b>-t jelez. (A VS Code-ban ilyenkor a program egyszerűen tovább vár.)</li></ul>" },
+    { k: "A program váza", t: "Bekérés → számolás → kiírás", h:
+      ex("vaz") +
+      "<ol><li><b>Bekérés:</b> <code>input</code>, ha kell, <code>int</code>-tel vagy <code>float</code>-tal.</li><li><b>Számolás:</b> az eredményt változóba teszed (<code>fizetendo = ar * db</code>).</li><li><b>Kiírás:</b> f-stringgel: <code>print(f\"Fizetendő: {fizetendo} Ft\")</code>.</li></ol>" +
+      "<div class='big-note'><b>A dolgozat feladatai is így épülnek fel.</b> Olvasd el a feladatot, és húzd alá: mit kell bekérni (hány input, milyen típus), mit kell kiszámolni, mit kell kiírni.</div>" },
+    { k: "Hibák", t: "Tipikus hibák és üzeneteik", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás kód / bemenet</th><th>Mi történik?</th><th>Javítás</th></tr>" +
+      [["a = input()\nb = input()  (5 és 3)\nprint(a + b)", "nincs hiba, de 53-at ír ki", "int(input())"],
+       ["kor = input()\nprint(kor + 1)", "TypeError: can only concatenate str…", "int(input())"],
+       ["x = int(input())  (3.5)", "ValueError: invalid literal for int()…", "float(input())"],
+       ["x = float(input())  (3,5)", "ValueError: could not convert…", "a bemenetet ponttal: 3.5"],
+       ["kor = int(input(\"Kor: \")", "SyntaxError: '(' was never closed", "két záró zárójel"],
+       ["input(\"Neved: \")\nprint(nev)", "NameError: name 'nev'…", "nev = input(…)"],
+       ["(kevesebb bemenet, mint input)", "EOFError (csak ebben a futtatóban)", "írj be még egy sort"]].map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +
+      ex("hibaT") + ex("hibaV") },
+    { k: "Trükkök", t: "Tanácsok", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Mi a típusa?</span><span>Minden inputnál döntsd el: szám lesz belőle (int, float), vagy szöveg marad?</span></div>" +
+      "<div class='trick'><span class='t'>Próbáld ki kétszer</span><span>Futtasd két különböző bemenettel is. Ha mindkettőre jó, valószínűleg jó a program. (A gyakorló feladatoknál a gép is így ellenőriz.)</span></div>" +
+      "<div class='trick'><span class='t'>Számolj fejben</span><span>Egyszerű bemenettel (5 és 3) számold ki előre, mit kellene kiírnia. Ha mást ír ki, keresd a hibát.</span></div>" +
+      "<div class='trick'><span class='t'>Zárójelek</span><span><code>int(input(\"…\"))</code>: a végén két záró zárójel.</span></div>" +
+      "<div class='trick'><span class='t'>Mi van, ha betűt ír be?</span><span>Az <code>int(\"alma\")</code> ValueError, és a program leáll. Ezt később (a <code>try</code>-jal) kezelni is lehet; most elég, ha jó adatot írsz be.</span></div>" +
+      "<div class='trick'><span class='t'>VS Code: hol a kurzor?</span><span>Ha „nem történik semmi”, a program valószínűleg a terminálban vár a válaszodra.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const TL = ["int", "float", "str", "bool"];
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: l => { const t = pick(KIIR[l - 1])(); const k = P.kiir(t, "Mit ír ki?"); k.q = k.q.replace("Mit ír ki ez a program?", "Mit ír ki a print? (A kérdést és a begépelt választ ne írd le.)"); return k; } },
+    { id: "melyik", name: "Melyik kell?", gen(l){
+      const it = pick(MELYIK[l - 1]);
+      return P.choice("Ezt kéred be a felhasználótól: <b>" + it[0] + "</b>. Hogyan kérd be, ha számolni (vagy dolgozni) akarsz vele?", MI[it[1]], Object.keys(MI).filter(k => k !== it[1]).map(k => MI[k]), "<p>" + esc(it[2]) + "</p>",
+        "Nem ez. Egész szám → int, tizedes tört → float, szöveg (amivel nem számolunk) → semmi.");
+    } },
+    { id: "tipus", name: "Milyen típusú lesz?", gen(l){
+      const t = pick(TIPUS[l - 1])();
+      return P.choice("A program eleje:<pre class='code'>" + esc(t.pre) + "</pre>A felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + ". Milyen típusú ez: <code>" + esc(t.expr) + "</code>?",
+        TN[t.type], TL.filter(x => x !== t.type).map(x => TN[x]),
+        "<p>A <code>type(" + esc(t.expr) + ")</code> eredménye: <code>&lt;class '" + t.type + "'&gt;</code>. " + esc(t.why) + "</p>",
+        "Nem ez. Kövesd a típust lépésenként: az input szöveget ad, az int() és a float() számmá alakít, a / mindig float-ot ad, az f-string és az str() szöveget.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen(l){
+      const t = pick(HIBA[l - 1])(); const h = P.hiba(t, HPOOL, "Nézd meg, milyen típusú a változó: van-e int() vagy float() az input körül, és mit írt be a felhasználó. Zárójel is hiányozhat.");
+      h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?");
+      return h;
+    } },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-3-input", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["nev = input(\"Hogy hívnak? \")", "kérdez, vár, a választ szövegként adja"], ["kor = int(input(\"Kor: \"))", "egész szám bekérése"], ["m = float(input(\"Magasság: \"))", "tizedes tört bekérése (ponttal: 1.75)"], ["input()", "kérdés nélkül vár"], ["\"5\" + \"3\"", "53: két szöveget a + összefűz, ezért kell az int()"], ["print(f\"Szia, {nev}!\")", "kiírás f-stringgel"], ["python program.py", "futtatás a VS Code termináljában (vagy ▶ Run Python File)"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
