@@ -302,6 +302,8 @@ const P = (function(){
     if (etype === "IndexError") return "Nincs ilyen indexű elem. Az index 0-tól len(lista) − 1-ig megy; az utolsó elem: lista[-1].";
     if (/'NoneType' object has no attribute/.test(m)) return "A változód értéke None (semmi). Gyakori ok: lista = lista.append(x). Az append nem ad vissza semmit; elég ennyi: lista.append(x).";
     if (/can only concatenate list/.test(m)) return "Listához számot nem lehet +-szal adni. Új elemet így adj hozzá: lista.append(x).";
+    if (/'str' object does not support item assignment/.test(m)) return "A szöveg betűnként nem módosítható. Készíts új szöveget: s = \"X\" + s[1:], vagy s = s.replace(…).";
+    if (/'list' object has no attribute '(upper|lower|strip|split|replace)'/.test(m)) return "Ez szöveg-metódus, de a változód lista (például a split eredménye). A lista elemein egyenként hívd meg, for ciklusban.";
     if (etype === "AttributeError") return "Nincs ilyen metódus ennek a típusnak, vagy elírtad (kisbetűvel: upper).";
     if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például print = …)?";
     if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";

@@ -1,6 +1,26 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 8. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 9. lecke)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–8. lecke (PR #5–#11; a pult mindet ellenőrizte, Windowson is).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **9. Szövegek mélyebben** (`python-9-szovegek`):
+  index és szelet, `[::-1]`, a szöveg nem módosítható, metódusok, `split`/`join`, `in`, bejárás, szöveg építése, a VS Code
+  metódus-ajánlója. 12 dia, 4 levezetés, 6 feladattípus.
+- **Tesztek:** `py-check --verify 40 python-9-szovegek` 2683 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után a **10. lecke: saját függvények** (`python-10-fuggvenyek`): `def`, paraméter, `return` vs.
+`print`, alapértelmezett érték. Az „Írd meg!” itt a függvényt hívja több argumentummal (a keret változói között a függvény nem
+szerepel; a próbát a minta végére írt hívásokkal érdemes megoldani). Ezzel a tervezett 10 leckés sorozat teljes.
+
+**Felhős teszt Pyodide-dal:** `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, `KOVRAT_PYODIDE=<…>/package`
+(recept, utolsó szakasz). Ha az ág PR-jét beolvasztották: `git merge origin/main` az ágba (a force-push itt tiltott), új PR.
+
+**Endi döntésére vár:** a 9. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 8. lecke)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–7. lecke (PR #5–#10; a pult mindet ellenőrizte, a py-check Windowson is fut).

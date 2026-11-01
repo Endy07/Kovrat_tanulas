@@ -51,7 +51,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | ✅ kész (2026. 11. 01.) |
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | ✅ kész (2026. 11. 01.) |
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | ✅ kész (2026. 11. 01.) |
-| 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | tervezett |
+| 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | ✅ kész (2026. 11. 01.) |
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | tervezett |
 | + | **Ismétlő próbadolgozat (később)** | – | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | ötlet |
 
@@ -172,7 +172,8 @@ ha az iskola odaér.
 - **Fogalmak:** `s[0]`, `s[-1]`, `s[1:4]`, `s[::-1]`, `len`, `in`, `upper` `lower` `strip` `count` `replace` `split`, `for c in s`;
   a metódus új szöveget ad (`s = s.strip()`).
 - **Tipikus hibák:** `s[len(s)]`; a metódus eredményét nem menti; `Upper()`; szelet vége nincs benne.
-- **Feladattípusok:** Mit ír ki? · Szelet · Írd meg! · Hibakereső.
+- **Feladattípusok (kész):** Mit ad a szelet? · Mit ír ki? · Melyik metódus? · Írd meg! · Milyen hibát ad? · Javítsd ki!
+- **VS Code:** a metódus-ajánló (IntelliSense: pont után lista, gépelésre szűr, Ctrl+szóköz).
 
 ### 10. Saját függvények
 
