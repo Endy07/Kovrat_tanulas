@@ -33,11 +33,12 @@ kell tanulni” gyűjtése. A chatstatisztika után a 4–10. sorrendje változh
 | 4 | **j vagy ly** | 88., 55–57., 92–93. | Nincs szabály, meg kell tanulni: sok gyakorlás kell (szócsaládok: hely, folyik, király, -ly végű szavak, muszáj). | ✅ kész, élesben (2026. 11. 01.) |
 | 5 | **Kiejtés és szóelemzés: hasonulások** | 41., 48–60., 82–83., 90. | -val/-vel, -vá/-vé (busszal, kővé), az ez/az + toldalék (abban, ezzel), zöngésség (népdal, nem nébdal), összeolvadás (barátság). | ✅ kész (2026. 11. 01.) |
 | 6 | **Igék: felszólító mód és tárgyas ragozás** | 38., 42–44., 55–57., 76–81. | A legnehezebb igealakok: játsszon, eddz, lássa, tanítsa, fusson, hagyja, ért + jük = értjük. | ✅ kész (2026. 11. 01.) |
-| 7 | **Egybe- és különírás** | 99–138. (válogatva) | **Igekötők külön résszel (Endi kérése, 2026. 11. 01.):** mikor egybe (megcsinálom, elmegyek), mikor külön (meg is csinálom, nem csinálom meg, meg fogom csinálni), és az ige elé tapadó, de nem elváló esetek. Utána összetett szavak, jelentésváltozás, számok (kétezerig egybe). Chatben valószínűleg ez a sok hiba. ⚠️ | tervezett |
+| 7 | **Igekötők: egybe vagy külön** (Endi kérése, 2026. 11. 01.) | 120. a)–e) | Mikor egybe (megcsinálom, elmegyek), mikor külön (csináld meg, nem csinálom meg, meg is csinálom, meg fogom csinálni), ismételt igekötő (meg-megáll), igekötő vagy határozószó (abbahagyta ↔ abba tette); a nem (nem tudom, nemsokára). Chatben valószínűleg sok a hiba. ⚠️ | ✅ kész (2026. 11. 01.) |
+| 7/b | **Egybe- és különírás: összetett szavak, számok** | 99–138. (válogatva), 291. | Összetett szavak, jelentésváltozás, a 6:3-as szabály, számok (kétezerig egybe, fölötte kötőjellel). A pontokat előbb egyben kérd le. | tervezett |
 | 8 | **Nagy kezdőbetű és tulajdonnevek** | 139–205. (válogatva) | Mondatkezdés, nevek, földrajzi nevek, intézmények, címek; az -i képző kisbetűs (debreceni). | tervezett |
 | 9 | **Központozás: a vessző** | 239–255. | Tagmondatok közé (és, de, mert, hogy, ami előtt), felsorolás, megszólítás, mint. Eddig a tollbamondás kimondja az írásjeleket; ettől a leckétől kikapcsolható. | tervezett |
 | 10 | **Gyakori tévesztések** | vegyes | muszáj, egyelőre / egyenlőre, mindig, egészség, kíváncsi, eggyel, hülye, stb., pl., „-e” kérdőszó; a chatstatisztika ide gyűjti Kovrat saját szavait. | tervezett |
-| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 6 × 3 + 6 vegyes = 24 |
+| + | **Tollbamondások** (`tollbamondasok.html`) | – | Minden lecke 3 szövege és vegyes, ismétlő szövegek; nyomtatható Endinek. | ✅ 7 × 3 + 7 vegyes = 28 |
 
 A 4–10. leckék szövegei a mostani formában készülnek: diák, levezetés-lejátszó, 4–5 gyakorlótípus × 3 szint,
 tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ismétlő tollbamondás.
@@ -106,6 +107,18 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
 - Gyakorlótípusok: Felszólító alak · Tárgyas: -juk vagy -suk? · Kijelentő vagy felszólító? (tanítjuk ↔ tanítsuk, mondatban) · Melyik a jó? ·
   Hibás szó. Tollbamondás: f1–f3 és a vegyes v6. Új hibatípus: **Felszólító mód (ige)** (futsatok ~ fussatok, választsunk ~ válasszunk).
 - ⚠️ A „Kijelentő vagy felszólító?” típusban mindkét gomb létező szó: ez szándékos, a mondat dönt.
+
+## A 7. lecke (igekötők), 2026. 11. 01.
+
+- ✅ AkH 120. a) közvetlenül az ige (igenév) előtt egybe, és a belőle képzett főnév is (megtartás); az igekötők listája (abba, agyon,
+  alá, át, be, bele … végig, vissza) · b) az ige után külön · c) ha szó van közte, külön (el ne késs, újjá is építjük, közre kell
+  bocsátani, haza szabad menni) · d) ismételt igekötő kötőjellel, egybe az igével (meg-megállt, vissza-visszatérve) · e) a határozószói
+  szerep kiemelésekor külön (abba tette ↔ abbahagyta, ide jött ↔ idejött, fenn maradt ↔ fennmarad, félre állt ↔ félreállt).
+- ⚠️ A nem tudom, nemsokára, nemrég, nemcsak, nemhogy alakok a helyesírási szótárból valók; a pontszámukat nem kértük le.
+- Gyakorlótípusok: Egybe vagy külön? · Hogyan írjuk? · Melyik mondat a jó? · Hibás rész a mondatban. Tollbamondás: i1–i3 és a vegyes v7.
+- A tollbamondás egybe-/különírás típusai most a leckére mutatnak; új típus: **Kötőjel** (megmegállt ~ meg-megállt).
+- „Nem elváló igekötők” (Endi): úgy értettük, hogy az igekötő írása legyen a téma; az egybeírt (nem elváló) és a külön írt esetek
+  egyaránt benne vannak. ⚠️ Ha Endi mást értett rajta, igazítjuk.
 
 ## Ellenőrzés
 

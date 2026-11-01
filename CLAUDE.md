@@ -29,7 +29,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód (2026. 11. 01.) · a 24 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
+| `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód · 7. igekötők (2026. 11. 01.) · a 28 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
 | `docs/helyesiras-terv.md` | A helyesírás-leckesor terve (10 lecke), sorrend és indok, ✅/⚠️. |
 | `tools/lessons/lesson-test.js` | **Gépi, néma leckeellenőrző**: `node tools/lessons/lesson-test.js <név> 40` (minden típus × szint, 390 px, sötét téma, képernyőképek). Leírás: recept 9. szakasz vége. |
@@ -221,7 +221,17 @@ Endi: „Mehet, ahogy javaslod.” Ugyanarra az ágra, a még nyitott PR #2-be.
   (olvasson, tanítson, lásson/fusson, válasszon, tanítjuk ↔ tanítsuk), 5 gyakorlótípus × 3 szint (Felszólító alak, Tárgyas: -juk vagy
   -suk?, Kijelentő vagy felszólító?, Melyik a jó?, Hibás szó), tollbamondás (f1–f3), puska; forrás: AkH 38., 42–44., 55–57., 76–81.
 - **Közös modul:** új hibatípus, `felsz` (Felszólító mód, ige; `felszKey`); új szövegek: `felsz` (3) és `v6` — összesen 24.
-- **Endi kérése:** „Legyen nem elváló igekötők is majd.” → a 7. leckében külön rész az igekötőkről (`docs/helyesiras-terv.md`).
+- **Endi kérése:** „Legyen nem elváló igekötők is majd.” → a 7. lecke az igekötőké lett (`docs/helyesiras-terv.md`).
+
+### Helyesírás 7. lecke: igekötők (2026. 11. 01. éjjel)
+
+Endi: „Mehet, ahogy javaslod.” Ugyanarra az ágra, a még nyitott PR #2-be.
+
+- **Lecke:** `helyesiras-igekotok` — „az igekötő vándorol” a hero-ban (7 mondat, a szabály betűjével), 10 dia, 4 lejátszott szabály,
+  4 gyakorlótípus × 3 szint (Egybe vagy külön?, Hogyan írjuk?, Melyik mondat a jó?, Hibás rész), tollbamondás (i1–i3), puska;
+  forrás: AkH 120. a)–e). Az összetett szavak és a számok egy későbbi leckébe kerültek (7/b).
+- **Közös modul:** az egybe-/különírás hibatípus a leckére mutat; új típus: `kotojel` (megmegállt ~ meg-megállt); új szövegek: `igek`
+  (3) és `v7` — összesen 28.
 
 ## Döntések és indokaik
 
@@ -268,8 +278,8 @@ Endi: „Mehet, ahogy javaslod.” Ugyanarra az ágra, a még nyitott PR #2-be.
   a 10.-es leckéket még nem építjük (`docs/tanrend-10.md`).
 - Ha Endi újabb füzetoldalt vagy saját magyarázatot küld: „Endi mondja” stílusban, külön részként.
 - **Helyesírás (2026-10-30):** az 1–3. lecke és 12 tollbamondás kész, **élesben** (2026-10-30, Endi igenjével a pulton át: `3cfe37a..62ac1c0`).
-  A **4. lecke (j/ly)** élesben (2026-11-01, PR #1). Az **5. (hasonulások) és a 6. lecke (felszólító mód)** kész a `claude/dreamy-hopper-52jouj` ágon, a PR #2 beolvasztására vár.
-  Következő: a 7. lecke (egybe- és különírás, benne az igekötők), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
+  A **4. lecke (j/ly)** élesben (2026-11-01, PR #1). Az **5. (hasonulások), 6. (felszólító mód) és 7. lecke (igekötők)** kész a `claude/dreamy-hopper-52jouj` ágon, a PR #2 beolvasztására vár.
+  Következő: a 7/b (összetett szavak, számok) vagy a 8. lecke (nagybetű), illetve ha megjön a chat (`C:\KOVRAT\chat\`), előbb a hibastatisztika (`docs/helyesiras-hibak.md`).
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).

@@ -1,6 +1,16 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 este
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel
+
+**A PR #2-ben (beolvasztásra vár):** az 5. (hasonulások), a 6. (felszólító mód) és a **7. lecke (igekötők,** `helyesiras-igekotok.html`**)**,
+12 új tollbamondás (összesen 28), új hibatípusok: `hason`, `felsz`, `kotojel`. Tesztek: a 7 helyesírás-lecke mind hibátlan,
+`helyesiras-check.js` 448/448.
+
+**Következő:** 7/b (összetett szavak, számok: AkH 99–138., 291.) vagy 8. (nagy kezdőbetű). A pontokat előbb egyben kérd le.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 este
 
 **A PR #2-ben (beolvasztásra vár):** az 5. lecke (hasonulások) és a **6. lecke (felszólító mód,** `helyesiras-felszolito.html`**)**,
 8 új tollbamondás (összesen 24), két új hibatípus (`hason`, `felsz`). Tesztek: a 6 helyesírás-lecke mind hibátlan (600/600 ×4,

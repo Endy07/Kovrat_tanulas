@@ -452,3 +452,13 @@ hasonulások 600/600, j/ly 600/600, betűk 600/600, magánhangzók 480/480, más
 - **Kijelentő ↔ felszólító feladatnál mindkét gomb létező szó** (tanítjuk/tanítsuk): itt ez a lényeg, a mondat dönt; a
   „rossz alak ne legyen létező szó” szabály a hiánypótlásra és az alakképző gombokra vonatkozik (ott: főzünk, válaszon, agyon kimaradt).
 - **Új hibatípus a felismerőben:** `felszKey` (ts/sts/szts → ss/ssz, s/z + j → kettőzés), a hasonulás előtt, a kettőzés után.
+
+### A 2026. 11. 01-i 7. helyesírás-lecke (igekötők)
+
+Eredmény: `helyesiras-igekotok` 480/480 (4 típus × 3 szint × 40), 10 dia, 11 lejátszó-kocka, 390 px rendben, JS-hiba nincs.
+Újrafuttatva mind a hat korábbi helyesírás-lecke (600/600 ×4, 480/480 ×2) és a tollbamondások, hibátlanul; `helyesiras-check.js` 448
+ellenőrzés. Tollbamondás-próba 5 szándékos hibával (haza értem, meg csináltam → Egybeírás; írtammeg, megkell, beis → Különírás).
+
+- **Több szóból álló jó válasz** (csináld meg, meg is csinálom) a `H.sentFix`-ben és a választós gombokon is működik; a tesztelő a
+  „Jó válasz” teljes szövegét írja be.
+- **A kötőjel-hiba** (megmegállt) elsőre „Egyéb elírás” volt: a `classify` most a kötőjel nélküli egyezést előbb nézi (`kotojel`).
