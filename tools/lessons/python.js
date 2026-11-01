@@ -14,9 +14,13 @@ def _kovrat_run(code, inputs):
     out = []
     segs = []
     used = [0]
+    total = [0]
     class _W:
         def write(self, s):
             s = str(s)
+            total[0] += len(s)
+            if total[0] > 20000:
+                raise RuntimeError("Túl sok kimenet: a program 20000 karakternél többet írt ki.")
             out.append(s)
             if segs and segs[-1][0] == "o":
                 segs[-1][1] += s
@@ -202,10 +206,17 @@ const PYCORE = (function(){
 
   // Python-szám kiírása: a float mindig tizedesponttal (4.0)
   const pyF = x => Number.isInteger(x) ? x.toFixed(1) : String(x);
-    // névelő név elé: „az Anna”, „a Bence”
+    // toldalék szám után, az utolsó kiejtett szó szerint (3 három, 6 hat, 8 nyolc, 20 húsz, 60 hatvan, 80 nyolcvan, 100 száz: mély hangrend)
+  const lastW = n => { n = Math.abs(n); return n % 10 ? n % 10 : n % 100 ? (n % 100) + "t" : n % 1000 ? "h" : "k"; };
+  const deep = n => [3, 6, 8, "20t", "60t", "80t", "h"].includes(lastW(n));
+  const nal = n => n + (deep(n) ? "-nál" : "-nél");
+  const tol = n => n + (deep(n) ? "-tól" : "-től");
+  const ACC = { 1: "et", 2: "t", 3: "at", 4: "et", 5: "öt", 6: "ot", 7: "et", 8: "at", 9: "et", "10t": "et", "20t": "at", "30t": "at", "40t": "et", "50t": "et", "60t": "at", "70t": "et", "80t": "at", "90t": "et", h: "at", k: "et" };
+  const acc = n => n + "-" + ACC[lastW(n)];
+  // névelő név elé: „az Anna”, „a Bence”
   const azW = w => /^[aeiouáéíóöőúüű]/i.test(String(w)) ? "az " : "a ";
   const AzW = w => azW(w) === "az " ? "Az " : "A ";
-  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW };
+  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW, nal, tol, acc };
 })();
 /*@/PYCORE*/
 
@@ -292,7 +303,8 @@ const P = (function(){
     if (etype === "AttributeError") return "Nincs ilyen metódus ennek a típusnak, vagy elírtad (kisbetűvel: upper).";
     if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például print = …)?";
     if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";
-    if (etype === "Timeout") return "Lehet, hogy végtelen ciklus van a programban.";
+    if (etype === "Timeout") return "Lehet, hogy végtelen ciklus van a programban: a ciklusfeltétel sosem lesz hamis. Változik a ciklusváltozó a cikluson belül (például i += 1)?";
+    if (/Túl sok kimenet/.test(m)) return "Valószínűleg végtelen ciklus: a program nem akar megállni. Változik a ciklusváltozó a cikluson belül (például i += 1)? A VS Code-ban a Ctrl+C állítja le.";
     return "";
   }
   const segsHtml = (segs, err, line) => (segs || []).map(s => s[0] === "i" ? '<span class="i">' + esc(s[1]) + "</span>" : esc(s[1])).join("") +
@@ -383,14 +395,14 @@ const P = (function(){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : (typeof bad === "function" ? bad(opts[v.idx].l) : bad) }) };
   }
-  const ERRS = { "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError" };
-  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", "": "nincs hiba" };
+  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError" };
+  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
   // „Milyen hibát ad?”: t = { code, err, sol }, a választható hibák listája (pool)
   function hiba(t, pool, tip){
     // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza
     const good = ERRS[t.err], others = K.shuffle(pool.filter(e => e !== t.err && !(t.err === "IndentationError" && e === "SyntaxError"))).slice(0, 3).map(e => ERRS[e]);
     return choice("Milyen hibát ad ez a program, ha lefuttatod?<pre class='code'>" + esc(t.code) + "</pre>", good, others,
-      "<p>" + (t.err ? "<b>" + t.err + "</b>: " + ERR_HU[t.err] + ". " : "") + t.sol + "</p>",
+      "<p>" + (t.err === "TimeoutError" ? "<b>Végtelen ciklus</b> (hibaüzenet nincs): " + ERR_HU[t.err] + ". " : t.err ? "<b>" + t.err + "</b>: " + ERR_HU[t.err] + ". " : "") + t.sol + "</p>",
       l => !t.err ? "Nem ez. Ez a program hibátlanul lefut." : "Nem ez. " + (l === ERRS[""] ? "Ez a program nem fut le hibátlanul. " : "") + (tip || "Olvasd végig a sort betűről betűre: zárójel, idézőjel, kis- és nagybetű, szóköz a sor elején."));
   }
 
