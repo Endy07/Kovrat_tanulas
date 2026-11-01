@@ -142,7 +142,9 @@ tollbamondás (2–3 szöveg), puska. Minden új leckével bővül a vegyes, ism
   (intézmények, pályaudvarok, rendezvények, márkák), 196–200. (címek). A mondatkezdő nagybetű pontszámát nem találtuk meg.
   Egy friss, teljes lekérdezéssel érdemes újra ellenőrizni.
 - A tartalom (melyik nagy, melyik kicsi) a kivonatok példáiból való, és mindkét kivonatban egyezett.
-- A „megye” helyett „vármegye” van 2023 óta, ezért a megyés példa kimaradt; a „Lengyelország Kelet-Európában” vitatható, Ukrajna lett.
+- A megye: 2023-tól vármegye volt, de az Alaptörvény 17. módosítása és a 2026. évi XLIX. törvény nyomán **2026. október 1-jétől újra megye**
+  (Endi szólt, a Telex 2026. 10. 01-i cikke megerősíti). A lecke a megye alakot tanítja (Hajdú-Bihar megye, Hajdú-Bihar megyei).
+  A „Lengyelország Kelet-Európában” vitatható volt, Ukrajna lett.
 - Gyakorlótípusok: Kicsi vagy nagy? · Az -i képzős alak · Melyik a jó? · Hibás szó. Tollbamondás: n1–n3 és a vegyes v9.
 - **Javítás a közös modulban:** a `H.sentFix` eddig elfogadta a rossz kis-/nagybetűs alakot, ha a jó szó kisbetűs volt (a „Hétfőn” átment
   a „hétfőn” helyett). Most csak a pontos alak jó; a kis-/nagybetű eltérésre célzott üzenet jön. Mind a 9 lecke újratesztelve.

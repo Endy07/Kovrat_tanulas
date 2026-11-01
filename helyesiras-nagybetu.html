@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101043742">
+<meta name="kovrat-version" content="20261101044312">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -1575,6 +1575,7 @@ const K = (function(){
       tbl(["név", "-i képzővel", "miért"], [["Kelet-Európa", "kelet-európai", "két tulajdonnévi rész: mind nagy; -i: mind kicsi"], ["Dél-Amerika", "dél-amerikai", "ugyanígy"], ["Csendes-óceán", "csendes-óceáni", "köznévi utótag (óceán): kicsi"], ["Balaton-felvidék", "Balaton-felvidéki", "a tulajdonnév (Balaton) nagy marad"], ["Duna-part", "Duna-parti", "ugyanígy"]]) + playBtn("kotojel"), init: playInit },
     { k: "Utca, tér", t: "Utcák, terek: a név nagy, az utca kicsi", h:
       "<p class='eq'>Petőfi utca · Kossuth tér · Fő utca · Szent István út · Erzsébet híd</p>" +
+      "<p>Ugyanígy a megye: <b>Hajdú-Bihar megye</b>, <b>Pest megye</b> (2026. október 1-jétől újra megye, nem vármegye).</p>" +
       "<p>Az <b>-i</b> képző a változatlan névhez járul: <b>Petőfi utcai</b>, <b>Kossuth téri</b>.</p>" +
       "<div class='mistake'><b>Petőfi Utca, Petőfi-utca</b> → Petőfi utca.</div>" },
     { k: "Intézmény", t: "Intézmények, cégek: minden szó nagy", h:
@@ -1616,7 +1617,7 @@ const K = (function(){
      ["Csendes + óceán", "Csendes-óceán", ["Csendes-Óceán", "csendes-óceán"], "Az óceán köznév: kicsi, kötőjellel."], ["Csendes-óceán + -i", "csendes-óceáni", ["Csendes-óceáni", "Csendes-Óceáni"], "Az -i képzős alak kisbetűs."],
      ["Balaton + felvidék", "Balaton-felvidék", ["Balaton-Felvidék", "balaton-felvidék"], "A tulajdonnév nagy, a köznév kicsi."], ["Balaton-felvidék + -i", "Balaton-felvidéki", ["balaton-felvidéki", "Balaton-Felvidéki"], "A Balaton nagy marad."],
      ["Petőfi + utca", "Petőfi utca", ["Petőfi Utca", "Petőfi-utca"], "Az utca kicsi, külön."], ["Petőfi utca + -i", "Petőfi utcai", ["petőfi utcai", "Petőfi-utcai"], "Az -i a változatlan névhez járul."],
-     ["Kossuth + tér", "Kossuth tér", ["Kossuth Tér", "Kossuth-tér"], "A tér kicsi, külön."], ["dél + Amerika", "Dél-Amerika", ["dél-Amerika", "Dél-amerika"], "Mindkét tag nagy."]],
+     ["Kossuth + tér", "Kossuth tér", ["Kossuth Tér", "Kossuth-tér"], "A tér kicsi, külön."], ["Hajdú-Bihar + megye", "Hajdú-Bihar megye", ["Hajdú-Bihar Megye", "Hajdú-Bihar-megye"], "A megye kicsi, külön (2026. október 1-jétől újra megye, nem vármegye)."], ["dél + Amerika", "Dél-Amerika", ["dél-Amerika", "Dél-amerika"], "Mindkét tag nagy."]],
     [["könyvcím (Molnár Ferenc)", "A Pál utcai fiúk", ["A Pál Utcai Fiúk", "A pál utcai fiúk"], "Egyedi cím: csak az első szó és a név nagy."], ["regénycím (Gárdonyi Géza)", "Egri csillagok", ["Egri Csillagok", "egri csillagok"], "Egyedi cím: csak az első szó nagy."],
      ["sportújság", "Nemzeti Sport", ["Nemzeti sport", "nemzeti Sport"], "Újság (állandó cím): minden szó nagy."], ["tudományos intézmény", "Magyar Tudományos Akadémia", ["Magyar tudományos akadémia", "Magyar Tudományos akadémia"], "Intézmény: minden szó nagy."],
      ["iskola neve", "Kossuth Lajos Általános Iskola", ["Kossuth Lajos általános iskola", "Kossuth Lajos Általános iskola"], "Intézmény: minden szó nagy."], ["múzeum Debrecenben", "Déri Múzeum", ["Déri múzeum", "déri Múzeum"], "Intézmény: minden szó nagy."],
@@ -1646,7 +1647,7 @@ const K = (function(){
     [["Kelet-Európa", "kelet-európai", ["Kelet-Európai", "Kelet-európai"], "Két tulajdonnévi tag: az -i alakban mind kicsi, a kötőjel marad."], ["Dél-Amerika", "dél-amerikai", ["Dél-Amerikai", "Dél-amerikai"], "Mind kicsi, kötőjel marad."],
      ["Csendes-óceán", "csendes-óceáni", ["Csendes-óceáni", "Csendes-Óceáni"], "Köznévi előtag: kicsi."], ["Balaton-felvidék", "Balaton-felvidéki", ["balaton-felvidéki", "Balaton-Felvidéki"], "A tulajdonnévi előtag nagy marad."],
      ["Duna-part", "Duna-parti", ["duna-parti", "Duna parti"], "A tulajdonnévi előtag nagy marad."], ["Petőfi utca", "Petőfi utcai", ["petőfi utcai", "Petőfi-utcai"], "Változatlan név + -i."],
-     ["Kossuth tér", "Kossuth téri", ["kossuth téri", "Kossuth-téri"], "Változatlan név + -i."], ["Szent István út", "Szent István úti", ["szent istván úti", "Szent István-úti"], "Változatlan név + -i."]]
+     ["Kossuth tér", "Kossuth téri", ["kossuth téri", "Kossuth-téri"], "Változatlan név + -i."], ["Szent István út", "Szent István úti", ["szent istván úti", "Szent István-úti"], "Változatlan név + -i."], ["Hajdú-Bihar megye", "Hajdú-Bihar megyei", ["hajdú-bihar megyei", "Hajdú-Bihar-megyei"], "A tulajdonnévi rész nagy marad, a megye kicsi, külön."]]
   ];
   IK.push(IK[0].concat(IK[1]));
   const types = [

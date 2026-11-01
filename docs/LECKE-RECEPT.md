@@ -485,3 +485,5 @@ helyesírás-lecke és a tollbamondások, hibátlanul; `helyesiras-check.js` 534
 - **A `H.sentFix` elfogadta a rossz kis-/nagybetűt** (régi engedékenység, a mondat eleji szó miatt): a kis-/nagybetűs leckében ez hiba
   lett volna. A tesztelő nem vette észre, mert mindig a jó alakot írja be; csak egy célzott próba (`t.check("Hétfőn")`) mutatta meg.
 - **A mondat eleji szó elfedi a szabályt:** a tollbamondásban a hónap és a nap ne a mondat elején álljon (ott úgyis nagy).
+- **Friss közigazgatási változás:** a „vármegye” 2026. október 1-jétől újra „megye”. Elsőre kihagytuk a megyés példát, mert a 2023-as
+  állapotra emlékeztünk; Endi javította. Ami a tudásunk lezárása után változhatott (nevek, intézmények, szabályok), azt nézd meg frissen.
