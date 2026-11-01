@@ -29,7 +29,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html` | A **Python-sorozat a nulláról** (2026. 11. 01.) első hat leckéje. Terv: [`docs/python-terv.md`](docs/python-terv.md) (10 lecke). Forrás: `tools/lessons/python-*.src.html`. |
+| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html`, `python-7-for.html` | A **Python-sorozat a nulláról** (2026. 11. 01.) első hét leckéje. Terv: [`docs/python-terv.md`](docs/python-terv.md) (10 lecke). Forrás: `tools/lessons/python-*.src.html`. |
 | `tools/lessons/python.js`, `python.css` | A Python-sorozat közös modulja (a `<!--@PYJS-->` jelölő hozza be): Pyodide-futtató, futtató-szerkesztő, hibatippek, pontos kimenet-összevetés, a változók típusa/értéke, feladatfajták. Ellenőrző: `node tools/lessons/py-check.js --verify 40 <lecke>`. |
 | `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód · 7. igekötők · 8. összetett szavak és számok · 9. kis- és nagybetű · 10. vessző · 11. gyakori tévesztések (2026. 11. 01.) · a 44 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
@@ -324,6 +324,11 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   (TimeoutError = „végtelen ciklus” válasz), toldalék-segédek számokhoz (`C.nal`, `C.tol`, `C.acc`).
   Lektor: 9 pont (Python-hiba nincs; névelő és „hármasával”, a csapda-kód valójában végtelen ciklus, a nyomkövetés-táblázat a
   levezetéshez igazítva, a „Végtelen ciklus” megoldásában nem a TimeoutError név áll), mind javítva, a tesztek újrafuttatva.
+  Élesben (PR #9, `3d669cd`). A pult jelezte: a `py-check` SIGALRM-je Windowson nem létezik → `sys.settrace` + `time.monotonic` határidő.
+- **7. lecke: for és range** (`python-7-for`): 11 dia, 4 levezetés (range(1, 6), for vagy while, ciklus a ciklusban, lépésenként a VS
+  Code-ban: töréspont, F5, F10, Variables), 6 típus (Milyen számokat ad?, Hányszor fut le?, Mit ír ki?, Írd meg!, Milyen hibát ad?,
+  Javítsd ki!). Lektor: 3 pont (Python-hiba nincs; a toldalék-segéd a 0-ra rossz alakot adott: „0-től” → „0-tól”, javítva a
+  közös modulban; névelő; „(b − a)-szor”), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
@@ -373,8 +378,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   A **4. lecke (j/ly)** élesben (2026-11-01, PR #1). Az **5–11. lecke** és a **szintfelmérő** **élesben** (2026-11-01, PR #2, Endi olvasztotta be: `e81870d`, Pages `success`; Endi képernyőképe a szintfelmérőről). **A tervezett helyesírás-leckesor teljes**, lektorálva.
   A szintfelmérő eredménye automatikusan Endi Google-űrlapjába megy (PR #3, `b014b7d`, élesben igazolva 2026-11-01). Következő: ha megjön a chat (`C:\KOVRAT\chat\`),
   a hibastatisztika (`docs/helyesiras-hibak.md`); a szintfelmérő eredményei (Endinek másolható összefoglaló) addig is mutatják Kovrat gyenge pontjait.
-- **Python-sorozat (2026-11-01):** terv (`docs/python-terv.md`) és az 1–6. lecke kész (1–5. élesben, PR #5–#8). Következő: a 7. lecke
-  (`for` és `range`), a terv szerint, VS Code-os példákkal. Belépési pont: `KOVETKEZO-SESSION.md`.
+- **Python-sorozat (2026-11-01):** terv (`docs/python-terv.md`) és az 1–7. lecke kész (1–6. élesben, PR #5–#9). Következő: a 8. lecke
+  (listák), a terv szerint, VS Code-os példákkal. Belépési pont: `KOVETKEZO-SESSION.md`.
 - **Python-dolgozat (2026-10-25):** kész, **élesben** (2026-10-26, Endi jóváhagyásával a pulton át: `aa702eb..755c902`, Pages `built`, élő `version.json` egyezik). Mivel az iskolában már a 9.-ben Python
   van, a következő Python-téma (elágazás, ciklus, lista) várhatóan hamarosan jön: a futtató és az ellenőrző kész, új lecke
   ugyanerre építhető (a `python-dolgozat.src.html` `LOGIC` blokkja és a `py-check.js` mintájára).

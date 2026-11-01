@@ -49,7 +49,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 4 | **Műveletek és beépített függvények** | `python-4-muveletek` | `+ - * / // % **`, a műveleti sorrend, zárójel, `+=` `-=` `*=`, `round`, `abs`, `max`, `min`, maradékos osztás a gyakorlatban (perc → óra, páros-páratlan), a Python mint számológép a VS Code-ban | ✅ kész (2026. 11. 01.) |
 | 5 | **Feltételek: `if`, `elif`, `else`** | `python-5-elagazas` | összehasonlítás (`== != < > <= >=`), `True`/`False`, `if`, kettőspont és behúzás, `else`, `elif`, `and` `or` `not`, egymásba ágyazás | ✅ kész (2026. 11. 01.) |
 | 6 | **Ismétlés feltétellel: `while`** | `python-6-while` | ciklusfeltétel, ciklusváltozó, számláló és gyűjtő (`osszeg += x`), bekérés addig, amíg jó nem lesz, végtelen ciklus és megállítása, `break` | ✅ kész (2026. 11. 01.) |
-| 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | tervezett |
+| 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | ✅ kész (2026. 11. 01.) |
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | tervezett |
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | tervezett |
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | tervezett |
@@ -152,7 +152,8 @@ ha az iskola odaér.
 - **Fogalmak:** `for i in range(5)` → 0…4; `range(1, 11)`; `range(10, 0, -1)`; `for betu in szo`; egymásba ágyazott ciklus (csillagháromszög).
 - **Tipikus hibák:** a záró érték nincs benne (`range(1, 10)` nem írja ki a 10-et); a ciklusváltozó felülírása; a `print` behúzása
   (minden körben vagy csak a végén fut).
-- **Feladattípusok:** range elemei · Mit ír ki? · Hányszor fut le? · Írd meg! · Hibakereső.
+- **Feladattípusok (kész):** Milyen számokat ad? · Hányszor fut le? · Mit ír ki? · Írd meg! · Milyen hibát ad? · Javítsd ki!
+- **VS Code:** lépésenkénti futtatás (töréspont, Run and Debug / F5, Step Over / F10, Variables panel), rajzzal és levezetéssel.
 
 ### 8. Listák
 

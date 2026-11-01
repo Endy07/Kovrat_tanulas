@@ -569,8 +569,9 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 ### A Python-sorozat 6. leckéje (while, 2026. 11. 01.)
 
 - **Végtelen ciklus a feladatokban:** a keret 20 000 karakter kimenet után RuntimeError-ral leáll (a kiíró végtelen ciklus így gyors);
-  a böngészőben 6 mp az időkorlát (utána a worker újraindul); a `py-check` sorozat-módja futásonként 0,5 mp-et ad (SIGALRM →
-  TimeoutError). A „Milyen hibát ad?” `err: "TimeoutError"`-ral a „Végtelen ciklus” választ adja. A „Javítsd ki!” végtelen ciklusos
+  a böngészőben 6 mp az időkorlát (utána a worker újraindul); a `py-check` sorozat-módja futásonként 0,5 mp-et ad (TimeoutError).
+  **Platformfüggetlenül:** `sys.settrace` + `time.monotonic` határidő, és csak a `<program>` soraiban dob (a SIGALRM Windowson nincs;
+  a pult jelezte, 2026-11-01). A végtelen ciklusos esetek miatt a `while`-lecke ellenőrzése kb. 1 perc. A „Milyen hibát ad?” `err: "TimeoutError"`-ral a „Végtelen ciklus” választ adja. A „Javítsd ki!” végtelen ciklusos
   kiinduló kódja legyen kiíró (gyors leállás); a csendes végtelen ciklus a tesztelőben feladatonként 6 mp.
 - **Ismét: a LOGIC-on kívüli levezetés csak az exportált neveket látja** (`S`, `range`): a tesztelő 310 lejátszó-kockát mutatott
   (a „Tovább” sosem tiltódott le), és JS-hibát. A kockaszám gyanús értéke is jel.

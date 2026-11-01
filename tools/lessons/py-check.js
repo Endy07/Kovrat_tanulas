@@ -20,9 +20,24 @@ const DRIVER = [
   "res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]",
   "sys.__stdout__.write(json.dumps(res, ensure_ascii=False))"
 ].join("\n");
-// a sorozat-leckéknél minden futás legfeljebb 0,5 mp (végtelen ciklus → TimeoutError, mint a böngészőben az időkorlát)
-const DRIVER_T = DRIVER.replace("res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]",
-  "import signal\ndef _al(s, f):\n    raise TimeoutError('időtúllépés')\nsignal.signal(signal.SIGALRM, _al)\nres = []\nfor j in d['jobs']:\n    signal.setitimer(signal.ITIMER_REAL, 0.5)\n    r = g['_kovrat_run'](j['code'], j['inputs'])\n    signal.setitimer(signal.ITIMER_REAL, 0)\n    res.append(r)");
+// a sorozat-leckéknél minden futás legfeljebb 0,5 mp (végtelen ciklus → TimeoutError, mint a böngészőben az időkorlát).
+// Platformfüggetlen (Windowson nincs SIGALRM): sys.settrace, és csak a diák programjának (<program>) soraiban dob.
+const DRIVER_T = DRIVER.replace("res = [g['_kovrat_run'](j['code'], j['inputs']) for j in d['jobs']]", [
+  "import time",
+  "def _tracer(deadline):",
+  "    def tr(frame, event, arg):",
+  "        if frame.f_code.co_filename == '<program>' and time.monotonic() > deadline:",
+  "            raise TimeoutError('időtúllépés')",
+  "        return tr",
+  "    return tr",
+  "res = []",
+  "for j in d['jobs']:",
+  "    sys.settrace(_tracer(time.monotonic() + 0.5))",
+  "    try:",
+  "        r = g['_kovrat_run'](j['code'], j['inputs'])",
+  "    finally:",
+  "        sys.settrace(None)",
+  "    res.append(r)"].join("\n"));
 function pyRun(jobs, harness){
   const r = spawnSync("python", ["-I", "-c", harness ? DRIVER_T : DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
   if (r.status !== 0) throw new Error("python hiba: " + r.stderr.toString());
