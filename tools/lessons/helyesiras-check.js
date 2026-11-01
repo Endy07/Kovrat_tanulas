@@ -37,6 +37,16 @@ eq(H.sortAbc(["egy", "egyfelé", "egyféle"]), ["egy", "egyfelé", "egyféle"], 
  ["alma", "körte", ["eliras"]], ["Kedden", "kedden", ["kis"]]]
   .forEach(([t, r, c]) => eq(H.classify(t, r), c, "classify " + t + "/" + r));
 
+// j/ly (4. lecke): a [j] hang írásmódjai (AkH 88., 51., 56–57., 92–93.)
+[["hüje", "hülye", ["jly"]], ["ojan", "olyan", ["jly"]], ["Mijen", "milyen", ["kis", "jly"]], ["kiráj", "király", ["jly"]], ["tanujj", "tanulj", ["jly"]],
+ ["tanuly", "tanulj", ["jly"]], ["ájj", "állj", ["kettoz", "jly"]], ["osztájjal", "osztállyal", ["jly"]], ["osztályal", "osztállyal", ["kettoz"]], ["fojjon", "folyjon", ["jly"]],
+ ["telyes", "teljes", ["jly"]], ["juk", "lyuk", ["jly"]], ["bajal", "bajjal", ["kettoz"]], ["tavaj", "tavaly", ["jly"]]]
+  .forEach(([t, r, c]) => eq(H.classify(t, r), c, "classify " + t + "/" + r));
+// az ly egy betű; a hosszú lly elválasztáskor két teljes ly (AkH 226. f)
+[["go-lyó"], ["ki-rály"], ["he-lyes"], ["fo-lyo-só"], ["gó-lya"], ["süly-lyed"], ["osz-tály-lyal"], ["hely-lyel"], ["ki-rály-lyal"], ["mo-soly-lyal"]]
+  .flat().forEach(h => eq(H.hyph(h.replace(/-/g, "")), h, "hyph " + h));
+eq(H.letterCount("gally"), 4, "betűszám gally"); eq(H.letterCount("osztállyal"), 8, "betűszám osztállyal");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");

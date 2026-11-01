@@ -344,7 +344,8 @@ const H = (function(){
     hossz: s => s.replace(/[áéíóőúű]/g, c => SHORT[c]).replace(/[ÁÉÍÓŐÚŰ]/g, c => SHORT[c.toLowerCase()].toUpperCase()),
     ekezet: s => s.replace(/[áà]/g, "a").replace(/[éè]/g, "e").replace(/í/g, "i").replace(/[óöőô]/g, "o").replace(/[úüű]/g, "u")
                   .replace(/Á/g, "A").replace(/É/g, "E").replace(/Í/g, "I").replace(/[ÓÖŐ]/g, "O").replace(/[ÚÜŰ]/g, "U"),
-    jly: s => s.replace(/ly/g, "j").replace(/Ly/g, "J"),
+    // j/ly: a [j] hang minden írásmódja egy alakra (ly, lly, lj, jj → j): fojik ~ folyik, tanujj ~ tanulj, osztájjal ~ osztállyal
+    jly: s => s.replace(/Lly|Ly|Lj/g, "J").replace(/lly|ly|lj/g, "j").replace(/[jJ]j+/g, m => m[0]),
     kettoz: s => s.replace(/(dzs|cs|dz|gy|ly|ny|sz|ty|zs)\1/gi, "$1")
                   .replace(/ddzs|ccs|ddz|ggy|lly|nny|ssz|tty|zzs/gi, m => m.slice(1))
                   .replace(/([bcdfghjklmnprstvz])\1/gi, "$1")
@@ -353,7 +354,7 @@ const H = (function(){
     kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, csapat) nagybetűvel kezdődik, a többi kisbetűvel." },
     hossz:  { n: "Magánhangzó hossza", d: "Rövid vagy hosszú magánhangzó: i/í, o/ó, ö/ő, u/ú, ü/ű (a/á, e/é). Mondd ki lassan, és figyeld a szabályokat (-ból/-ről hosszú, -ul/-ül rövid…).", href: "helyesiras-maganhangzok.html" },
     ekezet: { n: "Ékezet", d: "Kimaradt vagy rossz az ékezet (o/ö/ő, u/ü/ű). Más betű, más szó: sor ≠ sör, kor ≠ kör.", href: "helyesiras-maganhangzok.html" },
-    jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (pl. folyik, király, hely, -ly végű szavak).", href: "" },
+    jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (folyik, király, hely, olyan, gólya); kivétel a muszáj. A toldalék j-je mindig j (tanulj, látja).", href: "helyesiras-j-ly.html" },
     kettoz: { n: "Mássalhangzó hossza", d: "Egy vagy két betű? A hosszú mássalhangzót kettőzve írjuk (itt, mellett, akkor); a többjegyűnél szón belül csak az első jegyet (hosszú, asszony), összetett szó határán teljesen (jegygyűrű).", href: "helyesiras-massalhangzok.html" },
     tobbj:  { n: "Többjegyű betű", d: "A cs, dz, dzs, gy, ly, ny, sz, ty, zs egy-egy betű: minden jegyét le kell írni (dzseki, nem dzeki).", href: "helyesiras-betuk-elvalasztas.html" },
     egybe:  { n: "Egybeírás", d: "Ezt egy szóba kell írni (pl. igekötő az ige előtt: megcsinálom; összetett szó: számítógép).", href: "" },
@@ -583,6 +584,26 @@ const H = (function(){
         "Hiába kerestük mindannyian, csak a csengetés után találtuk meg.",
         "Másnap már óvatosabban játszottunk, és senki sem rúgta át a kerítésen." ] }
     ],
+    jly: [
+      { id: "j1", t: "A korcsolyapálya", s: [
+        "Tavaly télen a város szélén új korcsolyapálya nyílt.",
+        "Az első hétvégén olyan sokan voltak, hogy alig találtunk helyet.",
+        "A bátyám a korlát mellett haladt, mert még nem tudott jól korcsolyázni.",
+        "Egyszer elcsúszott, de nagy mosollyal felállt, és folytatta.",
+        "Estére mindenki elfáradt, de muszáj volt még egy kört mennünk." ] },
+      { id: "j2", t: "A folyóparton", s: [
+        "Szombaton az osztállyal kirándulni mentünk a folyópartra.",
+        "A víz lassan folyt, a parton gólyák sétáltak.",
+        "Peti egy lyukas labdát talált a bokrok között.",
+        "Azt mondta, hogy ilyen helyen még sosem játszott.",
+        "Hazafelé a buszon a tanárnő megkérdezte, milyen volt a nap." ] },
+      { id: "j3", t: "A sakkverseny", s: [
+        "Pénteken sakkversenyt rendeztek az iskola könyvtárában.",
+        "Az első játszmában a királlyal túl korán indultam el.",
+        "Az ellenfelem kihasználta a hibát, és nehéz helyzetbe kerültem.",
+        "Ekkor eszembe jutott az edzőm tanácsa, hogy minden lépést gondoljak végig.",
+        "Végül döntetlen lett, és a teljes osztály megtapsolt minket." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -601,10 +622,16 @@ const H = (function(){
         "Az első napon kicsit izgultam, mert senkit sem ismertem.",
         "Az osztályfőnökünk kedvesen fogadott minket, és bemutatta a tanárokat.",
         "A szünetben megismerkedtem két fiúval, akik szintén szeretnek programozni.",
-        "Azóta minden reggel együtt megyünk a buszmegállótól az iskoláig." ] }
+        "Azóta minden reggel együtt megyünk a buszmegállótól az iskoláig." ] },
+      { id: "v4", t: "Pályaválasztás", s: [
+        "Holnap reggel az egész osztállyal megyünk a pályaválasztási kiállításra.",
+        "Ott minden iskola bemutatja, milyen szakmákat lehet nála tanulni.",
+        "Engem leginkább a szoftverfejlesztés érdekel, mert szeretek programozni.",
+        "A barátom szerint muszáj lesz korán indulnunk, mert hosszú a sor.",
+        "Ha jól sikerül, otthon büszkén mesélem el, mit láttam." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");
