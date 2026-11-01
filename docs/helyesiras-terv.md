@@ -202,6 +202,12 @@ helyesiras.mta.hu élő szövegét olvasta). Javítva:
   eredmény, leckénkénti pontszám, ajánlott leckék (a leggyengébb elöl), a hibás válaszok magyarázattal, Endinek másolható összefoglaló,
   és az előzmények (localStorage, legfeljebb 10). Nincs jegy, nincs időkorlát.
 - Részben pótolja a chat-statisztikát: Kovrat saját hibáiból mutatja a gyenge pontokat, a chat szövege nélkül.
+- **Automatikus mentés (Endi kérése, 2026. 11. 01.):** a kitöltés végén az eredmény Endi Google-űrlapjába megy („Kovrat Szintfelmero”,
+  4 rövid válasz mező: Dátum, Eredmény, Leckénként, Hibás válaszok; a válaszok Endi táblázatában). `fetch` `no-cors` POST a
+  `formResponse` címre; csak a github.io-ról és nem gépi tesztből (`navigator.webdriver`); ha nincs internet, a böngészőben várakozik, és
+  a következő megnyitáskor újra próbálja. Név és más adat nem megy. ⚠️ Az űrlap címe a nyilvános repóban van: elvben bárki küldhetne rá.
+  Ellenőrizve: Playwright-szimuláció (a github.io címre irányítva, a beküldést elfogva): egy beküldés, a négy mező helyes tartalommal.
+  A valódi beküldést a felhős gép nem érte el (a docs.google.com nincs engedélyezve), azt Endi próbakitöltése igazolja.
 - Ellenőrizve: minden elemnek egy jó válasza van; hibátlan kitöltés 5 × 22/22; hibás kitöltésnél a jó leckéket ajánlja; az előzmény
   újratöltés után megmarad; 390 px, sötét téma, JS-hiba nincs.
 

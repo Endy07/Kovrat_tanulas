@@ -1,6 +1,15 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 (a helyesírás-leckesor kész)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 reggel (élesben)
+
+**Élesben:** az 5–11. lecke és a szintfelmérő (PR #2, `e81870d`). **PR #3:** a szintfelmérő eredménye automatikusan Endi Google-űrlapjába
+megy (Endi kérése). Beolvasztás után Endi próbakitöltése igazolja, hogy a sor megjelenik a táblázatban.
+
+**Következő:** Kovrat kitölti a szintfelmérőt → az eredményből a gyenge leckékhez plusz gyakorlás; Python-folytatás, ha az iskola odaér.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 (a helyesírás-leckesor kész)
 
 **A PR #2-ben (beolvasztásra vár):** az 5–11. lecke, legutóbb a **11. (gyakori tévesztések,** `helyesiras-tevesztesek.html`**)**,
 28 új tollbamondás (összesen 44). **A tervezett 11 leckés helyesírás-sor teljes.** Tesztek: a 11 helyesírás-lecke mind hibátlan,
