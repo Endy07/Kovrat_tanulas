@@ -1,0 +1,395 @@
+<!--@HEAD-->
+<title>Python 9: szövegek</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656;max-width:520px}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.55;font-family:var(--mono)}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.vs-pop{margin:0 12px 10px 3.2em;border:1px solid #454545;background:#252526;border-radius:4px;font-size:.8rem;max-width:300px}
+.vs-pop div{padding:2px 8px;display:flex;justify-content:space-between;gap:10px}
+.vs-pop div.sel{background:#04395e}
+.vs-pop .ic{color:#b180d7}
+.vs-pop .doc{color:#9da5b4}
+.chars{display:flex;flex-wrap:wrap;gap:3px;font-family:var(--mono);margin:8px 0}
+.chars span{display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--line);border-radius:8px;padding:3px 7px;min-width:2.2em}
+.chars small{font-size:.68rem;color:var(--muted)}
+.chars span.on{border-color:var(--led);background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.chars .sp{color:var(--muted)}
+.pb-stage .chars small{color:#8C99AA}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 9. lecke</span>
+  <h1>Szövegek mélyebben</h1>
+  <p class="lead">A szöveg (str) olyan, mint egy lista, csak betűkből: minden karakternek van indexe, és ki lehet vágni belőle egy darabot, a <b>szeletet</b>. A szöveget átalakító metódusok (<code>upper</code>, <code>strip</code>, <code>replace</code>…) mindig <b>új</b> szöveget adnak, az eredetit nem változtatják; a <code>split</code> pedig listát ad. Ebben a leckében a szövegeket ciklussal is feldolgozod.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írj be más szöveget a „Bemenetek” mezőbe, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> a <a href="python-8-listak.html">8. lecke</a> (lista, index, bejárás) és a <a href="python-7-for.html">7.</a> (for). <b>Ebben a leckében:</b> index és szelet (<code>s[1:4]</code>, <code>s[::-1]</code>), a szöveg nem módosítható, metódusok, <code>in</code>, bejárás karakterenként, új szöveg építése, <code>split</code> és <code>join</code>, és a VS Code metódus-ajánlója. A <a href="python-dolgozat.html">dolgozat-lecke</a> ugyanezeket a metódusokat gyakoroltatja.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. Írd át a szöveget, és nézd meg, mi változik!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="szelet" aria-selected="true">A szelet</button>
+    <button class="tab" data-m="epit" aria-selected="false">Szöveg építése ciklussal</button>
+    <button class="tab" data-m="split" aria-selected="false">split: szavakra bontás</button>
+    <button class="tab" data-m="vs" aria-selected="false">Metódusok a VS Code-ban</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. A „Mit ír ki?” és a „Mit ad a szelet?” feladatnál idézőjel nélkül írd be, ami a képernyőn megjelenne. Az „Írd meg!” és a „Javítsd ki!” feladatnál a gép több bemenettel lefuttatja a programodat. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Szelet</span><span><code>s[a:b]</code>: az a-tól a b előttiig (a b nincs benne, mint a range-nél). <code>s[::-1]</code>: visszafelé.</span></div>
+    <div class="trick"><span class="t">A metódus új szöveget ad</span><span><code>s.upper()</code> egymagában semmit nem változtat. Mentsd el: <code>s = s.upper()</code>.</span></div>
+    <div class="trick"><span class="t">split ↔ join</span><span><code>"a b c".split()</code> → lista. <code>" ".join(lista)</code> → vissza szöveggé.</span></div>
+    <div class="trick"><span class="t">Nem módosítható</span><span><code>s[0] = "X"</code> hiba. Helyette: <code>s = "X" + s[1:]</code>.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-8-listak.html">← 8. lecke: listák</a>
+    <a class="btn" href="python-dolgozat.html">A Python-dolgozat leckéje</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s==\s/g, " egyenlő-e "], [/\+=/g, " plusz egyenlő "], [/\s=\s/g, " legyen "], [/::-1/g, " visszafelé "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const INP = has(/input\s*\(/, "a bekéréshez input() kell.");
+    const FOR = has(/\bfor\b/, "használj for ciklust.");
+    const SZO = ["Python", "Kovrat", "iskola", "program", "Debrecen", "számítógép", "kutya", "ablak", "macska", "tanterem"];
+    const MOND = ["Ma Python dolgozatot írunk", "A macska alszik a kanapén", "Holnap moziba megyünk", "Szeretem a programozást", "Kovrat jól tud kódolni", "Az iskola után focizni megyünk"];
+    const PAL = ["kerek", "görög", "radar", "indul a görög aludni"];
+    const MAGAN = "aáeéiíoóöőuúüű";
+    // Python-szelet JS-ben (a, b lehet null vagy negatív; lépés 1 vagy -1)
+    const sl = (s, a, b, st) => { const n = s.length; st = st || 1;
+      if (st === -1 && a == null && b == null) return s.split("").reverse().join("");
+      if (st === 2){ let r = ""; for (let i = a || 0; i < (b == null ? n : b); i += 2) r += s[i]; return r; }
+      const nrm = (x, d) => x == null ? d : x < 0 ? Math.max(0, n + x) : Math.min(n, x); return s.slice(nrm(a, 0), nrm(b, n)); };
+    const sliceStr = (a, b, st) => "[" + (a == null ? "" : a) + ":" + (b == null ? "" : b) + (st ? ":" + st : "") + "]";
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J('szo = input("Írj egy szót: ")', 'print(f"Első betű: {szo[0]}, utolsó: {szo[-1]}")', 'print(f"Első három: {szo[:3]}")', 'print(f"Visszafelé: {szo[::-1]}")', 'print(f"Nagybetűvel: {szo.upper()}")'), ins: ["Python"] },
+      index: { code: J('szo = "Python"', "print(szo[0], szo[1], szo[-1])", "print(len(szo))", "print(szo[len(szo) - 1])") },
+      szelet: { code: J('szo = "Python"', "print(szo[0:2])", "print(szo[2:5])", "print(szo[:3])", "print(szo[3:])", "print(szo[-2:])") },
+      lepes: { code: J('szo = "Python"', "print(szo[::-1])", "print(szo[::2])", 'print("kerek" == "kerek"[::-1])') },
+      nemmod: { code: J('szo = "macska"', 'uj = "k" + szo[1:]', "print(uj)", 'print(szo.replace("m", "k"))', "print(szo)") },
+      metodus: { code: J('s = "  Szia Világ  "', 'print("[" + s.strip() + "]")', "print(s.upper())", "print(s.lower())", 'print(s.count("a"))', 'print(s.replace("Világ", "Kovrat"))') },
+      ment: { code: J('nev = "  kovrat  "', "nev.strip()", 'print("[" + nev + "]")', "nev = nev.strip().capitalize()", 'print("[" + nev + "]")') },
+      inop: { code: J('mondat = "Ma Python dolgozatot írunk"', 'print("Python" in mondat)', 'print("python" in mondat)', 'print("python" in mondat.lower())') },
+      bejar: { code: J('szo = input("Egy szó: ")', "db = 0", "for betu in szo.lower():", I('if betu in "aáeéiíoóöőuúüű":'), I(I("db += 1")), 'print(f"Magánhangzók: {db}")'), ins: ["Debrecen"] },
+      epit: { code: J('szo = "alma"', 'uj = ""', "for betu in szo:", I('uj = uj + betu + "-"'), "print(uj)") },
+      split: { code: J('mondat = "Ma Python dolgozatot írunk"', "szavak = mondat.split()", "print(szavak)", "print(len(szavak))", "print(szavak[1])", 'print("-".join(szavak))') },
+      splitv: { code: J('adat = "Anna,15,Debrecen"', 'reszek = adat.split(",")', "print(reszek)", "kor = int(reszek[1])", 'print(f"{reszek[0]} jövőre {kor + 1} éves.")') },
+      hibaT: { code: J('szo = "macska"', 'szo[0] = "k"'), err: "TypeError" },
+      hibaI: { code: J('szo = "alma"', "print(szo[4])"), err: "IndexError" }
+    };
+
+    /* ---- „Mit ad a szelet?” ---- */
+    const SZEL = [
+      [
+        () => { const w = pick(SZO.filter(x => x.length >= 6)), k = rnd(2, 4); return pick([
+          { code: J('s = "' + w + '"', "print(s[:" + k + "])"), ans: w.slice(0, k), sol: "s[:" + k + "]: az elejétől " + C.az(k) + k + " előtti indexig, vagyis az első " + k + " karakter." },
+          { code: J('s = "' + w + '"', "print(s[" + k + ":])"), ans: w.slice(k), sol: "s[" + k + ":]: " + C.az(k) + k + ". indextől a végéig." }]); },
+        () => { const w = pick(SZO); return pick([{ code: J('s = "' + w + '"', "print(s[::-1])"), ans: sl(w, null, null, -1), sol: "A -1 lépés visszafelé járja be a szöveget." }, { code: J('s = "' + w + '"', "print(s[-1])"), ans: w[w.length - 1], sol: "A -1 index az utolsó karakter." }]); }
+      ],
+      [
+        () => { const w = pick(SZO.filter(x => x.length >= 6)), a = rnd(1, 2), b = a + rnd(2, 3); return { code: J('s = "' + w + '"', "print(s" + sliceStr(a, b) + ")"), ans: w.slice(a, b), sol: "s[" + a + ":" + b + "]: " + C.tol(a) + " indul, " + C.az(b) + b + ". index már nincs benne (" + (b - a) + " karakter)." }; },
+        () => { const w = pick(SZO.filter(x => x.length >= 6)), k = rnd(2, 3); return { code: J('s = "' + w + '"', "print(s[-" + k + ":])"), ans: w.slice(-k), sol: "s[-" + k + ":]: az utolsó " + k + " karakter." }; },
+        () => { const w = pick(SZO.filter(x => x.length >= 5)); return { code: J('s = "' + w + '"', "print(s[0] + s[-1])"), ans: w[0] + w[w.length - 1], sol: "Az első és az utolsó karakter összefűzve." }; }
+      ],
+      [
+        () => { const w = pick(SZO.filter(x => x.length >= 6)); return { code: J('s = "' + w + '"', "print(s[::2])"), ans: sl(w, null, null, 2), sol: "Kettesével lép: a 0., 2., 4. … indexű karakter." }; },
+        () => { const w = pick(SZO.filter(x => x.length >= 6)), k = rnd(1, 2); return { code: J('s = "' + w + '"', "print(s[" + k + ":-" + k + "])"), ans: w.slice(k, -k), sol: "Elölről és hátulról is levág " + k + " karaktert." }; },
+        () => { const w = pick(SZO.filter(x => x.length >= 5)); const n = w.length, h = Math.floor(n / 2); return { code: J('s = "' + w + '"', "f = len(s) // 2", "print(s[:f])"), ans: w.slice(0, h), sol: "len(s) = " + n + ", a fele (//) " + h + ": az első " + h + " karakter." }; }
+      ]
+    ];
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const w = pick(SZO); return pick([
+          { code: J('s = "' + w + '"', "print(s.upper())"), ans: w.toUpperCase(), sol: "Minden betű nagybetűs lesz." },
+          { code: J('s = "' + w + '"', "print(s.lower())"), ans: w.toLowerCase(), sol: "Minden betű kisbetűs lesz." },
+          { code: J('s = "' + w + '"', "print(len(s))"), ans: S(w.length), sol: "A karakterek száma." }]); },
+        () => { const w = pick(SZO.filter(x => x.length <= 7)); return { code: J('s = "' + w + '"', "for c in s:", I("print(c)")), ans: w.split("").join("\n"), sol: "A for karakterenként megy végig a szövegen." }; }
+      ],
+      [
+        () => { const n = pick(["Anna", "Bence", "Lili"]); return pick([
+          { code: J('nev = "  ' + n + '  "', "nev.strip()", 'print("[" + nev + "]")'), ans: "[  " + n + "  ]", sol: "Csapda: a strip() eredményét nem mentette el, ezért a nev nem változott." },
+          { code: J('nev = "  ' + n + '  "', "nev = nev.strip()", 'print("[" + nev + "]")'), ans: "[" + n + "]", sol: "Elmentette: nev = nev.strip(). A szélső szóközök eltűntek." }]); },
+        () => { const m = pick(MOND); return pick([
+          { code: J('m = "' + m + '"', "print(len(m.split()))"), ans: S(m.split(" ").length), sol: "A split() szavakra bont (a szóközöknél), a len a szavak száma." },
+          { code: J('m = "' + m + '"', "print(m.split()[0])"), ans: m.split(" ")[0], sol: "A split() listát ad; a [0] az első szó." },
+          { code: J('m = "' + m + '"', "print(m.split()[-1])"), ans: m.split(" ").slice(-1)[0], sol: "A [-1] az utolsó szó." }]); },
+        () => { const w = pick(["banana", "alma", "Anna", "kakaó", "tananyag"]), c = pick(["a", "n"]); return { code: J('s = "' + w + '"', 'print(s.count("' + c + '"))'), ans: S(w.split(c).length - 1), sol: "A count megszámolja, hányszor szerepel benne." + (c === "a" ? " A nagy A nem számít kis a-nak." : "") }; }
+      ],
+      [
+        () => { const w = pick(["alma", "kutya", "ház", "Python"]); return { code: J('s = "' + w + '"', 'uj = ""', "for c in s:", I("uj = c + uj"), "print(uj)"), ans: w.split("").reverse().join(""), sol: "Minden betű az eleje elé kerül: így megfordul a szó." }; },
+        () => { const m = pick(MOND); return { code: J('m = "' + m + '"', "szavak = m.split()", 'print("-".join(szavak).lower())'), ans: m.split(" ").join("-").toLowerCase(), sol: "Szavakra bontja, kötőjellel összefűzi, végül kisbetűsít." }; },
+        () => { const w = pick(PAL.slice(0, 3).concat(["alma", "kutya"])); return { code: J('s = "' + w + '"', "print(s == s[::-1])"), ans: w === w.split("").reverse().join("") ? "True" : "False", sol: "Palindrom-e: visszafelé olvasva ugyanaz?" }; },
+        () => { const m = pick(MOND); return { code: J('m = "' + m + '"', "db = 0", "for szo in m.split():", I("if len(szo) > 4:"), I(I("db += 1")), "print(db)"), ans: S(m.split(" ").filter(x => x.length > 4).length), sol: "Megszámolja a 4 betűnél hosszabb szavakat." }; }
+      ]
+    ];
+
+    /* ---- „Melyik metódus?” ---- */
+    const MET = [".upper()", ".lower()", ".strip()", ".count(…)", ".replace(…, …)", ".split()"];
+    const MELYIK = [
+      [["minden betű nagybetűs legyen", 0], ["minden betű kisbetűs legyen", 1], ["levágni a szöveg elejéről és végéről a szóközöket", 2], ["szavakra bontani egy mondatot", 5]],
+      [["hányszor szerepel benne az „a” betű", 3], ["minden szóközt kötőjelre cserélni", 4], ["egy e-mail-címet kisbetűssé tenni összehasonlítás előtt", 1], ["„Anna,15,Debrecen” részeit külön kapni (vesszőnél)", 5]],
+      [["a beírt név elejéről és végéről a véletlenül begépelt szóközök eltávolítása (a vezeték- és keresztnév közötti szóköz maradjon)", 2], ["a „hülye” szót „***”-ra cserélni egy üzenetben", 4], ["megszámolni, hány mondat van (hány pont van a szövegben)", 3], ["CSUPA NAGYBETŰS kiabálás helyett normál kisbetűs szöveg", 1]]
+    ];
+
+    /* ---- „Írd meg!” ---- */
+    const tokS = s => ({ s }), tokL = s => ({ s, line: true });
+    const two = a => shuffle(a).slice(0, 2);
+    const WRITE = [
+      [
+        () => ({ q: "Kérj be egy szót, és írd ki f-stringgel az első és az utolsó betűjét!",
+          code: J('szo = input("Egy szó: ")', 'print(f"Első: {szo[0]}, utolsó: {szo[-1]}")'), tests: two(SZO).map(w => ({ ins: [w], exp: [tokS(w[0]), tokS(w[w.length - 1])] })), fstr: true, ex: "Első: szo[0], utolsó: szo[-1]." }),
+        () => ({ q: "Kérj be egy szót, és írd ki visszafelé (szelettel)!",
+          code: J('szo = input("Egy szó: ")', "print(szo[::-1])"), tests: two(SZO).map(w => ({ ins: [w], exp: [tokL(w.split("").reverse().join(""))] })), must: [has(/::\s*-1/, "használd a [::-1] szeletet.")], ex: "A [::-1] visszafelé lép." }),
+        () => ({ q: "Kérd be a felhasználó nevét, és írd ki csupa nagybetűvel!",
+          code: J('nev = input("Neved: ")', "print(nev.upper())"), tests: two(["Kovrat", "Anna", "Bence", "Lili"]).map(w => ({ ins: [w], exp: [tokL(w.toUpperCase())] })), must: [has(/\.upper\s*\(\s*\)/, "használd az upper()-t.")], ex: "nev.upper(): új, nagybetűs szöveg." })
+      ],
+      [
+        () => ({ q: "Kérj be egy mondatot, és írd ki f-stringgel, hány szóból áll! (A split() szavakra bont.)",
+          code: J('mondat = input("Egy mondat: ")', 'print(f"Szavak száma: {len(mondat.split())}")'), tests: two(MOND).map(m => ({ ins: [m], exp: [m.split(" ").length] })), must: [has(/\.split\s*\(/, "használd a split()-et.")], fstr: true, ex: "A split() listát ad; a len megszámolja az elemeit." }),
+        () => ({ q: "Kérj be egy nevet, amely előtt és után szóközök lehetnek. Vágd le a szóközöket, és írd ki f-stringgel szögletes zárójelben, például: <code>[Anna]</code>, és mellé a hosszát!",
+          code: J('nev = input("Név: ")', "nev = nev.strip()", 'print(f"[{nev}] hossza: {len(nev)}")'), tests: [["  Anna  ", "Anna"], ["Kovrat   ", "Kovrat"]].map(([a, b]) => ({ ins: [a], exp: [{ s: "[" + b + "]" }, b.length] })), must: [has(/\.strip\s*\(/, "használd a strip()-et.")], fstr: true, ex: "nev = nev.strip(): el kell menteni, különben a nev nem változik." }),
+        () => ({ q: "Kérj be egy szót, és írd ki f-stringgel, hány magánhangzó van benne (a, á, e, é, i, í, o, ó, ö, ő, u, ú, ü, ű; a nagybetű is számít)!",
+          code: J('szo = input("Egy szó: ")', "db = 0", "for c in szo.lower():", I('if c in "aáeéiíoóöőuúüű":'), I(I("db += 1")), 'print(f"Magánhangzók: {db}")'), tests: two(["Debrecen", "Iskola", "számítógép", "OKTÓBER", "Kovrat"]).map(w => ({ ins: [w], exp: [w.toLowerCase().split("").filter(c => MAGAN.includes(c)).length] })), must: [FOR], fstr: true, ex: "Karakterenként végigmész; a lower() miatt a nagybetű is számít." })
+      ],
+      [
+        () => ({ q: "Kérj be egy szót, és döntsd el, palindrom-e (visszafelé olvasva ugyanaz, a kis- és nagybetű nem számít)! Írd ki: <b>palindrom</b> vagy <b>nem palindrom</b>.",
+          code: J('szo = input("Egy szó: ").lower()', "if szo == szo[::-1]:", I('print("palindrom")'), "else:", I('print("nem palindrom")')), tests: [{ ins: [pick(["Kerek", "Görög", "Radar"])], exp: [tokL("palindrom")], not: ["nem"] }, { ins: [pick(["Python", "alma", "Kovrat"])], exp: [tokS("nem palindrom")] }], ex: "Kisbetűsítés, aztán összevetés a megfordítottal: szo == szo[::-1]." }),
+        () => ({ q: "Kérd be a vezetéknevet és a keresztnevet, és írd ki a monogramot nagybetűkkel, pontokkal, például: <code>K.A.</code>",
+          code: J('vez = input("Vezetéknév: ")', 'ker = input("Keresztnév: ")', 'print(f"{vez[0].upper()}.{ker[0].upper()}.")'), tests: [["kovács", "anna"], ["Nagy", "bence"]].map(([v, k]) => ({ ins: [v, k], exp: [tokL(v[0].toUpperCase() + "." + k[0].toUpperCase() + ".")] })), fstr: true, ex: "Az első betű: [0]; nagybetűsítés: upper(). A gép kisbetűs nevet is kipróbál." }),
+        () => ({ q: "Kérj be egy mondatot, és írd ki a leghosszabb szavát! (Bontsd szavakra, és keresd meg a leghosszabbat, mint a maximumkiválasztásnál.)",
+          code: J('mondat = input("Egy mondat: ")', "szavak = mondat.split()", "leghosszabb = szavak[0]", "for szo in szavak:", I("if len(szo) > len(leghosszabb):"), I(I("leghosszabb = szo")), 'print(f"A leghosszabb szó: {leghosszabb}")'), tests: ["Ma Python dolgozatot írunk", "A programozás nagyon érdekes"].map(m => { const w = m.split(" "); let l = w[0]; w.forEach(x => { if (x.length > l.length) l = x; }); return { ins: [m], exp: [tokS(l)] }; }), must: [has(/\.split\s*\(/, "használd a split()-et.")], fstr: true, ex: "Maximumkiválasztás a szavak hossza szerint; a kezdőérték az első szó." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const w = pick(SZO.filter(x => x.length <= 6)); return pick([
+          { code: J('s = "' + w + '"', "print(s[" + w.length + "])"), err: "IndexError", fix: J('s = "' + w + '"', "print(s[" + (w.length - 1) + "])"), sol: C.Az(w.length) + w.length + " karakteres szó indexei 0-tól " + (w.length - 1) + "-ig mennek." },
+          { code: J('s = "' + w + '"', "print(s[" + w.length + ":])"), err: "", sol: "Nincs hiba: a szelet a végén túl is lehet, akkor üres szöveget ad. (Az index nem, a szelet igen.)" },
+          { code: J('s = "' + w + '"', "print(s.Upper())"), err: "AttributeError", fix: J('s = "' + w + '"', "print(s.upper())"), sol: "A metódus neve kisbetűs: upper()." }]); }
+      ],
+      [
+        () => { const w = pick(SZO); return pick([
+          { code: J('s = "' + w + '"', 's[0] = "X"'), err: "TypeError", fix: J('s = "' + w + '"', 's = "X" + s[1:]'), sol: "A szöveg betűnként nem módosítható. Új szöveg kell: \"X\" + s[1:]." },
+          { code: J('s = "' + w + '"', 's = "X" + s[1:]', "print(s)"), err: "", sol: "Hibátlan: új szöveget készített." },
+          { code: J('s = "' + w + '"', "s.strip()"), err: "", sol: "Nincs hiba, de nem is változik semmi: az eredményt nem mentette el." }]); },
+        () => { const m = pick(MOND); return pick([
+          { code: J('m = "' + m + '"', "szavak = m.split()", "print(szavak.upper())"), err: "AttributeError", fix: J('m = "' + m + '"', "print(m.upper())"), sol: "A split() listát ad, és a listának nincs upper metódusa." },
+          { code: J('m = "' + m + '"', "print(len(m.split()))"), err: "", sol: "Hibátlan: a szavak száma." }]); }
+      ],
+      [
+        () => pick([
+          { code: J('adat = "Anna,15"', 'reszek = adat.split(",")', "print(reszek[1] + 1)"), err: "TypeError", fix: J('adat = "Anna,15"', 'reszek = adat.split(",")', "print(int(reszek[1]) + 1)"), sol: "A split után minden rész szöveg: a \"15\"-höz nem lehet számot adni. int(reszek[1]) kell." },
+          { code: J('adat = "Anna 15"', 'reszek = adat.split(",")', "print(reszek[1])"), err: "IndexError", fix: J('adat = "Anna 15"', "reszek = adat.split()", "print(reszek[1])"), sol: "Nincs vessző a szövegben, ezért a split(\",\") egyetlen elemű listát ad; az [1] index nem létezik." },
+          { code: J('adat = "Anna,15"', 'nev, kor = adat.split(",")', "print(nev)"), err: "", sol: "Hibátlan: a két rész két változóba kerül." }]),
+        () => pick([
+          { code: J('s = "alma"', "print(s * 2.5)"), err: "TypeError", fix: J('s = "alma"', "print(s * 2)"), sol: "Szöveget csak egész számmal lehet szorozni." },
+          { code: J('s = "alma"', 'print(s.count("a") + s.count("x"))'), err: "", sol: "Nincs hiba: ha nincs benne, a count 0-t ad; 2 + 0 = 2." },
+          { code: J('s = "alma"', "print(s.replace(\"a\"))"), err: "TypeError", fix: J('s = "alma"', 'print(s.replace("a", "o"))'), sol: "A replace két értéket vár: mit és mire cseréljen." }])
+      ]
+    ];
+    const HPOOL = ["", "IndexError", "TypeError", "AttributeError", "NameError", "ValueError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => ({ q: "Ennek a programnak a beírt szó utolsó betűjét kellene kiírnia, de hibával leáll. Javítsd ki!",
+          starter: J('szo = input("Egy szó: ")', "print(szo[len(szo)])") + "\n", code: J('szo = input("Egy szó: ")', "print(szo[-1])"), tests: two(SZO).map(w => ({ ins: [w], exp: [tokL(w[w.length - 1])] })), ex: "Az utolsó index len(szo) - 1, röviden -1." }),
+        () => ({ q: "Ennek a programnak a beírt nevet csupa nagybetűvel kellene kiírnia, de változatlanul írja ki. Javítsd ki!",
+          starter: J('nev = input("Neved: ")', "nev.upper()", "print(nev)") + "\n", code: J('nev = input("Neved: ")', "nev = nev.upper()", "print(nev)"), tests: two(["Kovrat", "Anna", "Bence"]).map(w => ({ ins: [w], exp: [tokL(w.toUpperCase())] })), ex: "A metódus új szöveget ad; el kell menteni: nev = nev.upper()." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak a beírt szó első három betűjét kellene kiírnia, de csak kettőt ír ki. Javítsd ki!",
+          starter: J('szo = input("Egy szó: ")', "print(szo[0:2])") + "\n", code: J('szo = input("Egy szó: ")', "print(szo[0:3])"), tests: two(SZO).map(w => ({ ins: [w], exp: [tokL(w.slice(0, 3))] })), ex: "A szelet vége nincs benne: [0:3] adja a 0., 1., 2. karaktert." }),
+        () => ({ q: "Ennek a programnak a beírt szó első betűjét nagybetűre kellene cserélnie (például alma → Alma), de hibával leáll. Javítsd ki!",
+          starter: J('szo = input("Egy szó: ")', "szo[0] = szo[0].upper()", "print(szo)") + "\n", code: J('szo = input("Egy szó: ")', "szo = szo[0].upper() + szo[1:]", "print(szo)"), tests: two(["alma", "kutya", "python", "iskola"]).map(w => ({ ins: [w], exp: [tokL(w[0].toUpperCase() + w.slice(1))] })), ex: "A szöveg nem módosítható betűnként: új szöveget kell építeni, szo[0].upper() + szo[1:]." })
+      ],
+      [
+        () => ({ q: "Ennek a programnak egy „Név,kor” alakú adatból (például <code>Anna,15</code>) azt kellene kiírnia, hány éves lesz jövőre az illető. Két hiba is van benne. Javítsd ki!",
+          starter: J('adat = input("Név,kor: ")', "reszek = adat.split()", 'print(f"{reszek[0]} jövőre {reszek[1] + 1} éves lesz.")') + "\n", code: J('adat = input("Név,kor: ")', 'reszek = adat.split(",")', 'print(f"{reszek[0]} jövőre {int(reszek[1]) + 1} éves lesz.")'), tests: [["Anna", 15], ["Kovrat", 14]].map(([n, k]) => ({ ins: [n + "," + k], exp: [tokS(n), k + 1] })), ex: "A vesszőnél kell bontani: split(\",\"), és a kor szöveg, ezért int() kell." }),
+        () => ({ q: "Ennek a programnak meg kellene számolnia, hány szó kezdődik nagybetűvel a mondatban (az isupper() True, ha a betű nagybetű), de rossz számot ír ki. Javítsd ki!",
+          starter: J('mondat = input("Mondat: ")', "db = 0", "for szo in mondat:", I("if szo[0].isupper():"), I(I("db += 1")), 'print(f"Nagybetűs szavak: {db}")') + "\n", code: J('mondat = input("Mondat: ")', "db = 0", "for szo in mondat.split():", I("if szo[0].isupper():"), I(I("db += 1")), 'print(f"Nagybetűs szavak: {db}")'), tests: ["Ma a TV-ben Kovrat szerepel", "Az IT-terem nyitva van"].map(m => ({ ins: [m], exp: [m.split(" ").filter(w => w[0] !== w[0].toLowerCase()).length] })), ex: "A for mondat a karaktereken megy végig, nem a szavakon. A szavakhoz split() kell. (A hibás változat az összes nagybetűt számolja, a TV-ben a T-t és a V-t is.)" })
+      ]
+    ];
+
+    const banks = [
+      { id: "szel", kind: "kiir", L: SZEL },
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { SZEL, KIIR, MET, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { SZEL, KIIR, MET, MELYIK, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: EX.hero.ins, rows: 5 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  const chars = (s, on) => '<div class="chars">' + s.split("").map((c, i) => '<span class="' + (on && on.includes(i) ? "on" : "") + '"><small>' + i + "</small>" + (c === " " ? "<span class='sp'>␣</span>" : esc(c)) + "<small>" + (i - s.length) + "</small></span>").join("") + "</div>";
+  const vsPop = (line, items, sel) => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span></div><pre>' + esc(line) + '<span class="cur"> </span></pre>' + (items ? '<div class="vs-pop">' + items.map((it, i) => '<div class="' + (i === sel ? "sel" : "") + '"><span><span class="ic">⬡</span> ' + esc(it[0]) + "</span></div>").join("") + "</div>" : "") + "</div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  const rng = (a, b) => { const r = []; for (let i = a; i < b; i++) r.push(i); return r; };
+  function szeletFrames(){
+    const w = "Python";
+    return [
+      { cap: "A szöveg minden karakterének van indexe: fent 0-tól, lent hátulról, negatívan. Pont mint a listánál.", html: '<pre class="code">szo = "Python"</pre>' + chars(w) },
+      { cap: "A szelet egy darabot vág ki: szo[1:4]. Az 1-es indextől indul, és a 4-es előtt megáll. A záró index nincs benne, mint a range-nél.", html: chars(w, [1, 2, 3]) + outBox("yth") },
+      { cap: "Ha az eleje marad el, az elejétől vág: szo[:2] az első két karakter.", html: chars(w, [0, 1]) + outBox("Py") },
+      { cap: "Ha a vége marad el, a végéig: szo[2:] a 2-es indextől a végéig.", html: chars(w, [2, 3, 4, 5]) + outBox("thon") },
+      { cap: "Negatív számmal hátulról: szo[-2:] az utolsó két karakter.", html: chars(w, [4, 5]) + outBox("on") },
+      { cap: "A harmadik szám a lépés: szo[::-1] visszafelé megy végig, megfordítja a szöveget.", html: chars(w, [0, 1, 2, 3, 4, 5]) + outBox("nohtyP") }
+    ];
+  }
+  function epitFrames(){
+    const src = EX.epit.code.split("\n"); const F = [{ cap: "Új szöveget építünk: minden betű után kötőjel. Az uj kezdetben üres szöveg.", html: srcHtml(src, 2) + varTbl({ uj: '""' }) }];
+    let u = ""; "alma".split("").forEach(c => { u += c + "-"; F.push({ cap: "A betű: " + c + ". Az uj végére fűzzük, utána egy kötőjelet.", html: srcHtml(src, 4) + varTbl({ betu: '"' + c + '"', uj: '"' + u + '"' }) }); });
+    F.push({ cap: "Kész: a-l-m-a-. Mivel a szöveg nem módosítható, mindig egy új, hosszabb szöveg készül, és az kerül az uj-ba.", html: srcHtml(src, 5) + outBox(u) });
+    return F;
+  }
+  function splitFrames(){
+    const m = "Ma Python dolgozatot írunk", w = m.split(" ");
+    return [
+      { cap: "Egy mondat, szóközökkel. A split a szóközöknél darabokra vágja.", html: chars(m) },
+      { cap: "Az eredmény egy lista, a szavakkal. Ezen már végig lehet menni, és meg lehet számolni az elemeit.", html: '<pre class="code">szavak = mondat.split()</pre>' + outBox("['Ma', 'Python', 'dolgozatot', 'írunk']") },
+      { cap: "A len a szavak száma: 4. A szavak[1] a második szó: Python.", html: outBox("4\nPython") },
+      { cap: "Más jelnél is lehet vágni: az Anna vessző 15 vessző Debrecen szövegből split vesszővel három rész lesz. Mind szöveg, a 15 is!", html: '<pre class="code">"Anna,15,Debrecen".split(",")</pre>' + outBox("['Anna', '15', 'Debrecen']") },
+      { cap: "A join az ellenkezője: a lista elemeit egy szöveggé fűzi, köztük a megadott jellel.", html: '<pre class="code">"-".join(szavak)</pre>' + outBox(w.join("-")) }
+    ];
+  }
+  function vsFrames(){
+    const items = [["capitalize", "nagy kezdőbetű"], ["count", "megszámol"], ["lower", "kisbetűs"], ["replace", "csere"], ["split", "darabolás"], ["strip", "szóközök le"], ["upper", "nagybetűs"]];
+    return [
+      { cap: "A VS Code segít a metódusokban. Írd be a változó nevét és egy pontot: nev pont.", html: vsPop("nev = input(\"Neved: \")\nprint(nev.", null) },
+      { cap: "Megjelenik a lista a szövegmetódusokkal, ábécérendben (sokkal több van benne, mint a rajzon). A nyilakkal választhatsz, Enterrel vagy Tabbal beírja.", html: vsPop("nev = input(\"Neved: \")\nprint(nev.", items, 0) },
+      { cap: "Ha elkezded gépelni, szűr: az u betűre csak az upper marad. A kiválasztott metódushoz a VS Code egy rövid, angol nyelvű leírást is mutat.", html: vsPop("nev = input(\"Neved: \")\nprint(nev.u", [["upper", "nagybetűs"]], 0) },
+      { cap: "A zárójelet ne felejtsd el: nev.upper(). Ha a lista nem jön elő, a Ctrl+szóköz előhívja.", html: vsPop("nev = input(\"Neved: \")\nprint(nev.upper())", null) }
+    ];
+  }
+  const MT = { szelet: "A szelet", epit: "Szöveg építése ciklussal", split: "split: szavakra bontás", vs: "Metódusok a VS Code-ban" };
+  const MF = { szelet: szeletFrames, epit: epitFrames, split: splitFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "szelet" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MT[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MT[PB.m]); }));
+  };
+  const slides = [
+    { k: "Index", t: "A szöveg is indexelhető", h:
+      ex("index") + chars("Python") +
+      "<ul><li>Minden karakternek van indexe, 0-tól. A szóköz is karakter.</li><li><code>s[0]</code> az első, <code>s[-1]</code> az utolsó karakter.</li><li><code>len(s)</code> a karakterek száma; az <code>s[len(s)]</code> IndexError.</li></ul>" },
+    { k: "Szelet", t: "Szelet: s[a:b]", h:
+      ex("szelet") +
+      "<ul><li><code>s[a:b]</code>: az a indextől a b <b>előttiig</b>. A b nincs benne, mint a range-nél.</li><li><code>s[:b]</code>: az elejétől; <code>s[a:]</code>: a végéig; <code>s[-2:]</code>: az utolsó kettő.</li><li>A szelet sosem ad IndexError-t: ha túllóg, csak rövidebb (vagy üres) lesz.</li></ul>" + playBtn("szelet") },
+    { k: "Lépés", t: "Lépés a szeletben: [::-1]", h:
+      ex("lepes") +
+      "<ul><li>A harmadik szám a lépés: <code>s[::2]</code> minden második karakter.</li><li><code>s[::-1]</code>: visszafelé, megfordítva.</li><li>Palindrom: <code>s == s[::-1]</code> (visszafelé ugyanaz, például kerek).</li></ul>" },
+    { k: "Nem módosítható", t: "A szöveg nem módosítható", h:
+      ex("nemmod") + ex("hibaT") +
+      "<p>A listával ellentétben a szöveg egy betűje <b>nem írható felül</b>: a <code>szo[0] = \"k\"</code> TypeError. Helyette <b>új szöveget</b> készítünk: <code>\"k\" + szo[1:]</code>, vagy <code>replace</code>.</p>" },
+    { k: "Metódusok", t: "A legfontosabb metódusok", h:
+      ex("metodus") +
+      "<div class='ptwrap'><table class='pt'><tr><th>Metódus</th><th>Mit ad?</th></tr>" +
+      [["s.upper() · s.lower()", "nagybetűs · kisbetűs szöveg"], ["s.strip()", "a szélső szóközök nélkül"], ["s.count(\"a\")", "hányszor szerepel benne"], ["s.replace(\"a\", \"o\")", "minden a helyett o"], ["s.split()", "szavak listája"], ["s.capitalize()", "nagy kezdőbetű, a többi kicsi"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + r[1] + "</td></tr>").join("") + "</table></div>" },
+    { k: "Mentés", t: "A metódus új szöveget ad: mentsd el!", h:
+      ex("ment") +
+      "<div class='mistake'><b>A leggyakoribb hiba:</b> <code>nev.strip()</code> egymagában semmit nem csinál a nev-vel. El kell menteni: <code>nev = nev.strip()</code>. A metódusok láncolhatók is: <code>nev.strip().capitalize()</code>.</div>" },
+    { k: "in", t: "Benne van-e? Az in", h:
+      ex("inop") + "<p>Az <code>in</code> szövegrészletet keres: True vagy False. A kis- és nagybetű számít; ha nem akarod, előbb <code>lower()</code>.</p>" },
+    { k: "Bejárás", t: "Karakterenként: for c in s", h:
+      ex("bejar") + "<p>A <code>for</code> a szöveg minden karakterén végigmegy, sorban. Így lehet megszámolni a betűket, magánhangzókat, számjegyeket.</p>" },
+    { k: "Építés", t: "Új szöveg építése ciklussal", h:
+      ex("epit") + "<p>Üres szövegből indulunk (<code>uj = \"\"</code>), és a ciklusban hozzáfűzünk: <code>uj = uj + …</code> (röviden <code>uj += …</code>). Ha a betűt az <b>elejére</b> tesszük (<code>uj = betu + uj</code>), megfordul a szó.</p>" + playBtn("epit") },
+    { k: "split", t: "split és join", h:
+      ex("split") + ex("splitv") +
+      "<ul><li><code>mondat.split()</code>: a szóközöknél darabol, és <b>listát</b> ad. A szavak száma: <code>len(mondat.split())</code>.</li><li><code>adat.split(\",\")</code>: a vesszőnél darabol. A részek mind <b>szövegek</b>; számhoz <code>int()</code> kell.</li><li><code>\"-\".join(lista)</code>: a lista szövegeit egybefűzi, köztük kötőjellel.</li></ul>" + playBtn("split") },
+    { k: "VS Code", t: "A VS Code felajánlja a metódusokat", h:
+      vsPop('nev = input("Neved: ")\nprint(nev.', [["capitalize", "nagy kezdőbetű"], ["count", "megszámol"], ["lower", "kisbetűs"], ["split", "darabolás"], ["strip", "szóközök le"], ["upper", "nagybetűs"]], 5) +
+      "<ul><li>Ha egy szöveg-változó után pontot írsz, a VS Code listát mutat a metódusokról (IntelliSense).</li><li>Gépelésre szűr; Enterrel vagy Tabbal beírja. Ha nem jön elő: <b>Ctrl+szóköz</b>. (Ehhez a VS Code Python-bővítménye kell; az iskolai gépen valószínűleg telepítve van.)</li><li>Így nem kell fejből tudni a pontos nevet, és nem írod el (Upper helyett upper).</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
+      [["s[len(s)]", "IndexError", "s[-1]"],
+       ["s[0] = \"X\"", "TypeError: nem módosítható", "s = \"X\" + s[1:]"],
+       ["nev.strip()  (mentés nélkül)", "nem változik semmi", "nev = nev.strip()"],
+       ["s.Upper()", "AttributeError", "s.upper()"],
+       ["s[0:2] (az első három)", "csak kettő", "s[0:3] vagy s[:3]"],
+       ["for szo in mondat:", "karaktereken megy, nem szavakon", "for szo in mondat.split():"],
+       ["reszek[1] + 1 (split után)", "TypeError: szöveg + szám", "int(reszek[1]) + 1"],
+       ["szavak.upper() (lista)", "AttributeError", "egyenként, ciklusban"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" + ex("hibaI") }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "szel", name: "Mit ad a szelet?", gen: l => { const t = pick(SZEL[l - 1])(); const k = P.kiir(t, "Szelet"); k.q = "Mit ír ki? (Idézőjel nélkül írd be.)<pre class='code'>" + esc(t.code) + "</pre>"; return k; } },
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "met", name: "Melyik metódus?", gen(l){
+      const it = pick(MELYIK[l - 1]);
+      return P.choice("Melyik metódus kell hozzá? <b>" + esc(it[0]) + "</b>", MET[it[1]], shuffle(MET.filter((_, i) => i !== it[1])).slice(0, 3), "<p>" + ["Az upper() mindent nagybetűssé tesz.", "A lower() mindent kisbetűssé tesz.", "A strip() leveszi a szöveg elejéről és végéről a szóközöket.", "A count(…) megszámolja, hányszor szerepel benne a megadott szöveg.", "A replace(mit, mire) minden előfordulást lecserél.", "A split() darabokra bont (alapból a szóközöknél, vagy a megadott jelnél), és listát ad."][it[1]] + "</p>", "Nem ez. Nagybetű → upper, kisbetű → lower, szélső szóközök → strip, hányszor → count, csere → replace, darabolás → split.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen: l => P.hiba(pick(HIBA[l - 1])(), HPOOL, "Nézd meg: létezik az index? A szöveg nem módosítható betűnként. Kisbetűs a metódus? Lista vagy szöveg a változó? A split után a részek szövegek.") },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-9-szovegek", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["s[0] · s[-1] · len(s)", "első · utolsó karakter · hossz"], ["s[a:b] · s[:b] · s[a:]", "szelet (a b nincs benne)"], ["s[::-1]", "visszafelé"], ["s.upper() · s.lower()", "nagybetűs · kisbetűs"], ["s.strip()", "szélső szóközök le"], ["s.count(x) · s.replace(a, b)", "hányszor · csere"], ["s.split() · s.split(\",\")", "darabolás listává"], ["\"-\".join(lista)", "lista → szöveg"], ["x in s", "benne van-e"], ["s = s.strip()", "a metódus eredményét mentsd el!"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
