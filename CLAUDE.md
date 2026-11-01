@@ -310,6 +310,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
 - **4. lecke: Műveletek és beépített függvények** (`python-4-muveletek`, a pult jóváhagyásával): 12 dia, 4 levezetés (17 // 5 és 17 % 5
   cukorkákkal, műveleti sorrend, perc → óra, a Python REPL a VS Code termináljában), 6 típus (Mit ír ki?, Melyik művelet?, int vagy
   float?, Írd meg!, Milyen hibát ad?, Javítsd ki!).
+  Lektor: 12 pont (3 szakmai: `round(2.675, 2)` a valódi csapda, a `**` jobbról balra számolódik, a `max()`-nak legalább két érték kell),
+  mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
