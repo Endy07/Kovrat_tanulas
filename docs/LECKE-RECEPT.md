@@ -421,3 +421,6 @@ szándékos hibákkal (tavaj, korcsojapálya, ojan, hejet, mosojjal, fojtatta, m
 - **A `H.classify` j/ly-ágát a régi `ly → j` csere nem fedte le** (tanujj, fojjon): most az lj, lly, ly → j, majd a jj → j. A kettőzési hiba
   (bajal) továbbra is „mássalhangzó hossza”, mert a kettőzés-normalizálás előbb próbálkozik.
 - **Kakukktojás-feladat:** a gombok szövege a hiányos szó („fo_ik”); egyedinek kell lennie, ezért a sorsoló kiszűri az egyforma alakot.
+- **Linuxon a pre-commit hook nem fut:** a `.githooks/pre-commit` a repóban 100644-es (nem futtatható), Windowson ez nem számít.
+  Felhős klónban: `git config core.hooksPath .githooks` és `chmod +x .githooks/pre-commit` (a módváltozást ne commitold), vagy
+  HTML-es commit után kézzel `sh tools/bump-version.sh` és egy verzió-commit (2026-11-01-én így történt).
