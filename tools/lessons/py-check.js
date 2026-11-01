@@ -121,8 +121,8 @@ function series(name, N){
     else if (b.kind === "write"){
       if (t.tests.length > 1 && t.tests[0].ins.join("|") === t.tests[1].ins.join("|")) fail(where, "két egyforma próbabemenet");
       const rs = [], n0 = jobs.length;
-      t.tests.forEach((tt, i) => add(t.code, tt.ins, r => { rs[i] = r; if (i < t.tests.length - 1) return; const j = PC.judge(t, t.code, rs); if (!j.ok) return "a minta nem megy át: " + j.why + " · kimenet: " + JSON.stringify(rs[j.k || 0].out) + (rs[j.k || 0].err ? " · " + rs[j.k || 0].err : "") + " · kód: " + JSON.stringify(t.code); }));
-      if (t.starter){ const ss = []; t.tests.forEach((tt, i) => add(t.starter, tt.ins, r => { ss[i] = r; if (i < t.tests.length - 1) return; if (PC.judge(t, t.starter, ss).ok) return "a kiinduló (hibás) kód átmegy: " + JSON.stringify(t.starter); })); }
+      t.tests.forEach((tt, i) => add(PC.withCalls(t.code, tt), tt.ins, r => { rs[i] = r; if (i < t.tests.length - 1) return; const j = PC.judge(t, t.code, rs); if (!j.ok) return "a minta nem megy át: " + j.why + " · kimenet: " + JSON.stringify(rs[j.k || 0].out) + (rs[j.k || 0].err ? " · " + rs[j.k || 0].err : "") + " · kód: " + JSON.stringify(t.code); }));
+      if (t.starter){ const ss = []; t.tests.forEach((tt, i) => add(PC.withCalls(t.starter, tt), tt.ins, r => { ss[i] = r; if (i < t.tests.length - 1) return; if (PC.judge(t, t.starter, ss).ok) return "a kiinduló (hibás) kód átmegy: " + JSON.stringify(t.starter); })); }
     }
     else fail(where, "ismeretlen fajta: " + b.kind);
     const last = chk.length; for (let q = 0; q < last; q++) if (!chk[q].where) chk[q].where = where;

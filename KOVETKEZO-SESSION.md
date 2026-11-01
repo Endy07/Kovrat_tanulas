@@ -1,6 +1,25 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 9. lecke)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: a 10. lecke, a sorozat vége)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–9. lecke (PR #5–#12; a pult mindet ellenőrizte, Windowson is).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **10. Saját függvények** (`python-10-fuggvenyek`),
+  a sorozat zárása. A gép a diák függvényét maga hívja meg (`calls`). A `lesson-test.js` kódblokk-válasznál már nem vág le zárójeles végződést.
+- **Tesztek:** `py-check --verify 40 python-10-fuggvenyek` 1765 futás, 0 hiba (a 3., 5. és 8. lecke 10-zel újra, 0 hiba);
+  `lesson-test 40` (Pyodide-dal) 720/720; a 3. és 9. lecke 8-cal, a tizenhatos (régi lecke) 5-tel újra: hibátlan.
+
+**A Python-sorozat teljes (10 lecke).** Lehetséges folytatás (Endi döntése): modulok (`math`, `random`), kivételkezelés (`try`),
+szöveges fájlok, ismétlő próbadolgozat az 1–10. leckéből; vagy vissza a helyesíráshoz, ha megjött Kovrat chatje.
+
+**Felhős teszt Pyodide-dal:** `npm pack pyodide@0.27.7` egy scratchpad-mappában, kicsomagolva, `KOVRAT_PYODIDE=<…>/package`
+(recept, utolsó szakasz). Ha az ág PR-jét beolvasztották: `git merge origin/main` az ágba (a force-push itt tiltott), új PR.
+
+**Endi döntésére vár:** a 10. lecke PR-jének beolvasztása; és hogy mi legyen a következő téma.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: 9. lecke)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–8. lecke (PR #5–#11; a pult mindet ellenőrizte, Windowson is).

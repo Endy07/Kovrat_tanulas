@@ -79,7 +79,7 @@ const SHOTS = process.env.KOVRAT_SHOTS || (process.platform === "win32" ? "C:/xa
           const ansEl = sd && (sd.querySelector("pre") || sd.querySelector("b"));
           // a beírandó szöveg: alsó index (számrendszer jele) és zárójeles megjegyzés nélkül („92₁₆”, „3 (a 4 sorból)”)
           let ans = "";
-          if (ansEl){ const c = ansEl.cloneNode(true); c.querySelectorAll("sub").forEach(s => s.remove()); ans = c.textContent; if (!c.querySelector("pre") && !box.querySelector(".opt")) ans = ans.replace(/\s+\([^()]*\)$/, ""); }
+          if (ansEl){ const c = ansEl.cloneNode(true); c.querySelectorAll("sub").forEach(s => s.remove()); ans = c.textContent; if (ansEl.tagName !== "PRE" && !c.querySelector("pre") && !box.querySelector(".opt")) ans = ans.replace(/\s+\([^()]*\)$/, ""); }
           st.n++;
           if (ta) {
             ta.value = ans; ta.dispatchEvent(new Event("input"));

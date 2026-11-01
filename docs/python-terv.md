@@ -52,7 +52,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 7 | **Számlálós ciklus: `for` és `range`** | `python-7-for` | `range(n)`, `range(a, b)`, `range(a, b, lépés)`, a záró érték nincs benne, összegzés és megszámlálás `for`-ral, `for` szövegen | ✅ kész (2026. 11. 01.) |
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | ✅ kész (2026. 11. 01.) |
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | ✅ kész (2026. 11. 01.) |
-| 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | tervezett |
+| 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | ✅ kész (2026. 11. 01.) |
 | + | **Ismétlő próbadolgozat (később)** | – | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | ötlet |
 
 A 10.-es tanterv további része (modulok: `math`, `random`; kivételkezelés; fájlkezelés; az OOP alapjai) a sorozat után jöhet,
@@ -181,7 +181,13 @@ ha az iskola odaér.
 - **Fogalmak:** `def nev(parameter):`, `return`, hívás, `print` ↔ `return`, alapértelmezett paraméter, helyi változó.
 - **Tipikus hibák:** a függvényt nem hívja meg; `return` helyett `print` (az eredmény `None`); a `return` utáni sor nem fut;
   hiányzó argumentum (`TypeError`).
-- **Feladattípusok:** Mit ír ki? · Mit ad vissza? · Írd meg! (a gép a függvényt több argumentummal hívja) · Hibakereső.
+- **Feladattípusok (kész):** Mit ír ki? · Mi lesz az értéke? · Melyik hívás a jó? · Írd meg! (a gép a függvényt több argumentummal
+  hívja: `tests[k].calls`, a program végére `print("@@", hívás)` sorok kerülnek; célzott üzenet: nincs ilyen függvény, None-t ad vissza) ·
+  Milyen hibát ad? · Javítsd ki!
+- **VS Code:** F10 / F11 / Shift+F11 és a Call Stack, rajzzal és levezetéssel.
+
+**A sorozat teljes (2026. 11. 01.).** Folytatás (a 10.-es tanterv szerint, ha az iskola odaér): modulok (`math`, `random`), kivételkezelés
+(`try`), szöveges fájlok, és egy ismétlő próbadolgozat az 1–10. leckéből.
 
 ## Technika
 

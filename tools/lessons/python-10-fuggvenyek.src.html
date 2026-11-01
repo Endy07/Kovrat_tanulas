@@ -1,0 +1,383 @@
+<!--@HEAD-->
+<title>Python 10: függvények</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-bar .dbg{color:#89d185}
+.vs pre{margin:0;padding:8px 0;white-space:pre;overflow-x:auto;line-height:1.55;font-family:var(--mono)}
+.vs .ln{display:inline-block;width:2.6em;text-align:right;padding-right:.6em;color:#6e7681;user-select:none}
+.vs .bp{color:#e51400}
+.vs .hl{background:#4b4b18;display:inline-block;min-width:100%}
+.vs-vars{border-top:1px solid #3c3c3c;padding:6px 12px;font-size:.8rem;color:#9da5b4;line-height:1.6}
+.vs-vars b{color:#9cdcfe;font-weight:400}
+.vs-vars i{color:#b5cea8;font-style:normal}
+.machine{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--mono);margin:8px 0}
+.machine .box{border:2px solid var(--accent);border-radius:12px;padding:8px 14px;font-weight:700}
+.machine .val{border:1.5px solid var(--line);border-radius:8px;padding:4px 10px}
+.machine .arrow{color:var(--muted)}
+.pb-stage .machine .val{border-color:#3A4656}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 10. lecke</span>
+  <h1>Saját függvények</h1>
+  <p class="lead">Eddig a Python függvényeit használtad: <code>print</code>, <code>len</code>, <code>max</code>. Most te magad írsz függvényt a <code>def</code> szóval. A függvény egy elnevezett programrész: bemenetet (paramétert) kap, dolgozik, és a <code>return</code>-nel visszaad egy eredményt. Egyszer megírod, és akárhányszor meghívhatod.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írd át a hívások számait, és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az 1–9. lecke (főleg a <a href="python-5-elagazas.html">feltételek</a>, a <a href="python-7-for.html">for</a> és a <a href="python-8-listak.html">listák</a>). <b>Ebben a leckében:</b> <code>def</code>, a hívás, a paraméter, a <code>return</code> és a <code>print</code> különbsége, a None, alapértelmezett paraméter, helyi változó, függvény a függvényben, és lépésenkénti futtatás a függvénybe belépve (F11) a VS Code-ban. Ezzel a sorozat végére értél!</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. Írd át a hívásokat, és nézd meg, mi változik!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A sárga sor fut éppen. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="hivas" aria-selected="true">Mi történik híváskor?</button>
+    <button class="tab" data-m="retprint" aria-selected="false">return vagy print?</button>
+    <button class="tab" data-m="tobb" aria-selected="false">Függvény a függvényben</button>
+    <button class="tab" data-m="vs" aria-selected="false">F11: belépés a függvénybe</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. Az „Írd meg!” és a „Javítsd ki!” feladatnál elég a függvényt megírnod: a gép a program végén <b>maga hívja meg</b> több argumentummal, és megnézi, mit ad vissza (a kimenetben a <code>@@</code> kezdetű sorok ezek a hívások). A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">def és hívás</span><span>A <code>def</code> csak <b>elkészíti</b> a függvényt; lefutni a hívásra fog: <code>terulet(3, 4)</code>.</span></div>
+    <div class="trick"><span class="t">return vagy print?</span><span>A <code>return</code> visszaadja az eredményt, amivel tovább lehet számolni. A <code>print</code> csak kiírja; a függvény ilyenkor None-t ad vissza.</span></div>
+    <div class="trick"><span class="t">Annyi argumentum, ahány paraméter</span><span><code>def f(a, b)</code> → <code>f(3, 4)</code>. Kevesebbel vagy többel TypeError.</span></div>
+    <div class="trick"><span class="t">A return után vége</span><span>A <code>return</code> azonnal kilép a függvényből; utána a sorok nem futnak le.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-9-szovegek.html">← 9. lecke: szövegek</a>
+    <a class="btn primary" href="python-dolgozat.html">Gyakorolj a dolgozat-leckén →</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s==\s/g, " egyenlő-e "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\+=/g, " plusz egyenlő "], [/\s%\s/g, " maradéka "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const DEF = name => has(new RegExp("def\\s+" + name + "\\s*\\("), "a függvény neve legyen " + name + ": def " + name + "(…):");
+    const RET = has(/\breturn\b/, "a függvény return-nel adja vissza az eredményt (ne csak kiírja).");
+    const L = a => "[" + a.join(", ") + "]";
+    const pyF = C.pyF;
+    const NEV = ["Kovrat", "Anna", "Bence", "Lili", "Máté", "Réka"];
+    const SZO = ["alma", "Python", "kutya", "iskola", "kerek", "radar", "program"];
+    // próbák: minden próba egy hívás-lista: [[hívás, várt kiírt érték], …]
+    const T1 = calls => [{ ins: [], calls }];
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(3, 4))", "print(terulet(10, 7))", "nagy = terulet(5, 5) + terulet(2, 3)", 'print(f"Két téglalap együtt: {nagy}")') },
+      udv: { code: J("def udvozol():", I('print("Szia!")'), I('print("Jó tanulást!")'), "", "udvozol()", "udvozol()") },
+      param: { code: J("def udvozol(nev):", I('print(f"Szia, {nev}!")'), "", 'udvozol("Kovrat")', 'udvozol("Anna")') },
+      ret: { code: J("def negyzet(x):", I("return x * x"), "", "print(negyzet(5))", "y = negyzet(3) + negyzet(4)", "print(y)") },
+      retprint: { code: J("def dupla_print(x):", I("print(x * 2)"), "", "def dupla_return(x):", I("return x * 2"), "", "a = dupla_print(5)", "b = dupla_return(5)", "print(a, b)") },
+      tobbparam: { code: J("def atlag(a, b, c):", I("return (a + b + c) / 3"), "", "print(atlag(5, 4, 3))", "print(round(atlag(5, 4, 4), 2))") },
+      felt: { code: J("def paros(n):", I("return n % 2 == 0"), "", "def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("return 1"), "", "print(paros(7), paros(10))", "print(jegy(73), jegy(91), jegy(12))") },
+      lista: { code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I("return s"), "", "def legnagyobb(lista):", I("m = lista[0]"), I("for x in lista:"), I(I("if x > m:"), ), I(I(I("m = x"))), I("return m"), "", "jegyek = [5, 4, 3, 5]", "print(osszeg(jegyek), legnagyobb(jegyek))") },
+      alap: { code: J('def koszon(nev, koszones="Szia"):', I('return f"{koszones}, {nev}!"'), "", 'print(koszon("Anna"))', 'print(koszon("Bence", "Jó reggelt"))') },
+      helyi: { code: J("def szamol():", I("x = 10"), I("return x * 2"), "", "print(szamol())", "print(x)"), err: "NameError" },
+      hivhiv: { code: J("def negyzet(x):", I("return x * x"), "", "def negyzetosszeg(a, b):", I("return negyzet(a) + negyzet(b)"), "", "print(negyzetosszeg(3, 4))") },
+      program: { code: J("def beker_szam(kerdes):", I("return int(input(kerdes))"), "", "def kiir_eredmeny(szoveg, ertek):", I('print(f"{szoveg}: {ertek}")'), "", 'a = beker_szam("Első szám: ")', 'b = beker_szam("Második szám: ")', 'kiir_eredmeny("Összeg", a + b)', 'kiir_eredmeny("Szorzat", a * b)'), ins: ["6", "7"] },
+      hibaT: { code: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(3))"), err: "TypeError" },
+      hibaN: { code: J("print(dupla(4))", "", "def dupla(x):", I("return x * 2")), err: "NameError" }
+    };
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return { code: J("def osszead(a, b):", I("return a + b"), "", "print(osszead(" + a + ", " + b + "))"), ans: S(a + b), sol: "A hívás a + b értékét adja vissza: " + (a + b) + "." }; },
+        () => { const n = pick(NEV); return { code: J("def udvozol(nev):", I('print("Szia,", nev)'), "", 'udvozol("' + n + '")', 'udvozol("Mindenki")'), ans: J("Szia, " + n, "Szia, Mindenki"), sol: "Kétszer hívtuk meg, két különböző argumentummal." }; },
+        () => { const m = pick(["Jó reggelt!", "Hajrá!", "Szép napot!"]); return { code: J("def kiir():", I('print("' + m + '")'), "", 'print("Kezdés")'), ans: "Kezdés", sol: "A def csak elkészíti a függvényt; mivel sehol nincs meghívva, a belseje nem fut le." }; }
+      ],
+      [
+        () => { const a = rnd(2, 9); return { code: J("def dupla(x):", I("print(x * 2)"), "", "y = dupla(" + a + ")", "print(y)"), ans: J(S(2 * a), "None"), sol: "A függvény kiírja a kétszeresét (" + 2 * a + "), de nem ad vissza semmit, ezért az y értéke None."}; },
+        () => { const a = rnd(2, 6), b = rnd(2, 6); return { code: J("def negyzet(x):", I("return x * x"), "", "print(negyzet(" + a + ") + negyzet(" + b + "))"), ans: S(a * a + b * b), sol: a + " · " + a + " + " + b + " · " + b + " = " + (a * a + b * b) + "." }; },
+        () => { const a = rnd(1, 9); return { code: J("def f(x):", I("return x + 1"), I('print("ez nem fut le")'), "", "print(f(" + a + "))"), ans: S(a + 1), sol: "A return azonnal kilép a függvényből; az utána lévő print nem fut le." }; }
+      ],
+      [
+        () => { const a = rnd(2, 5); return { code: J("def f(x):", I("return x * 2"), "", "def g(x):", I("return f(x) + 1"), "", "print(g(" + a + "), f(g(" + a + ")))"), ans: (2 * a + 1) + " " + 2 * (2 * a + 1), sol: "g(" + a + ") = f(" + a + ") + 1 = " + (2 * a + 1) + "; f(" + (2 * a + 1) + ") = " + 2 * (2 * a + 1) + "." }; },
+        () => { const x = rnd(1, 9), y = rnd(10, 20); return { code: J("x = " + x, "def valtoztat():", I("x = " + y), I("return x"), "", "print(valtoztat(), x)"), ans: y + " " + x, sol: "A függvényen belüli x helyi változó: a kinti x-et nem írja felül." }; },
+        () => { const n = pick(NEV); return { code: J('def koszon(nev, szo="Szia"):', I('return szo + ", " + nev'), "", 'print(koszon("' + n + '"))', 'print(koszon("' + n + '", "Hello"))'), ans: J("Szia, " + n, "Hello, " + n), sol: "Ha a második argumentum elmarad, az alapértelmezett érték (Szia) lesz." }; },
+        () => { const a = [rnd(1, 9), rnd(1, 9), rnd(1, 9), rnd(1, 9)]; const t = a.find(x => x % 2 === 0); return { code: J("def elso_paros(lista):", I("for x in lista:"), I(I("if x % 2 == 0:")), I(I(I("return x"))), I("return -1"), "", "print(elso_paros(" + L(a) + "))"), ans: S(t == null ? -1 : t), sol: "A return a ciklusból is azonnal kilép: az első páros számot adja vissza, ha nincs ilyen, -1-et." }; }
+      ]
+    ];
+
+    /* ---- „Mi lesz az értéke?” (vcode a végén kiírja) ---- */
+    const ERT = [
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return { code: J("def kerulet(a, b):", I("return 2 * (a + b)"), "", "k = kerulet(" + a + ", " + b + ")"), vcode: J("def kerulet(a, b):", I("return 2 * (a + b)"), "", "k = kerulet(" + a + ", " + b + ")", "print(k)"), q: "k", ans: S(2 * (a + b)), sol: "2 · (" + a + " + " + b + ") = " + 2 * (a + b) + "." }; },
+        () => { const a = rnd(2, 20); return { code: J("def paros(n):", I("return n % 2 == 0"), "", "v = paros(" + a + ")"), vcode: J("def paros(n):", I("return n % 2 == 0"), "", "v = paros(" + a + ")", "print(v)"), q: "v", ans: a % 2 ? "False" : "True", sol: "A függvény egy összehasonlítás eredményét adja vissza: True vagy False." }; }
+      ],
+      [
+        () => { const a = rnd(2, 9); return { code: J("def dupla(x):", I("print(x * 2)"), "", "y = dupla(" + a + ")"), vcode: J("def dupla(x):", I("print(x * 2)"), "", "y = dupla(" + a + ")", "print(y)"), q: "y", ans: J(S(2 * a), "None"), sol: "Csapda: a függvény kiírja a kétszeresét, de nem ad vissza semmit, ezért az y értéke None. (A kimenet első sora a függvény saját kiírása.)", note: true }; },
+        () => { const p = rnd(0, 100); const j = p >= 85 ? 5 : p >= 70 ? 4 : p >= 55 ? 3 : p >= 40 ? 2 : 1; return { code: J("def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("return 1"), "", "j = jegy(" + p + ")"), vcode: J("def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("return 1"), "", "j = jegy(" + p + ")", "print(j)"), q: "j", ans: S(j), sol: "Az első igaz feltétel return-je fut le: " + p + " pont → " + j + "." }; }
+      ],
+      [
+        () => { const a = [rnd(1, 30), rnd(1, 30), rnd(1, 30), rnd(1, 30)]; return { code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")"), vcode: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")", "print(e)"), q: "e", ans: S(a[0]), sol: "Csapda: a return a cikluson belül van, ezért az első kör után kilép. Az eredmény csak az első elem. A return-t a ciklus után, behúzás nélkül kell írni." }; },
+        () => { const a = rnd(2, 5); return { code: J("def f(x):", I("return x * x"), "", "e = f(f(" + a + "))"), vcode: J("def f(x):", I("return x * x"), "", "e = f(f(" + a + "))", "print(e)"), q: "e", ans: S(Math.pow(a, 4)), sol: "Belülről kifelé: f(" + a + ") = " + a * a + ", aztán f(" + a * a + ") = " + Math.pow(a, 4) + "." }; }
+      ]
+    ];
+
+    /* ---- „Melyik hívás a jó?” ---- */
+    const HIV = [
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return { def: "def terulet(a, b):\n    return a * b", good: "terulet(" + a + ", " + b + ")", bad: ["terulet(" + a + ")", "terulet[" + a + ", " + b + "]", "def terulet(" + a + ", " + b + ")"], sol: "Annyi argumentum kell, ahány paraméter van (kettő), kerek zárójelben, a def szó nélkül." }; }
+      ],
+      [
+        () => { const n = pick(NEV); return { def: 'def udvozol(nev):\n    print(f"Szia, {nev}!")', good: 'udvozol("' + n + '")', bad: ["udvozol(" + n + ")", "udvozol()", 'print(udvozol, "' + n + '")'], sol: "A név szöveg, ezért idézőjelben adjuk át. Az idézőjel nélküli " + n + " ismeretlen változó lenne." }; }
+      ],
+      [
+        () => { const a = rnd(2, 9); return { def: 'def koszon(nev, szo="Szia"):\n    return szo + ", " + nev', good: 'koszon("Anna")', bad: ['koszon(szo="Hello")', "koszon()", 'koszon("Anna", "Szia", "!")'], sol: "A nev kötelező (nincs alapértéke), a szo elhagyható. Három argumentum túl sok, nulla vagy csak a szo túl kevés." }; }
+      ]
+    ];
+
+    /* ---- „Írd meg!” (a gép hívja meg a függvényt) ---- */
+    const WRITE = [
+      [
+        () => { const c = [[rnd(2, 9), rnd(2, 9)], [rnd(10, 30), rnd(2, 12)]]; return { q: "Írj egy <code>terulet(a, b)</code> nevű függvényt, amely visszaadja egy a × b-s téglalap területét (return)!",
+          code: J("def terulet(a, b):", I("return a * b")), fname: "terulet", tests: T1(c.map(([a, b]) => ["terulet(" + a + ", " + b + ")", S(a * b)])), must: [DEF("terulet"), RET], ex: "A def sor végén kettőspont; a return adja vissza az eredményt." }; },
+        () => ({ q: "Írj egy <code>negyzet(x)</code> nevű függvényt, amely visszaadja a szám négyzetét!",
+          code: J("def negyzet(x):", I("return x * x")), fname: "negyzet", tests: T1([rnd(2, 9), rnd(10, 30), -rnd(1, 9)].map(x => ["negyzet(" + x + ")", S(x * x)])), must: [DEF("negyzet"), RET], ex: "x * x vagy x ** 2. A gép negatív számmal is kipróbálja." }),
+        () => { const n = shuffle(NEV).slice(0, 2); return { q: "Írj egy <code>udvozlet(nev)</code> nevű függvényt, amely visszaadja (nem kiírja!) ezt a szöveget: <code>Szia, NÉV!</code> (például <code>Szia, Anna!</code>).",
+          code: J("def udvozlet(nev):", I('return f"Szia, {nev}!"')), fname: "udvozlet", tests: T1(n.map(x => ['udvozlet("' + x + '")', "Szia, " + x + "!"])), must: [DEF("udvozlet"), RET], ex: "return f\"Szia, {nev}!\": a hívó dönti el, mit kezd vele (például kiírja)." }; }
+      ],
+      [
+        () => ({ q: "Írj egy <code>paros(n)</code> nevű függvényt, amely True-t ad vissza, ha az n páros, és False-t, ha páratlan!",
+          code: J("def paros(n):", I("return n % 2 == 0")), fname: "paros", tests: T1([rnd(1, 20) * 2, rnd(1, 20) * 2 + 1, 0].map(x => ["paros(" + x + ")", x % 2 ? "False" : "True"])), must: [DEF("paros"), RET], ex: "Rövid: return n % 2 == 0 (az összehasonlítás maga True vagy False). If-fel is jó." }),
+        () => ({ q: "Írj egy <code>atlag(a, b, c)</code> nevű függvényt, amely visszaadja a három szám átlagát!",
+          code: J("def atlag(a, b, c):", I("return (a + b + c) / 3")), fname: "atlag", tests: T1([[3, 3, 3], [5, 4, 3], [rnd(1, 5), rnd(1, 5), rnd(1, 5)]].map(([a, b, c]) => ["atlag(" + a + ", " + b + ", " + c + ")", pyF((a + b + c) / 3)])).map(t => t), must: [DEF("atlag"), RET], ex: "Zárójel kell: (a + b + c) / 3. Az eredmény float (a / miatt)." }),
+        () => ({ q: "Írj egy <code>nagyobb(a, b)</code> nevű függvényt, amely a két szám közül a nagyobbat adja vissza (egyenlőnél bármelyiket)! Most ne a max()-ot használd.",
+          code: J("def nagyobb(a, b):", I("if a > b:"), I(I("return a")), I("return b")), fname: "nagyobb", tests: T1([[rnd(10, 20), rnd(1, 9)], [rnd(1, 9), rnd(10, 20)], [7, 7]].map(([a, b]) => ["nagyobb(" + a + ", " + b + ")", S(Math.max(a, b))])), must: [DEF("nagyobb"), RET], mustNot: [has(/max\s*\(/, "most if-fel döntsd el.")], ex: "Ha a nagyobb, return a; különben return b." })
+      ],
+      [
+        () => ({ q: "Írj egy <code>osszeg(lista)</code> nevű függvényt, amely visszaadja egy lista elemeinek összegét! Most ne a sum()-ot használd, hanem for ciklust.",
+          code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I("return s")), fname: "osszeg", tests: T1([[rnd(1, 9), rnd(1, 9), rnd(1, 9)], [rnd(10, 50), rnd(10, 50), rnd(10, 50), rnd(10, 50)], []].map(a => ["osszeg(" + L(a) + ")", S(a.reduce((p, q) => p + q, 0))])), must: [DEF("osszeg"), RET, has(/\bfor\b/, "használj for ciklust.")], mustNot: [has(/sum\s*\(/, "most ciklussal add össze.")], ex: "A return a ciklus UTÁN jön, behúzás nélkül a for-hoz képest. Üres listára 0." }),
+        () => ({ q: "Írj egy <code>megszamol(szoveg, betu)</code> nevű függvényt, amely visszaadja, hányszor szerepel a betű a szövegben (a kis- és nagybetű ne számítson)!",
+          code: J("def megszamol(szoveg, betu):", I("return szoveg.lower().count(betu.lower())")), fname: "megszamol", tests: T1([["Anna", "a"], ["Kovrat", "K"], ["Python", "x"]].map(([s, b]) => ['megszamol("' + s + '", "' + b + '")', S(s.toLowerCase().split(b.toLowerCase()).length - 1)])), must: [DEF("megszamol"), RET], ex: "Mindkettőt kisbetűsítsd: szoveg.lower().count(betu.lower()). Ciklussal is jó." }),
+        () => ({ q: "Írj egy <code>palindrom(szo)</code> nevű függvényt, amely True-t ad vissza, ha a szó visszafelé olvasva ugyanaz (a kis- és nagybetű ne számítson), különben False-t!",
+          code: J("def palindrom(szo):", I("szo = szo.lower()"), I("return szo == szo[::-1]")), fname: "palindrom", tests: T1([["Kerek", "True"], ["Python", "False"], ["Görög", "True"]].map(([w, v]) => ['palindrom("' + w + '")', v])), must: [DEF("palindrom"), RET], ex: "Kisbetűsítés, aztán szo == szo[::-1]." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const a = rnd(2, 9); return pick([
+          { code: J("def dupla(x)", I("return x * 2"), "", "print(dupla(" + a + "))"), err: "SyntaxError", fix: J("def dupla(x):", I("return x * 2"), "", "print(dupla(" + a + "))"), sol: "A def sor végéről hiányzik a kettőspont." },
+          { code: J("def dupla(x):", "return x * 2", "", "print(dupla(" + a + "))"), err: "IndentationError", fix: J("def dupla(x):", I("return x * 2"), "", "print(dupla(" + a + "))"), sol: "A függvény törzsét be kell húzni." },
+          { code: J("def dupla(x):", I("return x * 2"), "", "print(dupla(" + a + "))"), err: "", sol: "Hibátlan." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9), b = rnd(2, 9); return pick([
+          { code: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(" + a + "))"), err: "TypeError", fix: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(" + a + ", " + b + "))"), sol: "Két paraméter van, de csak egy argumentumot kapott (missing 1 required positional argument)." },
+          { code: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(" + a + ", " + b + ", 1))"), err: "TypeError", fix: J("def terulet(a, b):", I("return a * b"), "", "print(terulet(" + a + ", " + b + "))"), sol: "Három argumentumot kapott, pedig csak két paramétere van." },
+          { code: J("print(dupla(" + a + "))", "", "def dupla(x):", I("return x * 2")), err: "NameError", fix: J("def dupla(x):", I("return x * 2"), "", "print(dupla(" + a + "))"), sol: "A hívás előbb van, mint a def: abban a pillanatban a dupla még nem létezik. A függvényt előbb kell definiálni." }]); }
+      ],
+      [
+        () => pick([
+          { code: J("def szamol():", I("eredmeny = 10 * 2"), "", "szamol()", "print(eredmeny)"), err: "NameError", fix: J("def szamol():", I("return 10 * 2"), "", "eredmeny = szamol()", "print(eredmeny)"), sol: "Az eredmeny helyi változó: csak a függvényen belül létezik. Kifelé a return-nel kell adni." },
+          { code: J("def dupla(x):", I("print(x * 2)"), "", "y = dupla(5) + 1"), err: "TypeError", fix: J("def dupla(x):", I("return x * 2"), "", "y = dupla(5) + 1"), sol: "A dupla nem ad vissza semmit (None), és a None-hoz nem lehet számot adni. print helyett return kell." },
+          { code: J("def dupla(x):", I("return x * 2"), "", "y = dupla(5) + 1", "print(y)"), err: "", sol: "Hibátlan: 11." }]),
+        () => pick([
+          { code: J('def koszon(nev, szo="Szia"):', I('return szo + ", " + nev'), "", 'print(koszon("Anna"))'), err: "", sol: "Hibátlan: az alapértelmezett szo a Szia." },
+          { code: J('def koszon(szo="Szia", nev):', I('return szo + ", " + nev')), err: "SyntaxError", fix: J('def koszon(nev, szo="Szia"):', I('return szo + ", " + nev')), sol: "Az alapértelmezett értékű paraméterek csak a többi után jöhetnek." }])
+      ]
+    ];
+    const HPOOL = ["", "SyntaxError", "NameError", "IndentationError", "TypeError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => ({ q: "Ennek a <code>dupla(x)</code> függvénynek vissza kellene adnia a szám kétszeresét, de None-t ad vissza. Javítsd ki!",
+          starter: J("def dupla(x):", I("print(x * 2)")) + "\n", code: J("def dupla(x):", I("return x * 2")), fname: "dupla", tests: T1([rnd(2, 9), rnd(10, 50)].map(x => ["dupla(" + x + ")", S(2 * x)])), ex: "A print csak kiír; visszaadni a return ad." }),
+        () => ({ q: "Ennek a <code>kerulet(a, b)</code> függvénynek egy téglalap kerületét kellene visszaadnia, de hibával leáll. Javítsd ki!",
+          starter: J("def kerulet(a, b)", "return 2 * (a + b)") + "\n", code: J("def kerulet(a, b):", I("return 2 * (a + b)")), fname: "kerulet", tests: T1([[3, 4], [rnd(5, 20), rnd(5, 20)]].map(([a, b]) => ["kerulet(" + a + ", " + b + ")", S(2 * (a + b))])), ex: "Két hiba: kettőspont a def sor végére, és a törzs behúzása." })
+      ],
+      [
+        () => ({ q: "Ennek a <code>legnagyobb(lista)</code> függvénynek a lista legnagyobb elemét kellene visszaadnia, de mindig az első elemet adja. Javítsd ki!",
+          starter: J("def legnagyobb(lista):", I("m = lista[0]"), I("for x in lista:"), I(I("if x > m:")), I(I(I("m = x"))), I(I("return m"))) + "\n", code: J("def legnagyobb(lista):", I("m = lista[0]"), I("for x in lista:"), I(I("if x > m:")), I(I(I("m = x"))), I("return m")), fname: "legnagyobb", tests: T1([[3, 9, 4], [rnd(1, 9), rnd(10, 20), rnd(21, 40)], [-5, -2, -9]].map(a => ["legnagyobb(" + L(a) + ")", S(Math.max(...a))])), ex: "A return a cikluson belül volt, ezért az első kör után kilépett. A ciklus után kell, egy szinttel kijjebb." }),
+        () => ({ q: "Ennek a <code>jegy(pont)</code> függvénynek a jegyet kellene visszaadnia (50-től 2, alatta 1), de 30 pontra None-t ad. Javítsd ki!",
+          starter: J("def jegy(pont):", I("if pont >= 50:"), I(I("return 2"))) + "\n", code: J("def jegy(pont):", I("if pont >= 50:"), I(I("return 2")), I("return 1")), fname: "jegy", tests: T1([[rnd(50, 100), "2"], [rnd(0, 49), "1"], [50, "2"]].map(([p, v]) => ["jegy(" + p + ")", v])), ex: "Ha a feltétel hamis, a függvény a végére ér return nélkül, és None-t ad. Kell egy return 1 (vagy else ág)." })
+      ],
+      [
+        () => ({ q: "Ennek a <code>szamjegyosszeg(n)</code> függvénynek egy pozitív egész szám számjegyeinek összegét kellene visszaadnia, de két hiba is van benne. Javítsd ki!",
+          starter: J("def szamjegyosszeg(n):", I("while n > 0:"), I(I("s = 0")), I(I("s += n % 10")), I(I("n //= 10")), I("print(s)")) + "\n", code: J("def szamjegyosszeg(n):", I("s = 0"), I("while n > 0:"), I(I("s += n % 10")), I(I("n //= 10")), I("return s")), fname: "szamjegyosszeg", tests: T1([rnd(10, 99), rnd(100, 9999), 2026].map(n => ["szamjegyosszeg(" + n + ")", S(S(n).split("").reduce((p, q) => p + +q, 0))])), ex: "Az s = 0 a ciklus elé kell (különben minden körben nullázódik), és a végén return s kell, nem print." }),
+        () => ({ q: "Ennek a <code>koszon(nev, szo=\"Szia\")</code> függvénynek <code>Szia, Anna!</code> alakú szöveget kellene visszaadnia, és a szo elhagyható legyen. De hibás. Javítsd ki!",
+          starter: J('def koszon(szo="Szia", nev):', I('return f"{szo}, {nev}!"')) + "\n", code: J('def koszon(nev, szo="Szia"):', I('return f"{szo}, {nev}!"')), fname: "koszon", tests: T1([['koszon("Anna")', "Szia, Anna!"], ['koszon("Bence", "Hello")', "Hello, Bence!"]]), ex: "Az alapértelmezett értékű paraméter a végére kerül: def koszon(nev, szo=\"Szia\")." })
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "ert", kind: "kiir", L: ERT },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, ERT, HIV, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, ERT, HIV, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: [], rows: 6 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  const machine = (inp, name, out) => '<div class="machine">' + inp.map(v => '<span class="val">' + esc(v) + "</span>").join("") + '<span class="arrow">→</span><span class="box">' + esc(name) + '</span><span class="arrow">→</span><span class="val">' + esc(out) + "</span></div>";
+  const dbg = (src, bp, hl, vars, stack) => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span><span class="dbg">⏭ F10 · ⤵ F11 · ⤴ Shift+F11</span></div><pre>' +
+    src.map((l, i) => '<span class="' + (hl === i + 1 ? "hl" : "") + '"><span class="ln">' + (bp === i + 1 ? '<span class="bp">●</span> ' : "") + (i + 1) + "</span>" + esc(l) + "</span>").join("\n") + '</pre><div class="vs-vars">CALL STACK: ' + esc(stack) + "<br>VARIABLES › Locals: " + (Object.keys(vars).length ? Object.keys(vars).map(k => "<b>" + esc(k) + "</b>: <i>" + esc(vars[k]) + "</i>").join(" · ") : "(üres)") + "</div></div>";
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function hivasFrames(){
+    const src = ["def terulet(a, b):", "    return a * b", "", "t = terulet(3, 4)", "print(t)"];
+    return [
+      { cap: "A def sor csak elkészíti a terulet nevű függvényt: megjegyzi, mit kell majd csinálnia. Most még semmi sem számolódik.", html: srcHtml(src, 1) + machine(["a", "b"], "terulet", "?") },
+      { cap: "A gép továbbmegy a 4. sorra: itt hívjuk meg a függvényt a 3-mal és a 4-gyel. Ezek az argumentumok.", html: srcHtml(src, 4) + machine(["3", "4"], "terulet", "?") },
+      { cap: "A gép beugrik a függvénybe: a paraméterek megkapják az értékeket, a értéke 3, b értéke 4.", html: srcHtml(src, 2) + varTbl({ a: 3, b: 4 }) },
+      { cap: "A return kiszámolja: 3 · 4 = 12, és ezzel az értékkel kilép a függvényből, vissza a hívás helyére.", html: srcHtml(src, 2) + machine(["3", "4"], "terulet", "12") },
+      { cap: "A hívás helyére a visszaadott érték kerül: t = 12. Az a és a b ezután megszűnik, csak a függvényen belül léteztek.", html: srcHtml(src, 4) + varTbl({ t: 12 }) },
+      { cap: "A print kiírja: 12.", html: srcHtml(src, 5) + outBox("12") }
+    ];
+  }
+  function retprintFrames(){
+    const src = EX.retprint.code.split("\n");
+    return [
+      { cap: "Két függvény, mindkettő a kétszeresét számolja. Az egyik kiírja, a másik visszaadja. Mi a különbség?", html: srcHtml(src, 0) },
+      { cap: "a = dupla_print(5): a függvény kiírja a 10-et a képernyőre. De nincs return, ezért a visszaadott érték None, a semmi. Az a értéke None.", html: srcHtml(src, 7) + outBox("10") + varTbl({ a: "None" }) },
+      { cap: "b = dupla_return(5): ez nem ír ki semmit, de visszaadja a 10-et. A b értéke 10, és ezzel tovább lehet számolni.", html: srcHtml(src, 8) + varTbl({ a: "None", b: 10 }) },
+      { cap: "A végén a print kiírja mindkettőt: None 10. Szabály: ha az eredménnyel később dolgozni akarsz, return kell.", html: srcHtml(src, 9) + outBox("10\nNone 10") }
+    ];
+  }
+  function tobbFrames(){
+    const src = EX.hivhiv.code.split("\n");
+    return [
+      { cap: "A negyzetosszeg függvény két másik hívásból rakja össze az eredményt: a négyzet függvényt használja.", html: srcHtml(src, 7) },
+      { cap: "negyzetosszeg(3, 4): a értéke 3, b értéke 4. Először negyzet(3)-at kell kiszámolni.", html: srcHtml(src, 5) + varTbl({ a: 3, b: 4 }) },
+      { cap: "A gép beugrik a negyzet függvénybe, x értéke 3; visszaadja a 9-et.", html: srcHtml(src, 2) + varTbl({ x: 3 }) + machine(["3"], "negyzet", "9") },
+      { cap: "Aztán negyzet(4): x értéke 4, visszaadja a 16-ot.", html: srcHtml(src, 2) + varTbl({ x: 4 }) + machine(["4"], "negyzet", "16") },
+      { cap: "Vissza a negyzetosszeg-be: 9 + 16 = 25, ezt adja vissza, és a print kiírja.", html: srcHtml(src, 7) + outBox("25") }
+    ];
+  }
+  function vsFrames(){
+    const src = ["def negyzet(x):", "    return x * x", "", "eredmeny = negyzet(6)", "print(eredmeny)"];
+    return [
+      { cap: "A VS Code-ban a 4. sorra teszünk töréspontot, és elindítjuk a hibakeresést (F5). A program a hívás előtt megáll.", html: dbg(src, 4, 4, {}, "<module>") },
+      { cap: "Az F10, Step Over, átlépné a függvényt: egyben lefuttatja. Most az F11-et nyomjuk, Step Into: belépünk a függvénybe.", html: dbg(src, 4, 2, { x: 6 }, "negyzet ← <module>") },
+      { cap: "A Call Stack mutatja, hol vagyunk: a negyzet függvényben, amelyet a fő program hívott. A Variables panelen a helyi változó: x értéke 6.", html: dbg(src, 4, 2, { x: 6 }, "negyzet ← <module>") },
+      { cap: "Még egy lépés: a return visszaad, és visszaérünk a hívás helyére. Az eredmeny értéke 36. A Shift+F11 egyből kilépne a függvényből.", html: dbg(src, 4, 5, { eredmeny: 36 }, "<module>") }
+    ];
+  }
+  const MT = { hivas: "Mi történik híváskor?", retprint: "return vagy print?", tobb: "Függvény a függvényben", vs: "F11: belépés a függvénybe" };
+  const MF = { hivas: hivasFrames, retprint: retprintFrames, tobb: tobbFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "hivas" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MT[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MT[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "Mi a függvény?", h:
+      "<p>A függvény egy <b>elnevezett programrész</b>. Olyan, mint egy gép: beteszel valamit, dolgozik, és kiad egy eredményt.</p>" + machine(["3", "4"], "terulet", "12") +
+      "<p>Már sok függvényt használtál: <code>print(…)</code>, <code>len(…)</code>, <code>max(…)</code>, <code>int(…)</code>. Most sajátot írsz. Miért jó?</p><ul><li>Egyszer írod meg, <b>akárhányszor</b> használhatod.</li><li>A program <b>rövidebb és átláthatóbb</b>: minden résznek neve van.</li><li>Ha hibás, <b>egy helyen</b> javítod.</li></ul>" },
+    { k: "def", t: "Függvény paraméter nélkül", h:
+      ex("udv") +
+      "<ul><li><code>def udvozol():</code> a <code>def</code> szó, a név, zárójel, a végén <b>kettőspont</b>. Alatta behúzva a függvény törzse.</li><li>A def csak <b>elkészíti</b> a függvényt; lefutni a <b>hívásra</b> fog: <code>udvozol()</code>.</li><li>A hívásnál is kell a zárójel, akkor is, ha üres.</li></ul>" },
+    { k: "Paraméter", t: "Paraméter: amit a függvény kap", h:
+      ex("param") +
+      "<ul><li>A zárójelben a <b>paraméter</b>: egy változó, amely a hívásnál kap értéket.</li><li>A hívásban átadott érték az <b>argumentum</b>: <code>udvozol(\"Kovrat\")</code> → a nev értéke Kovrat.</li><li>Ugyanaz a függvény más argumentummal mást csinál.</li></ul>" },
+    { k: "return", t: "return: az eredmény visszaadása", h:
+      ex("ret") +
+      "<ul><li>A <code>return</code> <b>visszaadja</b> az eredményt a hívás helyére: <code>negyzet(5)</code> helyén a 25 áll.</li><li>Ezzel tovább lehet számolni: <code>negyzet(3) + negyzet(4)</code>.</li><li>A <code>return</code> azonnal <b>kilép</b> a függvényből; az utána lévő sorok nem futnak le.</li></ul>" + playBtn("hivas") },
+    { k: "return vagy print?", t: "return vagy print?", h:
+      ex("retprint") +
+      "<div class='mistake'><b>A leggyakoribb hiba:</b> a függvény <code>print</code>-tel kiírja az eredményt, de nem adja vissza. Ilyenkor a visszaadott érték <b>None</b> (semmi), és vele nem lehet számolni: a <code>dupla_print(5) + 1</code> TypeError.</div><p>Szabály: a függvény általában <b>returnnel</b> adjon vissza, a kiírást a hívó végezze.</p>" + playBtn("retprint") },
+    { k: "Több paraméter", t: "Több paraméter", h:
+      ex("tobbparam") + "<p>A paramétereket vessző választja el. A hívásban <b>ugyanannyi</b> argumentum kell, <b>ugyanabban a sorrendben</b>. Kevesebbel vagy többel TypeError.</p>" },
+    { k: "Feltétel, ciklus", t: "if és for a függvényben", h:
+      ex("felt") + ex("lista") +
+      "<ul><li>Több return is lehet: az első, amelyikhez a gép eljut, kilép.</li><li>A ciklusos függvénynél a <code>return</code> a ciklus <b>után</b> jön (egy szinttel kijjebb), különben az első kör után kilép.</li><li>A függvény listát is kaphat paraméterként; így a 8. lecke tételei újrahasznosíthatók.</li></ul>" },
+    { k: "Alapérték", t: "Alapértelmezett paraméter", h:
+      ex("alap") + "<p>A <code>koszones=\"Szia\"</code> azt jelenti: ha a hívásban nincs megadva, akkor Szia. Az ilyen paraméterek a lista <b>végére</b> kerülnek. A <code>print(…, end=\"\")</code> end-je is ilyen!</p>" },
+    { k: "Helyi változó", t: "Helyi változó", h:
+      ex("helyi") +
+      "<p>A függvényen belül létrehozott változó (és a paraméter is) <b>helyi</b>: csak a függvényen belül létezik. Kívülről nem látszik (NameError), és a kinti, azonos nevű változót sem írja felül. Ami kifelé kell, azt a <code>return</code> adja át.</p>" },
+    { k: "Együtt", t: "Függvény a függvényben, és egy kis program", h:
+      ex("hivhiv") + ex("program") + "<p>A függvények egymást is hívhatják. Egy nagyobb program így kis, jól elnevezett darabokból épül fel: bekérés, számolás, kiírás.</p>" + playBtn("tobb") },
+    { k: "VS Code", t: "Belépés a függvénybe: F11", h:
+      dbg(["def negyzet(x):", "    return x * x", "", "eredmeny = negyzet(6)", "print(eredmeny)"], 4, 2, { x: 6 }, "negyzet ← <module>") +
+      "<ul><li>Hibakeresés közben (F5, töréspont) az <b>F10</b> (Step Over) a függvényhívást egy lépésben lefuttatja.</li><li>Az <b>F11</b> (Step Into) <b>belép</b> a függvénybe: sorról sorra látod, mi történik benne.</li><li>A <b>Shift+F11</b> (Step Out) kilép a függvényből, vissza a hívás helyére.</li><li>A <b>Call Stack</b> panel mutatja, melyik függvényben vagy, és ki hívta.</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Javítás</th></tr>" +
+      [["def f(x)  (kettőspont nélkül)", "SyntaxError", "def f(x):"],
+       ["a függvényt nem hívja meg", "nem történik semmi", "f(…) hívás"],
+       ["print a return helyett", "None-t ad vissza", "return …"],
+       ["return a ciklusban", "az első kör után kilép", "a ciklus után"],
+       ["f(3) két paraméternél", "TypeError: missing … argument", "f(3, 4)"],
+       ["hívás a def előtt", "NameError", "előbb a def"],
+       ["helyi változó használata kívül", "NameError", "return-nel add vissza"],
+       ["def f(a=1, b)", "SyntaxError", "def f(b, a=1)"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" + ex("hibaT") + ex("hibaN") },
+    { k: "Vége", t: "Gratulálok, végigértél a sorozaton!", h:
+      "<p>Tíz lecke alatt megtanultad a Python alapjait: kiírás, változók, bekérés, műveletek, feltételek, ciklusok, listák, szövegek és függvények. Ezekből már igazi programok építhetők.</p><div class='two-col'><div class='trick'><span class='t'>Ismételj</span><span>A <a href='python-dolgozat.html'>dolgozat-lecke</a> 52 feladata és próbadolgozata vegyesen kérdez az első leckék anyagából.</span></div><div class='trick'><span class='t'>Tételek</span><span>A <a href='programozasi-tetelek.html'>Programozási tételek</a> lecke a rendezést és a keresést is megmutatja.</span></div><div class='trick'><span class='t'>Gyakorolj a VS Code-ban</span><span>Írj saját kis programokat: számkitaláló, szorzótábla, jegyátlag-számoló. Ha elakadsz, F5, F10, F11.</span></div><div class='trick'><span class='t'>Hogyan tovább?</span><span>A következő témák a modulok (math, random), a kivételkezelés (try) és a fájlkezelés.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "ert", name: "Mi lesz az értéke?", gen(l){ const t = pick(ERT[l - 1])(); const k = P.kiir(t, "Érték"); k.q = (t.note ? "Mit ír ki a program, ha a végére odaírjuk: <code>print(" + t.q + ")</code>? (Ha a függvény maga is kiír valamit, azt is írd be, sorban.)" : "Mi lesz " + (/^[aeiouáéíóöőúüű]/i.test(t.q) ? "az" : "a") + " <code>" + t.q + "</code> változó értéke?") + "<pre class='code'>" + esc(t.code) + "</pre>"; return k; } },
+    { id: "hiv", name: "Melyik hívás a jó?", gen(l){
+      const t = pick(HIV[l - 1])();
+      return P.choice("Ez a függvény:<pre class='code'>" + esc(t.def) + "</pre>Melyik a helyes hívás?", "<code>" + esc(t.good) + "</code>", t.bad.map(b => "<code>" + esc(b) + "</code>"), "<p>" + esc(t.sol) + "</p>", "Nem ez. A hívás: a függvény neve, kerek zárójel, és annyi argumentum, ahány kötelező paraméter van.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => { const t = P.task(pick(WRITE[l - 1])(), "Írd meg!"); return t; } },
+    { id: "hiba", name: "Milyen hibát ad?", gen: l => P.hiba(pick(HIBA[l - 1])(), HPOOL, "Nézd meg: kettőspont a def után? Be van húzva a törzs? Annyi argumentum van, ahány paraméter? Létezik már a függvény a hívás pillanatában? Ad vissza értéket (return)?") },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-10-fuggvenyek", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["def nev(a, b):\n    return a + b", "függvény két paraméterrel, visszaad egy értéket"], ["nev(3, 4)", "hívás: a = 3, b = 4"], ["eredmeny = nev(3, 4)", "a visszaadott érték változóba"], ["return", "visszaad és kilép; utána nem fut semmi"], ["print a függvényben", "kiír, de None-t ad vissza"], ["def f(nev, szo=\"Szia\"):", "alapértelmezett paraméter (a végén)"], ["helyi változó", "csak a függvényen belül létezik"], ["F10 · F11 · Shift+F11", "átlép · belép · kilép (VS Code)"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
