@@ -338,7 +338,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   Élesben (PR #11, `e6184a5`).
 - **9. lecke: Szövegek mélyebben** (`python-9-szovegek`): 12 dia, 4 levezetés (a szelet, szöveg építése ciklussal, split, a VS Code
   metódus-ajánlója), 6 típus (Mit ad a szelet?, Mit ír ki?, Melyik metódus?, Írd meg!, Milyen hibát ad?, Javítsd ki!). Közös modul:
-  hibatipp a szöveg betűnkénti módosítására és a listán hívott szöveg-metódusra.
+  hibatipp a szöveg betűnkénti módosítására és a listán hívott szövegmetódusra. Lektor: 11 pont (szakmai: a split listát ad, nem
+  szöveget; névelő, „szövegmetódus”; a nem tanult find kivéve, az isupper elmagyarázva; a strip-kérdés egyértelműsítve), mind javítva.
 
 ## Döntések és indokaik
 
