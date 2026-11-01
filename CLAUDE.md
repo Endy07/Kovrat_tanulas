@@ -333,6 +333,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   panelén), 6 típus (Mit ír ki?, Melyik elem?, Melyik tétel?, Írd meg!, Milyen hibát ad?, Javítsd ki!). A tételek elnevezése és a
   maximum kezdőértéke (az első elem) a `programozasi-tetelek` leckéhez igazodik. Közös modul: IndexError, AttributeError válasz,
   hibatipp a `lista = lista.append(x)`-re és a lista + számra.
+  Lektor: 6 pont (kisebb szakmai: a `for x in lista: lista[x]` magyarázata, a maximum-levezetés i = 0 köre, a Variables panel
+  `név: érték` jelölése, a 7. leckében is; nyelvi: „mely számok”, „hány napon”), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 

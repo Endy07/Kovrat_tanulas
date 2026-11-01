@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101105320">
+<meta name="kovrat-version" content="20261101105551">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -1305,9 +1305,9 @@ const P = (function(){
     /* ---- „Melyik tétel?” (fogalmi kérdés) ---- */
     const TET = ["Összegzés", "Megszámlálás", "Maximumkiválasztás", "Eldöntés", "Kiválogatás"];
     const TETEL = [
-      [["Mennyi az osztály tanulóinak összes zsebpénze?", 0], ["Hány ötöse van Kovratnak?", 1], ["Melyik a legmagasabb hőmérséklet a héten?", 2], ["Van-e egyes a jegyek között?", 3], ["Melyik számok párosak? (egy új listába)", 4]],
-      [["Mennyi a jegyek átlaga? (Ehhez előbb az összegük kell.)", 0], ["Hány nap volt fagy (0 fok alatt)?", 1], ["Ki futotta a legrövidebb időt? (minimum is ide tartozik)", 2], ["Elérte-e valaki a 100 pontot?", 3], ["Kik a 18 évesnél idősebbek? (a nevük kell egy listában)", 4]],
-      [["Hány pontot ért el összesen a csapat a 10 fordulóban?", 0], ["Hány szó kezdődik nagybetűvel a listában?", 1], ["Melyik helyen (indexen) áll a legnagyobb szám?", 2], ["Minden jegy legalább kettes? (vagyis: van-e egyes?)", 3], ["Melyik termékek drágábbak 1000 Ft-nál? (egy új listába)", 4]]
+      [["Mennyi az osztály tanulóinak összes zsebpénze?", 0], ["Hány ötöse van Kovratnak?", 1], ["Melyik a legmagasabb hőmérséklet a héten?", 2], ["Van-e egyes a jegyek között?", 3], ["Mely számok párosak? (egy új listába)", 4]],
+      [["Mennyi a jegyek átlaga? (Ehhez előbb az összegük kell.)", 0], ["Hány napon volt fagy (0 fok alatt)?", 1], ["Ki futotta a legrövidebb időt? (minimum is ide tartozik)", 2], ["Elérte-e valaki a 100 pontot?", 3], ["Kik a 18 évesnél idősebbek? (a nevük kell egy listában)", 4]],
+      [["Hány pontot ért el összesen a csapat a 10 fordulóban?", 0], ["Hány szó kezdődik nagybetűvel a listában?", 1], ["Melyik helyen (indexen) áll a legnagyobb szám?", 2], ["Minden jegy legalább kettes? (vagyis: van-e egyes?)", 3], ["Mely termékek drágábbak 1000 Ft-nál? (egy új listába)", 4]]
     ];
 
     /* ---- „Írd meg!” ---- */
@@ -1366,7 +1366,7 @@ const P = (function(){
           { code: J("szamok = []", "print(sum(szamok))"), err: "", sol: "Hibátlan: az üres lista összege 0." }]),
         () => pick([
           { code: J("szamok = [3, 8, 1]", "for i in range(len(szamok) + 1):", I("print(szamok[i])")), err: "IndexError", fix: J("szamok = [3, 8, 1]", "for i in range(len(szamok)):", I("print(szamok[i])")), sol: "A range(len(szamok) + 1) eggyel túlszalad: az utolsó i = 3, ilyen index nincs." },
-          { code: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(szamok[x])")), err: "IndexError", fix: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(x)")), sol: "A for x in szamok az ELEMEKET adja (3, 8, 1), nem az indexeket. A szamok[8] nincs." }])
+          { code: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(szamok[x])")), err: "IndexError", fix: J("szamok = [3, 8, 1]", "for x in szamok:", I("print(x)")), sol: "A for x in szamok az ELEMEKET adja (3, 8, 1), nem az indexeket. Már az első körben x = 3, és szamok[3] nincs (csak 0, 1, 2)." }])
       ]
     ];
     const HPOOL = ["", "IndexError", "TypeError", "AttributeError", "NameError", "ValueError"];
@@ -1431,6 +1431,7 @@ const P = (function(){
     const a = [12, 7, 30, 5], src = EX.maximum.code.split("\n");
     return [
       { cap: "Maximumkiválasztás: melyik a legnagyobb szám, és hol van? A kezdőérték a lista első eleme, 12, a helye 0.", html: srcHtml(src, 3) + lst(a, 0) + varTbl({ legnagyobb: 12, hely: 0 }) },
+      { cap: "i = 0: a range(len(szamok)) 0-tól indul, ezért először az első elemet veti össze önmagával: 12 nagyobb, mint 12? Nem. Ez nem baj, csak egy fölösleges kör.", html: srcHtml(src, 5) + lst(a, 0) + varTbl({ i: 0, legnagyobb: 12, hely: 0 }) },
       { cap: "i = 1: a 7 nagyobb, mint 12? Nem. Nem változik semmi.", html: srcHtml(src, 5) + lst(a, 1) + varTbl({ i: 1, legnagyobb: 12, hely: 0 }) },
       { cap: "i = 2: a 30 nagyobb, mint 12? Igen! Ez az új legnagyobb, a helye 2.", html: srcHtml(src, 7) + lst(a, 2) + varTbl({ i: 2, legnagyobb: 30, hely: 2 }) },
       { cap: "i = 3: az 5 nagyobb, mint 30? Nem.", html: srcHtml(src, 5) + lst(a, 3) + varTbl({ i: 3, legnagyobb: 30, hely: 2 }) },
@@ -1446,9 +1447,9 @@ const P = (function(){
   }
   function vsFrames(){
     return [
-      { cap: "A VS Code hibakeresőjében a lista a Variables panelen jelenik meg, egy kis nyíllal.", html: vsv("▸ <b>szamok</b> = <i>[12, 7, 30, 5]</i>") },
-      { cap: "Ha a nyílra kattintasz, kinyílik: minden elem külön sorban, az indexével. A len is ott van.", html: vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>len()</b> = <i>4</i></div>") },
-      { cap: "Lépésenként futtatva (F10) látod, ahogy az append új elemet tesz a végére: most az ötödik, a 4-es indexen.", html: vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5, 18]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>4</b> = <i>18</i><br><b>len()</b> = <i>5</i></div>") }
+      { cap: "A VS Code hibakeresőjében a lista a Variables panelen jelenik meg, egy kis nyíllal.", html: vsv("▸ <b>szamok</b>: <i>[12, 7, 30, 5]</i>") },
+      { cap: "Ha a nyílra kattintasz, kinyílik: minden elem külön sorban, az indexével. A len is ott van.", html: vsv("▾ <b>szamok</b>: <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b>: <i>12</i><br><b>1</b>: <i>7</i><br><b>2</b>: <i>30</i><br><b>3</b>: <i>5</i><br><b>len()</b>: <i>4</i></div>") },
+      { cap: "Lépésenként futtatva (F10) látod, ahogy az append új elemet tesz a végére: most az ötödik, a 4-es indexen.", html: vsv("▾ <b>szamok</b>: <i>[12, 7, 30, 5, 18]</i><div class='sub'><b>0</b>: <i>12</i><br><b>1</b>: <i>7</i><br><b>2</b>: <i>30</i><br><b>3</b>: <i>5</i><br><b>4</b>: <i>18</i><br><b>len()</b>: <i>5</i></div>") }
     ];
   }
   const MET = { index: "Az index", max: "Maximumkiválasztás", valogat: "Kiválogatás", vs: "A lista a VS Code-ban" };
@@ -1498,14 +1499,14 @@ const P = (function(){
     { k: "Kiválogatás", t: "5. tétel: kiválogatás", h:
       ex("valogat") + "<p>Egy új, üres lista a ciklus előtt; a feltételnek megfelelő elemeket <code>append</code>-del beleteszed. Az eredeti lista nem változik.</p>" + playBtn("valogat") },
     { k: "VS Code", t: "A lista a hibakeresőben", h:
-      vsv("▾ <b>szamok</b> = <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b> = <i>12</i><br><b>1</b> = <i>7</i><br><b>2</b> = <i>30</i><br><b>3</b> = <i>5</i><br><b>len()</b> = <i>4</i></div>") +
+      vsv("▾ <b>szamok</b>: <i>[12, 7, 30, 5]</i><div class='sub'><b>0</b>: <i>12</i><br><b>1</b>: <i>7</i><br><b>2</b>: <i>30</i><br><b>3</b>: <i>5</i><br><b>len()</b>: <i>4</i></div>") +
       "<p>A 7. leckében tanult lépésenkénti futtatásnál (töréspont, F5, F10) a lista a <b>Variables</b> panelen látszik; a nyíllal kinyitható, és minden elem az indexével együtt jelenik meg. Így pontosan látod, mi van a listában, és mikor kerül bele új elem.</p>" + playBtn("vs") },
     { k: "Hibák", t: "Tipikus hibák", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Hibás</th><th>Mi történik?</th><th>Helyesen</th></tr>" +
       [["lista[len(lista)]", "IndexError", "lista[-1]"],
        ["lista = lista.append(x)", "a lista None lesz", "lista.append(x)"],
        ["lista + 5", "TypeError", "lista.append(5)"],
-       ["for x in lista: lista[x]", "IndexError (az x elem, nem index)", "for i in range(len(lista))"],
+       ["for x in lista: lista[x]", "IndexError vagy rossz elem (az x elem, nem index)", "for i in range(len(lista))"],
        ["legnagyobb = 0", "negatív számoknál rossz", "legnagyobb = lista[0]"],
        ["új lista a cikluson belül", "minden körben kiürül", "a ciklus elé"],
        ["max([])", "ValueError (üres lista)", "előbb ellenőrizd: len(lista) > 0"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" +

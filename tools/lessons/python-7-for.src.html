@@ -269,7 +269,7 @@
   const rng = (vals, on, off) => '<div class="rng">' + vals.map((v, i) => '<span class="' + (i === on ? "on" : "") + '">' + v + "</span>").join("") + (off != null ? '<span class="off">' + off + "</span>" : "") + "</div>";
   // VS Code hibakereső: töréspont, kiemelt sor, Variables panel
   const dbg = (src, bp, hl, vars) => '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span><span class="dbg">▶ Run and Debug · ⏭ Step Over (F10)</span></div><pre>' +
-    src.map((l, i) => '<span class="' + (hl === i + 1 ? "hl" : "") + '"><span class="ln">' + (bp === i + 1 ? '<span class="bp">●</span> ' : "") + (i + 1) + "</span>" + esc(l) + "</span>").join("\n") + '</pre><div class="vs-vars">VARIABLES › Locals: ' + (Object.keys(vars).length ? Object.keys(vars).map(k => "<b>" + esc(k) + "</b> = <i>" + esc(vars[k]) + "</i>").join(" · ") : "(még üres)") + "</div></div>";
+    src.map((l, i) => '<span class="' + (hl === i + 1 ? "hl" : "") + '"><span class="ln">' + (bp === i + 1 ? '<span class="bp">●</span> ' : "") + (i + 1) + "</span>" + esc(l) + "</span>").join("\n") + '</pre><div class="vs-vars">VARIABLES › Locals: ' + (Object.keys(vars).length ? Object.keys(vars).map(k => "<b>" + esc(k) + "</b>: <i>" + esc(vars[k]) + "</i>").join(" · ") : "(még üres)") + "</div></div>";
 
   /* ---------- Levezetések ---------- */
   const { srcHtml, varTbl, outBox } = P;
