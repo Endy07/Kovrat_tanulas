@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101114038">
+<meta name="kovrat-version" content="20261101114246">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -223,7 +223,7 @@ pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space
 
 <section class="section-head">
   <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
-  <p>Hat feladattípus, három szinten. Az „Írd meg!” és a „Javítsd ki!” feladatnál elég a függvényt megírnod: a gép a program végén <b>maga hívja meg</b> több argumentummal, és megnézi, mit ad vissza (a kimenetben a <code>@@</code> kezdetű sorok ezek a hívások). A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <p>Hat feladattípus, három szinten. Az „Írd meg!” és a „Javítsd ki!” feladatnál elég a függvényt megírnod: a gép a program végén <b>maga hívja meg</b> többször, különböző argumentumokkal, és megnézi, mit ad vissza (a kimenetben a <code>@@</code> kezdetű sorok ezek a hívások). A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
   <div id="practice"></div>
 </section>
 
@@ -1310,7 +1310,7 @@ const P = (function(){
         () => { const p = rnd(0, 100); const j = p >= 85 ? 5 : p >= 70 ? 4 : p >= 55 ? 3 : p >= 40 ? 2 : 1; return { code: J("def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("return 1"), "", "j = jegy(" + p + ")"), vcode: J("def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("return 1"), "", "j = jegy(" + p + ")", "print(j)"), q: "j", ans: S(j), sol: "Az első igaz feltétel return-je fut le: " + p + " pont → " + j + "." }; }
       ],
       [
-        () => { const a = [rnd(1, 30), rnd(1, 30), rnd(1, 30), rnd(1, 30)]; return { code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")"), vcode: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")", "print(e)"), q: "e", ans: S(a[0]), sol: "Csapda: a return a cikluson belül van, ezért az első kör után kilép. Az eredmény csak az első elem. A return-t a ciklus után, behúzás nélkül kell írni." }; },
+        () => { const a = [rnd(1, 30), rnd(1, 30), rnd(1, 30), rnd(1, 30)]; return { code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")"), vcode: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I(I("return s")), "", "e = osszeg(" + L(a) + ")", "print(e)"), q: "e", ans: S(a[0]), sol: "Csapda: a return a cikluson belül van, ezért az első kör után kilép. Az eredmény csak az első elem. A return-t a ciklus után kell írni, egy szinttel kijjebb (a for-ral egy vonalba)." }; },
         () => { const a = rnd(2, 5); return { code: J("def f(x):", I("return x * x"), "", "e = f(f(" + a + "))"), vcode: J("def f(x):", I("return x * x"), "", "e = f(f(" + a + "))", "print(e)"), q: "e", ans: S(Math.pow(a, 4)), sol: "Belülről kifelé: f(" + a + ") = " + a * a + ", aztán f(" + a * a + ") = " + Math.pow(a, 4) + "." }; }
       ]
     ];
@@ -1348,7 +1348,7 @@ const P = (function(){
       ],
       [
         () => ({ q: "Írj egy <code>osszeg(lista)</code> nevű függvényt, amely visszaadja egy lista elemeinek összegét! Most ne a sum()-ot használd, hanem for ciklust.",
-          code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I("return s")), fname: "osszeg", tests: T1([[rnd(1, 9), rnd(1, 9), rnd(1, 9)], [rnd(10, 50), rnd(10, 50), rnd(10, 50), rnd(10, 50)], []].map(a => ["osszeg(" + L(a) + ")", S(a.reduce((p, q) => p + q, 0))])), must: [DEF("osszeg"), RET, has(/\bfor\b/, "használj for ciklust.")], mustNot: [has(/sum\s*\(/, "most ciklussal add össze.")], ex: "A return a ciklus UTÁN jön, behúzás nélkül a for-hoz képest. Üres listára 0." }),
+          code: J("def osszeg(lista):", I("s = 0"), I("for x in lista:"), I(I("s += x")), I("return s")), fname: "osszeg", tests: T1([[rnd(1, 9), rnd(1, 9), rnd(1, 9)], [rnd(10, 50), rnd(10, 50), rnd(10, 50), rnd(10, 50)], []].map(a => ["osszeg(" + L(a) + ")", S(a.reduce((p, q) => p + q, 0))])), must: [DEF("osszeg"), RET, has(/\bfor\b/, "használj for ciklust.")], mustNot: [has(/sum\s*\(/, "most ciklussal add össze.")], ex: "A return a ciklus UTÁN jön, a for-ral egy vonalban. Üres listára 0." }),
         () => ({ q: "Írj egy <code>megszamol(szoveg, betu)</code> nevű függvényt, amely visszaadja, hányszor szerepel a betű a szövegben (a kis- és nagybetű ne számítson)!",
           code: J("def megszamol(szoveg, betu):", I("return szoveg.lower().count(betu.lower())")), fname: "megszamol", tests: T1([["Anna", "a"], ["Kovrat", "K"], ["Python", "x"]].map(([s, b]) => ['megszamol("' + s + '", "' + b + '")', S(s.toLowerCase().split(b.toLowerCase()).length - 1)])), must: [DEF("megszamol"), RET], ex: "Mindkettőt kisbetűsítsd: szoveg.lower().count(betu.lower()). Ciklussal is jó." }),
         () => ({ q: "Írj egy <code>palindrom(szo)</code> nevű függvényt, amely True-t ad vissza, ha a szó visszafelé olvasva ugyanaz (a kis- és nagybetű ne számítson), különben False-t!",
@@ -1433,7 +1433,7 @@ const P = (function(){
     return [
       { cap: "A def sor csak elkészíti a terulet nevű függvényt: megjegyzi, mit kell majd csinálnia. Most még semmi sem számolódik.", html: srcHtml(src, 1) + machine(["a", "b"], "terulet", "?") },
       { cap: "A gép továbbmegy a 4. sorra: itt hívjuk meg a függvényt a 3-mal és a 4-gyel. Ezek az argumentumok.", html: srcHtml(src, 4) + machine(["3", "4"], "terulet", "?") },
-      { cap: "A gép beugrik a függvénybe: a paraméterek megkapják az értékeket, a értéke 3, b értéke 4.", html: srcHtml(src, 2) + varTbl({ a: 3, b: 4 }) },
+      { cap: "A gép beugrik a függvénybe: a paraméterek megkapják az értékeket: az a értéke 3, a b értéke 4.", html: srcHtml(src, 2) + varTbl({ a: 3, b: 4 }) },
       { cap: "A return kiszámolja: 3 · 4 = 12, és ezzel az értékkel kilép a függvényből, vissza a hívás helyére.", html: srcHtml(src, 2) + machine(["3", "4"], "terulet", "12") },
       { cap: "A hívás helyére a visszaadott érték kerül: t = 12. Az a és a b ezután megszűnik, csak a függvényen belül léteztek.", html: srcHtml(src, 4) + varTbl({ t: 12 }) },
       { cap: "A print kiírja: 12.", html: srcHtml(src, 5) + outBox("12") }
@@ -1451,20 +1451,21 @@ const P = (function(){
   function tobbFrames(){
     const src = EX.hivhiv.code.split("\n");
     return [
-      { cap: "A negyzetosszeg függvény két másik hívásból rakja össze az eredményt: a négyzet függvényt használja.", html: srcHtml(src, 7) },
-      { cap: "negyzetosszeg(3, 4): a értéke 3, b értéke 4. Először negyzet(3)-at kell kiszámolni.", html: srcHtml(src, 5) + varTbl({ a: 3, b: 4 }) },
+      { cap: "A negyzetosszeg függvény két másik hívásból rakja össze az eredményt: a negyzet függvényt használja.", html: srcHtml(src, 7) },
+      { cap: "negyzetosszeg(3, 4): az a értéke 3, a b értéke 4. Először negyzet(3)-at kell kiszámolni.", html: srcHtml(src, 5) + varTbl({ a: 3, b: 4 }) },
       { cap: "A gép beugrik a negyzet függvénybe, x értéke 3; visszaadja a 9-et.", html: srcHtml(src, 2) + varTbl({ x: 3 }) + machine(["3"], "negyzet", "9") },
       { cap: "Aztán negyzet(4): x értéke 4, visszaadja a 16-ot.", html: srcHtml(src, 2) + varTbl({ x: 4 }) + machine(["4"], "negyzet", "16") },
-      { cap: "Vissza a negyzetosszeg-be: 9 + 16 = 25, ezt adja vissza, és a print kiírja.", html: srcHtml(src, 7) + outBox("25") }
+      { cap: "Vissza a negyzetosszeg függvénybe: 9 + 16 = 25, ezt adja vissza, és a print kiírja.", html: srcHtml(src, 7) + outBox("25") }
     ];
   }
   function vsFrames(){
     const src = ["def negyzet(x):", "    return x * x", "", "eredmeny = negyzet(6)", "print(eredmeny)"];
     return [
-      { cap: "A VS Code-ban a 4. sorra teszünk töréspontot, és elindítjuk a hibakeresést (F5). A program a hívás előtt megáll.", html: dbg(src, 4, 4, {}, "<module>") },
+      { cap: "A VS Code-ban a 4. sorra teszünk töréspontot, és elindítjuk a hibakeresést (F5). A program a hívás előtt megáll. A sárga sáv azt a sort mutatja, amelyik következik: a 4. sor még nem futott le.", html: dbg(src, 4, 4, {}, "<module>") },
       { cap: "Az F10, Step Over, átlépné a függvényt: egyben lefuttatja. Most az F11-et nyomjuk, Step Into: belépünk a függvénybe.", html: dbg(src, 4, 2, { x: 6 }, "negyzet ← <module>") },
       { cap: "A Call Stack mutatja, hol vagyunk: a negyzet függvényben, amelyet a fő program hívott. A Variables panelen a helyi változó: x értéke 6.", html: dbg(src, 4, 2, { x: 6 }, "negyzet ← <module>") },
-      { cap: "Még egy lépés: a return visszaad, és visszaérünk a hívás helyére. Az eredmeny értéke 36. A Shift+F11 egyből kilépne a függvényből.", html: dbg(src, 4, 5, { eredmeny: 36 }, "<module>") }
+      { cap: "Még egy lépés (F10): a return visszaadja a 36-ot, és visszaérünk a hívás helyére, a 4. sorra. Az értékadás még hátravan. (A Shift+F11 egyből kilépne a függvényből.)", html: dbg(src, 4, 4, { "(return) negyzet": 36 }, "<module>") },
+      { cap: "Még egy F10: lefut az értékadás, az eredmeny értéke 36, és a következő sor a print.", html: dbg(src, 4, 5, { eredmeny: 36 }, "<module>") }
     ];
   }
   const MT = { hivas: "Mi történik híváskor?", retprint: "return vagy print?", tobb: "Függvény a függvényben", vs: "F11: belépés a függvénybe" };

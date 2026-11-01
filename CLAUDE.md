@@ -345,6 +345,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   print, függvény a függvényben, F11 a VS Code-ban: Call Stack), 6 típus (Mit ír ki?, Mi lesz az értéke?, Melyik hívás a jó?, Írd meg!,
   Milyen hibát ad?, Javítsd ki!). A közös modul: a gép a diák függvényét maga hívja meg (`tests[k].calls`, `PYCORE.withCalls`), célzott
   üzenet a hiányzó függvényre és a None-t visszaadóra. A `lesson-test.js` a kódblokk-válasz végéről már nem vág le zárójeles részt.
+  Lektor: 7 pont (szakmai: a return helye a ciklus után „a for-ral egy vonalban”, nem „behúzás nélkül”; a hibakereső visszatérése a
+  hívó sorra két lépés; névelők, „negyzet” ékezet nélkül; „többször, különböző argumentumokkal”), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
