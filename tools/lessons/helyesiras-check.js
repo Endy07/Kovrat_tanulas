@@ -75,6 +75,11 @@ eq(sum7("Dél után edzés volt.", "Délután edzés volt."), ["egybe:Dél után
 eq(sum7("Láttuk a Petőfi szobrot.", "Láttuk a Petőfi-szobrot."), ["egybe:Petőfi szobrot>Petőfi-szobrot:egybe+kotojel"], "align Petőfi szobrot");
 eq(sum7("A ház mellet.", "A ház mellett."), ["sub:mellet>mellett:kettoz"], "align mellet");
 
+// kis- és nagybetű (9. lecke)
+eq(sum7("Jövő Hétfőn dolgozatot írunk.", "Jövő hétfőn dolgozatot írunk."), ["sub:Hétfőn>hétfőn:kis"], "align Hétfőn");
+eq(sum7("A Petőfi Utcában lakunk.", "A Petőfi utcában lakunk."), ["sub:Utcában>utcában:kis"], "align Utcában");
+eq(sum7("Nyáron a balatonnál voltunk.", "Nyáron a Balatonnál voltunk."), ["sub:balatonnál>Balatonnál:kis"], "align balatonnál");
+
 // Szövegösszevetés
 const sum = (t, r) => H.align(t, r).filter(p => p.op !== "ok").map(p => p.op + ":" + p.t + ">" + p.r + ":" + p.cats.join("+"));
 eq(sum("Megcsinálom a leckét.", "Megcsinálom a leckét."), [], "align azonos");

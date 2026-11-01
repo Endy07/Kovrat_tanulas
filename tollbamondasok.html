@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261101042939">
+<meta name="kovrat-version" content="20261101043742">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -367,7 +367,7 @@ const H = (function(){
                   .replace(/([bcdfghjklmnprstvz])\1/gi, "$1")
   };
   const CAT = {
-    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, csapat) nagybetűvel kezdődik, a többi kisbetűvel." },
+    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, folyó, intézmény, cím első szava) nagybetűvel kezdődik. Kisbetűs: a napok, hónapok, ünnepek, népek, nyelvek neve és az -i képzős alak (debreceni).", href: "helyesiras-nagybetu.html" },
     hossz:  { n: "Magánhangzó hossza", d: "Rövid vagy hosszú magánhangzó: i/í, o/ó, ö/ő, u/ú, ü/ű (a/á, e/é). Mondd ki lassan, és figyeld a szabályokat (-ból/-ről hosszú, -ul/-ül rövid…).", href: "helyesiras-maganhangzok.html" },
     ekezet: { n: "Ékezet", d: "Kimaradt vagy rossz az ékezet (o/ö/ő, u/ü/ű). Más betű, más szó: sor ≠ sör, kor ≠ kör.", href: "helyesiras-maganhangzok.html" },
     jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (folyik, király, hely, olyan, gólya); kivétel a muszáj. A toldalék j-je mindig j (tanulj, látja).", href: "helyesiras-j-ly.html" },
@@ -559,9 +559,9 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good || (t.toLowerCase() === S.good.toLowerCase() && !/^[A-ZÁÉÍÓÖŐÚÜŰ]/.test(S.good))) return { ok: true, msg: "Helyes!" };
-        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: a mondat első szava nagybetűvel kezdődik." };
+        if (t === S.good) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
+        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
         const c = classify(t, S.good);
         return { ok: false, msg: c.includes("eliras") ? "Nem jó. Keresd meg a hibás szót, és írd le helyesen." : "Majdnem jó, de még mindig hibás: " + c.map(x => CAT[x].n.toLowerCase()).join(", ") + "." };
@@ -731,6 +731,26 @@ const H = (function(){
         "Délután a földalattival utaztunk, ami nagyon tetszett mindenkinek.",
         "Hazafelé a vonaton már mindenki aludt." ] }
     ],
+    nagy: [
+      { id: "n1", t: "Nyári szünet", s: [
+        "A családommal júliusban a Balatonhoz utaztunk.",
+        "Siófokon laktunk egy kis panzióban, közel a Petőfi sétányhoz.",
+        "Egy hétvégén átkompoztunk Tihanyba, és megnéztük az apátságot.",
+        "A szomszéd szobában egy kedves német család lakott.",
+        "A tűzijátékot augusztus huszadikán a balatoni parton néztük." ] },
+      { id: "n2", t: "Az iskolai könyvtár", s: [
+        "Kedden a könyvtárban kikölcsönöztem A Pál utcai fiúk című regényt.",
+        "Molnár Ferenc könyvét a nagymamám is nagyon szerette.",
+        "A könyvtáros néni ajánlotta az Egri csillagokat is.",
+        "Péntekenként a Nemzeti Sportot is elolvasom, mert érdekel a foci.",
+        "A könyvtárban decemberben karácsonyi vásárt rendeznek." ] },
+      { id: "n3", t: "Vendég Debrecenben", s: [
+        "Az unokatestvérem Szegedről jött hozzánk látogatóba.",
+        "Szombaton megmutattam neki a Nagytemplomot és a Kossuth teret.",
+        "Délután a Déri Múzeumban egy egyiptomi kiállítást néztünk meg.",
+        "Este a Nagyerdőn sétáltunk, és fagyit ettünk.",
+        "Vasárnap reggel a debreceni vasútállomásról indult haza." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -779,10 +799,16 @@ const H = (function(){
         "Egy háromórás kosárlabdaedzésen vettünk részt.",
         "Az edző azt kérte, hogy fussunk le még két kört.",
         "Utána megittunk egy-egy pohár vizet.",
-        "Hazafelé megbeszéltük, hogy jövő héten is eljövünk." ] }
+        "Hazafelé megbeszéltük, hogy jövő héten is eljövünk." ] },
+      { id: "v9", t: "Iskolai ünnepség", s: [
+        "Az iskolában március tizenötödikén ünnepséget tartottak.",
+        "A műsorban egy kilencedikes lány elszavalta a Nemzeti dalt.",
+        "Utána a kórus népdalokat énekelt, és mindannyian felálltunk.",
+        "Az igazgató azt mondta, hogy legyünk büszkék a magyar történelemre.",
+        "Hazafelé megbeszéltük, hogy jövőre mi is szerepelni fogunk." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");
@@ -1470,12 +1496,13 @@ const K = (function(){
   const { $, $$, esc } = K;
   const FOCUS = { betuk: "Többjegyű betűk (cs, gy, ny, sz, zs, dz, dzs), hosszú kettős betűk (ssz, ggy, lly).", maganhangzok: "-ból, -ről, -tól (hosszú) · -ul, -ül, -szor, -kor, -ig (rövid) · -ít (hosszú) · rövidülő tövek.",
     massalhangzok: "Múlt idő (-tt, -t), középfok (-bb), névutók (alatt, előtt), hosszú többjegyű betűk, kettőzött szavak (itt, akkor, éppen).",
-    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–8. lecke szabályai vegyesen.",
+    jly: "ly-os szócsaládok (hely, folyik, király, olyan), -lya végű szavak, muszáj, a toldalék j-je (gondoljak), -val/-vel (osztállyal, királlyal).", vegyes: "Az 1–9. lecke szabályai vegyesen.",
+    nagy: "Kis- és nagybetű: júliusban, Balaton, balatoni, német, augusztus huszadikán, A Pál utcai fiúk, Egri csillagok, Nemzeti Sport, Kossuth tér, Déri Múzeum, debreceni.",
     ossz: "Összetett szavak: labdarúgó-bajnokság, délután, kétgólos, pálya mellett, bableves, rántott hús, tv-műsor, Petőfi-szobor, Duna-part, földalatti, hazafelé.",
     igek: "Igekötők: hazaértem, leültem, nem írtam meg, meg kell írnom, be is fejeztem, vissza-visszajött, el is ment, meg-megálltunk, nemsokára.",
     felsz: "Felszólító mód: fussatok, siessen, válasszunk, játsszunk, süssön, tegyünk, felejtsétek, hívjon · kijelentő: visszük.",
     hason: "Szóelemzés: egészség, község, népdal, színpad, mindnyájan, barátság, egyszer · ebben, akkor, azzal · kézzel, dobozzal, ronggyal." };
-  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html", igek: "helyesiras-igekotok.html", ossz: "helyesiras-osszetett.html" };
+  const LINK = { betuk: "helyesiras-betuk-elvalasztas.html", maganhangzok: "helyesiras-maganhangzok.html", massalhangzok: "helyesiras-massalhangzok.html", jly: "helyesiras-j-ly.html", hason: "helyesiras-hasonulasok.html", felsz: "helyesiras-felszolito.html", igek: "helyesiras-igekotok.html", ossz: "helyesiras-osszetett.html", nagy: "helyesiras-nagybetu.html" };
   const keys = Object.keys(H.TEXTS);
   // nyomtatható lista
   $("#all").innerHTML = keys.map(g => '<h2 id="' + g + '">' + esc(H.GROUPS[g]) + "</h2>" +

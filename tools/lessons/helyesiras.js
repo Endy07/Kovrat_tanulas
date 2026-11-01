@@ -116,7 +116,7 @@ const H = (function(){
                   .replace(/([bcdfghjklmnprstvz])\1/gi, "$1")
   };
   const CAT = {
-    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, csapat) nagybetűvel kezdődik, a többi kisbetűvel." },
+    kis:    { n: "Kis- vagy nagybetű", d: "A mondat első szava és a tulajdonnév (név, város, folyó, intézmény, cím első szava) nagybetűvel kezdődik. Kisbetűs: a napok, hónapok, ünnepek, népek, nyelvek neve és az -i képzős alak (debreceni).", href: "helyesiras-nagybetu.html" },
     hossz:  { n: "Magánhangzó hossza", d: "Rövid vagy hosszú magánhangzó: i/í, o/ó, ö/ő, u/ú, ü/ű (a/á, e/é). Mondd ki lassan, és figyeld a szabályokat (-ból/-ről hosszú, -ul/-ül rövid…).", href: "helyesiras-maganhangzok.html" },
     ekezet: { n: "Ékezet", d: "Kimaradt vagy rossz az ékezet (o/ö/ő, u/ü/ű). Más betű, más szó: sor ≠ sör, kor ≠ kör.", href: "helyesiras-maganhangzok.html" },
     jly:    { n: "j vagy ly", d: "A j és az ly ugyanúgy hangzik. Az ly-os szavakat meg kell tanulni (folyik, király, hely, olyan, gólya); kivétel a muszáj. A toldalék j-je mindig j (tanulj, látja).", href: "helyesiras-j-ly.html" },
@@ -308,9 +308,9 @@ const H = (function(){
       sol: "<p>A hibás szó: <s>" + esc(wrong) + "</s> → <b>" + markDiff(wrong, S.good) + "</b></p>" + (item[1] ? "<p>" + item[1] + "</p>" : ""),
       check: v => {
         const t = String(v).trim().replace(/[.,!?]$/, "");
-        if (t === S.good || (t.toLowerCase() === S.good.toLowerCase() && !/^[A-ZÁÉÍÓÖŐÚÜŰ]/.test(S.good))) return { ok: true, msg: "Helyes!" };
-        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: a mondat első szava nagybetűvel kezdődik." };
+        if (t === S.good) return { ok: true, msg: "Helyes!" };
         if (t === wrong) return { ok: false, msg: "Ezt a szót megtaláltad, de javítsd is ki!" };
+        if (t.toLowerCase() === S.good.toLowerCase()) return { ok: false, msg: "Majdnem: figyelj a kis- és nagybetűre (a mondat eleje és a tulajdonnév nagy, a többi kicsi)." };
         if (words.includes(t)) return { ok: false, msg: "Ez a szó jó a mondatban. Keresd a hibásat!" };
         const c = classify(t, S.good);
         return { ok: false, msg: c.includes("eliras") ? "Nem jó. Keresd meg a hibás szót, és írd le helyesen." : "Majdnem jó, de még mindig hibás: " + c.map(x => CAT[x].n.toLowerCase()).join(", ") + "." };
@@ -480,6 +480,26 @@ const H = (function(){
         "Délután a földalattival utaztunk, ami nagyon tetszett mindenkinek.",
         "Hazafelé a vonaton már mindenki aludt." ] }
     ],
+    nagy: [
+      { id: "n1", t: "Nyári szünet", s: [
+        "A családommal júliusban a Balatonhoz utaztunk.",
+        "Siófokon laktunk egy kis panzióban, közel a Petőfi sétányhoz.",
+        "Egy hétvégén átkompoztunk Tihanyba, és megnéztük az apátságot.",
+        "A szomszéd szobában egy kedves német család lakott.",
+        "A tűzijátékot augusztus huszadikán a balatoni parton néztük." ] },
+      { id: "n2", t: "Az iskolai könyvtár", s: [
+        "Kedden a könyvtárban kikölcsönöztem A Pál utcai fiúk című regényt.",
+        "Molnár Ferenc könyvét a nagymamám is nagyon szerette.",
+        "A könyvtáros néni ajánlotta az Egri csillagokat is.",
+        "Péntekenként a Nemzeti Sportot is elolvasom, mert érdekel a foci.",
+        "A könyvtárban decemberben karácsonyi vásárt rendeznek." ] },
+      { id: "n3", t: "Vendég Debrecenben", s: [
+        "Az unokatestvérem Szegedről jött hozzánk látogatóba.",
+        "Szombaton megmutattam neki a Nagytemplomot és a Kossuth teret.",
+        "Délután a Déri Múzeumban egy egyiptomi kiállítást néztünk meg.",
+        "Este a Nagyerdőn sétáltunk, és fagyit ettünk.",
+        "Vasárnap reggel a debreceni vasútállomásról indult haza." ] }
+    ],
     vegyes: [
       { id: "v1", t: "Programozóverseny", s: [
         "Pénteken az iskolában programozóversenyt rendeztek.",
@@ -528,10 +548,16 @@ const H = (function(){
         "Egy háromórás kosárlabdaedzésen vettünk részt.",
         "Az edző azt kérte, hogy fussunk le még két kört.",
         "Utána megittunk egy-egy pohár vizet.",
-        "Hazafelé megbeszéltük, hogy jövő héten is eljövünk." ] }
+        "Hazafelé megbeszéltük, hogy jövő héten is eljövünk." ] },
+      { id: "v9", t: "Iskolai ünnepség", s: [
+        "Az iskolában március tizenötödikén ünnepséget tartottak.",
+        "A műsorban egy kilencedikes lány elszavalta a Nemzeti dalt.",
+        "Utána a kórus népdalokat énekelt, és mindannyian felálltunk.",
+        "Az igazgató azt mondta, hogy legyünk büszkék a magyar történelemre.",
+        "Hazafelé megbeszéltük, hogy jövőre mi is szerepelni fogunk." ] }
     ]
   };
-  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", vegyes: "Vegyes, ismétlő" };
+  const GROUPS = { betuk: "Betűk, ábécé, elválasztás", maganhangzok: "Magánhangzók hossza", massalhangzok: "Mássalhangzók hossza", jly: "j vagy ly", hason: "Hasonulások", felsz: "Felszólító mód", igek: "Igekötők", ossz: "Összetett szavak, számok", nagy: "Kis- és nagybetű", vegyes: "Vegyes, ismétlő" };
 
   // felolvasáshoz: az írásjeleket kimondjuk (a vesszőt a 9. leckéig nem várjuk el fejből)
   const sayPunct = s => s.replace(/,/g, " vessző,").replace(/:/g, " kettőspont,").replace(/\?$/, " kérdőjel.").replace(/!$/, " felkiáltójel.").replace(/\.$/, " pont.");

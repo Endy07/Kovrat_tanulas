@@ -1,0 +1,244 @@
+<!--@HEAD-->
+<title>Kis- és nagybetű</title>
+<style>
+.slide .eq{white-space:normal}
+table.pt td.l{text-align:left}
+.pt td,.pt th{font-family:var(--body)}
+.pairbtn .q{font-size:clamp(1.05rem,4.8vw,1.35rem);font-weight:700;color:#9CC2FF;overflow-wrap:anywhere}
+</style>
+<!--@HJS-->
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Magyar helyesírás · 9. lecke</span>
+  <h1>Kis- vagy nagybetű? Tulajdonnevek</h1>
+  <p class="lead"><b>Debrecen</b>, de <b>debreceni</b>. <b>Duna</b>, de <b>Duna-parti</b>. <b>Hétfő</b>, <b>január</b>, <b>karácsony</b>, <b>magyar</b>: kisbetűvel. Megtanulod, mi a tulajdonnév, hogyan írjuk a neveket, földrajzi neveket, intézményeket és címeket, és mi marad kisbetűs.</p>
+  <div class="panel">
+    <span class="eyebrow">Kicsi vagy nagy? Tippelj, aztán kattints!</span>
+    <div class="pairs" id="pairs"></div>
+    <p style="color:var(--panel-muted);font-size:.92rem">A kártya hátulján ott a szabály is.</p>
+  </div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Diák</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Melyik szabály dönt?</h2>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="kicsi" aria-selected="true">hétfő, karácsony, magyar</button>
+    <button class="tab" data-m="fold" aria-selected="false">Debrecen, debreceni</button>
+    <button class="tab" data-m="kotojel" aria-selected="false">Kelet-Európa</button>
+    <button class="tab" data-m="cim" aria-selected="false">A Pál utcai fiúk</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Szintek: 1. nevek, városok, országok; ami kisbetűs (napok, hónapok, ünnepek, népek, nyelvek) · 2. földrajzi nevek és az -i képző (Duna-part, Kelet-Európa, Petőfi utca, debreceni, kelet-európai) · 3. intézmények, címek, márkák, csillagok. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Tollbamondás</h2>
+  <p>A gép mondatonként felolvassa a szöveget, te begépeled. A végén megmutatja az eltéréseket és a szabályt. Figyelj a kezdőbetűkre: júliusban, Balaton, balatoni, német, A Pál utcai fiúk, Egri csillagok, Nemzeti Sport, Kossuth tér, Déri Múzeum.</p>
+  <div id="dict"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Nagybetű</span><span>mondat eleje · nevek (Kovács Péter, Bodri) · helyek (Debrecen, Duna) · intézmények · címek első szava</span></div>
+    <div class="trick"><span class="t">Kisbetű</span><span>hétfő, január, karácsony, húsvét, március tizenötödike · magyar, angol, német · az -i képzős alak: debreceni</span></div>
+    <div class="trick"><span class="t">Földrajzi név</span><span>Duna-part, Balaton-felvidék, Csendes-óceán, Kelet-Európa · Petőfi utca, Kossuth tér (külön, kisbetűs utca, tér)</span></div>
+    <div class="trick"><span class="t">Címek</span><span>Könyv, film, vers: csak az első szó nagy (A Pál utcai fiúk) · újság: minden szó nagy (Nemzeti Sport)</span></div>
+  </div>
+  <p class="src">Forrás: A magyar helyesírás szabályai, 12. kiadás (2015), 144–145. pont (ünnepek, népnevek kisbetűvel), 153., 163–166. pont (személynevek, Zsófi néni, Kossuth-szobor), 170. pont (állatnevek), 172–183. pont (földrajzi nevek, közterületek), 184. pont (csillagok), 186–194. pont (intézmények, pályaudvarok, rendezvények, márkanevek), 196–200. pont (címek) · helyesiras.mta.hu. ⚠️ A pontszámokat a szabályzat oldalának kivonatából, a kereszthivatkozások alapján azonosítottuk.</p>
+</section>
+
+</div>
+<!--@KITJS-->
+<script>
+(function(){
+  const { $, $$, pick, esc } = K;
+
+  /* ---------- Hero: kicsi vagy nagy? ---------- */
+  const CARDS = [["hétfő", "A napok neve kisbetűs."], ["Debrecen", "Városnév: tulajdonnév, nagybetű."], ["magyar", "Népek, nyelvek neve kisbetűs."], ["karácsony", "Az ünnepek neve kisbetűs."],
+    ["Bodri", "Állatnév: tulajdonnév, nagybetű."], ["január", "A hónapok neve kisbetűs."], ["Duna", "Folyónév: nagybetű."], ["debreceni", "Az -i képzős alak kisbetűs."]];
+  const side = CARDS.map(() => 0);
+  function drawCards(){
+    $("#pairs").innerHTML = CARDS.map((c, k) => '<button class="pairbtn" data-p="' + k + '">' +
+      (side[k] ? '<span class="w">' + esc(c[0]) + '</span><span class="m">' + esc(c[1]) + "</span>" : '<span class="q">[' + esc(c[0][0].toLowerCase() + "/" + c[0][0].toUpperCase()) + "]" + esc(c[0].slice(1)) + '</span><span class="m">kicsi vagy nagy?</span>') + "</button>").join("");
+  }
+  $("#pairs").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; const k = Number(b.dataset.p); side[k] = 1 - side[k]; drawCards(); if (K.tts.on && K.tts.ok) K.tts.say(CARDS[k][0]); });
+  drawCards();
+
+  /* ---------- Lejátszó ---------- */
+  const pb = K.player($("#pb"));
+  pb.el = $("#pb");
+  const W = (h, sub) => '<div class="hw-row"><span class="hw">' + h + "</span></div>" + (sub ? '<div class="dim" style="margin-top:10px">' + sub + "</div>" : "");
+  const MF = {
+    kicsi: () => [
+      { cap: "A tulajdonnév egyetlen dolgot nevez meg: egy embert, egy várost, egy kutyát. Ezt nagybetűvel kezdjük.", html: W("<u>K</u>ovács <u>P</u>éter · <u>D</u>ebrecen · <u>B</u>odri") },
+      { cap: "A napok és a hónapok neve nem tulajdonnév, mert minden héten, minden évben visszajön. Kisbetű: hétfő, január.", html: W("hétfő · január · augusztus", "kisbetű") },
+      { cap: "Az ünnepek is kisbetűsek: karácsony, húsvét, anyák napja, március tizenötödike.", html: W("karácsony · húsvét · március tizenötödike", "kisbetű") },
+      { cap: "A népek és a nyelvek neve is: magyar, angol, német. Angolórán angolul beszélünk.", html: W("magyar · angol · német", "kisbetű") },
+      { cap: "De a mondat első szava mindig nagybetű: Hétfőn kezdődik a suli.", html: W("<u>H</u>étfőn kezdődik a suli.", "mondat eleje: nagybetű") }
+    ],
+    fold: () => [
+      { cap: "Debrecen: városnév, nagybetű.", html: W("<u>D</u>ebrecen") },
+      { cap: "Ha -i képzőt teszünk hozzá, melléknév lesz belőle: debreceni. Ez már kisbetűs!", html: W("<u>d</u>ebreceni", "-i képző: kisbetű") },
+      { cap: "Ugyanígy: Budapest, budapesti. Magyarország, magyarországi. Duna, dunai.", html: W("budapesti · magyarországi · dunai") },
+      { cap: "Az utca, tér, út kisbetűs, külön szó: Petőfi utca, Kossuth tér. Az -i képzővel: Petőfi utcai.", html: W("Petőfi utca · Kossuth tér · Petőfi utcai", "a név nagy, az utca kicsi") }
+    ],
+    kotojel: () => [
+      { cap: "Kelet-Európa. Két tagja van: kelet és Európa. A második tulajdonnév, ezért kötőjel kell, és mindkettő nagy.", html: W("<u>K</u>elet-<u>E</u>urópa · <u>D</u>él-<u>A</u>merika") },
+      { cap: "Az -i képzős alakban mindkettő kicsi lesz, a kötőjel marad: kelet-európai.", html: W("kelet-európai · dél-amerikai", "-i képző: mind kicsi") },
+      { cap: "Csendes-óceán: az óceán földrajzi köznév. Kötőjellel kapcsoljuk, és kisbetűvel írjuk. Ugyanígy: Balaton-felvidék, Duna-part.", html: W("Csendes-óceán · Balaton-felvidék · Duna-part") },
+      { cap: "Az -i képzős alakban a tulajdonnév nagy marad, a köznév kicsi: Balaton-felvidéki, de csendes-óceáni.", html: W("Balaton-felvidéki · csendes-óceáni") }
+    ],
+    cim: () => [
+      { cap: "A Pál utcai fiúk. Könyvcím: csak az első szót kezdjük nagybetűvel, meg a tulajdonnevet.", html: W("<u>A</u> Pál utcai fiúk", "egyedi cím: az első szó nagy") },
+      { cap: "Ugyanígy: Egri csillagok, Nemzeti dal, Toldi.", html: W("Egri csillagok · Nemzeti dal") },
+      { cap: "Az újságok, folyóiratok címe más: ott minden szó nagy. Nemzeti Sport, Magyar Nemzet.", html: W("Nemzeti Sport · Magyar Nemzet", "állandó cím: minden szó nagy") },
+      { cap: "Az intézményneveknél is minden szó nagy, kivéve az és-t: Magyar Tudományos Akadémia, Kossuth Lajos Általános Iskola.", html: W("Magyar Tudományos Akadémia", "intézmény: minden szó nagy") }
+    ]
+  };
+  const MET = { kicsi: "hétfő, karácsony, magyar", fold: "Debrecen, debreceni", kotojel: "Kelet-Európa", cim: "A Pál utcai fiúk" };
+  const PB = { m: "kicsi" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MET[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lejátszva</button></p>";
+  const playInit = el => { const b = el.querySelector("[data-play]"); if (b) b.addEventListener("click", () => { PB.m = b.dataset.play; pbNew(true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); }); };
+  const tbl = (head, rows) => "<div class='ptwrap'><table class='pt'><tr>" + head.map(h => "<th>" + h + "</th>").join("") + "</tr>" + rows.map(r => "<tr>" + r.map(c => "<td class='l'>" + c + "</td>").join("") + "</tr>").join("") + "</table></div>";
+
+  /* ---------- Diák ---------- */
+  const slides = [
+    { k: "Alap", t: "Mikor nagybetű?", h:
+      "<ul><li>A <b>mondat első szava</b>.</li><li>A <b>tulajdonnév</b>: ami egyetlen dolgot nevez meg (egy ember, egy város, egy folyó, egy iskola, egy könyv).</li></ul>" +
+      "<p>Minden más kisbetűs: a köznév (fiú, város, folyó, iskola), a napok, hónapok, ünnepek, népek és nyelvek neve.</p>" +
+      "<div class='note'><b>Próba:</b> csak egy ilyen van? (Debrecen) → nagybetű. Sok ilyen van? (város) → kisbetű.</div>" },
+    { k: "Kisbetű", t: "Napok, hónapok, ünnepek, népek: kisbetű", h:
+      tbl(["fajta", "példa"], [["napok", "hétfő, kedd, szerda, vasárnap"], ["hónapok", "január, március, augusztus"], ["ünnepek, nevezetes napok", "karácsony, húsvét, farsang, anyák napja, március tizenötödike, május elseje"], ["népek, nyelvek", "magyar, angol, német, székely, palóc"]]) +
+      "<p>Csak a mondat elején nagy: <b>Január</b> elsején kezdődik az év.</p>" + playBtn("kicsi"), init: playInit },
+    { k: "Személynév", t: "Nevek: emberek és állatok", h:
+      "<p class='eq'>Kovács Péter · Szabó Anna · Bodri · Cirmos · Villám</p>" +
+      "<ul><li>A név utáni köznév kisbetűs, külön: <b>Zsófi néni</b>, <b>István király</b>, <b>Bodri kutya</b>, <b>Kiss tanár úr</b>.</li>" +
+      "<li>Toldalék kötőjel nélkül: <b>Péternek, Annával, Bodrit</b>.</li><li>Összetételben kötőjel (8. lecke): <b>Petőfi-szobor, Kossuth-díj</b>.</li></ul>" },
+    { k: "Földrajzi név", t: "Városok, országok, vizek, hegyek", h:
+      "<p class='eq'>Debrecen · Budapest · Magyarország · Duna · Balaton · Tisza · Mátra · Európa</p>" +
+      "<p>Az <b>-i</b> képzős alak <b>kisbetűs</b>: debreceni, budapesti, magyarországi, dunai, balatoni, európai.</p>" +
+      "<div class='mistake'><b>Debreceni diák</b> (a mondat közepén) → debreceni diák.</div>" + playBtn("fold"), init: playInit },
+    { k: "Kötőjel", t: "Több tagú földrajzi nevek", h:
+      tbl(["név", "-i képzővel", "miért"], [["Kelet-Európa", "kelet-európai", "két tulajdonnévi rész: mind nagy; -i: mind kicsi"], ["Dél-Amerika", "dél-amerikai", "ugyanígy"], ["Csendes-óceán", "csendes-óceáni", "köznévi utótag (óceán): kicsi"], ["Balaton-felvidék", "Balaton-felvidéki", "a tulajdonnév (Balaton) nagy marad"], ["Duna-part", "Duna-parti", "ugyanígy"]]) + playBtn("kotojel"), init: playInit },
+    { k: "Utca, tér", t: "Utcák, terek: a név nagy, az utca kicsi", h:
+      "<p class='eq'>Petőfi utca · Kossuth tér · Fő utca · Szent István út · Erzsébet híd</p>" +
+      "<p>Az <b>-i</b> képző a változatlan névhez járul: <b>Petőfi utcai</b>, <b>Kossuth téri</b>.</p>" +
+      "<div class='mistake'><b>Petőfi Utca, Petőfi-utca</b> → Petőfi utca.</div>" },
+    { k: "Intézmény", t: "Intézmények, cégek: minden szó nagy", h:
+      "<p class='eq'>Magyar Tudományos Akadémia · Kossuth Lajos Általános Iskola · Déri Múzeum · Nemzeti Színház</p>" +
+      "<p>Az <b>és</b> és a névelő (a, az) kisbetű marad. De: <b>Keleti pályaudvar, Corvin mozi, Lukács fürdő</b>: itt csak a név nagy, a pályaudvar, mozi, fürdő kicsi.</p>" +
+      "<p>Rendezvény kisbetűs: <b>országos középiskolai tanulmányi verseny</b>.</p>" },
+    { k: "Címek", t: "Könyvek, filmek, újságok", h:
+      tbl(["fajta", "szabály", "példa"], [["könyv, vers, film, dal", "csak az első szó (és a név) nagy", "A Pál utcai fiúk, Egri csillagok, Nemzeti dal"], ["újság, folyóirat", "minden szó nagy (kivéve: és)", "Nemzeti Sport, Magyar Nemzet, Élet és Tudomány"]]) +
+      "<p>Mondatban a toldalék közvetlenül jön: <b>az Egri csillagokat</b>, <b>a Nemzeti Sportban</b>.</p>" + playBtn("cim"), init: playInit },
+    { k: "Egyéb", t: "Márkák, csillagok", h:
+      "<ul><li><b>Márkanév</b>: Toyota, Samsung. A mellé tett köznév kisbetűs, külön: <b>Audi gépkocsi</b>.</li>" +
+      "<li><b>Csillagok, bolygók</b>: Merkúr, Vénusz, Tejút, Nagy Medve.</li></ul>" },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='mistake'><b>Hétfőn</b> (a mondat közepén) → hétfőn. <b>Január, Karácsony</b> → január, karácsony.</div>" +
+      "<div class='mistake'><b>Magyar, Angol</b> (nép, nyelv) → magyar, angol.</div>" +
+      "<div class='mistake'><b>Debreceni, Budapesti</b> → debreceni, budapesti.</div>" +
+      "<div class='mistake'><b>Petőfi Utca</b> → Petőfi utca.</div>" +
+      "<div class='mistake'><b>A Pál Utcai Fiúk</b> → A Pál utcai fiúk.</div>" +
+      "<div class='mistake'><b>kelet-Európa, Kelet-európa</b> → Kelet-Európa.</div>" },
+    { k: "Trükkök", t: "Okosan", h:
+      "<div class='two-col'><div class='trick'><span class='t'>Egy van belőle?</span><span>Debrecen, Duna, Bodri: nagy. Város, folyó, kutya: kicsi.</span></div>" +
+      "<div class='trick'><span class='t'>Visszajön?</span><span>Hétfő, január, karácsony minden évben jön: kicsi.</span></div>" +
+      "<div class='trick'><span class='t'>-i a végén?</span><span>Melléknév lett: kicsi (debreceni). Kivétel: ha név van benne (Petőfi utcai, Balaton-felvidéki).</span></div>" +
+      "<div class='trick'><span class='t'>Könyv vagy újság?</span><span>Könyv: csak az első szó nagy. Újság: minden szó.</span></div></div>" }
+  ];
+  K.deck($("#deck"), slides);
+
+  /* ---------- Gyakorlás ---------- */
+  const C = [   // [leírás, jó, [rossz], magyarázat]
+    [["a hét első napja", "hétfő", ["Hétfő"], "A napok neve kisbetűs."], ["az év első hónapja", "január", ["Január"], "A hónapok neve kisbetűs."],
+     ["a december 24–26. közötti ünnep", "karácsony", ["Karácsony"], "Az ünnepek neve kisbetűs."], ["a tavaszi ünnep, nyuszival", "húsvét", ["Húsvét"], "Az ünnepek neve kisbetűs."],
+     ["Magyarország lakói", "magyarok", ["Magyarok"], "A népek neve kisbetűs."], ["nyelv, amit Londonban beszélnek", "angol", ["Angol"], "A nyelvek neve kisbetűs."],
+     ["város a Tisza mellett", "Szeged", ["szeged"], "Városnév: nagybetű."], ["a legnagyobb magyar tó", "Balaton", ["balaton"], "Tónév: nagybetű."],
+     ["egy kutya neve", "Bodri", ["bodri"], "Állatnév: nagybetű."], ["egy fiú neve", "Kovács Péter", ["kovács Péter", "Kovács péter"], "A családnév és az utónév is nagy."],
+     ["a néni, akit Zsófinak hívnak", "Zsófi néni", ["Zsófi Néni", "zsófi néni"], "A név nagy, a néni kicsi."], ["nemzeti ünnep tavasszal", "március tizenötödike", ["Március Tizenötödike", "Március tizenötödike"], "Kisbetű, a mondat közepén."]],
+    [["Debrecen + -i", "debreceni", ["Debreceni"], "Az -i képzős alak kisbetűs."], ["Magyarország + -i", "magyarországi", ["Magyarországi"], "Az -i képzős alak kisbetűs."],
+     ["Duna + part (a Duna partja)", "Duna-part", ["Duna part", "duna-part"], "A tulajdonnév nagy, a köznév kötőjellel, kicsi."], ["Duna-part + -i", "Duna-parti", ["duna-parti", "Duna parti"], "A tulajdonnév nagy marad."],
+     ["kelet + Európa", "Kelet-Európa", ["kelet-Európa", "Kelet-európa"], "Mindkét tag nagy, kötőjellel."], ["Kelet-Európa + -i", "kelet-európai", ["Kelet-Európai", "Kelet-európai"], "Az -i képzős alakban mindkettő kicsi."],
+     ["Csendes + óceán", "Csendes-óceán", ["Csendes-Óceán", "csendes-óceán"], "Az óceán köznév: kicsi, kötőjellel."], ["Csendes-óceán + -i", "csendes-óceáni", ["Csendes-óceáni", "Csendes-Óceáni"], "Az -i képzős alak kisbetűs."],
+     ["Balaton + felvidék", "Balaton-felvidék", ["Balaton-Felvidék", "balaton-felvidék"], "A tulajdonnév nagy, a köznév kicsi."], ["Balaton-felvidék + -i", "Balaton-felvidéki", ["balaton-felvidéki", "Balaton-Felvidéki"], "A Balaton nagy marad."],
+     ["Petőfi + utca", "Petőfi utca", ["Petőfi Utca", "Petőfi-utca"], "Az utca kicsi, külön."], ["Petőfi utca + -i", "Petőfi utcai", ["petőfi utcai", "Petőfi-utcai"], "Az -i a változatlan névhez járul."],
+     ["Kossuth + tér", "Kossuth tér", ["Kossuth Tér", "Kossuth-tér"], "A tér kicsi, külön."], ["dél + Amerika", "Dél-Amerika", ["dél-Amerika", "Dél-amerika"], "Mindkét tag nagy."]],
+    [["könyvcím (Molnár Ferenc)", "A Pál utcai fiúk", ["A Pál Utcai Fiúk", "A pál utcai fiúk"], "Egyedi cím: csak az első szó és a név nagy."], ["regénycím (Gárdonyi Géza)", "Egri csillagok", ["Egri Csillagok", "egri csillagok"], "Egyedi cím: csak az első szó nagy."],
+     ["sportújság", "Nemzeti Sport", ["Nemzeti sport", "nemzeti Sport"], "Újság (állandó cím): minden szó nagy."], ["tudományos intézmény", "Magyar Tudományos Akadémia", ["Magyar tudományos akadémia", "Magyar Tudományos akadémia"], "Intézmény: minden szó nagy."],
+     ["iskola neve", "Kossuth Lajos Általános Iskola", ["Kossuth Lajos általános iskola", "Kossuth Lajos Általános iskola"], "Intézmény: minden szó nagy."], ["múzeum Debrecenben", "Déri Múzeum", ["Déri múzeum", "déri Múzeum"], "Intézmény: minden szó nagy."],
+     ["pályaudvar Budapesten", "Keleti pályaudvar", ["Keleti Pályaudvar", "keleti pályaudvar"], "Pályaudvar: csak a név nagy."], ["mozi neve", "Corvin mozi", ["Corvin Mozi", "corvin mozi"], "Mozi: csak a név nagy."],
+     ["bolygó", "Vénusz", ["vénusz"], "Bolygónév: nagybetű."], ["csillagkép", "Nagy Medve", ["Nagy medve", "nagy Medve"], "Csillagkép: minden szó nagy."],
+     ["verseny (rendezvény)", "országos tanulmányi verseny", ["Országos Tanulmányi Verseny", "Országos tanulmányi verseny"], "Rendezvény: kisbetűvel ajánlott."], ["autó (márka + köznév)", "Audi gépkocsi", ["Audi Gépkocsi", "audi gépkocsi"], "Márkanév nagy, a köznév kicsi, külön."]]
+  ];
+  const S = [
+    [["Jövő {hétfőn|Hétfőn} dolgozatot írunk.", "A napok neve kisbetűs."], ["A születésnapom {januárban|Januárban} van.", "A hónapok neve kisbetűs."], ["Idén is {karácsonykor|Karácsonykor} jön a nagymamám.", "Az ünnepek neve kisbetűs."],
+     ["Az iskolában {angolul|Angolul} és németül tanulunk.", "A nyelvek neve kisbetűs."], ["Nyáron a {Balatonnál|balatonnál} nyaraltunk.", "Tónév: nagybetű."], ["A kutyánkat {Bodrinak|bodrinak} hívják.", "Állatnév: nagybetű."],
+     ["Tegnap {Zsófi nénivel|Zsófi Nénivel} beszéltem.", "A név nagy, a néni kicsi."], ["Szombaton {Szegedre|szegedre} utazunk.", "Városnév: nagybetű."], ["A szomszédunk {német|Német}, de jól beszél magyarul.", "A népnevek kisbetűsek."],
+     ["Az osztályban {Kovács Péter|kovács Péter} a legjobb focista.", "A családnév is nagy."]],
+    [["A {debreceni|Debreceni} piacon vettük a gyümölcsöt.", "Az -i képzős alak kisbetűs."], ["Nagyon szeretem a {balatoni|Balatoni} nyarat.", "Az -i képzős alak kisbetűs."], ["A {Duna-parton|duna-parton} sétáltunk.", "A tulajdonnév nagy."],
+     ["Ukrajna {Kelet-Európában|kelet-Európában} van.", "Mindkét tag nagy."], ["A {kelet-európai|Kelet-európai} országokról tanultunk.", "Az -i képzős alakban mindkettő kicsi."], ["A {Csendes-óceán|Csendes-Óceán} a legnagyobb óceán.", "Az óceán köznév: kicsi."],
+     ["A {Petőfi utcában|Petőfi Utcában} lakunk.", "Az utca kicsi."], ["A {Kossuth téren|Kossuth-téren} találkozunk.", "A tér kicsi, külön."], ["A {Petőfi utcai|Petőfi-utcai} bolt hétfőn zárva van.", "Az -i a változatlan névhez járul."],
+     ["A {magyarországi|Magyarországi} hegyek nem túl magasak.", "Az -i képzős alak kisbetűs."]],
+    [["Most olvasom {A Pál utcai fiúk|A Pál Utcai Fiúk} című regényt.", "Egyedi cím: csak az első szó és a név nagy."], ["Az {Egri csillagok|Egri Csillagok} a kedvenc könyvem.", "Egyedi cím: csak az első szó nagy."],
+     ["Apa minden reggel a {Nemzeti Sportot|Nemzeti sportot} olvassa.", "Újság: minden szó nagy."], ["Hétvégén a {Déri Múzeumban|Déri múzeumban} jártunk.", "Intézmény: minden szó nagy."],
+     ["A vonat a {Keleti pályaudvarról|Keleti Pályaudvarról} indul.", "Pályaudvar: csak a név nagy."], ["Este a {Corvin moziban|Corvin Moziban} voltunk.", "Mozi: csak a név nagy."],
+     ["A {Vénusz|vénusz} a Naphoz második legközelebbi bolygó.", "Bolygónév: nagybetű."], ["A {Magyar Tudományos Akadémia|Magyar tudományos akadémia} Budapesten van.", "Intézmény: minden szó nagy."],
+     ["Indulok az {országos tanulmányi versenyen|Országos Tanulmányi Versenyen}.", "Rendezvény: kisbetűvel."]]
+  ];
+  const IK = [   // -i képző: [alapforma, jó, [rossz], magyarázat]
+    [["Debrecen", "debreceni", ["Debreceni", "debrecenni"], "Egyszerű név + -i: kisbetű."], ["Budapest", "budapesti", ["Budapesti", "budapestí"], "Kisbetű."], ["Szeged", "szegedi", ["Szegedi", "szeggedi"], "Kisbetű."],
+     ["Magyarország", "magyarországi", ["Magyarországi", "magyar-országi"], "Kisbetű."], ["Duna", "dunai", ["Dunai", "dunaii"], "Kisbetű."], ["Balaton", "balatoni", ["Balatoni", "ballatoni"], "Kisbetű."],
+     ["Európa", "európai", ["Európai", "európaii"], "Kisbetű."], ["Tisza", "tiszai", ["Tiszai", "tiszaii"], "Kisbetű."]],
+    [["Kelet-Európa", "kelet-európai", ["Kelet-Európai", "Kelet-európai"], "Két tulajdonnévi tag: az -i alakban mind kicsi, a kötőjel marad."], ["Dél-Amerika", "dél-amerikai", ["Dél-Amerikai", "Dél-amerikai"], "Mind kicsi, kötőjel marad."],
+     ["Csendes-óceán", "csendes-óceáni", ["Csendes-óceáni", "Csendes-Óceáni"], "Köznévi előtag: kicsi."], ["Balaton-felvidék", "Balaton-felvidéki", ["balaton-felvidéki", "Balaton-Felvidéki"], "A tulajdonnévi előtag nagy marad."],
+     ["Duna-part", "Duna-parti", ["duna-parti", "Duna parti"], "A tulajdonnévi előtag nagy marad."], ["Petőfi utca", "Petőfi utcai", ["petőfi utcai", "Petőfi-utcai"], "Változatlan név + -i."],
+     ["Kossuth tér", "Kossuth téri", ["kossuth téri", "Kossuth-téri"], "Változatlan név + -i."], ["Szent István út", "Szent István úti", ["szent istván úti", "Szent István-úti"], "Változatlan név + -i."]]
+  ];
+  IK.push(IK[0].concat(IK[1]));
+  const types = [
+    { id: "kn", name: "Kicsi vagy nagy?", gen(l){
+      const t = pick(C[l - 1]);
+      return H.choiceTask("Hogyan írjuk? <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "ik", name: "Az -i képzős alak", gen(l){
+      const t = pick(IK[l - 1]);
+      return H.choiceTask("Írd -i képzővel: <span class='num'>" + esc(t[0]) + "</span>", t[1], t[2], "<p><b>" + esc(t[1]) + "</b>. " + t[3] + "</p>", "Nem ez. " + t[3]);
+    } },
+    { id: "melyik", name: "Melyik a jó?", gen: l => H.sentChoice(pick(S[l - 1])) },
+    { id: "hibas", name: "Hibás szó a mondatban", gen: l => H.sentFix(pick(S[l - 1])) }
+  ];
+  K.practice($("#practice"), { id: "h-nagy", types, play: playTo });
+
+  /* ---------- Tollbamondás ---------- */
+  H.dictation($("#dict"), { texts: H.TEXTS.nagy, player: pb, print: "tollbamondasok.html#nagy" });
+
+  /* ---------- Puska ---------- */
+  $("#cheat").innerHTML = "<tr><th>Mi?</th><th>Hogyan?</th></tr>" + [
+    ["mondat eleje", "nagybetű"], ["személynév, állatnév", "Kovács Péter, Bodri · Zsófi néni, Bodri kutya"],
+    ["napok, hónapok, ünnepek", "kisbetű: hétfő, január, karácsony, március tizenötödike"], ["népek, nyelvek", "kisbetű: magyar, angol, német"],
+    ["város, ország, folyó, tó, hegy", "Debrecen, Magyarország, Duna, Balaton, Mátra"], ["… -i képzővel", "kisbetű: debreceni, magyarországi, dunai"],
+    ["több tagú földrajzi név", "Kelet-Európa (kelet-európai) · Csendes-óceán (csendes-óceáni) · Duna-part (Duna-parti)"], ["utca, tér, út", "Petőfi utca, Kossuth tér · Petőfi utcai"],
+    ["intézmény", "minden szó nagy: Magyar Tudományos Akadémia · de: Keleti pályaudvar, Corvin mozi"], ["könyv, vers, film", "csak az első szó: A Pál utcai fiúk, Egri csillagok"],
+    ["újság, folyóirat", "minden szó: Nemzeti Sport"], ["rendezvény", "kisbetű: országos tanulmányi verseny"]].map(r => "<tr><td class='l'>" + r[0] + "</td><td class='l'><b>" + r[1] + "</b></td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
