@@ -60,7 +60,7 @@
   <div class="ptwrap"><table class="pt" id="cheat"></table></div>
   <div class="two-col">
     <div class="trick"><span class="t">A záró érték nincs benne</span><span><code>range(1, 6)</code> → 1, 2, 3, 4, 5. A 6 nincs benne! 1-től n-ig: <code>range(1, n + 1)</code>.</span></div>
-    <div class="trick"><span class="t">Hányszor fut le?</span><span><code>range(n)</code>: n-szer. <code>range(a, b)</code>: b − a-szor (ha b nagyobb).</span></div>
+    <div class="trick"><span class="t">Hányszor fut le?</span><span><code>range(n)</code>: n-szer. <code>range(a, b)</code>: (b − a)-szor (ha b nagyobb).</span></div>
     <div class="trick"><span class="t">Visszafelé</span><span><code>range(10, 0, -1)</code> → 10, 9, …, 1. Negatív lépés nélkül üres!</span></div>
     <div class="trick"><span class="t">for vagy while?</span><span>Tudod előre, hányszor? → <code>for</code>. Valamitől függ (amíg 0, amíg jó a jelszó)? → <code>while</code>.</span></div>
   </div>
@@ -116,7 +116,7 @@
     const mkR = (a, b, d) => { const code = b == null ? "range(" + a + ")" : d == null ? "range(" + a + ", " + b + ")" : "range(" + a + ", " + b + ", " + d + ")"; const v = b == null ? pr(0, a) : pr(a, b, d); return { expr: code, code: 'print(*' + code + ', sep=", ")', ans: v.join(", "), vals: v }; };
     const RANGE = [
       [
-        () => { const n = rnd(3, 7); return Object.assign(mkR(n), { sol: "range(" + n + "): 0-tól indul, és a " + n + " már nincs benne." }); },
+        () => { const n = rnd(3, 7); return Object.assign(mkR(n), { sol: "range(" + n + "): 0-tól indul, és " + C.az(n) + n + " már nincs benne." }); },
         () => { const a = rnd(1, 5), b = a + rnd(3, 6); return Object.assign(mkR(a, b), { sol: "range(" + a + ", " + b + "): " + C.tol(a) + " indul, " + C.Az(b).toLowerCase() + b + " már nincs benne." }); }
       ],
       [

@@ -327,7 +327,8 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   Élesben (PR #9, `3d669cd`). A pult jelezte: a `py-check` SIGALRM-je Windowson nem létezik → `sys.settrace` + `time.monotonic` határidő.
 - **7. lecke: for és range** (`python-7-for`): 11 dia, 4 levezetés (range(1, 6), for vagy while, ciklus a ciklusban, lépésenként a VS
   Code-ban: töréspont, F5, F10, Variables), 6 típus (Milyen számokat ad?, Hányszor fut le?, Mit ír ki?, Írd meg!, Milyen hibát ad?,
-  Javítsd ki!).
+  Javítsd ki!). Lektor: 3 pont (Python-hiba nincs; a toldalék-segéd a 0-ra rossz alakot adott: „0-től” → „0-tól”, javítva a
+  közös modulban; névelő; „(b − a)-szor”), mind javítva, a tesztek újrafuttatva.
 
 ## Döntések és indokaik
 
