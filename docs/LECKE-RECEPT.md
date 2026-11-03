@@ -604,3 +604,17 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 - **„Milyen értéket adhat?”:** választós feladat, de a `py-check` is ellenőrzi: a sablon `vcode`-ja 5000-szer kiértékeli a kifejezést,
   és az értékek rendezett halmazát írja ki; a LOGIC ezt `kiir` fajtájú bankként adja át (`banks`), a böngészőben nem jelenik meg.
 - **A LOGIC-on kívül a `J` sincs meg:** a rajzokhoz külön definiáld (a tesztelő `J is not defined` JS-hibát mutatott, 0 diával).
+
+### A Python-sorozat 12. leckéje (kivételkezelés, 2026. 11. 03.)
+
+- **Leálláskor célzott üzenet:** `tests[k].crash` (szöveg, vagy hibanév → szöveg, `""` = alapértelmezés). A „hibával állt le” után jön,
+  például: „tedd az int(input(…)) sort egy try: blokkba”. A rossz bemenetes próbákhoz mindig adj `crash`-t.
+- **`raise` a függvényben:** a `calls` hívása lehet `_kerr(fv, arg…)`: a keret a program végére teszi a `_kerr` segédfüggvényt, ami a dobott
+  kivétel nevét adja vissza (vagy `nincs hiba`). Így a „dobjon ValueError-t” feladat is gépileg ellenőrizhető.
+- **Rossz bemenetek:** szó, tizedes tört (`3.5`, `7.0`), tizedesvessző (`3,5`), 0. Ha a próbában a második bemenet a rossz, a diák
+  bármelyik sorrendben kérhet be; ha az első a rossz, a jó program a másodikat be sem kéri (és a `judge` hiányolná).
+- **„Hányszor kérdez?”:** a `py-check` a programot `exec`-kel, saját `input`-tal futtatja (a kimenetet elnyeli), és az input()-hívások
+  számát írja ki; a LOGIC ezt `kiir` fajtájú bankként adja át. „Melyik except kell?”: `hiba` fajtájú bank, `x = <kifejezés>`.
+- **A csupasz `except:` és a bemenet vége:** a csupasz except az EOFError-t is elkapja, és a `while True` végtelen lesz: a böngészőben a 6 mp-es
+  időkorlát állítja meg. Ezért a rossz bemenetes „Írd meg!”-eknél a `mustNot` tiltja a csupasz except-et.
+
