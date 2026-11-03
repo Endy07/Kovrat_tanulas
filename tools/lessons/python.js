@@ -7,10 +7,54 @@
 /*@HARNESS*/
 // A diák programját futtató Python-keret. A print csak a kimenetbe ír; a bemenetet (kérdés + begépelt érték) külön jelöli,
 // így az ellenőrzés csak a print kimenetét nézi. A végén a program egyszerű változóit is visszaadja (név, típus, repr, str).
+// opts (a 11. leckétől, elhagyható): rig = a random előre megadott értékei az ellenőrzéshez ({"randint": [3, 5], "choice": [0], "random": [0.5]});
+// files = a program saját, üres munkamappájába előre kiírt szövegfájlok ({"adatok.txt": "…"}); ilyenkor a futás után a mappa
+// fájljait is visszaadja (files), így a fájlba író program is ellenőrizhető.
 const PY_HARNESS = String.raw`
 import sys, traceback, builtins
-def _kovrat_run(code, inputs):
+def _kovrat_rig(rig):
+    import random as _r
+    saved = []
+    for name, vals in dict(rig).items():
+        orig = getattr(_r, name)
+        q = list(vals)
+        if name == "randint":
+            def f(a, b, q=q, orig=orig):
+                if q:
+                    v = q.pop(0)
+                    if a <= v <= b:
+                        return v
+                return orig(a, b)
+        elif name == "choice":
+            def f(seq, q=q, orig=orig):
+                if q and len(seq):
+                    return seq[q.pop(0) % len(seq)]
+                return orig(seq)
+        elif name == "random":
+            def f(q=q, orig=orig):
+                return q.pop(0) if q else orig()
+        else:
+            continue
+        saved.append((name, orig))
+        setattr(_r, name, f)
+    return saved
+def _kovrat_run(code, inputs, opts=None):
+    import os
     inputs = [str(x) for x in inputs]
+    opts = dict(opts) if opts else {}
+    rig = opts.get("rig")
+    files = opts.get("files")
+    saved = _kovrat_rig(rig) if rig else []
+    cwd0 = None
+    tmp = None
+    if files is not None:
+        import tempfile
+        cwd0 = os.getcwd()
+        tmp = tempfile.mkdtemp()
+        os.chdir(tmp)
+        for n, c in dict(files).items():
+            with open(n, "w", encoding="utf-8") as fh:
+                fh.write(str(c))
     out = []
     segs = []
     used = [0]
@@ -59,6 +103,23 @@ def _kovrat_run(code, inputs):
         err = etype + (": " + str(e) if str(e) else "")
     finally:
         sys.stdout = old
+        if saved:
+            import random as _r
+            for name, orig in saved:
+                setattr(_r, name, orig)
+    fout = None
+    if tmp is not None:
+        import shutil
+        fout = {}
+        try:
+            for n in sorted(os.listdir(tmp)):
+                fp = os.path.join(tmp, n)
+                if os.path.isfile(fp) and os.path.getsize(fp) < 50000:
+                    with open(fp, encoding="utf-8", errors="replace") as fh:
+                        fout[n] = fh.read()
+        finally:
+            os.chdir(cwd0)
+            shutil.rmtree(tmp, ignore_errors=True)
     vs = []
     for k, v in list(g.items()):
         if k.startswith("_") or k == "input":
@@ -66,7 +127,10 @@ def _kovrat_run(code, inputs):
         if type(v) in (int, float, str, bool, list, type(None)):
             r = repr(v)
             vs.append([k, type(v).__name__, r[:200], str(v)[:200]])
-    return {"out": "".join(out), "segs": segs, "err": err, "etype": etype, "line": line, "used": used[0], "vars": vs}
+    r = {"out": "".join(out), "segs": segs, "err": err, "etype": etype, "line": line, "used": used[0], "vars": vs}
+    if fout is not None:
+        r["files"] = fout
+    return r
 `;
 /*@/HARNESS*/
 
@@ -142,7 +206,7 @@ const PYCORE = (function(){
   const TYPE_HU = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai érték)", list: "list (lista)", NoneType: "None" };
 
   /* ---- Bírálat: a feladat (T) és a futások eredménye (rs) alapján. { ok, k, why } ---- */
-  // T.tests[k]: { ins, exact?, exp?, vars?: [[név, típus, érték]] } · T.must / T.mustNot: [[regex, üzenet]] · T.fstr: kell-e f-string
+  // T.tests[k]: { ins, exact?, exp?, seq?: [szövegek ebben a sorrendben], vars?: [[név, típus, érték]], rig?, files?, fout?: [[fájlnév, várt tartalom]] } · T.must / T.mustNot: [[regex, üzenet]] · T.fstr: kell-e f-string
   // a gép maga hívja meg a diák függvényét: tests[k].calls = [[hívás, várt kiírt érték], …] → a program végére „print("@@", hívás)” sorok
   const callPost = t => (t.calls || []).map(c => 'print("@@", ' + c[0] + ")").join(String.fromCharCode(10));
   const withCalls = (code, t) => t.calls && t.calls.length ? code + String.fromCharCode(10) + callPost(t) : code;
@@ -155,8 +219,9 @@ const PYCORE = (function(){
       if (t.calls && t.calls.length){
         const got = String(r.out).split("\n").filter(l => l.startsWith("@@")).map(l => l.slice(3));
         for (let q = 0; q < t.calls.length; q++){
-          const [call, want] = t.calls[q], g = got[q];
+          const [call, want, msg] = t.calls[q], g = got[q];
           if (g === want) continue;
+          if (msg) return { ok: false, k, why: msg + (g != null && g !== "True" && g !== "False" ? " (Ezt kaptam: " + g + ")" : "") };
           if (g === "None") return { ok: false, k, why: "A " + call + " hívás None-t ad vissza: a függvény nem ad vissza értéket. Valószínűleg print van benne return helyett (vagy kimaradt a return). Ezt kellene visszaadnia: " + want };
           return { ok: false, k, why: "A " + call + " hívás eredménye nem jó. Ezt vártam: " + want + " · A függvényed ezt adta vissza: " + g };
         }
@@ -177,6 +242,20 @@ const PYCORE = (function(){
             : "Ezt nem találom a kimenetben: " + fmtE(m.e) + ".";
           return { ok: false, k, why: pre + why };
         }
+      }
+      if (t.seq){
+        let pos = 0, out = String(r.out);
+        for (const x of t.seq){
+          const i = out.indexOf(x, pos);
+          if (i < 0) return { ok: false, k, why: pre + (out.includes(x) ? "A kiírások sorrendje nem jó (a feltétel fordítva van?). Ezt vártam, ebben a sorrendben: " : "Nem találom a kimenetben mindet. Ezt vártam, ebben a sorrendben: ") + t.seq.join(" · ") };
+          pos = i + x.length;
+        }
+      }
+      for (const [fn, want] of (t.fout || [])){
+        const got = (r.files || {})[fn];
+        if (got == null) return { ok: false, k, why: pre + "Nem jött létre " + azW(fn) + fn + " fájl. Nyisd meg írásra: open(\"" + fn + "\", \"w\", encoding=\"utf-8\"), és írj bele a write()-tal." };
+        const d = diffExact(got, want);
+        if (d) return { ok: false, k, why: pre + AzW(fn) + fn + " fájl tartalma nem jó. " + d.why.replace("A program nem írt ki semmit. Kell egy print(…).", "A fájl üres: írtál bele a write()-tal? (A print a képernyőre ír, nem a fájlba.)").replace("Kell egy print(…).", "") };
       }
       for (const x of (t.not || [])) if (String(r.out).includes(x)) return { ok: false, k, why: pre + "Erre a bemenetre ezt nem kellene kiírnia: " + fmtE(x) + ". Nézd meg a feltételt: melyik ág fut le?" };
       for (const [n, ty, val] of (t.vars || [])){
@@ -229,7 +308,9 @@ const PYCORE = (function(){
   // névelő név elé: „az Anna”, „a Bence”
   const azW = w => /^[aeiouáéíóöőúüű]/i.test(String(w)) ? "az " : "a ";
   const AzW = w => azW(w) === "az " ? "Az " : "A ";
-  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW, nal, tol, acc, withCalls };
+  // a futás opciói egy próbához (random előre megadott értékei, előre kiírt fájlok), vagy null
+  const optsOf = t => { const o = {}; if (t && t.rig) o.rig = t.rig; if (t && t.files) o.files = t.files; return Object.keys(o).length ? o : null; };
+  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW, nal, tol, acc, withCalls, optsOf };
 })();
 /*@/PYCORE*/
 
@@ -250,7 +331,7 @@ const P = (function(){
         const src = "importScripts(" + JSON.stringify(BASE + "pyodide.js") + ");\n" +
           "var H = " + JSON.stringify(PY_HARNESS) + ";\n" +
           "var ready = loadPyodide({ indexURL: " + JSON.stringify(BASE) + " }).then(function(p){ p.runPython(H); self.py = p; postMessage({ type: 'ready' }); }, function(e){ postMessage({ type: 'fail', msg: String(e && e.message || e) }); });\n" +
-          "onmessage = function(e){ var d = e.data; ready.then(function(){ var r; try { var f = self.py.globals.get('_kovrat_run'); var x = f(d.code, self.py.toPy(d.inputs)); r = x.toJs({ dict_converter: Object.fromEntries }); x.destroy(); f.destroy(); } catch (err){ r = { out: '', segs: [], err: 'Belső hiba: ' + err, etype: 'Error', line: 0, used: 0, vars: [] }; } r.id = d.id; r.type = 'res'; postMessage(r); }); };";
+          "onmessage = function(e){ var d = e.data; ready.then(function(){ var r; try { var f = self.py.globals.get('_kovrat_run'); var x = d.opts ? f(d.code, self.py.toPy(d.inputs), self.py.toPy(d.opts)) : f(d.code, self.py.toPy(d.inputs)); r = x.toJs({ dict_converter: Object.fromEntries }); x.destroy(); f.destroy(); } catch (err){ r = { out: '', segs: [], err: 'Belső hiba: ' + err, etype: 'Error', line: 0, used: 0, vars: [] }; } r.id = d.id; r.type = 'res'; postMessage(r); }); };";
         let to = null;
         const failed = m => { clearTimeout(to); try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("failed", m); res(false); };
         try { worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" }))); }
@@ -267,14 +348,14 @@ const P = (function(){
       return readyP;
     }
     function restart(){ try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("idle"); }
-    async function run(code, inputs){
+    async function run(code, inputs, opts){
       const ok = await start();
       if (!ok) return { fail: true, msg };
       const id = ++seq;
       return new Promise(res => {
         const t = setTimeout(() => { delete wait[id]; restart(); res({ out: "", segs: [], err: "Időtúllépés: a program 6 másodperc alatt sem fejeződött be.", etype: "Timeout", line: 0, used: 0, vars: [] }); }, 6000);
         wait[id] = d => { clearTimeout(t); res(d); };
-        worker.postMessage({ id, code: String(code), inputs: (inputs || []).map(String) });
+        worker.postMessage({ id, code: String(code), inputs: (inputs || []).map(String), opts: opts || null });
       });
     }
     return { run, start, on(f){ subs.push(f); f(state, msg); }, get state(){ return state; } };
@@ -287,6 +368,9 @@ const P = (function(){
       const n = (/name '(\w+)'/.exec(m) || [])[1] || "";
       if (n === "Print" || n === "PRINT") return "A print kisbetűvel írandó: print(…). A Python megkülönbözteti a kis- és nagybetűt.";
       if (/^(true|false)$/.test(n)) return "Az igaz és a hamis nagy kezdőbetűvel: True, False.";
+      if (n === "math" || n === "random") return "Hiányzik az import: a program elejére írd be: import " + n + ". (Ha from " + n + " import …-tal hoztad be a függvényt, akkor " + n + ". nélkül írd, például " + (n === "math" ? "sqrt(4)" : "randint(1, 6)") + ".)";
+      if (/^(sqrt|floor|ceil|pi)$/.test(n)) return "Ez a math modul része: math." + n + (n === "pi" ? "" : "(…)") + " (és a program elején import math). Vagy így hozd be: from math import " + n + ".";
+      if (/^(randint|choice|shuffle|uniform)$/.test(n)) return "Ez a random modul függvénye: random." + n + "(…) (és a program elején import random). Vagy így hozd be: from random import " + n + ".";
       return "Nincs ilyen nevű változó" + (n ? ": " + n : "") + ". Ha szöveget akartál kiírni, tedd idézőjelbe" + (n ? ": \"" + n + "\"" : "") + ". Ha változó, előbb adj neki értéket (és ugyanígy írd: a kis- és nagybetű is számít).";
     }
     if (/unterminated string literal|EOL while scanning/.test(m)) return "Hiányzik a záró idézőjel. A szöveg elején és végén is kell: \"Szia\". Ha a szövegben aposztróf van, tedd dupla idézőjelbe: \"It's\".";
@@ -312,12 +396,25 @@ const P = (function(){
     if (etype === "SyntaxError") return "Szintaktikai hiba: a Python nem érti a sort. Nézd meg a zárójeleket, az idézőjeleket és a vesszőket. A hiba gyakran a jelzett sorban vagy közvetlenül előtte van.";
     if (etype === "ZeroDivisionError") return "Nullával osztottál.";
     if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez.";
+    if (/math domain error/.test(m)) return "Ezt a math nem tudja kiszámolni: például negatív számnak nincs (valós) négyzetgyöke. Nézd meg, mit adtál a függvénynek.";
+    if (/partially initialized module|circular import|consider renaming/.test(m)) return "A fájlod neve ugyanaz, mint a modulé (például random.py vagy turtle.py), ezért a Python a saját fájlodat tölti be. Nevezd át (például dobokocka.py).";
+    if (/module '(math|random)' has no attribute/.test(m)) return "Ebben a modulban nincs ilyen nevű függvény. Nézd meg a nevét (math: sqrt, floor, ceil, pi; random: randint, choice, random, shuffle), és a kis- és nagybetűt.";
+    if (/Cannot choose from an empty sequence/.test(m)) return "A random.choice üres listából nem tud választani.";
+    if (/randint\(\) missing/.test(m)) return "A randint két számot vár: az alsó és a felső határt, például random.randint(1, 6).";
+    if (/empty range (for|in) randrange/.test(m)) return "A randint alsó határa nagyobb a felsőnél: random.randint(1, 6), nem random.randint(6, 1).";
+    if (etype === "ModuleNotFoundError") return "Nincs ilyen nevű modul. A modulok neve kisbetűs (math, random), pontosan így írd.";
+    if (etype === "FileNotFoundError") return "Nincs ilyen fájl. Pontosan így hívják (kiterjesztéssel együtt, például adatok.txt)? A VS Code-ban a fájlnak a megnyitott mappában kell lennie (onnan fut a program a terminálban).";
+    if (/not readable/.test(m)) return "A fájlt írásra nyitottad meg (\"w\" vagy \"a\"), ezért olvasni nem lehet belőle. Olvasáshoz: open(…, \"r\", encoding=\"utf-8\").";
+    if (/not writable/.test(m)) return "A fájlt olvasásra nyitottad meg (ez az alapértelmezés), ezért írni nem lehet bele. Íráshoz: open(…, \"w\", encoding=\"utf-8\").";
+    if (/I\/O operation on closed file/.test(m)) return "A fájl már be van zárva: a with blokkon kívül (vagy a close() után) nem lehet használni. Tedd a sort beljebb, a with alá.";
+    if (/write\(\) argument must be str/.test(m)) return "A write() csak szöveget tud írni. A számot alakítsd szöveggé: f.write(str(x) + \"\\n\") vagy f.write(f\"{x}\\n\").";
     if (etype === "IndexError") return "Nincs ilyen indexű elem. Az index 0-tól len(lista) − 1-ig megy; az utolsó elem: lista[-1].";
     if (/'NoneType' object has no attribute/.test(m)) return "A változód értéke None (semmi). Gyakori ok: lista = lista.append(x). Az append nem ad vissza semmit; elég ennyi: lista.append(x).";
     if (/can only concatenate list/.test(m)) return "Listához számot nem lehet +-szal adni. Új elemet így adj hozzá: lista.append(x).";
     if (/'str' object does not support item assignment/.test(m)) return "A szöveg betűnként nem módosítható. Készíts új szöveget: s = \"X\" + s[1:], vagy s = s.replace(…).";
     if (/'list' object has no attribute '(upper|lower|strip|split|replace)'/.test(m)) return "Ez szöveg-metódus, de a változód lista (például a split eredménye). A lista elemein egyenként hívd meg, for ciklusban.";
     if (etype === "AttributeError") return "Nincs ilyen metódus ennek a típusnak, vagy elírtad (kisbetűvel: upper).";
+    if (etype === "TypeError" && /missing \d+ required positional argument/.test(m)) return "Kevesebb argumentumot adtál meg, mint ahány paramétere van a függvénynek.";
     if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például print = …)?";
     if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";
     if (etype === "Timeout") return "Lehet, hogy végtelen ciklus van a programban: a ciklusfeltétel sosem lesz hamis. Változik a ciklusváltozó a cikluson belül (például i += 1)?";
@@ -374,7 +471,7 @@ const P = (function(){
     if (!C.stripCom(code).trim()) return { ok: false, msg: "Még nincs program. Írd meg a kódmezőbe, és nyomd meg újra az Ellenőrzést." };
     const rs = [];
     for (const t of T.tests){
-      const r = await PY.run(C.withCalls(code, t), t.ins || []);
+      const r = await PY.run(C.withCalls(code, t), t.ins || [], C.optsOf(t));
       if (r.fail) return { ok: false, msg: esc(failMsg) + " Hasonlítsd össze a programodat a mintamegoldással (Megoldás lépésenként)." };
       rs.push(r);
       if (r.err) break;
@@ -412,8 +509,8 @@ const P = (function(){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : (typeof bad === "function" ? bad(opts[v.idx].l) : bad) }) };
   }
-  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError", IndexError: "IndexError", AttributeError: "AttributeError" };
-  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", IndexError: "indexhiba: nincs ilyen sorszámú elem a listában", AttributeError: "attribútumhiba: ennek az értéknek nincs ilyen metódusa", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
+  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError", IndexError: "IndexError", AttributeError: "AttributeError", ModuleNotFoundError: "ModuleNotFoundError", FileNotFoundError: "FileNotFoundError", UnsupportedOperation: "UnsupportedOperation" };
+  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", IndexError: "indexhiba: nincs ilyen sorszámú elem a listában", AttributeError: "attribútumhiba: ennek az értéknek (vagy modulnak) nincs ilyen metódusa, függvénye", ModuleNotFoundError: "nincs ilyen nevű modul", FileNotFoundError: "nincs ilyen nevű fájl", UnsupportedOperation: "a fájl nem úgy van megnyitva, ahogy használni akarod (olvasásra nyitottat írni, írásra nyitottat olvasni)", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
   // „Milyen hibát ad?”: t = { code, err, sol }, a választható hibák listája (pool)
   function hiba(t, pool, tip){
     // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza

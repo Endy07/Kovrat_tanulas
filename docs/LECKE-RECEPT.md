@@ -587,3 +587,20 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
   mintakódot is megcsonkította: 17 hamis hiba. Most kódblokk (`pre`) válasznál nem vág.
 - **VS Code-rajzok:** a hibakereső kiemelt sora a *következő* sor (még nem futott le); a Variables panel `név: érték` alakú; a
   metódus-ajánló listájában nincs magyar leírás (a súgó angol).
+
+### A Python-sorozat 11. leckéje (modulok, 2026. 11. 01.)
+
+- **A véletlen ellenőrzése:** a keret harmadik, elhagyható paramétere `opts`; a `tests[k].rig` (`{randint: [4], choice: [2], random: [0.5]}`)
+  a próba idejére előre megadja a `random` függvényeinek értékeit (ha az érték nincs a kért határok között, valódi véletlent ad, és a
+  próba elbukik). Így a várt kimenet kiszámolható; a feladatszövegben nevezd meg, melyik függvényt kell használni, és tedd `must`-ba.
+  A „Mit ír ki?”-nél a `rig` mellé `rq` kell (a kérdésben: „ha a random.randint most 4-et adja”).
+- **Függvény véletlennel:** a `calls` harmadik eleme saját hibaüzenet; a hívás lehet tulajdonság is
+  (`all(1 <= kocka() <= 6 for i in range(300))` → `True`, `len(set(…))` → `6`). A valószínűségi feltételt úgy válaszd, hogy
+  a jó megoldás gyakorlatilag soha ne bukjon el.
+- **Sorrend:** `tests[k].seq` = szövegek, amelyeknek ebben a sorrendben kell a kimenetben lenniük (a `cmpOut` a sorrendet nem nézi).
+- **Fájlok (a 13. leckéhez előkészítve):** `tests[k].files` (`{"adatok.txt": "…"}`) a program saját, üres munkamappájába kerül; a futás
+  után a mappa fájljai visszajönnek (`r.files`), a `tests[k].fout = [[fájlnév, várt tartalom]]` ezt veti össze.
+- **A `py-check` a sorozatnál `python -X utf8`-cal fut**, hogy Windowson is UTF-8 legyen az alapértelmezett kódolás (mint a Pyodide-ban).
+- **„Milyen értéket adhat?”:** választós feladat, de a `py-check` is ellenőrzi: a sablon `vcode`-ja 5000-szer kiértékeli a kifejezést,
+  és az értékek rendezett halmazát írja ki; a LOGIC ezt `kiir` fajtájú bankként adja át (`banks`), a böngészőben nem jelenik meg.
+- **A LOGIC-on kívül a `J` sincs meg:** a rajzokhoz külön definiáld (a tesztelő `J is not defined` JS-hibát mutatott, 0 diával).

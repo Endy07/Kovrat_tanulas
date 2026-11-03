@@ -34,12 +34,12 @@ const DRIVER_T = DRIVER.replace("res = [g['_kovrat_run'](j['code'], j['inputs'])
   "for j in d['jobs']:",
   "    sys.settrace(_tracer(time.monotonic() + 0.5))",
   "    try:",
-  "        r = g['_kovrat_run'](j['code'], j['inputs'])",
+  "        r = g['_kovrat_run'](j['code'], j['inputs'], j.get('opts'))",
   "    finally:",
   "        sys.settrace(None)",
   "    res.append(r)"].join("\n"));
 function pyRun(jobs, harness){
-  const r = spawnSync("python", ["-I", "-c", harness ? DRIVER_T : DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
+  const r = spawnSync("python", harness ? ["-I", "-X", "utf8", "-c", DRIVER_T] : ["-I", "-c", DRIVER], { input: Buffer.from(JSON.stringify({ harness: harness || HARNESS, jobs }), "utf8"), maxBuffer: 1 << 28 });
   if (r.status !== 0) throw new Error("python hiba: " + r.stderr.toString());
   return JSON.parse(r.stdout.toString("utf8"));
 }
@@ -105,29 +105,30 @@ function series(name, N){
   const PC = new Function(blk(lib, "PYCORE") + "\nreturn PYCORE;")();
   const L = new Function("K", "P", blk(lsrc, "LOGIC") + "\nreturn LOGIC;")({ rnd, pick, shuffle, esc }, { C: PC });
   const jobs = [], chk = [];
-  const add = (code, ins, f) => { jobs.push({ code, inputs: ins || [] }); chk.push(f); };
+  const add = (code, ins, f, t) => { const o = PC.optsOf(t); jobs.push(o ? { code, inputs: ins || [], opts: o } : { code, inputs: ins || [] }); chk.push(f); };
   const cnt = {}; const bad = [];
   const fail = (where, m) => { bad.push(where + ": " + m); };
   for (const b of L.banks) b.L.forEach((lv, li) => lv.forEach((g, gi) => { for (let k = 0; k < N; k++){
     const where = b.id + " " + (li + 1) + ". szint #" + (gi + 1), t = g();
     cnt[b.kind] = (cnt[b.kind] || 0) + 1;
-    if (b.kind === "kiir") add(t.vcode || t.code, t.ins, r => { if (r.err) return "hiba: " + r.err; if (PC.normOut(r.out) !== PC.normOut(t.ans)) return "Python: " + JSON.stringify(r.out) + " · JS: " + JSON.stringify(t.ans) + " · kód: " + JSON.stringify(t.code); });
+    if (b.kind === "kiir") add(t.vcode || t.code, t.ins, r => { if (r.err) return "hiba: " + r.err; if (PC.normOut(r.out) !== PC.normOut(t.ans)) return "Python: " + JSON.stringify(r.out) + " · JS: " + JSON.stringify(t.ans) + " · kód: " + JSON.stringify(t.code); }, t);
     else if (b.kind === "hiba"){
-      add(t.code, t.ins, r => { if (r.etype !== t.err) return "várt hiba: " + (t.err || "nincs") + " · Python: " + (r.err || "nincs hiba") + " · kód: " + JSON.stringify(t.code); });
-      if (t.fix) add(t.fix, t.ins, r => { if (r.err) return "a javított kód is hibás: " + r.err + " · " + JSON.stringify(t.fix); });
+      add(t.code, t.ins, r => { if (r.etype !== t.err) return "várt hiba: " + (t.err || "nincs") + " · Python: " + (r.err || "nincs hiba") + " · kód: " + JSON.stringify(t.code); }, t);
+      if (t.fix) add(t.fix, t.ins, r => { if (r.err) return "a javított kód is hibás: " + r.err + " · " + JSON.stringify(t.fix); }, t);
     }
     else if (b.kind === "tipus") add((t.pre ? t.pre + "\n" : "") + "print(type(" + t.expr + ").__name__)", t.ins || [], r => { const o = r.out.trim(); if (r.err || o !== t.type) return t.expr + " → Python: " + (r.err || o) + ", JS: " + t.type; });
     else if (b.kind === "nev") add(t.name + " = 1", [], r => { if (!r.err !== !!t.ok) return t.name + ": Python szerint " + (r.err ? "nem jó (" + r.err + ")" : "jó") + ", a feladat szerint " + (t.ok ? "jó" : "nem jó"); });
     else if (b.kind === "write"){
-      if (t.tests.length > 1 && t.tests[0].ins.join("|") === t.tests[1].ins.join("|")) fail(where, "két egyforma próbabemenet");
+      const key = tt => JSON.stringify([tt.ins, PC.optsOf(tt), tt.calls]);
+      if (t.tests.length > 1 && key(t.tests[0]) === key(t.tests[1])) fail(where, "két egyforma próbabemenet");
       const rs = [], n0 = jobs.length;
-      t.tests.forEach((tt, i) => add(PC.withCalls(t.code, tt), tt.ins, r => { rs[i] = r; if (i < t.tests.length - 1) return; const j = PC.judge(t, t.code, rs); if (!j.ok) return "a minta nem megy át: " + j.why + " · kimenet: " + JSON.stringify(rs[j.k || 0].out) + (rs[j.k || 0].err ? " · " + rs[j.k || 0].err : "") + " · kód: " + JSON.stringify(t.code); }));
-      if (t.starter){ const ss = []; t.tests.forEach((tt, i) => add(PC.withCalls(t.starter, tt), tt.ins, r => { ss[i] = r; if (i < t.tests.length - 1) return; if (PC.judge(t, t.starter, ss).ok) return "a kiinduló (hibás) kód átmegy: " + JSON.stringify(t.starter); })); }
+      t.tests.forEach((tt, i) => add(PC.withCalls(t.code, tt), tt.ins, r => { rs[i] = r; if (i < t.tests.length - 1) return; const j = PC.judge(t, t.code, rs); if (!j.ok) return "a minta nem megy át: " + j.why + " · kimenet: " + JSON.stringify(rs[j.k || 0].out) + (rs[j.k || 0].err ? " · " + rs[j.k || 0].err : "") + " · kód: " + JSON.stringify(t.code); }, tt));
+      if (t.starter){ const ss = []; t.tests.forEach((tt, i) => add(PC.withCalls(t.starter, tt), tt.ins, r => { ss[i] = r; if (i < t.tests.length - 1) return; if (PC.judge(t, t.starter, ss).ok) return "a kiinduló (hibás) kód átmegy: " + JSON.stringify(t.starter); }, tt)); }
     }
     else fail(where, "ismeretlen fajta: " + b.kind);
     const last = chk.length; for (let q = 0; q < last; q++) if (!chk[q].where) chk[q].where = where;
   } }));
-  (Array.isArray(L.EX) ? L.EX : Object.values(L.EX || {})).forEach((e, i) => { cnt.ex = (cnt.ex || 0) + 1; add(e.code, e.ins, r => { if ((r.etype || "") !== (e.err || "")) return "várt: " + (e.err || "nincs hiba") + " · Python: " + (r.err || "nincs hiba") + " · " + JSON.stringify(e.code); }); chk[chk.length - 1].where = "példa #" + (i + 1); });
+  (Array.isArray(L.EX) ? L.EX : Object.values(L.EX || {})).forEach((e, i) => { cnt.ex = (cnt.ex || 0) + 1; add(e.code, e.ins, r => { if ((r.etype || "") !== (e.err || "")) return "várt: " + (e.err || "nincs hiba") + " · Python: " + (r.err || "nincs hiba") + " · " + JSON.stringify(e.code); }, e); chk[chk.length - 1].where = "példa #" + (i + 1); });
   const res = pyRun(jobs, H);
   res.forEach((r, i) => { const m = chk[i](r); if (m) fail(chk[i].where, m); });
   console.log(name + ": " + Object.entries(cnt).map(([k, v]) => k + " " + v).join(" · ") + " · futás " + jobs.length + " · hiba " + bad.length);

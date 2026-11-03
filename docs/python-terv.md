@@ -53,10 +53,13 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 8 | **Listák** | `python-8-listak` | lista létrehozása, index (0-tól, `-1`), `len`, `append`, bejárás `for`-ral, `sum` `max` `min`, a programozási tételek Pythonban (összegzés, megszámlálás, maximum, keresés, kiválogatás) | ✅ kész (2026. 11. 01.) |
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | ✅ kész (2026. 11. 01.) |
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | ✅ kész (2026. 11. 01.) |
-| + | **Ismétlő próbadolgozat (később)** | – | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | ötlet |
+| 11 | **Modulok: `math` és `random`** | `python-11-modulok` | `import`, a pont, `from … import`, `math.sqrt` `pi` `floor` `ceil`, `random.randint` `choice` `shuffle` `random` `seed`, számkitaláló, a `random.py` fájlnév-csapda | ✅ kész (2026. 11. 01.) |
+| 12 | **Kivételkezelés: `try` és `except`** | `python-12-kivetelek` | a hiba elkapása, `except ValueError`, több `except`, `else`, `finally`, `as e`, ismételt bekérés, amíg jó nem lesz (`while True` + `try` + `break`) | tervezett |
+| 13 | **Szöveges fájlok** | `python-13-fajlok` | `open`, `with`, `encoding="utf-8"`, `read`, soronként (`for sor in f`), `strip`, `split(";")`, írás (`"w"`, `"a"`, `write`), `FileNotFoundError`, statisztika fájlból; a fájl helye a VS Code-ban | tervezett |
+| 14 | **Ismétlő próbadolgozat** | `python-ismetlo` | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | tervezett |
 
-A 10.-es tanterv további része (modulok: `math`, `random`; kivételkezelés; fájlkezelés; az OOP alapjai) a sorozat után jöhet,
-ha az iskola odaér.
+**A 11–14. lecke (Endi döntése, 2026-11-01):** a 10.-es tanterv folytatása (modulok, kivételkezelés, fájlkezelés) ugyanabban a
+felépítésben, utána egy ismétlő próbadolgozat az 1–10. leckéből. Az OOP alapjai most kimaradnak.
 
 ## Minden lecke váza
 
@@ -186,8 +189,23 @@ ha az iskola odaér.
   Milyen hibát ad? · Javítsd ki!
 - **VS Code:** F10 / F11 / Shift+F11 és a Call Stack, rajzzal és levezetéssel.
 
-**A sorozat teljes (2026. 11. 01.).** Folytatás (a 10.-es tanterv szerint, ha az iskola odaér): modulok (`math`, `random`), kivételkezelés
-(`try`), szöveges fájlok, és egy ismétlő próbadolgozat az 1–10. leckéből.
+**A tervezett 10 lecke kész (2026. 11. 01.).** Folytatás a 10.-es tanterv szerint (Endi döntése): 11–14.
+
+### 11. Modulok: `math` és `random`
+
+- **Cél:** kész eszközök behozása és használata; képletek (gyök, π), kerekítés egészre, véletlen számok és játékok.
+- **Fogalmak:** `import math`, `math.sqrt`, `math.pi`, `math.floor`, `math.ceil` (a `round` és az `int` mellett, negatív számmal is),
+  `from math import sqrt`, `import random`, `random.randint(a, b)` (mindkét határ benne van, szemben a `range`-dzsel), `random.choice`,
+  `random.shuffle` (helyben, None-t ad), `random.random()`, `random.seed`; véletlen a függvényben.
+- **Tipikus hibák:** hiányzó `import` (NameError); `sqrt` előtag nélkül; `import Math` (ModuleNotFoundError); `math.sqrt(-4)` (ValueError);
+  `randint(6)` (TypeError), `randint(6, 1)` (ValueError); `choice([])` (IndexError); `randint(0, 6)` kockának; `lista = random.shuffle(lista)`.
+- **Feladattípusok (kész):** Mit ír ki? (a véletlenes programoknál megadjuk, mit ad a `randint`) · Milyen értéket adhat? (a `py-check`
+  5000 futással ellenőrzi az értékek halmazát) · Melyik kell? · Írd meg! · Milyen hibát ad? · Javítsd ki!
+- **A véletlen ellenőrzése:** a keret `opts.rig`-je a próbák idejére előre megadja a `random.randint` / `random.choice` / `random.random`
+  értékeit (a határon kívüli érték helyett valódi véletlent ad), így a várt kimenet kiszámolható. A függvényes feladatoknál a gép sokszor
+  hívja a függvényt, és tulajdonságokat néz (tartomány, mind a hat érték kijön); a `calls` harmadik eleme a célzott üzenet.
+  A `seq` a kiírások sorrendjét nézi (számkitaláló: Nagyobb!/Kisebb!).
+- **VS Code:** a metódus-ajánló a `math.` után; a `random.py` nevű fájl csapdája (a 3.13-as és a régebbi hibaüzenet is).
 
 ## Technika
 

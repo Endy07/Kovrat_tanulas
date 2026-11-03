@@ -1,6 +1,26 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: a 10. lecke, a sorozat vége)
+## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python 11. lecke: modulok)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–10. lecke (PR #5–#13; a pult mindet ellenőrizte, Windowson is).
+- **Endi döntése (2026-11-01):** jön a 10.-es tanterv folytatása: 11. modulok, 12. kivételkezelés (`try`), 13. szöveges fájlok, utána
+  14. ismétlő próbadolgozat az 1–10. leckéből (`docs/python-terv.md`).
+- **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`): **11. Modulok: math és random** (`python-11-modulok`). A közös keret új
+  `opts`-a: `rig` (a véletlen előre beállítva a próbákhoz), `files` (fájlok a 13. leckéhez, már kész); `judge`: `seq`, `fout`, a `calls`
+  saját üzenete; `py-check` `-X utf8`-cal. Az 1–10. lecke HTML-je újraépítve (a közös modul változott).
+- **Tesztek:** `py-check --verify 40 python-11-modulok` 2621 futás, 0 hiba (a 3., 8., 10. lecke 10-zel újra, 0 hiba); `lesson-test 40`
+  (Pyodide-dal) 720/720, 390 px, JS-hiba nincs; a 3. és 6. lecke 5-tel újra, hibátlan.
+
+**Következő lépés:** a PR beolvasztása után a **12. lecke: kivételkezelés** (`python-12-kivetelek`): `try`/`except ValueError`, több
+`except`, `else`, `finally`, `as e`, ismételt bekérés (`while True` + `try` + `break`), a csupasz `except:` veszélye, `raise`; VS Code:
+a hibakereső megáll a kivételnél (Uncaught / Raised Exceptions). A „Milyen hibát ad?” bemenettel (mint a 3. leckében).
+
+**Endi döntésére vár:** a 11. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python-sorozat: a 10. lecke, a sorozat vége)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–9. lecke (PR #5–#12; a pult mindet ellenőrizte, Windowson is).

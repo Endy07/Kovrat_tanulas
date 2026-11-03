@@ -1,0 +1,1725 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="kovrat-version" content="20261101200615">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#E2E7EE; --ink:#17202B; --muted:#586475; --line:#C9D1DC;
+  --led:#F29E0C; --led-glow:rgba(242,158,12,.5); --led-off:#D3D9E1; --led-ink:#3B2600;
+  --accent:#1B5CBA; --accent-soft:#DCE7F7;
+  --ok:#1E7F47; --ok-bg:#E1F2E7; --bad:#B8362B; --bad-bg:#FAE5E2;
+  --panel:#1D2631; --panel-2:#27313E; --panel-ink:#DCE3EC; --panel-muted:#8C99AA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+    --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+    --accent:#72A6F2; --accent-soft:#1E2E47;
+    --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+    --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10141A; --surface:#19202A; --surface-2:#222B37; --ink:#E6EBF1; --muted:#98A4B4; --line:#2E3845;
+  --led:#FFB01F; --led-glow:rgba(255,176,31,.45); --led-off:#384250; --led-ink:#2A1A00;
+  --accent:#72A6F2; --accent-soft:#1E2E47;
+  --ok:#52C584; --ok-bg:#132C1E; --bad:#F2796C; --bad-bg:#3A1C19;
+  --panel:#0A0E13; --panel-2:#151B23; --panel-ink:#DCE3EC; --panel-muted:#7E8B9C;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+table{font-size:inherit;color:inherit;font-weight:inherit;line-height:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding-inline:16px;padding-block:24px 64px}
+.wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,6vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:-.01em}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0;max-width:65ch}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--mono)}
+sub{font-size:.65em}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:.55em 1.05em;border-radius:10px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input[type=text],input[type=number],select{font-family:var(--mono);font-size:1.1rem;padding:.5em .7em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+input[type=text],input[type=number]{width:11em}
+.section-head{display:flex;flex-direction:column;gap:8px}
+.back{font-size:.9rem}
+.lead{font-size:1.15rem;color:var(--muted)}
+.ptwrap{overflow-x:auto;max-width:100%}
+table.pt{border-collapse:collapse;font-family:var(--mono)}
+table.pt th,table.pt td{border:1.5px solid var(--line);padding:6px 12px;text-align:center}
+table.pt th{background:var(--surface-2);font-weight:700}
+table.pt td.hl{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+table.pt td.yes{color:var(--ok);font-weight:700}
+table.pt td.no{color:var(--muted)}
+
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:18px;padding:22px 18px 18px;display:flex;flex-direction:column;gap:18px}
+.panel .eyebrow{color:var(--panel-muted)}
+.panel .btn{background:transparent;color:var(--panel-ink);border-color:#3A4656}
+.panel table.pt th,.pb-stage table.pt th{background:#27313E;color:#DCE3EC;border-color:#3A4656}
+.panel table.pt td,.pb-stage table.pt td{border-color:#3A4656}
+.panel table.pt td.hl,.pb-stage table.pt td.hl{background:#4a3a12;color:#FFB01F}
+.panel input[type=text]{background:#0A0E13;color:#DCE3EC;border-color:#3A4656}
+.readout{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;justify-content:space-between;border-top:1px solid #334051;padding-top:14px}
+.readout .big{font-family:var(--mono);font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:#fff}
+.readout .big.led{color:var(--led)}
+.readout .expr{font-family:var(--mono);font-size:.95rem;color:var(--panel-muted);flex-basis:100%}
+.lamps{display:grid;grid-template-columns:repeat(var(--n,8),minmax(0,1fr));gap:8px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:inherit;padding:4px 0;border-radius:10px}
+.lamp .pv{font-family:var(--mono);font-size:.8rem;color:var(--panel-muted)}
+.lamp .bulb{width:min(52px,9vw);aspect-ratio:1;border-radius:50%;background:var(--panel-2);border:2px solid #3A4656;transition:background .15s,box-shadow .15s;display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:transparent}
+.lamp.on .bulb{background:var(--led);border-color:var(--led);box-shadow:0 0 18px var(--led-glow),0 0 4px var(--led-glow);color:var(--led-ink)}
+.lamp:hover .bulb{border-color:var(--led)}
+
+.deck{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.deck-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--surface-2);flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-family:var(--mono);font-size:.8rem;color:var(--muted);padding:0}
+.dot.active{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.slide{padding:26px 22px 30px;display:flex;flex-direction:column;gap:16px;min-height:400px}
+.slide .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide ul,.slide ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.deck-nav{display:flex;justify-content:space-between;gap:10px;padding:0 22px 22px}
+.note{background:var(--accent-soft);border-radius:12px;padding:12px 16px;max-width:65ch}
+.note b{color:var(--accent)}
+.two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mistake{border-left:4px solid var(--bad);padding:6px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+.trick{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.trick .t{font-weight:700}
+.eq{font-family:var(--mono);font-size:1.1rem;overflow-x:auto;white-space:nowrap;padding-bottom:2px}
+.eq .hl{color:var(--accent);font-weight:700}
+.led{color:var(--led);font-weight:700}
+code,.code,.solution,.prompt,.feedback{overflow-wrap:anywhere}
+code,.code{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:.05em .4em;font-size:.95em}
+pre.code{padding:12px 14px;overflow-x:auto;margin:0;line-height:1.45;white-space:pre}
+.digits{display:flex;flex-wrap:wrap;gap:8px}
+.dg{min-width:44px;text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;font-family:var(--mono);font-weight:700;background:var(--surface)}
+.dg small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.dg.lit{border-color:var(--led);background:color-mix(in srgb,var(--led) 18%,var(--surface))}
+
+.pb{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.pb-stage{background:var(--panel);color:var(--panel-ink);border-radius:14px;padding:16px;min-height:150px;font-family:var(--mono);overflow-x:auto}
+.pb-stage .new{animation:pop .35s ease-out}
+.pb-stage .cur{color:var(--led);font-weight:700}
+.pb-stage .dim{color:var(--panel-muted)}
+.pb-cap{min-height:3.2em;font-size:1.05rem}
+.pb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pb-count{font-family:var(--mono);color:var(--muted);font-size:.9rem}
+@keyframes pop{from{transform:scale(1.25);opacity:.2}to{transform:none;opacity:1}}
+
+.practice{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4em 1em;font-weight:700;font-size:.95rem}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:.25em .8em;font-size:.9rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.task{display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--line);padding-top:16px}
+.prompt{font-size:1.2rem;max-width:60ch}
+.prompt .num{font-family:var(--mono);font-weight:700;font-size:1.35rem;color:var(--accent)}
+.feedback{border-radius:12px;padding:10px 14px;font-weight:700}
+.feedback.ok{background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{max-width:100%;text-align:left;overflow-wrap:anywhere;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:.5em 1em;font-family:var(--mono);font-weight:700}
+.opt:hover{border-color:var(--accent)}
+.opt:disabled{opacity:.6;cursor:default}
+.opt.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.solution{border-left:4px solid var(--accent);padding:8px 14px;background:var(--accent-soft);border-radius:0 10px 10px 0;display:flex;flex-direction:column;gap:6px}
+.exam-res{display:flex;flex-direction:column;gap:12px}
+.grade{font-family:var(--display);font-weight:800;font-size:3rem;color:var(--led)}
+.exam-row{border-left:4px solid var(--bad);padding:4px 12px;background:var(--bad-bg);border-radius:0 10px 10px 0}
+
+.ed{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.ed textarea{width:100%;min-height:200px;resize:vertical;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:2}
+.ed iframe{width:100%;min-height:200px;height:100%;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.ed label{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+
+.jsed{display:flex;flex-direction:column;gap:10px}
+.jsed label,.jsed .jl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.jsed .jhtml{max-height:180px;overflow:auto;font-size:.85rem}
+.jsed .jbar{margin-top:8px}
+.jsed .jin{display:flex;flex-wrap:wrap;gap:6px;align-items:center;text-transform:none;letter-spacing:0;font-size:.85rem;margin:0}
+.jsed .jin input{width:12em;font-size:.95rem;padding:.35em .6em}
+.jright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.jright iframe{width:100%;min-height:140px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.jsout{background:var(--panel);color:var(--panel-ink);border-radius:10px;font-family:var(--mono);font-size:.88rem;min-height:110px;display:flex;flex-direction:column}
+.jsout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--panel-muted);padding:6px 12px;border-bottom:1px solid #334051}
+.jsout-b{padding:8px 12px;max-height:220px;overflow:auto;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere;white-space:pre-wrap}
+.jsout-b .dim{color:var(--panel-muted)}
+.jsout-b .a{color:#FFB01F}
+.jsout-b .p{color:#7fb8ff}
+.jsout-b .e{color:#ff8a7d}
+.jsout-b .e span{color:var(--panel-ink);opacity:.85}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<title>Python 11: modulok</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-bar .run{color:#89d185;font-size:.95rem}
+.vs-main{display:grid;grid-template-columns:minmax(96px,32%) 1fr}
+.vs-exp{background:#252526;padding:6px 0;font-size:.78rem;color:#cccccc;border-right:1px solid #3c3c3c;min-width:0}
+.vs-exp .h{padding:0 10px 4px;font-size:.68rem;letter-spacing:.06em;color:#9da5b4}
+.vs-exp div{padding:1px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vs-exp .sel{background:#37373d}
+.vs-exp .bad{color:#f48771}
+.vs-ed{min-width:0}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.5;font-family:var(--mono)}
+.vs-tab{display:flex;gap:16px;background:#252526;padding:4px 12px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#9da5b4;border-top:1px solid #3c3c3c}
+.vs-tab b{color:#e7e7e7;border-bottom:1px solid #e7e7e7}
+.vs .ps{color:#9da5b4}
+.vs .er{color:#f48771}
+.vs .ok{color:#89d185}
+.vs .cur{background:#d4d4d4;color:#1e1e1e}
+.vs-pop{margin:0 12px 10px 2.4em;border:1px solid #454545;background:#252526;border-radius:4px;font-size:.8rem;max-width:300px}
+.vs-pop div{padding:2px 8px;display:flex;justify-content:space-between;gap:10px}
+.vs-pop div.sel{background:#04395e}
+.vs-pop .ic{color:#b180d7}
+.vs-pop .doc{color:#9da5b4}
+.tbox{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;align-items:center}
+.tbox .mod{border:2px solid var(--accent);border-radius:12px;padding:6px 12px;font-family:var(--mono);font-weight:700}
+.tbox .fn{border:1.5px solid var(--line);border-radius:8px;padding:3px 9px;font-family:var(--mono);font-size:.88rem}
+.tbox .fn.on{border-color:var(--led);background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.pb-stage .tbox .fn{border-color:#3A4656}
+.nl{display:flex;align-items:flex-start;gap:4px;font-family:var(--mono);margin:10px 0;overflow-x:auto}
+.nl span{display:flex;flex-direction:column;align-items:center;min-width:3.4em;flex:0 0 auto;border-top:3px solid var(--line);padding-top:4px}
+.nl small{font-size:.7rem;color:var(--muted);min-height:1.1em;text-align:center;line-height:1.3}
+.nl .x{border-top-color:transparent;color:var(--accent);font-weight:700}
+.nl .f{border-top-color:#2E7BE6;font-weight:700}
+.nl .c{border-top-color:#E07A1F;font-weight:700}
+.pb-stage .nl small{color:#8C99AA}
+.pb-stage .nl span{border-top-color:#3A4656}
+.pb-stage .nl .f{border-top-color:#2E7BE6}
+.pb-stage .nl .c{border-top-color:#E07A1F}
+.pb-stage .nl .x{border-top-color:transparent}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 11. lecke</span>
+  <h1>Modulok: math és random</h1>
+  <p class="lead">A Pythonhoz rengeteg kész eszköz tartozik, csak elő kell venni őket. Ezek a <b>modulok</b>. Az <code>import math</code> után ott a gyökvonás, a π és a kerekítések; az <code>import random</code> után a véletlen számok, és így a játékok: dobókocka, sorsolás, számkitaláló.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: futtasd többször, és nézd, mit dob a kocka</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az 1–10. lecke (főleg a <a href="python-4-muveletek.html">műveletek</a>, a <a href="python-6-while.html">while</a> és a <a href="python-10-fuggvenyek.html">függvények</a>). <b>Ebben a leckében:</b> <code>import</code>, a pont (<code>math.sqrt</code>), <code>from … import</code>, gyökvonás, π, lefelé és felfelé kerekítés, véletlen egész szám, véletlen elem, keverés, egy számkitaláló játék, és egy VS Code-os csapda: a <code>random.py</code> nevű fájl.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát. A véletlenes példákat futtasd többször is!</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A sárga sor fut éppen. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="imp" aria-selected="true">import és a pont</button>
+    <button class="tab" data-m="kerek" aria-selected="false">floor, ceil, round, int</button>
+    <button class="tab" data-m="jatek" aria-selected="false">Számkitaláló</button>
+    <button class="tab" data-m="vs" aria-selected="false">A random.py csapda</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. <b>Hogyan ellenőrizhető a véletlen?</b> Az „Írd meg!” feladatoknál a gép a próbák idejére <b>előre beállítja</b>, mit adjon a <code>random.randint</code> és a <code>random.choice</code> (például először 4-et, aztán 6-ot), így tudja, mit kell kiírnod. Ezért ott pontosan azt a függvényt használd, amit a feladat kér. A függvényes feladatoknál a gép sokszor meghívja a függvényedet, és azt nézi, jó tartományba esik-e minden eredmény. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">Először import</span><span>A program elején: <code>import math</code>, <code>import random</code>. Utána a modul neve, pont, a függvény: <code>math.sqrt(16)</code>.</span></div>
+    <div class="trick"><span class="t">A randint mindkét végét adhatja</span><span><code>random.randint(1, 6)</code> → 1, 2, 3, 4, 5 vagy 6. (A <code>range(1, 6)</code>-ban a 6 nincs benne. Ez más!)</span></div>
+    <div class="trick"><span class="t">floor és ceil</span><span>A <code>math.floor</code> lefelé, a <code>math.ceil</code> felfelé kerekít egészre. „Hány busz kell?” → ceil.</span></div>
+    <div class="trick"><span class="t">Fájlnév</span><span>Ne nevezd a programodat <code>random.py</code>-nak (vagy más modul nevére, például <code>turtle.py</code>): akkor az import a te fájlodat tölti be.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-10-fuggvenyek.html">← 10. lecke: függvények</a>
+    <a class="btn primary" href="python-dolgozat.html">Gyakorolj a dolgozat-leckén →</a>
+  </div>
+</section>
+
+</div>
+<script>
+/* ===== Közös leckekészlet: segédek, felolvasás, diák, lejátszó, gyakorlás, szerkesztő ===== */
+const K = (function(){
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  // a/az szám előtt (1 és az 5-tel kezdődők: az; minden más: a). Toldalékot számok után nem generálunk.
+  const art = n => (Number(n) === 1 || String(n)[0] === "5") ? "az" : "a";
+  const Art = n => { const a = art(n); return a[0].toUpperCase() + a.slice(1); };
+  const norm = s => String(s == null ? "" : s).replace(/\s+/g, "").toUpperCase();
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e){ return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e){} }
+  };
+  const grade = p => p >= 85 ? 5 : p >= 70 ? 4 : p >= 50 ? 3 : p >= 35 ? 2 : 1;
+
+  /* ---------- Felolvasás (Web Speech API) ---------- */
+  const tts = (function(){
+    const synth = window.speechSynthesis;
+    const api = { on: false, voice: null, rules: [], ok: !!synth && typeof SpeechSynthesisUtterance !== "undefined", rate: 1, say(){}, stop(){}, onvoice: null };
+    if (!api.ok) return api;
+    let token = 0, safety = null;
+    function speakable(html){
+      let s = html;
+      api.rules.forEach(r => { s = s.replace(r[0], r[1]); });
+      return s.replace(/<[^>]+>/g, "")
+        .replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ")
+        .replace(/\s·\s/g, " szorozva ").replace(/\s−\s/g, " mínusz ").replace(/\s\+\s/g, " plusz ")
+        .replace(/\s=\s/g, " egyenlő ").replace(/\s→\s/g, " ").replace(/✓/g, "")
+        .replace(/\s+,/g, ",").replace(/,\s*\./g, ".").replace(/,\s*,/g, ",");
+    }
+    function pickVoice(){
+      const hu = synth.getVoices().filter(v => /^hu/i.test(v.lang));
+      api.voice = hu.find(v => /natural|online/i.test(v.name)) || hu[0] || null;
+      api.onvoice && api.onvoice();
+    }
+    pickVoice();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+    api.hasHu = () => !!api.voice || !synth.getVoices().length;
+    api.stop = () => { token++; clearTimeout(safety); synth.cancel(); };
+    api.say = (html, done) => {
+      api.stop();
+      const my = token, text = speakable(html);
+      let finished = false;
+      const fin = () => { if (finished || my !== token) return; finished = true; clearTimeout(safety); done && done(); };
+      // a Chrome néha nem jelzi a végét, ezért van egy biztonsági időzítő
+      safety = setTimeout(fin, text.length * 160 + 6000);
+      setTimeout(() => {
+        if (my !== token) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "hu-HU";
+        if (api.voice) u.voice = api.voice;
+        u.rate = api.rate;
+        u.onend = fin;
+        u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") fin(); };
+        synth.speak(u);
+      }, 60);
+    };
+    const saved = store.get("kovrat-tts");
+    api.on = saved !== "0";
+    api.set = v => { api.on = v; store.set("kovrat-tts", v ? "1" : "0"); };
+    return api;
+  })();
+
+  /* ---------- Levezetés-lejátszó: előre legenerált képkockák {cap, html} ---------- */
+  function player(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pb"><div class="pb-bar"><b class="pb-title"></b><span class="pb-count"></span></div>' +
+      '<div class="pb-stage"></div><div class="pb-cap" aria-live="polite"></div>' +
+      '<div class="pb-bar"><button class="btn" data-a="first" aria-label="Az elejére">⏮</button>' +
+      '<button class="btn" data-a="prev">◀ Vissza</button><button class="btn primary" data-a="play">▶ Lejátszás</button>' +
+      '<button class="btn" data-a="next">Tovább ▶</button>' +
+      '<select data-a="speed" aria-label="Tempó"><option value="6000">Lassú</option><option value="4200" selected>Normál</option><option value="2800">Gyors</option><option value="1700">Nagyon gyors</option></select>' +
+      '<button class="btn" data-a="voice" aria-pressed="false" hidden></button></div>' +
+      '<p class="warn" hidden style="color:var(--bad)">Nincs magyar hang ezen az eszközön. Edge böngészőben biztosan működik a felolvasás.</p></div>';
+    const P = { frames: [], k: 0, playing: false, timer: null };
+    const stage = $(".pb-stage", root), cap = $(".pb-cap", root), cnt = $(".pb-count", root), playBtn = $('[data-a="play"]', root);
+    const voiceBtn = $('[data-a="voice"]', root), warn = $(".warn", root), speed = $('[data-a="speed"]', root);
+    const rates = { "6000": .8, "4200": .92, "2800": 1.05, "1700": 1.2 };
+    function show(k){
+      P.k = Math.max(0, Math.min(P.frames.length - 1, k));
+      const f = P.frames[P.k];
+      if (!f) return;
+      stage.innerHTML = f.html; cap.innerHTML = f.cap;
+      cnt.textContent = (P.k + 1) + " / " + P.frames.length;
+      $('[data-a="prev"]', root).disabled = P.k === 0;
+      $('[data-a="first"]', root).disabled = P.k === 0;
+      $('[data-a="next"]', root).disabled = P.k === P.frames.length - 1;
+    }
+    function pause(){ P.playing = false; clearTimeout(P.timer); tts.stop(); playBtn.textContent = P.k >= P.frames.length - 1 && P.frames.length ? "↺ Újra" : "▶ Lejátszás"; }
+    function advance(){
+      if (!P.playing) return;
+      if (P.k >= P.frames.length - 1){ pause(); return; }
+      show(P.k + 1); schedule();
+    }
+    function schedule(){
+      if (!P.playing) return;
+      clearTimeout(P.timer); tts.stop();
+      const f = P.frames[P.k];
+      if (tts.on && tts.ok){
+        tts.rate = rates[speed.value] || 1;
+        tts.say(f.cap, advance);
+      } else {
+        const len = f.cap.replace(/<[^>]+>/g, "").length;
+        P.timer = setTimeout(advance, Number(speed.value) * (0.7 + len / 180));
+      }
+    }
+    function play(){
+      if (P.k >= P.frames.length - 1) show(0);
+      P.playing = true; playBtn.textContent = "⏸ Szünet"; schedule();
+    }
+    function step(k){ pause(); show(k); if (tts.on && tts.ok){ tts.rate = rates[speed.value] || 1; tts.say(P.frames[P.k].cap); } }
+    function setVoice(){
+      voiceBtn.hidden = !tts.ok;
+      voiceBtn.setAttribute("aria-pressed", tts.on ? "true" : "false");
+      voiceBtn.textContent = tts.on ? "🔊 Felolvasás: be" : "🔈 Felolvasás: ki";
+      warn.hidden = !(tts.ok && tts.on && !tts.hasHu());
+    }
+    tts.onvoice = setVoice; setVoice();
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "play") P.playing ? pause() : play();
+      else if (a === "next") step(P.k + 1);
+      else if (a === "prev") step(P.k - 1);
+      else if (a === "first") step(0);
+      else if (a === "voice"){ tts.set(!tts.on); if (!tts.on) tts.stop(); setVoice(); if (P.playing) schedule(); }
+    });
+    speed.addEventListener("change", () => { if (P.playing) schedule(); });
+    return {
+      load(frames, title, auto){
+        pause(); P.frames = frames; $(".pb-title", root).textContent = title || "";
+        show(0); playBtn.textContent = "▶ Lejátszás";
+        if (auto) play();
+      }
+    };
+  }
+
+  /* ---------- Diák ---------- */
+  function deck(root, slides){
+    root.innerHTML =
+      '<div class="deck"><div class="deck-bar"><span class="eyebrow"></span><div class="dots"></div></div>' +
+      '<div class="slide"></div><div class="deck-nav"><button class="btn" data-a="prev">← Előző</button>' +
+      '<button class="btn primary" data-a="next">Következő →</button></div></div>';
+    const dots = $(".dots", root), body = $(".slide", root), eyebrow = $(".eyebrow", root);
+    let k = 0;
+    slides.forEach((s, i) => {
+      const d = document.createElement("button");
+      d.className = "dot"; d.textContent = i + 1; d.setAttribute("aria-label", "Dia " + (i + 1) + ": " + s.t);
+      d.addEventListener("click", () => go(i)); dots.appendChild(d);
+    });
+    function go(i){
+      k = Math.max(0, Math.min(slides.length - 1, i));
+      const s = slides[k];
+      body.innerHTML = '<div class="kicker">' + s.k + '</div><h3>' + s.t + '</h3>' + (typeof s.h === "function" ? s.h() : s.h);
+      s.init && s.init(body);
+      eyebrow.textContent = (k + 1) + " / " + slides.length;
+      $$(".dot", root).forEach((d, j) => d.classList.toggle("active", j === k));
+      $('[data-a="prev"]', root).disabled = k === 0;
+      $('[data-a="next"]', root).disabled = k === slides.length - 1;
+    }
+    root.addEventListener("click", e => {
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      if (b.dataset.a === "prev") go(k - 1); else if (b.dataset.a === "next") go(k + 1);
+    });
+    go(0);
+    return { go };
+  }
+
+  // Tab = két szóköz a kódmezőben (Esc, majd Tab: kilépés a mezőből billentyűzettel)
+  function tabKeys(ta, o){
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey && o.tab !== false){
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "  " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 2; ta.dispatchEvent(new Event("input"));
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+  }
+
+  /* ---------- Élő HTML/CSS szerkesztő (szkript nélküli, azonos eredetű előnézet) ---------- */
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="ed"><div><label>Kód' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Kód"></textarea></div>' +
+      '<div><label>Eredmény</label><iframe sandbox="allow-same-origin" title="Előnézet"></iframe></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    let t = null;
+    function render(){
+      try { const d = fr.contentDocument; d.open(); d.write(ta.value); d.close(); } catch (e){}
+    }
+    ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 120); o.onInput && o.onInput(); });
+    tabKeys(ta, o);
+    fr.addEventListener("load", () => {});
+    render();
+    return {
+      get: () => ta.value,
+      set(v){ ta.value = v; render(); },
+      // a pillanatnyi kódból frissen épített dokumentum (szinkron): ellenőrzéshez
+      doc(){ render(); return fr.contentDocument; },
+      win: () => fr.contentWindow,
+      parsed: () => new DOMParser().parseFromString(ta.value, "text/html")
+    };
+  }
+
+  /* ---------- JavaScript-futtató: elszigetelt iframe (sandbox="allow-scripts", allow-same-origin nélkül) ----------
+     A diák kódja egy srcdoc-os iframe-ben fut, saját (átlátszatlan) eredettel: a szülő oldalhoz és a localStorage-hoz
+     nem fér hozzá. Az előtét-szkript elkapja a console.log, alert, prompt (előre megadott válaszokkal), confirm hívást
+     és a hibákat (sorszámmal), és postMessage-dzsel küldi vissza; a szülő az e.source-t és a futás-tokent is nézi.
+     Végtelen ciklus ellen: minden for / while / do ciklustörzs elejére számláló kerül (200 000 ismétlés felett hiba),
+     és 4 mp után a futás eldobódik. Kattintásos feladatnál a kért elemekre a betöltés után kattint. */
+  const JSR = { seq: 0, wait: {} };
+  window.addEventListener("message", e => {
+    const d = e.data; if (!d || typeof d !== "object" || !d.kovratRun) return;
+    const w = JSR.wait[d.kovratRun]; if (!w || e.source !== w.frame.contentWindow) return;
+    w.on(d);
+  });
+  // a ciklustörzsek elejére számláló (sortörést nem szúr be, így a hibák sorszáma nem csúszik el)
+  function guardLoops(src){
+    let out = "", i = 0;
+    const n = src.length, idch = c => /[\w$]/.test(c || "");
+    while (i < n){
+      const c = src[i], d = src[i + 1];
+      if (c === "/" && d === "/"){ const j = src.indexOf("\n", i); const e = j < 0 ? n : j; out += src.slice(i, e); i = e; continue; }
+      if (c === "/" && d === "*"){ const j = src.indexOf("*/", i + 2); const e = j < 0 ? n : j + 2; out += src.slice(i, e); i = e; continue; }
+      if (c === '"' || c === "'" || c === "`"){ let j = i + 1; while (j < n && src[j] !== c && src[j] !== (c === "`" ? "\u0000" : "\n")){ if (src[j] === "\\") j++; j++; } out += src.slice(i, j + 1); i = j + 1; continue; }
+      const kw = /^(for|while|do)\b/.exec(src.slice(i, i + 6));
+      if (kw && !idch(src[i - 1])){
+        let j = i + kw[1].length;
+        if (kw[1] !== "do"){
+          while (j < n && /\s/.test(src[j])) j++;
+          if (src[j] === "("){
+            let depth = 0;
+            for (; j < n; j++){ const ch = src[j]; if (ch === '"' || ch === "'" || ch === "`"){ const q = ch; j++; while (j < n && src[j] !== q){ if (src[j] === "\\") j++; j++; } continue; } if (ch === "(") depth++; else if (ch === ")"){ depth--; if (!depth){ j++; break; } } }
+          }
+        }
+        let k = j; while (k < n && /\s/.test(src[k])) k++;
+        if (src[k] === "{"){ out += src.slice(i, k + 1) + "__kg();"; i = k + 1; continue; }
+        out += src.slice(i, j); i = j; continue;
+      }
+      out += c; i++;
+    }
+    return out;
+  }
+  // az iframe-ben fut, a diák kódja előtt
+  const PRE = String(function(cfg){
+    var inputs = cfg.inputs.slice();
+    var send = function(m){ m.kovratRun = cfg.t; try { parent.postMessage(m, "*"); } catch (e){} };
+    var fmt = function(v){
+      if (typeof v === "string") return v;
+      if (v === undefined) return "undefined";
+      if (typeof v === "function") return "function";
+      if (v && typeof v === "object"){ if (v.nodeType) return "<" + v.nodeName.toLowerCase() + ">"; try { return JSON.stringify(v); } catch (e){ return String(v); } }
+      return String(v);
+    };
+    // legfeljebb 300 kiírás megy át (egy végtelen ciklus ne árassza el a szülőt üzenetekkel)
+    var nlog = 0;
+    var ev = function(kind, text, line){
+      if (kind === "log" && ++nlog > 300){ if (nlog === 301) send({ type: "ev", kind: "log", text: "… (túl sok kiírás, a többit nem mutatom)", line: 0 }); return; }
+      send({ type: "ev", kind: kind, text: text, line: line || 0 });
+    };
+    var args = function(a){ return Array.prototype.map.call(a, fmt).join(" "); };
+    window.__kc = 0;
+    window.__kg = function(){ if (++window.__kc > 200000) throw new Error("Túl sok ismétlés: végtelen ciklus?"); };
+    console.log = console.info = console.warn = console.error = function(){ ev("log", args(arguments)); };
+    window.alert = function(m){ ev("alert", m === undefined ? "" : fmt(m)); };
+    window.prompt = function(m){ var v = inputs.length ? String(inputs.shift()) : null; ev("prompt", (m === undefined ? "" : fmt(m)) + " → " + (v === null ? "(nincs válasz, null)" : v)); return v; };
+    window.confirm = function(m){ ev("alert", (m === undefined ? "" : fmt(m)) + " (OK)"); return true; };
+    window.addEventListener("error", function(e){ var l = e.lineno ? e.lineno - cfg.off : 0; ev("error", String(e.message || "Hiba").replace(/^Uncaught\s+/, ""), l > 0 ? l : 0); e.preventDefault(); });
+    document.addEventListener("click", function(){ window.__kc = 0; }, true);
+    var texts = function(){ var o = {}; cfg.sels.forEach(function(s){ var el = document.querySelector(s); o[s] = el ? el.textContent : null; }); return o; };
+    window.addEventListener("load", function(){
+      var before = texts();
+      cfg.clicks.forEach(function(s){ window.__kc = 0; var el = document.querySelector(s); if (el) el.click(); else ev("error", "Nincs ilyen elem az oldalon: " + s, 0); });
+      send({ type: "done", before: before, after: texts(), html: document.body ? document.body.innerHTML : "" });
+    });
+  });
+  function jsrun(frame, code, o){
+    o = o || {};
+    if (frame.__kr) delete JSR.wait[frame.__kr];
+    const t = "r" + (++JSR.seq) + "x" + Math.random().toString(36).slice(2);
+    frame.__kr = t;
+    const cfg = { t, inputs: (o.inputs || []).map(String), clicks: o.clicks || [], sels: o.sels || [], off: 0 };
+    const user = guardLoops(String(code)).replace(/<\/(script)/gi, "<\\/$1");
+    const build = () => '<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:system-ui,sans-serif;margin:12px;line-height:1.45;color:#17202B;background:#fff}button{font:inherit;padding:.3em .9em}</style><script>(' + PRE + ')(' + JSON.stringify(cfg) + ');<\/script></head><body>' + (o.html || "") + "\n<script>\n";
+    cfg.off = build().split("\n").length - 1;
+    const doc = build() + user + "\n<\/script></body></html>";
+    return new Promise(res => {
+      const R = { logs: [], alerts: [], prompts: [], errors: [], events: [], before: {}, after: {}, html: "", done: false, timeout: false };
+      let over = false;
+      const fin = () => { if (over) return; over = true; clearTimeout(timer); if (!o.keep) delete JSR.wait[t]; res(R); };
+      JSR.wait[t] = { frame, on(d){
+        if (d.type === "ev"){
+          R.events.push(d);
+          if (d.kind === "log") R.logs.push(d.text); else if (d.kind === "alert") R.alerts.push(d.text);
+          else if (d.kind === "prompt") R.prompts.push(d.text); else R.errors.push({ msg: d.text, line: d.line });
+          o.onEvent && o.onEvent(d);
+        } else if (d.type === "done" && !over){ R.before = d.before; R.after = d.after; R.html = d.html; R.done = true; fin(); }
+      } };
+      const timer = setTimeout(() => {
+        R.timeout = true; const d = { kind: "error", text: "Időtúllépés: a program 4 másodperc alatt sem fejeződött be (végtelen ciklus?)", line: 0 };
+        R.errors.push({ msg: d.text, line: 0 }); R.events.push(d); o.onEvent && o.onEvent(d);
+        delete JSR.wait[t]; frame.srcdoc = ""; fin();
+      }, o.timeout || 4000);
+      frame.srcdoc = doc;
+    });
+  }
+  // a böngésző angol hibaüzenetéhez magyar tipp
+  function jsHint(m){
+    m = String(m);
+    if (/végtelen|Időtúllépés/.test(m)) return "";
+    if (/is not defined/.test(m)) return "Ilyen nevű változó vagy függvény nincs. Elírtad? Figyelj a kis- és nagybetűkre is (console, nem Console).";
+    if (/Assignment to constant/.test(m)) return "A const változó értéke nem változhat. Ha változnia kell, let-tel hozd létre.";
+    if (/already been declared/.test(m)) return "Ezt a változót már létrehoztad. Másodszor ne írd elé a let szót.";
+    if (/of null/.test(m)) return "Nem találta az elemet. Nézd meg az id-t: a kis- és nagybetű is számít.";
+    if (/is not a function/.test(m)) return "Ez nem függvény. Elírtad a nevét, vagy hiányzik egy pont?";
+    if (/Unexpected|Unterminated|Invalid or unexpected|missing/i.test(m)) return "Szintaktikai hiba: hiányzik (vagy fölösleges) egy zárójel, kapcsos zárójel vagy idézőjel.";
+    return "";
+  }
+  /* JavaScript-szerkesztő: kódmező + Futtatás + konzol + (ha van HTML) élő előnézet */
+  function jseditor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="jsed">' + (o.html ? '<div><label class="jl">Az oldal HTML-je (ezt nem kell átírnod)</label><pre class="code jhtml">' + esc(o.html) + "</pre></div>" : "") +
+      '<div class="ed"><div><label>JavaScript' + (o.hint ? " — " + o.hint : "") + '</label><textarea spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="JavaScript-kód"></textarea>' +
+      '<div class="row jbar"><button class="btn" type="button" data-j="run">▶ Futtatás</button>' +
+      (o.prompt ? '<label class="jin">prompt válaszai: <input type="text" data-j="in" aria-label="A prompt válaszai, pontosvesszővel elválasztva" autocapitalize="off" spellcheck="false"></label>' : "") + "</div></div>" +
+      '<div class="jright"><label>Eredmény</label><iframe sandbox="allow-scripts" title="Előnézet"' + (o.html ? "" : " hidden") + '></iframe>' +
+      '<div class="jsout" aria-live="polite"><div class="jsout-h">Konzol</div><div class="jsout-b"><span class="dim">Nyomd meg: ▶ Futtatás</span></div></div></div></div></div>';
+    const ta = $("textarea", root), fr = $("iframe", root), con = $(".jsout-b", root), inp = $('[data-j="in"]', root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || "";
+    if (inp) inp.value = (o.inputs || []).join("; ");
+    tabKeys(ta, o);
+    const line = d => {
+      const ph = $(".dim", con); if (ph) ph.remove();
+      const div = document.createElement("div");
+      if (d.kind === "log"){ div.className = "l"; div.textContent = d.text === "" ? " " : d.text; }
+      else if (d.kind === "alert"){ div.className = "a"; div.textContent = "🔔 alert: " + d.text; }
+      else if (d.kind === "prompt"){ div.className = "p"; div.textContent = "⌨ prompt: " + d.text; }
+      else { div.className = "e"; const h = jsHint(d.text); div.innerHTML = "✖ " + (d.line ? d.line + ". sor: " : "") + esc(d.text) + (h ? "<br><span>" + esc(h) + "</span>" : ""); }
+      con.appendChild(div); con.scrollTop = con.scrollHeight;
+    };
+    function run(ro){
+      ro = Object.assign({ html: o.html || "" }, ro || {});
+      con.innerHTML = ""; let any = false;
+      const on = ro.onEvent;
+      ro.onEvent = d => { any = true; line(d); on && on(d); };
+      return jsrun(fr, ta.value, ro).then(r => { if (!any && r.done) con.innerHTML = '<span class="dim">(a program még nem írt ki semmit)</span>'; return r; });
+    }
+    $('[data-j="run"]', root).addEventListener("click", () => {
+      const ins = inp ? inp.value.split(";").map(s => s.trim()).filter(s => s !== "") : (o.inputs || []);
+      run({ inputs: ins, keep: true });
+    });
+    if (o.autorun) run({ inputs: o.inputs || [], keep: true });
+    return { get: () => ta.value, set(v){ ta.value = v; }, run, frame: fr };
+  }
+
+  /* ---------- Gyakorlás: típusok × 3 szint, azonnali ellenőrzés, próbadolgozat ----------
+     cfg = { id, types:[{id, name, gen(lvl) → task}], play(frames,title), examN }
+     task = { q, kind:"input"|"choice"|"code", check(raw|val|{doc,code}) → {ok,msg},
+              answer, sol, frames, title, options:[{l,v}], ph, starter, hint }
+     egyedi fajta: task.mount(el, vizsga) → { raw() } (a .code-ed dobozba szerel, az Ellenőrzés gomb a készleté) */
+  function practice(root, cfg){
+    const key = "kovrat-" + cfg.id;
+    const S = { type: cfg.types[0].id, lvl: 1, task: null, streak: 0, done: 0, okc: 0, counted: false, exam: null, ed: null };
+    let best = Number(store.get(key + "-best")) || 0;
+    let bestExam = Number(store.get(key + "-exam")) || 0;
+    const lvlNames = cfg.levels || ["könnyű", "közepes", "nehéz"];
+    root.innerHTML =
+      '<div class="practice"><div class="tabs" role="tablist" aria-label="Feladattípus"></div>' +
+      '<div class="chips"><span class="eyebrow">Szint</span></div><div class="stats"></div><div class="task"></div></div>';
+    const tabs = $(".tabs", root), chips = $(".chips", root), stats = $(".stats", root), box = $(".task", root);
+    cfg.types.forEach(t => {
+      const b = document.createElement("button");
+      b.className = "tab"; b.setAttribute("role", "tab"); b.dataset.t = t.id; b.textContent = t.name;
+      tabs.appendChild(b);
+    });
+    lvlNames.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.dataset.l = i + 1; b.textContent = (i + 1) + " · " + n;
+      chips.appendChild(b);
+    });
+    const ex = document.createElement("button");
+    ex.className = "btn"; ex.dataset.x = "exam"; ex.textContent = "📝 Próbadolgozat"; ex.style.marginLeft = "auto";
+    chips.appendChild(ex);
+
+    const type = () => cfg.types.find(t => t.id === S.type);
+    function syncBar(){
+      $$(".tab", tabs).forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === S.type && !S.exam)));
+      $$(".chip", chips).forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.l) === S.lvl)));
+      stats.innerHTML = S.exam ? "" :
+        "<span>Sorozat: <b>" + S.streak + "</b></span><span>Legjobb sorozat: <b>" + best + "</b></span><span>Jó válasz: <b>" + S.okc + " / " + S.done + "</b></span>" +
+        (bestExam ? "<span>Legjobb dolgozat: <b>" + bestExam + "%</b></span>" : "");
+    }
+    function inputHtml(t){
+      if (t.kind === "choice")
+        return '<div class="opts">' + t.options.map((o, i) => '<button class="opt" data-o="' + i + '">' + o.l + '</button>').join("") + "</div>";
+      if (t.kind === "code" || t.kind === "js" || t.mount)
+        return '<div class="code-ed"></div><div class="row"><button class="btn primary" data-a="check">Ellenőrzés</button></div>';
+      return '<form class="row" data-a="form" autocomplete="off"><input type="text" inputmode="' + (t.mode || "text") + '" placeholder="' + (t.ph || "Válaszod") + '" aria-label="Válaszod" autocapitalize="off" spellcheck="false"><button class="btn primary" type="submit">' + (S.exam ? "Tovább" : "Ellenőrzés") + '</button></form>';
+    }
+    function mountTask(t){
+      S.counted = false;
+      let h = '<div class="prompt">' + t.q + '</div>' + inputHtml(t) + '<div class="fb" aria-live="polite"></div>';
+      if (S.exam){
+        h = '<div class="eyebrow">Próbadolgozat · ' + (S.exam.i + 1) + ' / ' + S.exam.tasks.length + '</div>' + h;
+        if (t.kind === "code" || t.kind === "js" || t.mount) h = h.replace('data-a="check">Ellenőrzés', 'data-a="check">Tovább');
+      } else {
+        h += '<div class="row"><button class="btn" data-a="sol">Megoldás lépésenként</button>' +
+          (t.frames && cfg.play ? '<button class="btn" data-a="play">▶ Nézd meg lejátszva</button>' : "") +
+          '<button class="btn primary" data-a="new">Új feladat</button></div><div class="solution" hidden></div>';
+      }
+      box.innerHTML = h;
+      if (t.kind === "code") S.ed = editor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows });
+      else if (t.kind === "js") S.ed = jseditor($(".code-ed", box), { code: t.starter, hint: t.hint, rows: t.rows, html: t.html, prompt: !!(t.inputs && t.inputs.length), inputs: t.inputs });
+      // egyedi feladatfajta (pl. Python-futtató): a feladat maga szereli fel a szerkesztőt, a raw() adja az ellenőrizendőt
+      else if (t.mount) S.ed = t.mount($(".code-ed", box), !!S.exam);
+      const inp = $("input", box); if (inp && !S.exam) inp.focus({ preventScroll: true });
+    }
+    function newTask(){
+      S.task = type().gen(S.lvl); mountTask(S.task); syncBar();
+    }
+    function raw(){
+      const t = S.task;
+      if (t.kind === "code") return { doc: S.ed.doc(), code: S.ed.get(), parsed: S.ed.parsed(), win: S.ed.win() };
+      if (t.kind === "js") return { code: S.ed.get(), run: o => S.ed.run(o) };
+      if (t.mount) return S.ed.raw();
+      const i = $("input", box); return i ? i.value : "";
+    }
+    function feedback(res){
+      const fb = $(".fb", box);
+      fb.innerHTML = '<div class="feedback ' + (res.ok ? "ok" : "bad") + '">' + (res.ok ? "✓ " : "") + (res.msg || (res.ok ? "Helyes!" : "Nem jó.")) + "</div>";
+    }
+    function record(res){
+      if (S.counted) return;
+      S.counted = true; S.done++;
+      if (res.ok){ S.okc++; S.streak++; if (S.streak > best){ best = S.streak; store.set(key + "-best", String(best)); } }
+      else S.streak = 0;
+      syncBar();
+    }
+    function examNext(res){
+      const e = S.exam; e.results.push({ t: e.tasks[e.i], ok: res.ok });
+      e.i++;
+      if (e.i >= e.tasks.length) return examEnd();
+      S.task = e.tasks[e.i]; mountTask(S.task);
+    }
+    function examEnd(){
+      const e = S.exam, okn = e.results.filter(r => r.ok).length, p = Math.round(okn * 100 / e.results.length);
+      if (p > bestExam){ bestExam = p; store.set(key + "-exam", String(p)); }
+      const bad = e.results.filter(r => !r.ok);
+      box.innerHTML = '<div class="exam-res"><div class="eyebrow">Próbadolgozat vége</div><div class="grade">' + grade(p) + '</div>' +
+        '<p><b>' + okn + ' / ' + e.results.length + '</b> jó válasz (' + p + '%).</p>' +
+        (bad.length ? "<h3>Ezeket nézd át</h3>" + bad.map(r => '<div class="exam-row">' + r.t.q + '<br><b>Jó válasz:</b> ' + (r.t.answer == null ? "" : r.t.answer) + "</div>").join("") : "<p>Hibátlan. Szép munka!</p>") +
+        '<div class="row"><button class="btn primary" data-x="exam">Új dolgozat</button><button class="btn" data-a="back">Vissza a gyakorláshoz</button></div></div>';
+      S.exam = null; syncBar();
+    }
+    function startExam(){
+      const n = cfg.examN || 10, tasks = [];
+      for (let i = 0; i < n; i++) tasks.push(cfg.types[i % cfg.types.length].gen(S.lvl));
+      S.exam = { tasks: shuffle(tasks), i: 0, results: [] };
+      S.task = S.exam.tasks[0]; mountTask(S.task); syncBar();
+    }
+    function answer(val){
+      const t = S.task, res = t.check(val);
+      // aszinkron ellenőrzés (pl. JavaScript-futtatás): a gomb addig tiltva, az eredmény csak a még aktuális feladathoz kerül
+      if (res && typeof res.then === "function"){
+        const btn = $('[data-a="check"]', box); if (btn){ btn.disabled = true; btn.dataset.busy = "1"; }
+        const done = r => { if (btn){ btn.disabled = false; delete btn.dataset.busy; } if (S.task === t) settle(t, val, r); };
+        return res.then(done, () => done({ ok: false, msg: "Nem sikerült lefuttatni a programot." }));
+      }
+      settle(t, val, res);
+    }
+    function settle(t, val, res){
+      if (S.exam) return examNext(res);
+      feedback(res); record(res);
+      if (t.kind === "choice"){
+        $$(".opt", box).forEach((b, i) => { b.disabled = true; b.classList.toggle("right", !!t.options[i].ok); if (Number(b.dataset.o) === val.idx && !res.ok) b.classList.add("wrong"); });
+      }
+    }
+    root.addEventListener("click", e => {
+      const tb = e.target.closest(".tab");
+      if (tb){ S.type = tb.dataset.t; S.exam = null; newTask(); return; }
+      const ch = e.target.closest(".chip");
+      if (ch){ S.lvl = Number(ch.dataset.l); S.exam = null; newTask(); return; }
+      if (e.target.closest('[data-x="exam"]')){ startExam(); return; }
+      const o = e.target.closest(".opt");
+      if (o && !o.disabled){ const i = Number(o.dataset.o); answer({ idx: i, v: S.task.options[i].v }); return; }
+      const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a, t = S.task;
+      if (a === "new") newTask();
+      else if (a === "back"){ S.exam = null; newTask(); }
+      else if (a === "check") answer(raw());
+      else if (a === "play" && t.frames) cfg.play(t.frames, t.title || "Levezetés");
+      else if (a === "sol"){
+        const s = $(".solution", box); s.hidden = !s.hidden; s.innerHTML = "<b>Megoldás</b>" + (t.sol || "") + "<div>Jó válasz: <b>" + (t.answer == null ? "" : t.answer) + "</b></div>";
+        if (!S.counted){ S.counted = true; S.done++; S.streak = 0; syncBar(); }
+      }
+    });
+    root.addEventListener("submit", e => {
+      e.preventDefault();
+      if (e.target.matches('[data-a="form"]')) answer(raw());
+    });
+    newTask();
+    return { newTask };
+  }
+
+  return { $, $$, rnd, pick, shuffle, esc, art, Art, norm, store, grade, tts, player, deck, editor, practice, jsrun, jseditor, jsHint, guardLoops };
+})();
+</script>
+<style>
+/* A Python-sorozat közös stílusa (a <!--@PYJS--> jelölő hozza be) */
+.code,.prompt pre,.opt,.src,textarea,.term,.pyout-b,.fout pre,.vs,.vs pre,.tb,code{font-variant-ligatures:none}
+.slide .eq{white-space:normal}
+.src{background:#0A0E13;color:#DCE3EC;border-radius:10px;padding:10px 0;font-family:var(--mono);font-size:.88rem;line-height:1.6;overflow-x:auto}
+.src div{padding:0 14px;white-space:pre}
+.src div.cur{background:#4a3a12;color:#FFB01F}
+.src .ln{display:inline-block;width:1.8em;color:#5A6676;user-select:none}
+.pyed{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.pyed label,.kiirlbl{font-size:.8rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+.panel .pyed label{color:var(--panel-muted)}
+.pyed textarea,.kiirta{width:100%;font-family:var(--mono);font-size:.95rem;line-height:1.45;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--panel-ink);tab-size:4;resize:vertical}
+.panel .pyed textarea{border-color:#3A4656;background:#0A0E13}
+.pyed .pyta{min-height:170px}
+.pyed .pyin{min-height:76px}
+.pyright{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pyst{font-size:.85rem;color:var(--muted)}
+.panel .pyst{color:var(--panel-muted)}
+.term,.pyout{background:#0A0E13;color:#DCE3EC;border-radius:10px;font-family:var(--mono);font-size:.88rem}
+.pyout{min-height:110px;display:flex;flex-direction:column;border:1.5px solid #3A4656}
+.pyout-h{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;padding:6px 12px;border-bottom:1px solid #334051}
+.pyout-b,.term{margin:0;padding:8px 12px;max-height:300px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.term .i,.pyout-b .i{color:#7fb8ff}
+.term .e,.pyout-b .e{color:#ff8a7d}
+.term .h,.pyout-b .h{color:#DCE3EC;opacity:.85}
+.term .dim,.pyout-b .dim{color:#8C99AA}
+.feedback .term{margin-top:8px;font-weight:400}
+.fout{margin-top:8px;border:1.5px solid #3A4656;border-radius:10px;overflow:hidden}
+.fout-h{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#8C99AA;padding:4px 12px;border-bottom:1px solid #334051}
+.fout pre{margin:0;padding:8px 12px;color:#7fe0a8;white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono)}
+.tb{background:#0A0E13;color:#ff8a7d;border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:.85rem;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.tb .tl{color:#FFB01F}
+.big-note{border:2px solid var(--led);border-radius:14px;padding:12px 16px;max-width:70ch}
+.next{display:flex;flex-wrap:wrap;gap:10px}
+#cheat td{text-align:left}
+</style>
+<script>
+/* A Python-sorozat (python-1-…, python-2-…) közös modulja. A forrásban a <!--@PYJS--> jelölő hozza be (a <!--@KITJS--> után).
+   Tartalma: a Python-keret (HARNESS), a DOM nélküli logika (PYCORE: kimenet-összevetés, bírálat), és a böngészős rész (P):
+   Pyodide-futtató Web Workerben, futtató-szerkesztő, magyar hibatippek, feladatfajták.
+   A HARNESS és a PYCORE blokkot a py-check.js Node-ban is kiértékeli (a helyi Pythonnal): ugyanaz fut mindkét helyen.
+   A python-dolgozat lecke a saját, régebbi példányát használja (nem ezt). */
+
+/*@HARNESS*/
+// A diák programját futtató Python-keret. A print csak a kimenetbe ír; a bemenetet (kérdés + begépelt érték) külön jelöli,
+// így az ellenőrzés csak a print kimenetét nézi. A végén a program egyszerű változóit is visszaadja (név, típus, repr, str).
+// opts (a 11. leckétől, elhagyható): rig = a random előre megadott értékei az ellenőrzéshez ({"randint": [3, 5], "choice": [0], "random": [0.5]});
+// files = a program saját, üres munkamappájába előre kiírt szövegfájlok ({"adatok.txt": "…"}); ilyenkor a futás után a mappa
+// fájljait is visszaadja (files), így a fájlba író program is ellenőrizhető.
+const PY_HARNESS = String.raw`
+import sys, traceback, builtins
+def _kovrat_rig(rig):
+    import random as _r
+    saved = []
+    for name, vals in dict(rig).items():
+        orig = getattr(_r, name)
+        q = list(vals)
+        if name == "randint":
+            def f(a, b, q=q, orig=orig):
+                if q:
+                    v = q.pop(0)
+                    if a <= v <= b:
+                        return v
+                return orig(a, b)
+        elif name == "choice":
+            def f(seq, q=q, orig=orig):
+                if q and len(seq):
+                    return seq[q.pop(0) % len(seq)]
+                return orig(seq)
+        elif name == "random":
+            def f(q=q, orig=orig):
+                return q.pop(0) if q else orig()
+        else:
+            continue
+        saved.append((name, orig))
+        setattr(_r, name, f)
+    return saved
+def _kovrat_run(code, inputs, opts=None):
+    import os
+    inputs = [str(x) for x in inputs]
+    opts = dict(opts) if opts else {}
+    rig = opts.get("rig")
+    files = opts.get("files")
+    saved = _kovrat_rig(rig) if rig else []
+    cwd0 = None
+    tmp = None
+    if files is not None:
+        import tempfile
+        cwd0 = os.getcwd()
+        tmp = tempfile.mkdtemp()
+        os.chdir(tmp)
+        for n, c in dict(files).items():
+            with open(n, "w", encoding="utf-8") as fh:
+                fh.write(str(c))
+    out = []
+    segs = []
+    used = [0]
+    total = [0]
+    class _W:
+        def write(self, s):
+            s = str(s)
+            total[0] += len(s)
+            if total[0] > 20000:
+                raise RuntimeError("Túl sok kimenet: a program 20000 karakternél többet írt ki.")
+            out.append(s)
+            if segs and segs[-1][0] == "o":
+                segs[-1][1] += s
+            else:
+                segs.append(["o", s])
+            return len(s)
+        def flush(self):
+            pass
+    def _input(prompt=""):
+        p = str(prompt)
+        if p:
+            segs.append(["p", p])
+        if used[0] >= len(inputs):
+            raise EOFError("EOF when reading a line")
+        v = inputs[used[0]]
+        used[0] += 1
+        segs.append(["i", v + chr(10)])
+        return v
+    g = {"__name__": "__main__", "__builtins__": builtins, "input": _input}
+    old = sys.stdout
+    sys.stdout = _W()
+    err = ""
+    etype = ""
+    line = 0
+    try:
+        exec(compile(code, "<program>", "exec"), g)
+    except SyntaxError as e:
+        etype = type(e).__name__
+        err = etype + ": " + str(e.msg)
+        line = e.lineno or 0
+    except BaseException as e:
+        etype = type(e).__name__
+        for fr in traceback.extract_tb(e.__traceback__):
+            if fr.filename == "<program>":
+                line = fr.lineno
+        err = etype + (": " + str(e) if str(e) else "")
+    finally:
+        sys.stdout = old
+        if saved:
+            import random as _r
+            for name, orig in saved:
+                setattr(_r, name, orig)
+    fout = None
+    if tmp is not None:
+        import shutil
+        fout = {}
+        try:
+            for n in sorted(os.listdir(tmp)):
+                fp = os.path.join(tmp, n)
+                if os.path.isfile(fp) and os.path.getsize(fp) < 50000:
+                    with open(fp, encoding="utf-8", errors="replace") as fh:
+                        fout[n] = fh.read()
+        finally:
+            os.chdir(cwd0)
+            shutil.rmtree(tmp, ignore_errors=True)
+    vs = []
+    for k, v in list(g.items()):
+        if k.startswith("_") or k == "input":
+            continue
+        if type(v) in (int, float, str, bool, list, type(None)):
+            r = repr(v)
+            vs.append([k, type(v).__name__, r[:200], str(v)[:200]])
+    r = {"out": "".join(out), "segs": segs, "err": err, "etype": etype, "line": line, "used": used[0], "vars": vs}
+    if fout is not None:
+        r["files"] = fout
+    return r
+`;
+/*@/HARNESS*/
+
+/*@PYCORE*/
+// DOM nélküli logika: kimenet-összevetés és bírálat. Böngészőben és a py-check.js-ben is ez fut.
+const PYCORE = (function(){
+  /* ---- Értékek a kimenetben (a 3. leckétől, mint a dolgozat-leckében): szám, szöveg, egész sor ---- */
+  const NUMRE = /-?\d+(?:\.\d+)?(?:e[-+]?\d+)?/gi;
+  const isW = c => c != null && /[0-9A-Za-zÀ-ɏ_]/.test(c);
+  function findShort(txt, s){
+    let i = -1;
+    while ((i = txt.indexOf(s, i + 1)) >= 0) if (!isW(txt[i - 1]) && !isW(txt[i + s.length])) return i;
+    return -1;
+  }
+  function cmpOut(out, exp){
+    const nums = []; String(out).replace(NUMRE, m => { nums.push({ v: parseFloat(m), m, used: false }); return m; });
+    let txt = String(out);
+    const lines = String(out).split("\n").map(l => ({ l, used: false }));
+    const miss = [];
+    for (const e of exp){
+      if (typeof e === "number"){
+        const tol = 1e-6 * Math.max(1, Math.abs(e));
+        const k = nums.find(n => !n.used && Math.abs(n.v - e) <= tol);
+        if (k){ k.used = true; continue; }
+        const near = nums.find(n => !n.used && Math.abs(n.v - e) < 0.02 * Math.max(1, Math.abs(e)));
+        miss.push({ e, near: near && near.m }); continue;
+      }
+      if (e.line){
+        const L = lines.find(x => !x.used && (x.l === e.s || x.l.endsWith(" " + e.s)));
+        if (L){ L.used = true; continue; }
+        miss.push({ e: e.s, line: true }); continue;
+      }
+      const i = e.s.length <= 3 ? findShort(txt, e.s) : txt.indexOf(e.s);
+      if (i < 0){ miss.push({ e: e.s }); continue; }
+      txt = txt.slice(0, i) + "\u0001".repeat(e.s.length) + txt.slice(i + e.s.length);
+    }
+    return miss;
+  }
+
+  /* ---- Pontos kimenet: a sor végi szóköz és a záró üres sorok nem számítanak ---- */
+  const normOut = s => String(s).replace(/\r/g, "").split("\n").map(l => l.replace(/[ \t]+$/, "")).join("\n").replace(/\n+$/, "");
+  const vis = s => String(s).replace(/ /g, "·");
+  // névelő sorszám elé: „az 1. sor”, „az 5. sor”, „a 2. sor”
+  const az = n => /^(1|1\d{3}|5\d*)$/.test(String(n)) ? "az " : "a ";
+  const Az = n => az(n) === "az " ? "Az " : "A ";
+  const noSp = s => s.replace(/\s+/g, "");
+  const noPunct = s => s.replace(/[.,!?;:'"„”]/g, "");
+  // az első eltérés magyarul (null, ha egyezik)
+  function diffExact(got, exp){
+    const g = normOut(got), e = normOut(exp);
+    if (g === e) return null;
+    if (g === "") return { why: "A program nem írt ki semmit. Kell egy print(…)." };
+    const G = g.split("\n"), E = e.split("\n");
+    for (let i = 0; i < Math.max(G.length, E.length); i++){
+      const a = G[i], b = E[i], n = i + 1;
+      if (a === b) continue;
+      if (a == null) return { line: n, why: "A kimenet rövidebb a vártnál. Ez a sor hiányzik: " + (b === "" ? "egy üres sor" : b) };
+      if (b == null) return { line: n, why: "A kimenetben több sor van, mint kellene. Fölösleges: " + (a === "" ? "egy üres sor" : a) };
+      if (a.toLowerCase() === b.toLowerCase()) return { line: n, why: Az(n) + n + ". sorban a kis- és nagybetű eltér. Vártam: " + b + " · Kiírta: " + a };
+      if (noSp(a) === noSp(b)) return { line: n, why: Az(n) + n + ". sorban a szóközök eltérnek (a · most szóközt jelöl). Vártam: " + vis(b) + " · Kiírta: " + vis(a) };
+      if (noPunct(a) === noPunct(b)) return { line: n, why: Az(n) + n + ". sorban egy írásjel eltér. Vártam: " + b + " · Kiírta: " + a };
+      if (a === "" || b === "") return { line: n, why: a === "" ? Az(n) + n + ". sor üres, pedig ezt vártam: " + b : Az(n) + n + ". sorba üres sor kellene (üres print()), de ezt írta ki: " + a };
+      return { line: n, why: Az(n) + n + ". sor nem egyezik. Vártam: " + b + " · Kiírta: " + a };
+    }
+    return { why: "A kimenet nem egyezik." };
+  }
+
+  // a # utáni megjegyzés levágása, de az idézőjelen belüli # marad ('#' * 5)
+  const stripCom = c => String(c).split("\n").map(l => { let q = ""; for (let i = 0; i < l.length; i++){ const ch = l[i]; if (q){ if (ch === "\\") i++; else if (ch === q) q = ""; } else if (ch === '"' || ch === "'") q = ch; else if (ch === "#") return l.slice(0, i); } return l; }).join("\n");
+  const fstr = /\bf["']/;
+  const fmtE = e => typeof e === "number" ? String(e) : '"' + e + '"';
+  const varOf = (r, n) => (r.vars || []).find(v => v[0] === n);
+  const TYPE_HU = { int: "int (egész szám)", float: "float (tizedes tört)", str: "str (szöveg)", bool: "bool (logikai érték)", list: "list (lista)", NoneType: "None" };
+
+  /* ---- Bírálat: a feladat (T) és a futások eredménye (rs) alapján. { ok, k, why } ---- */
+  // T.tests[k]: { ins, exact?, exp?, seq?: [szövegek ebben a sorrendben], vars?: [[név, típus, érték]], rig?, files?, fout?: [[fájlnév, várt tartalom]] } · T.must / T.mustNot: [[regex, üzenet]] · T.fstr: kell-e f-string
+  // a gép maga hívja meg a diák függvényét: tests[k].calls = [[hívás, várt kiírt érték], …] → a program végére „print("@@", hívás)” sorok
+  const callPost = t => (t.calls || []).map(c => 'print("@@", ' + c[0] + ")").join(String.fromCharCode(10));
+  const withCalls = (code, t) => t.calls && t.calls.length ? code + String.fromCharCode(10) + callPost(t) : code;
+  function judge(T, code, rs){
+    for (let k = 0; k < T.tests.length; k++){
+      const t = T.tests[k], r = rs[k], ins = t.ins || [];
+      const pre = !k ? "" : k === 1 ? "Az első próbára jó volt, de a másodikra nem. " : "Az előző próbákra jó volt, de " + az(k + 1) + (k + 1) + ". próbára nem. ";
+      if (r.err && T.fname && r.etype === "NameError" && r.err.includes("'" + T.fname + "'")) return { ok: false, k, why: "Nincs " + T.fname + " nevű függvény a programodban. Pontosan így nevezd el: def " + T.fname + "(…):" };
+      if (r.err) return { ok: false, k, why: pre + "A program hibával állt le." };
+      if (t.calls && t.calls.length){
+        const got = String(r.out).split("\n").filter(l => l.startsWith("@@")).map(l => l.slice(3));
+        for (let q = 0; q < t.calls.length; q++){
+          const [call, want, msg] = t.calls[q], g = got[q];
+          if (g === want) continue;
+          if (msg) return { ok: false, k, why: msg + (g != null && g !== "True" && g !== "False" ? " (Ezt kaptam: " + g + ")" : "") };
+          if (g === "None") return { ok: false, k, why: "A " + call + " hívás None-t ad vissza: a függvény nem ad vissza értéket. Valószínűleg print van benne return helyett (vagy kimaradt a return). Ezt kellene visszaadnia: " + want };
+          return { ok: false, k, why: "A " + call + " hívás eredménye nem jó. Ezt vártam: " + want + " · A függvényed ezt adta vissza: " + g };
+        }
+      }
+      if (r.used < ins.length) return { ok: false, k, why: pre + "A programod csak " + r.used + " adatot kért be az input()-tal, de " + ins.length + " kellene." };
+      if (t.exact != null){
+        const d = diffExact(r.out, t.exact);
+        if (d) return { ok: false, k, why: pre + (/\{[^{}\n]+\}/.test(r.out) && !/\{[^{}\n]+\}/.test(t.exact) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a nyitó idézőjel elől? Helyesen: print(f\"… {valtozo} …\"). " : "") + d.why, exact: true };
+      }
+      if (t.exp){
+        const miss = cmpOut(r.out, t.exp);
+        if (miss.length){
+          const m = miss[0];
+          const why = /\{[^{}\n]+\}/.test(r.out) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a print idézőjele elől? Helyesen: print(f\"… {valtozo} …\")."
+            : typeof m.e === "number" && ins.length > 1 && r.out.includes(ins.join("")) ? "A számokat összefűzte, nem összeadta: kimaradt az int() vagy a float() az input() körül?"
+            : m.near != null ? "Ezt az értéket vártam: " + fmtE(m.e) + ", de ezt írta ki: " + m.near + ". Nézd meg a számolást vagy a kerekítést!"
+            : m.line ? "Ezt a sort vártam (pontosan így): " + fmtE(m.e)
+            : "Ezt nem találom a kimenetben: " + fmtE(m.e) + ".";
+          return { ok: false, k, why: pre + why };
+        }
+      }
+      if (t.seq){
+        let pos = 0, out = String(r.out);
+        for (const x of t.seq){
+          const i = out.indexOf(x, pos);
+          if (i < 0) return { ok: false, k, why: pre + (out.includes(x) ? "A kiírások sorrendje nem jó (a feltétel fordítva van?). Ezt vártam, ebben a sorrendben: " : "Nem találom a kimenetben mindet. Ezt vártam, ebben a sorrendben: ") + t.seq.join(" · ") };
+          pos = i + x.length;
+        }
+      }
+      for (const [fn, want] of (t.fout || [])){
+        const got = (r.files || {})[fn];
+        if (got == null) return { ok: false, k, why: pre + "Nem jött létre " + azW(fn) + fn + " fájl. Nyisd meg írásra: open(\"" + fn + "\", \"w\", encoding=\"utf-8\"), és írj bele a write()-tal." };
+        const d = diffExact(got, want);
+        if (d) return { ok: false, k, why: pre + AzW(fn) + fn + " fájl tartalma nem jó. " + d.why.replace("A program nem írt ki semmit. Kell egy print(…).", "A fájl üres: írtál bele a write()-tal? (A print a képernyőre ír, nem a fájlba.)").replace("Kell egy print(…).", "") };
+      }
+      for (const x of (t.not || [])) if (String(r.out).includes(x)) return { ok: false, k, why: pre + "Erre a bemenetre ezt nem kellene kiírnia: " + fmtE(x) + ". Nézd meg a feltételt: melyik ág fut le?" };
+      for (const [n, ty, val] of (t.vars || [])){
+        const v = varOf(r, n);
+        if (!v) return { ok: false, k, why: "Nincs a programodban " + n + " nevű változó. Pontosan így nevezd el (kisbetűvel, ékezet nélkül)." };
+        if (v[1] !== ty) return { ok: false, k, why: "A változó típusa nem jó: " + n + " most " + (TYPE_HU[v[1]] || v[1]) + ", de " + (TYPE_HU[ty] || ty) + " kellene." + (ty === "int" && v[1] === "str" ? " Az idézőjel szöveget csinál belőle: 15, nem \"15\"." : ty === "str" && v[1] !== "str" ? " A szöveg idézőjelbe kerül." : "") };
+        if (val != null){
+          const okv = ty === "int" || ty === "float" ? Math.abs(parseFloat(v[3]) - Number(val)) < 1e-9 : v[3] === String(val);
+          if (!okv) return { ok: false, k, why: "A változó értéke nem jó: " + n + " most " + v[2] + ", de ennek kellene lennie: " + (ty === "str" ? "\"" + val + "\"" : val) + "." };
+        }
+      }
+    }
+    const src = stripCom(code);
+    for (const [re, m] of (T.must || [])) if (!re.test(src)) return { ok: false, why: "A kimenet jó, de a feladat ezt kéri: " + m };
+    for (const [re, m] of (T.mustNot || [])) if (re.test(src)) return { ok: false, why: "A kimenet jó, de: " + m };
+    if (T.fstr && !fstr.test(src)) return { ok: false, why: "A kimenet jó, de f-stringgel írd ki: print(f\"… {valtozo} …\")." };
+    return { ok: true };
+  }
+
+  /* ---- „Mit ír ki?” válasz összevetése (Python nélkül) ---- */
+  const normAns = s => normOut(String(s).replace(/[“”„]/g, '"').replace(/[‘’]/g, "'"));
+  function kiirCheck(user, ans){
+    const u = normAns(user), a = normOut(ans);
+    if (u === a) return { ok: true, msg: "Helyes!" };
+    if (!u.trim()) return { ok: false, msg: "Írd be, mit ír ki a program." };
+    const U = u.split("\n"), A = a.split("\n");
+    if (U.length !== A.length && noSp(u) === noSp(a)) return { ok: false, msg: "A szöveg jó, de a sorok száma nem: minden print új sorba ír. A program " + A.length + " sort ír ki." };
+    if (U.length !== A.length) return { ok: false, msg: "Nem jó. A program " + A.length + " sort ír ki (minden print egy sort), te " + U.length + " sort írtál." };
+    for (let i = 0; i < A.length; i++){
+      const x = U[i], y = A[i], n = A.length > 1 ? Az(i + 1) + (i + 1) + ". sor: " : "";
+      if (x === y) continue;
+      if (x.replace(/^["']|["']$/g, "") === y || x.replace(/["']/g, "") === y.replace(/["']/g, "") && /["']/.test(x)) return { ok: false, msg: n + "majdnem: az idézőjel nem íródik ki, az csak a programban jelzi a szöveget." };
+      if (y.endsWith(".0") && x === y.slice(0, -2)) return { ok: false, msg: n + "majdnem: a / osztás eredménye mindig tizedes tört, ezért .0 is van a végén." };
+      if (x.toLowerCase() === y.toLowerCase()) return { ok: false, msg: n + "a kis- és nagybetű számít" + (/^(True|False)$/.test(y) ? ": True és False nagy kezdőbetűvel." : ".") };
+      if (noSp(x) === noSp(y)) return { ok: false, msg: n + "majdnem, csak a szóközök nem stimmelnek. A vessző a print-ben egy szóközt tesz, a + nem tesz." };
+      return { ok: false, msg: "Nem jó. " + (A.length > 1 ? "Az első eltérés " + az(i + 1) + (i + 1) + ". sorban van." : "Kövesd sorról sorra!") };
+    }
+    return { ok: false, msg: "Nem jó." };
+  }
+
+  // Python-szám kiírása: a float mindig tizedesponttal (4.0)
+  const pyF = x => Number.isInteger(x) ? x.toFixed(1) : String(x);
+    // toldalék szám után, az utolsó kiejtett szó szerint (3 három, 6 hat, 8 nyolc, 20 húsz, 60 hatvan, 80 nyolcvan, 100 száz: mély hangrend)
+  const lastW = n => { n = Math.abs(n); if (n === 0) return "0"; return n % 10 ? n % 10 : n % 100 ? (n % 100) + "t" : n % 1000 ? "h" : "k"; };
+  const deep = n => [3, 6, 8, "20t", "60t", "80t", "h", "0"].includes(lastW(n));
+  const nal = n => n + (deep(n) ? "-nál" : "-nél");
+  const tol = n => n + (deep(n) ? "-tól" : "-től");
+  const ACC = { 1: "et", 2: "t", 3: "at", 4: "et", 5: "öt", 6: "ot", 7: "et", 8: "at", 9: "et", "10t": "et", "20t": "at", "30t": "at", "40t": "et", "50t": "et", "60t": "at", "70t": "et", "80t": "at", "90t": "et", h: "at", k: "et", "0": "t" };
+  const acc = n => n + "-" + ACC[lastW(n)];
+  // névelő név elé: „az Anna”, „a Bence”
+  const azW = w => /^[aeiouáéíóöőúüű]/i.test(String(w)) ? "az " : "a ";
+  const AzW = w => azW(w) === "az " ? "Az " : "A ";
+  // a futás opciói egy próbához (random előre megadott értékei, előre kiírt fájlok), vagy null
+  const optsOf = t => { const o = {}; if (t && t.rig) o.rig = t.rig; if (t && t.files) o.files = t.files; return Object.keys(o).length ? o : null; };
+  return { cmpOut, normOut, diffExact, stripCom, fstr, judge, kiirCheck, pyF, vis, az, Az, azW, AzW, nal, tol, acc, withCalls, optsOf };
+})();
+/*@/PYCORE*/
+
+const P = (function(){
+  const { $, esc } = K;
+  const C = PYCORE;
+
+  /* ---------- Python-futtató: Pyodide egy Web Workerben, lustán (csak az első futtatáskor tölt be) ---------- */
+  const PY = (function(){
+    const BASE = "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/";
+    let worker = null, readyP = null, seq = 0, state = "idle", msg = "";
+    const wait = {}, subs = [];
+    const setState = (s, m) => { state = s; msg = m || ""; subs.forEach(f => f(state, msg)); };
+    function start(){
+      if (readyP) return readyP;
+      setState("loading");
+      readyP = new Promise(res => {
+        const src = "importScripts(" + JSON.stringify(BASE + "pyodide.js") + ");\n" +
+          "var H = " + JSON.stringify(PY_HARNESS) + ";\n" +
+          "var ready = loadPyodide({ indexURL: " + JSON.stringify(BASE) + " }).then(function(p){ p.runPython(H); self.py = p; postMessage({ type: 'ready' }); }, function(e){ postMessage({ type: 'fail', msg: String(e && e.message || e) }); });\n" +
+          "onmessage = function(e){ var d = e.data; ready.then(function(){ var r; try { var f = self.py.globals.get('_kovrat_run'); var x = d.opts ? f(d.code, self.py.toPy(d.inputs), self.py.toPy(d.opts)) : f(d.code, self.py.toPy(d.inputs)); r = x.toJs({ dict_converter: Object.fromEntries }); x.destroy(); f.destroy(); } catch (err){ r = { out: '', segs: [], err: 'Belső hiba: ' + err, etype: 'Error', line: 0, used: 0, vars: [] }; } r.id = d.id; r.type = 'res'; postMessage(r); }); };";
+        let to = null;
+        const failed = m => { clearTimeout(to); try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("failed", m); res(false); };
+        try { worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" }))); }
+        catch (e){ failed(String(e && e.message || e)); return; }
+        to = setTimeout(() => failed("időtúllépés"), 120000);
+        worker.onmessage = e => {
+          const d = e.data;
+          if (d.type === "ready"){ clearTimeout(to); setState("ready"); res(true); }
+          else if (d.type === "fail") failed(d.msg);
+          else if (wait[d.id]){ const w = wait[d.id]; delete wait[d.id]; w(d); }
+        };
+        worker.onerror = e => { e.preventDefault && e.preventDefault(); failed(e.message || "a Python nem töltődött be"); };
+      });
+      return readyP;
+    }
+    function restart(){ try { worker && worker.terminate(); } catch (e){} worker = null; readyP = null; setState("idle"); }
+    async function run(code, inputs, opts){
+      const ok = await start();
+      if (!ok) return { fail: true, msg };
+      const id = ++seq;
+      return new Promise(res => {
+        const t = setTimeout(() => { delete wait[id]; restart(); res({ out: "", segs: [], err: "Időtúllépés: a program 6 másodperc alatt sem fejeződött be.", etype: "Timeout", line: 0, used: 0, vars: [] }); }, 6000);
+        wait[id] = d => { clearTimeout(t); res(d); };
+        worker.postMessage({ id, code: String(code), inputs: (inputs || []).map(String), opts: opts || null });
+      });
+    }
+    return { run, start, on(f){ subs.push(f); f(state, msg); }, get state(){ return state; } };
+  })();
+
+  /* ---------- Magyar hibatippek (a hibaüzenet angol marad, mert a gépen is az lesz) ---------- */
+  function hint(etype, err){
+    const m = String(err);
+    if (etype === "NameError"){
+      const n = (/name '(\w+)'/.exec(m) || [])[1] || "";
+      if (n === "Print" || n === "PRINT") return "A print kisbetűvel írandó: print(…). A Python megkülönbözteti a kis- és nagybetűt.";
+      if (/^(true|false)$/.test(n)) return "Az igaz és a hamis nagy kezdőbetűvel: True, False.";
+      if (n === "math" || n === "random") return "Hiányzik az import: a program elejére írd be: import " + n + ". (Ha from " + n + " import …-tal hoztad be a függvényt, akkor " + n + ". nélkül írd, például " + (n === "math" ? "sqrt(4)" : "randint(1, 6)") + ".)";
+      if (/^(sqrt|floor|ceil|pi)$/.test(n)) return "Ez a math modul része: math." + n + (n === "pi" ? "" : "(…)") + " (és a program elején import math). Vagy így hozd be: from math import " + n + ".";
+      if (/^(randint|choice|shuffle|uniform)$/.test(n)) return "Ez a random modul függvénye: random." + n + "(…) (és a program elején import random). Vagy így hozd be: from random import " + n + ".";
+      return "Nincs ilyen nevű változó" + (n ? ": " + n : "") + ". Ha szöveget akartál kiírni, tedd idézőjelbe" + (n ? ": \"" + n + "\"" : "") + ". Ha változó, előbb adj neki értéket (és ugyanígy írd: a kis- és nagybetű is számít).";
+    }
+    if (/unterminated string literal|EOL while scanning/.test(m)) return "Hiányzik a záró idézőjel. A szöveg elején és végén is kell: \"Szia\". Ha a szövegben aposztróf van, tedd dupla idézőjelbe: \"It's\".";
+    if (/was never closed|unexpected EOF/.test(m)) return "Hiányzik egy záró zárójel. Minden nyitó zárójelhez kell egy záró: print(\"Szia\").";
+    if (/unmatched '\)'/.test(m)) return "Fölösleges záró zárójel, vagy hiányzik a nyitó.";
+    if (/invalid character/.test(m)) return "Furcsa karakter van a kódban. Gyakran a Wordből másolt „okos” idézőjel: csak az egyenes \" vagy ' jó.";
+    if (/Missing parentheses in call to 'print'/.test(m)) return "A print után zárójel kell: print(\"Szia\").";
+    if (/invalid decimal literal/.test(m)) return "Szám után betű: a változó neve nem kezdődhet számmal (nev2 jó, 2nev nem). Tizedes törtnél pontot írj: 3.5.";
+    if (/cannot assign to (True|False|None)/.test(m)) return "A True, a False és a None foglalt szó, nem lehet változónév.";
+    if (/cannot assign to expression/.test(m)) return "A változó neve nem tartalmazhat kötőjelet vagy más műveleti jelet: uj-ar helyett uj_ar. (Vagy fordítva írtad az értékadást? Balra a név: x = 5.)";
+    if (/cannot assign to literal|cannot assign to function call/.test(m)) return "Az értékadásnál balra a változó neve áll, jobbra az érték: x = 5 (nem 5 = x).";
+    if (/Maybe you meant '==' or ':=' instead of '='|invalid syntax. Maybe you meant/.test(m)) return "Az = értékadás; az egyenlőség vizsgálata ==. Itt valószínűleg vessző vagy operátor hiányzik.";
+    if (/Perhaps you forgot a comma/.test(m)) return "Két érték között hiányzik a vessző (vagy a +). Például: print(\"Kor:\", 15).";
+    if (/can only concatenate str/.test(m)) return "Szöveghez számot nem lehet +-szal hozzáfűzni. Írd vesszővel (print(\"Kor:\", 15)), f-stringgel, vagy alakítsd szöveggé: str(15).";
+    if (/unsupported operand type\(s\) for [-+*\/%]+: '(int|float)' and 'str'|'str' and '(int|float)'|unsupported operand type\(s\) for [-\/%]+: 'str' and 'str'/.test(m)) return "Szöveggel akarsz számolni. Ha a szám idézőjelben van, az szöveg: \"5\". Alakítsd számmá: int(\"5\"). (Az input() is mindig szöveget ad!)";
+    if (/can't multiply sequence by non-int/.test(m)) return "Szöveget csak egész számmal lehet szorozni (\"ha\" * 3). Szöveget szöveggel nem.";
+    if (/invalid literal for int\(\)/.test(m)) return "Az int() csak egész számot tud átalakítani. Tizedes törthöz float() kell (és pont, nem vessző: 3.5); betűt nem lehet számmá alakítani.";
+    if (/could not convert string to float/.test(m)) return "Ez nem szám. Tizedesvessző helyett pontot írj: 3.5.";
+    if (/expected ':'/.test(m)) return "Hiányzik a kettőspont a sor végéről: if feltétel: (az elif és az else után is kell).";
+    if (/expected an indented block/.test(m)) return "A kettőspont utáni sornak beljebb kell kezdődnie (4 szóköz, a VS Code-ban Tab): ez tartozik az if alá.";
+    if (/unindent does not match/.test(m)) return "A behúzás nem egyezik: az egy blokkba tartozó sorok pontosan ugyanannyi szóközzel kezdődjenek.";
+    if (etype === "IndentationError") return /unexpected indent/.test(m) ? "Szóköz (vagy tabulátor) van a sor elején. Az egyszerű utasítások a sor legelején kezdődnek." : "Behúzási hiba: a kettőspont utáni sor 4 szóközzel beljebb kezdődik.";
+    if (etype === "SyntaxError") return "Szintaktikai hiba: a Python nem érti a sort. Nézd meg a zárójeleket, az idézőjeleket és a vesszőket. A hiba gyakran a jelzett sorban vagy közvetlenül előtte van.";
+    if (etype === "ZeroDivisionError") return "Nullával osztottál.";
+    if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez.";
+    if (/math domain error/.test(m)) return "Ezt a math nem tudja kiszámolni: például negatív számnak nincs (valós) négyzetgyöke. Nézd meg, mit adtál a függvénynek.";
+    if (/partially initialized module|circular import|consider renaming/.test(m)) return "A fájlod neve ugyanaz, mint a modulé (például random.py vagy turtle.py), ezért a Python a saját fájlodat tölti be. Nevezd át (például dobokocka.py).";
+    if (/module '(math|random)' has no attribute/.test(m)) return "Ebben a modulban nincs ilyen nevű függvény. Nézd meg a nevét (math: sqrt, floor, ceil, pi; random: randint, choice, random, shuffle), és a kis- és nagybetűt.";
+    if (/Cannot choose from an empty sequence/.test(m)) return "A random.choice üres listából nem tud választani.";
+    if (/randint\(\) missing/.test(m)) return "A randint két számot vár: az alsó és a felső határt, például random.randint(1, 6).";
+    if (/empty range (for|in) randrange/.test(m)) return "A randint alsó határa nagyobb a felsőnél: random.randint(1, 6), nem random.randint(6, 1).";
+    if (etype === "ModuleNotFoundError") return "Nincs ilyen nevű modul. A modulok neve kisbetűs (math, random), pontosan így írd.";
+    if (etype === "FileNotFoundError") return "Nincs ilyen fájl. Pontosan így hívják (kiterjesztéssel együtt, például adatok.txt)? A VS Code-ban a fájlnak a megnyitott mappában kell lennie (onnan fut a program a terminálban).";
+    if (/not readable/.test(m)) return "A fájlt írásra nyitottad meg (\"w\" vagy \"a\"), ezért olvasni nem lehet belőle. Olvasáshoz: open(…, \"r\", encoding=\"utf-8\").";
+    if (/not writable/.test(m)) return "A fájlt olvasásra nyitottad meg (ez az alapértelmezés), ezért írni nem lehet bele. Íráshoz: open(…, \"w\", encoding=\"utf-8\").";
+    if (/I\/O operation on closed file/.test(m)) return "A fájl már be van zárva: a with blokkon kívül (vagy a close() után) nem lehet használni. Tedd a sort beljebb, a with alá.";
+    if (/write\(\) argument must be str/.test(m)) return "A write() csak szöveget tud írni. A számot alakítsd szöveggé: f.write(str(x) + \"\\n\") vagy f.write(f\"{x}\\n\").";
+    if (etype === "IndexError") return "Nincs ilyen indexű elem. Az index 0-tól len(lista) − 1-ig megy; az utolsó elem: lista[-1].";
+    if (/'NoneType' object has no attribute/.test(m)) return "A változód értéke None (semmi). Gyakori ok: lista = lista.append(x). Az append nem ad vissza semmit; elég ennyi: lista.append(x).";
+    if (/can only concatenate list/.test(m)) return "Listához számot nem lehet +-szal adni. Új elemet így adj hozzá: lista.append(x).";
+    if (/'str' object does not support item assignment/.test(m)) return "A szöveg betűnként nem módosítható. Készíts új szöveget: s = \"X\" + s[1:], vagy s = s.replace(…).";
+    if (/'list' object has no attribute '(upper|lower|strip|split|replace)'/.test(m)) return "Ez szöveg-metódus, de a változód lista (például a split eredménye). A lista elemein egyenként hívd meg, for ciklusban.";
+    if (etype === "AttributeError") return "Nincs ilyen metódus ennek a típusnak, vagy elírtad (kisbetűvel: upper).";
+    if (etype === "TypeError" && /missing \d+ required positional argument/.test(m)) return "Kevesebb argumentumot adtál meg, mint ahány paramétere van a függvénynek.";
+    if (etype === "TypeError" && /not callable/.test(m)) return "Egy változót függvényként hívtál. Lehet, hogy egy változónak a függvény nevét adtad (például print = …)?";
+    if (etype === "TypeError" && /len\(\)/.test(m)) return "A len() szöveg hosszát adja; számnak nincs hossza.";
+    if (etype === "Timeout") return "Lehet, hogy végtelen ciklus van a programban: a ciklusfeltétel sosem lesz hamis. Változik a ciklusváltozó a cikluson belül (például i += 1)?";
+    if (/Túl sok kimenet/.test(m)) return "Valószínűleg végtelen ciklus: a program nem akar megállni. Változik a ciklusváltozó a cikluson belül (például i += 1)? A VS Code-ban a Ctrl+C állítja le.";
+    return "";
+  }
+  const segsHtml = (segs, err, line) => (segs || []).map(s => s[0] === "i" ? '<span class="i">' + esc(s[1]) + "</span>" : esc(s[1])).join("") +
+    (err ? '<span class="e">✖ ' + (line ? line + ". sor: " : "") + esc(err) + "</span>" + (hint(err.split(":")[0], err) ? '\n<span class="h">💡 ' + esc(hint(err.split(":")[0], err)) + "</span>" : "") : "");
+  const term = (segs, err, line) => '<pre class="term">' + (segsHtml(segs, err, line) || '<span class="dim">(nem írt ki semmit)</span>') + "</pre>";
+  const failMsg = "A Python nem tudott betöltődni (nincs internet, vagy a böngésző nem engedi). A minták és a „Mit ír ki?” feladatok ettől még működnek.";
+
+  /* ---------- Futtató-szerkesztő: kód (+ bemenetek) + futtatás ---------- */
+  function tab4(ta){
+    ta.addEventListener("keydown", e => {
+      if (e.key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey){
+        if (ta.dataset.esc === "1"){ ta.dataset.esc = ""; return; }
+        e.preventDefault();
+        const s = ta.selectionStart, en = ta.selectionEnd;
+        ta.value = ta.value.slice(0, s) + "    " + ta.value.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 4;
+      } else if (e.key === "Escape") ta.dataset.esc = "1";
+    });
+  }
+  // o: { code, inputs, noInput, primary, rows }
+  function editor(root, o){
+    o = o || {};
+    root.innerHTML =
+      '<div class="pyed"><div><label>Python-kód</label><textarea class="pyta" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Python-kód"></textarea></div>' +
+      '<div class="pyright">' + (o.noInput ? "" : '<div><label>Bemenetek: amit a gépre beírnál, soronként egy</label><textarea class="pyin" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Bemenetek, soronként egy"></textarea></div>') +
+      '<div class="row"><button class="btn' + (o.primary ? " primary" : "") + '" type="button" data-p="run">▶ Futtatás</button><span class="pyst" aria-live="polite"></span></div>' +
+      '<div class="pyout"><div class="pyout-h">Kimenet</div><pre class="pyout-b"><span class="dim">Nyomd meg: ▶ Futtatás</span></pre></div></div></div>';
+    const ta = $(".pyta", root), inp = $(".pyin", root), out = $(".pyout-b", root), st = $(".pyst", root), btn = $('[data-p="run"]', root);
+    if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
+    ta.value = o.code || ""; if (inp) inp.value = (o.inputs || []).join("\n");
+    tab4(ta);
+    const stText = { idle: "Az első futtatáskor betölt a Python (kb. 10 MB, csak egyszer).", loading: "A Python betöltése… (az első alkalommal fél perc is lehet)", ready: "", failed: failMsg };
+    PY.on(s => { st.textContent = stText[s] || ""; });
+    const inputs = () => !inp || inp.value === "" ? [] : inp.value.replace(/\r/g, "").split("\n");
+    async function run(){
+      btn.disabled = true; out.innerHTML = '<span class="dim">Fut…</span>';
+      const r = await PY.run(ta.value, inputs());
+      btn.disabled = false;
+      if (r.fail){ out.innerHTML = '<span class="e">' + esc(failMsg) + "</span>"; return r; }
+      out.innerHTML = segsHtml(r.segs, r.err, r.line) || '<span class="dim">(a program nem írt ki semmit)</span>';
+      return r;
+    }
+    btn.addEventListener("click", run);
+    return { get: () => ta.value, set(c, ins){ ta.value = c; if (inp) inp.value = (ins || []).join("\n"); }, inputs, run, raw: () => ({ code: ta.value }) };
+  }
+
+  /* ---------- „Írd meg!” / „Javítsd ki!”: a diák programja minden próbabemenettel lefut, a PYCORE.judge dönt ---------- */
+  async function check(T, raw){
+    const code = String(raw.code || "");
+    if (!C.stripCom(code).trim()) return { ok: false, msg: "Még nincs program. Írd meg a kódmezőbe, és nyomd meg újra az Ellenőrzést." };
+    const rs = [];
+    for (const t of T.tests){
+      const r = await PY.run(C.withCalls(code, t), t.ins || [], C.optsOf(t));
+      if (r.fail) return { ok: false, msg: esc(failMsg) + " Hasonlítsd össze a programodat a mintamegoldással (Megoldás lépésenként)." };
+      rs.push(r);
+      if (r.err) break;
+    }
+    while (rs.length < T.tests.length) rs.push(rs[rs.length - 1]);
+    const j = C.judge(T, code, rs), r = rs[j.k || 0];
+    const shown = (T.tests[j.k || 0].ins || []).length ? " (Bemenet: " + T.tests[j.k || 0].ins.map(x => '"' + esc(x) + '"').join(", ") + ")" : "";
+    if (j.ok) return { ok: true, msg: "Helyes!" + (T.tests.length === 2 ? " Két különböző bemenetre is jó eredményt adott." : T.tests.length > 2 ? " Mind " + C.az(T.tests.length) + T.tests.length + " próbabemenetre jó eredményt adott." : "") + term(rs[0].segs) };
+    return { ok: false, msg: esc(j.why) + shown + term(r.segs, r.err, r.line) };
+  }
+  const STARTER = "# Írd ide a programot\n";
+  // T: { q, code (minta), starter?, tests, must, mustNot, fstr, ex }
+  function task(T, title){
+    const needIn = T.tests.some(t => (t.ins || []).length);
+    return { q: T.q, kind: "py", title,
+      mount: el => editor(el, { code: T.starter || STARTER, inputs: (T.tests[0].ins || []), noInput: !needIn }),
+      answer: '<pre class="code">' + esc(T.code) + "</pre>",
+      sol: "<p>" + T.ex + "</p>" + (needIn ? "<p>Próbabemenet: " + T.tests[0].ins.map(x => "<code>" + esc(x) + "</code>").join(" ") + "</p>" : "") + "<p>Egy jó megoldás:</p>",
+      check: raw => check(T, raw) };
+  }
+
+  /* ---------- „Mit ír ki?”: a választ soronként kell beírni (Python nélkül is megy) ---------- */
+  // t: { code, ins?, ans, sol }
+  function kiir(t, title){
+    const n = C.normOut(t.ans).split("\n").length;
+    return { q: "Mit ír ki ez a program?" + (t.ins && t.ins.length ? " A bemenet: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "." : "") + "<pre class='code'>" + esc(t.code) + "</pre>",
+      kind: "kiir", title,
+      mount: el => { el.innerHTML = '<label class="kiirlbl">A kimenet, ahogy a képernyőn megjelenik' + (n > 1 ? " (" + n + " sor)" : "") + ":</label><textarea class=\"kiirta\" rows=\"" + Math.min(Math.max(n, 1), 8) + "\" wrap=\"off\" spellcheck=\"false\" autocapitalize=\"off\" autocomplete=\"off\" aria-label=\"A kimenet\"></textarea>"; const ta = $("textarea", el); return { raw: () => ta.value }; },
+      answer: '<pre class="code">' + esc(t.ans) + "</pre>", sol: "<p>" + t.sol + "</p>",
+      check: v => C.kiirCheck(v, t.ans) };
+  }
+
+  /* ---------- Választós feladat ---------- */
+  function choice(q, good, others, sol, bad){
+    const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
+    return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : (typeof bad === "function" ? bad(opts[v.idx].l) : bad) }) };
+  }
+  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError", IndexError: "IndexError", AttributeError: "AttributeError", ModuleNotFoundError: "ModuleNotFoundError", FileNotFoundError: "FileNotFoundError", UnsupportedOperation: "UnsupportedOperation" };
+  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", IndexError: "indexhiba: nincs ilyen sorszámú elem a listában", AttributeError: "attribútumhiba: ennek az értéknek (vagy modulnak) nincs ilyen metódusa, függvénye", ModuleNotFoundError: "nincs ilyen nevű modul", FileNotFoundError: "nincs ilyen nevű fájl", UnsupportedOperation: "a fájl nem úgy van megnyitva, ahogy használni akarod (olvasásra nyitottat írni, írásra nyitottat olvasni)", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
+  // „Milyen hibát ad?”: t = { code, err, sol }, a választható hibák listája (pool)
+  function hiba(t, pool, tip){
+    // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza
+    const good = ERRS[t.err], others = K.shuffle(pool.filter(e => e !== t.err && !(t.err === "IndentationError" && e === "SyntaxError"))).slice(0, 3).map(e => ERRS[e]);
+    return choice("Milyen hibát ad ez a program, ha lefuttatod?<pre class='code'>" + esc(t.code) + "</pre>", good, others,
+      "<p>" + (t.err === "TimeoutError" ? "<b>Végtelen ciklus</b> (hibaüzenet nincs): " + ERR_HU[t.err] + ". " : t.err ? "<b>" + t.err + "</b>: " + ERR_HU[t.err] + ". " : "") + t.sol + "</p>",
+      l => !t.err ? "Nem ez. Ez a program hibátlanul lefut." : "Nem ez. " + (l === ERRS[""] ? "Ez a program nem fut le hibátlanul. " : "") + (tip || "Olvasd végig a sort betűről betűre: zárójel, idézőjel, kis- és nagybetű, szóköz a sor elején."));
+  }
+
+  /* ---------- Diák: futtatható példák a hero futtatójába ---------- */
+  const TRY = [];
+  let hero = null;
+  const setHero = ed => { hero = ed; };
+  const ex = (code, ins) => { TRY.push([code, ins || []]); return '<pre class="code">' + esc(code) + "</pre><p><button class='btn' data-try='" + (TRY.length - 1) + "'>▶ Kipróbálom</button></p>"; };
+  const tryCode = (code, ins) => { if (!hero) return; hero.set(code, ins || []); hero.root.scrollIntoView({ behavior: "smooth", block: "center" }); hero.run(); };
+  const bindTry = el => el.querySelectorAll("[data-try]").forEach(b => b.addEventListener("click", () => { const t = TRY[+b.dataset.try]; tryCode(t[0], t[1]); }));
+  function heroEditor(root, o){ const ed = editor(root, Object.assign({ primary: true }, o)); ed.root = root; setHero(ed); return ed; }
+
+  /* ---------- Levezetés-lejátszó képkockái ---------- */
+  const srcHtml = (src, ln) => '<div class="src">' + src.map((l, i) => '<div class="' + (ln === i + 1 ? "cur" : "") + '"><span class="ln">' + (i + 1) + "</span>" + esc(l) + "</div>").join("") + "</div>";
+  const varTbl = v => { const ks = Object.keys(v); return ks.length ? '<div class="ptwrap" style="margin-top:8px"><table class="pt"><tr><th>változó</th>' + ks.map(k => "<th>" + esc(k) + "</th>").join("") + "</tr><tr><td>érték</td>" + ks.map(k => "<td>" + esc(v[k]) + "</td>").join("") + "</tr></table></div>" : ""; };
+  const outBox = s => '<div class="fout"><span class="fout-h">Kimenet</span><pre>' + (s ? esc(s) : '<span class="dim">(még üres)</span>') + "</pre></div>";
+
+  return { C, PY, hint, term, segsHtml, editor, heroEditor, check, task, kiir, choice, hiba, ERRS, ex, bindTry, tryCode, srcHtml, varTbl, outBox, failMsg };
+})();
+</script>
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/math\./g, "math pont "], [/random\./g, "random pont "], [/\s==\s/g, " egyenlő-e "], [/\s!=\s/g, " nem egyenlő "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\+=/g, " plusz egyenlő "], [/\s=\s/g, " legyen "], [/\*\*/g, " a következő hatványra: "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const pyF = C.pyF;
+    const r2 = x => Math.round(x * 100) / 100;
+    const L = a => "[" + a.join(", ") + "]";
+    const Q = a => "[" + a.map(x => '"' + x + '"').join(", ") + "]";
+    const NEV = ["Anna", "Bence", "Kovrat", "Lili", "Máté", "Réka", "Dani", "Emma"];
+    const IMP = has(/\bimport\b/, "a modult be kell hozni: import math (vagy import random) a program elején.");
+    const RI = (a, b) => has(new RegExp("randint\\s*\\(\\s*" + a + "\\s*,\\s*" + b + "\\s*\\)"), "a véletlen számot így kérd: random.randint(" + a + ", " + b + ").");
+    const two = (a, b) => { let x = rnd(a, b), y = rnd(a, b); while (y === x) y = rnd(a, b); return [x, y]; };
+    // a számkitaláló tippjei: felezve, amíg el nem találja
+    const tippek = g => { let lo = 1, hi = 100; const t = []; for (;;){ const m = Math.floor((lo + hi) / 2); t.push(m); if (m === g) return t; if (m < g) lo = m + 1; else hi = m - 1; } };
+    const T1 = calls => [{ ins: [], calls }];
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("import math", "import random", "", "print(math.sqrt(49))", "print(math.pi)", "dobas = random.randint(1, 6)", 'print(f"Dobtál: {dobas}")') },
+      imp: { code: J("import math", "", "print(math.sqrt(16))", "print(math.sqrt(2))", "print(math.sqrt(16) + 1)") },
+      noimp: { code: J("print(math.sqrt(16))"), err: "NameError" },
+      kerek: { code: J("import math", "", "x = 3.7", "print(math.floor(x), math.ceil(x), round(x), int(x))", "y = -2.5", "print(math.floor(y), math.ceil(y), round(y), int(y))") },
+      busz: { code: J("import math", "", "diakok = int(input(\"Hány diák jön? \"))", "buszok = math.ceil(diakok / 50)", 'print(f"{buszok} busz kell.")'), ins: ["123"] },
+      pi: { code: J("import math", "", "r = float(input(\"A kör sugara: \"))", "kerulet = 2 * r * math.pi", "terulet = r ** 2 * math.pi", 'print(f"Kerület: {round(kerulet, 2)}")', 'print(f"Terület: {round(terulet, 2)}")'), ins: ["5"] },
+      pita: { code: J("import math", "", "a = 3", "b = 4", "c = math.sqrt(a ** 2 + b ** 2)", 'print(f"Az átfogó: {c}")') },
+      from: { code: J("from math import sqrt, pi", "", "print(sqrt(81))", "print(round(pi, 4))") },
+      randint: { code: J("import random", "", "for i in range(5):", I("print(random.randint(1, 6))")) },
+      choice: { code: J("import random", "", 'nevek = ["Anna", "Bence", "Kovrat", "Lili"]', "print(random.choice(nevek))", 'print(random.choice(["fej", "írás"]))') },
+      random: { code: J("import random", "", "print(random.random())", "print(round(random.random() * 100, 1))") },
+      shuffle: { code: J("import random", "", "kartyak = [1, 2, 3, 4, 5]", "random.shuffle(kartyak)", "print(kartyak)") },
+      seed: { code: J("import random", "", "random.seed(2026)", "print(random.randint(1, 100), random.randint(1, 100))", "random.seed(2026)", "print(random.randint(1, 100), random.randint(1, 100))") },
+      jatek: { code: J("import random", "", "gondolt = random.randint(1, 10)", "db = 1", 'tipp = int(input("Tipp (1-10): "))', "while tipp != gondolt:", I("if tipp < gondolt:"), I(I('print("Nagyobb!")')), I("else:"), I(I('print("Kisebb!")')), I('tipp = int(input("Tipp: "))'), I("db += 1"), 'print(f"Eltaláltad! {db} tippből.")'), ins: ["5", "8", "3", "1", "2", "4", "6", "7", "9", "10"] },
+      kocka: { code: J("import random", "", "def kocka():", I("return random.randint(1, 6)"), "", "dobasok = []", "for i in range(10):", I("dobasok.append(kocka())"), "print(dobasok)", 'print(f"Hatosok száma: {dobasok.count(6)}")') },
+      domain: { code: J("import math", "", "print(math.sqrt(-4))"), err: "ValueError" }
+    };
+
+    /* ---- „Mit ír ki?” ---- */
+    const KIIR = [
+      [
+        () => { const a = rnd(2, 12); return { code: J("import math", "", "print(math.sqrt(" + a * a + "))"), ans: a + ".0", sol: "A " + a * a + " négyzetgyöke " + a + ", de a math.sqrt mindig tizedes törtet (float) ad: " + a + ".0." }; },
+        () => { const n = rnd(1, 9), d = rnd(1, 9); return { code: J("import math", "", "x = " + n + "." + d, "print(math.floor(x), math.ceil(x))"), ans: n + " " + (n + 1), sol: "A floor lefelé (" + n + "), a ceil felfelé (" + (n + 1) + ") kerekít egészre." }; },
+        () => { const k = rnd(1, 4); return { code: J("from math import pi", "", "print(round(pi, " + k + "))"), ans: Math.PI.toFixed(k), sol: "A π = 3.14159…, " + k + " tizedesre kerekítve " + Math.PI.toFixed(k) + ". A from math import pi után elég pi-t írni (math. nélkül)." }; },
+        () => { const v = rnd(1, 6); return { rig: { randint: [v] }, rq: "a random.randint(1, 6) most " + C.acc(v) + " ad", code: J("import random", "", "dobas = random.randint(1, 6)", 'print(f"Dobtál: {dobas}")'), ans: "Dobtál: " + v, sol: "A dobas értéke " + v + ", az f-string ezt írja ki." }; }
+      ],
+      [
+        () => { const v = rnd(1, 6); return { rig: { randint: [v] }, rq: "a random.randint(1, 6) most " + C.acc(v) + " ad", code: J("import random", "", "dobas = random.randint(1, 6)", "if dobas == 6:", I('print("Hatos! Dobhatsz még egyszer.")'), "else:", I('print(f"Dobtál: {dobas}")')), ans: v === 6 ? "Hatos! Dobhatsz még egyszer." : "Dobtál: " + v, sol: v === 6 ? "A dobás 6, ezért az if ága fut." : "A dobás " + v + ", nem 6, ezért az else ága fut." }; },
+        () => { const k = pick([30, 40, 50]), n = rnd(2, 6) * k + rnd(1, k - 1); return { code: J("import math", "", "diakok = " + n, "buszok = math.ceil(diakok / " + k + ")", "print(buszok)"), ans: S(Math.ceil(n / k)), sol: n + " / " + k + " = " + (Number.isInteger(n / k * 100) ? String(n / k) : (n / k).toFixed(2) + "…") + ", felfelé kerekítve " + Math.ceil(n / k) + ": a maradék diákoknak is kell egy busz." }; },
+        () => { const n = rnd(1, 9), d = rnd(1, 4); return { code: J("import math", "", "x = " + n + "." + d, "print(round(x), math.floor(x), int(x))"), ans: n + " " + n + " " + n, sol: "Mindhárom " + n + ": a round a közelebbi egészre (." + d + " lefelé), a floor lefelé kerekít, az int levágja a tört részt." }; },
+        () => { const nv = shuffle(NEV).slice(0, 4), i = rnd(0, 3); return { rig: { choice: [i] }, rq: "a random.choice most a listából " + C.azW(nv[i]) + nv[i] + " nevet választja", code: J("import random", "", "nevek = " + Q(nv), "nyertes = random.choice(nevek)", 'print(f"A nyertes: {nyertes}")', "print(len(nevek))"), ans: J("A nyertes: " + nv[i], "4"), sol: "A choice egy elemet ad vissza a listából, de nem veszi ki belőle: a lista hossza marad 4." }; },
+        () => { const a = rnd(2, 9); return { code: J("import math", "", "print(math.sqrt(" + a * a + ") + math.floor(2.9))"), ans: pyF(a + 2), sol: "math.sqrt(" + a * a + ") = " + a + ".0 (float), math.floor(2.9) = 2 (int). A float és az int összege float: " + pyF(a + 2) + "." }; }
+      ],
+      [
+        () => { const n = rnd(1, 8), d = rnd(1, 9); return { code: J("import math", "", "x = -" + n + "." + d, "print(math.floor(x), math.ceil(x), int(x))"), ans: -(n + 1) + " " + (-n) + " " + (-n), sol: "A floor lefelé, vagyis a kisebb egész felé kerekít: negatív számnál ez " + -(n + 1) + ". A ceil felfelé: " + (-n) + ". Az int csak levágja a tört részt: " + (-n) + "." }; },
+        () => { const [a, b] = pick([[3, 4], [6, 8], [5, 12], [8, 15], [9, 12], [7, 24]]); return { code: J("import math", "", "a = " + a, "b = " + b, "print(math.sqrt(a ** 2 + b ** 2))"), ans: pyF(Math.sqrt(a * a + b * b)), sol: a + "² + " + b + "² = " + (a * a + b * b) + ", ennek a gyöke " + Math.sqrt(a * a + b * b) + ", float: " + pyF(Math.sqrt(a * a + b * b)) + "." }; },
+        () => { const d = [rnd(1, 6), rnd(1, 6), rnd(1, 6)]; return { rig: { randint: d }, rq: "a random.randint(1, 6) egymás után ezeket adja: " + d.join(", "), code: J("import random", "", "osszeg = 0", "for i in range(3):", I("d = random.randint(1, 6)"), I("osszeg += d"), "print(osszeg)"), ans: S(d[0] + d[1] + d[2]), sol: "Három dobás összege: " + d.join(" + ") + " = " + (d[0] + d[1] + d[2]) + "." }; },
+        () => { const d = [rnd(1, 6), rnd(1, 6), rnd(1, 6), rnd(1, 6)]; return { rig: { randint: d }, rq: "a random.randint(1, 6) egymás után ezeket adja: " + d.join(", "), code: J("import random", "", "db = 0", "for i in range(4):", I("if random.randint(1, 6) >= 5:"), I(I("db += 1")), 'print(f"{db} nagy dobás")'), ans: d.filter(x => x >= 5).length + " nagy dobás", sol: "Az 5-ös és a 6-os számít: " + d.join(", ") + " → " + d.filter(x => x >= 5).length + " darab." }; }
+      ]
+    ];
+
+    /* ---- „Milyen értékeket adhat?” (választós; a py-check 5000 futással ellenőrzi az értékek halmazát) ---- */
+    const set5000 = (expr, pre) => J("import math", "import random", pre || "", "s = set()", "for _ in range(5000):", I("s.add(" + expr + ")"), "print(sorted(s))");
+    const rng = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
+    const lst = a => a.length <= 7 ? a.join(", ") : a.slice(0, 3).join(", ") + ", …, " + a[a.length - 1];
+    const MI = [
+      [
+        () => { const b = pick([6, 4, 10, 5]); return { expr: "random.randint(1, " + b + ")", good: lst(rng(1, b)), bad: [lst(rng(1, b - 1)), lst(rng(0, b)), "bármilyen tizedes tört 1 és " + b + " között"], vcode: set5000("random.randint(1, " + b + ")"), ans: L(rng(1, b)), sol: "A randint egész számot ad, és mindkét határ benne van: 1 is és " + b + " is." }; },
+        () => { const t = shuffle(["kő", "papír", "olló"]); return { pre: "lehetosegek = " + Q(t), expr: "random.choice(lehetosegek)", good: t.join(", ") + " (egyik a három közül)", bad: ["0, 1 vagy 2 (az elem sorszáma)", "mindhárom egyszerre, összekeverve", "bármilyen szó"], vcode: set5000("random.choice(lehetosegek)", "lehetosegek = " + Q(t)), ans: "[" + t.slice().sort().map(x => "'" + x + "'").join(", ") + "]", sol: "A choice a lista egyik elemét adja vissza (nem a sorszámát)." }; }
+      ],
+      [
+        () => { const a = rnd(0, 5), b = a + rnd(3, 6); return { expr: "random.randint(" + a + ", " + b + ")", good: lst(rng(a, b)), bad: [lst(rng(a, b - 1)), lst(rng(a + 1, b)), lst(rng(a, b + 1))], vcode: set5000("random.randint(" + a + ", " + b + ")"), ans: L(rng(a, b)), sol: "Mindkét határ benne van: " + a + " és " + b + " is lehet." }; },
+        () => ({ expr: "random.randint(1, 6) + random.randint(1, 6)", good: "2-től 12-ig bármelyik egész", bad: ["1-től 12-ig bármelyik egész", "1-től 6-ig bármelyik egész", "2-től 12-ig, de csak páros szám"], vcode: set5000("random.randint(1, 6) + random.randint(1, 6)"), ans: L(rng(2, 12)), sol: "Két kocka összege: a legkisebb 1 + 1 = 2, a legnagyobb 6 + 6 = 12, és közte minden egész kijöhet." }),
+        () => ({ expr: "random.random()", good: "tizedes tört 0 és 1 között (a 0 lehet, az 1 nem)", bad: ["0 vagy 1", "egész szám 1-től 100-ig", "tizedes tört 0 és 1 között, az 1 is lehet"], vcode: J("import random", "v = [random.random() for _ in range(5000)]", "print(min(v) >= 0, max(v) < 1, max(v) > 0.9, min(v) < 0.1)"), ans: "True True True True", sol: "A random.random() egy 0 és 1 közötti tizedes törtet ad; a 0.0 lehet, az 1.0 soha." })
+      ],
+      [
+        () => { const n = rnd(3, 6); return { expr: "random.randint(0, " + n + ") * 2", good: lst(rng(0, n).map(x => 2 * x)), bad: [lst(rng(0, 2 * n)), lst(rng(0, n - 1).map(x => 2 * x)), lst(rng(1, n).map(x => 2 * x))], vcode: set5000("random.randint(0, " + n + ") * 2"), ans: L(rng(0, n).map(x => 2 * x)), sol: "A randint 0-tól " + n + "-ig ad egészet, ennek a kétszerese: 0-tól " + 2 * n + "-ig a páros számok." }; },
+        () => ({ expr: "random.randint(1, 10) % 2", good: "0 vagy 1", bad: ["1-től 10-ig bármelyik egész", "0-tól 9-ig bármelyik egész", "csak 0"], vcode: set5000("random.randint(1, 10) % 2"), ans: "[0, 1]", sol: "A % 2 a kettővel osztás maradéka: páros számnál 0, páratlannál 1." }),
+        () => ({ expr: "math.floor(random.random() * 6) + 1", good: "1, 2, 3, 4, 5, 6", bad: ["0, 1, 2, 3, 4, 5", "1, 2, 3, 4, 5, 6, 7", "tizedes tört 1 és 7 között"], vcode: set5000("math.floor(random.random() * 6) + 1"), ans: L(rng(1, 6)), sol: "random.random() * 6 egy 0 és 6 közötti tört (a 6 nem), lefelé kerekítve 0…5, plusz 1: 1…6. Egy dobókocka, randint nélkül." }),
+        () => ({ expr: "random.randint(-2, 2) ** 2", good: "0, 1, 4", bad: ["-2, -1, 0, 1, 2", "-4, -1, 0, 1, 4", "0, 1, 2, 3, 4"], vcode: set5000("random.randint(-2, 2) ** 2"), ans: "[0, 1, 4]", sol: "A randint −2, −1, 0, 1 vagy 2; a négyzetük: 4, 1, 0, 1, 4. Negatív négyzet nincs." })
+      ]
+    ];
+
+    /* ---- „Melyik kell?” ---- */
+    const FN = ["math.sqrt()", "math.floor()", "math.ceil()", "round()", "math.pi", "random.randint()", "random.choice()", "random.random()", "random.shuffle()"];
+    const MK = [
+      [["Négyzetgyököt vonni (a 81-ből 9)", 0], ["Egész szám dobókockával, 1-től 6-ig", 5], ["A π értéke a kör kerületéhez", 4], ["Véletlenül kiválasztani egy elemet egy listából", 6]],
+      [["Lefelé kerekíteni egészre (3.9-ből 3)", 1], ["Felfelé kerekíteni egészre (3.1-ből 4)", 2], ["A legközelebbi egészre vagy adott tizedesjegyre kerekíteni", 3], ["Véletlen sorrendbe keverni egy lista elemeit", 8], ["Véletlen tizedes tört 0 és 1 között", 7]],
+      [["Hány doboz kell 23 tojáshoz, ha egy dobozba 10 fér? (A félig teli doboz is doboz.)", 2], ["Hány teljesen teli tízes doboz lesz 27 tojásból?", 1], ["Húzz ki egy nevet a kalapból!", 6], ["Keverd meg a kártyapaklit!", 8], ["Egy négyzet területe 50 cm². Mekkora az oldala?", 0], ["Véletlen egész szám 0-tól 1-ig (pénzfeldobás: 0 fej, 1 írás)", 5]]
+    ];
+    const MKSOL = ["A math.sqrt(x) az x négyzetgyöke (float).", "A math.floor(x) lefelé, a kisebb egész felé kerekít.", "A math.ceil(x) felfelé, a nagyobb egész felé kerekít.", "A round(x) a legközelebbi egészre, a round(x, 2) két tizedesre kerekít.", "A math.pi a π (3.14159…): nem függvény, ezért nincs utána zárójel.", "A random.randint(a, b) véletlen egész a-tól b-ig, mindkettő benne van.", "A random.choice(lista) a lista egy véletlen elemét adja.", "A random.random() véletlen tört 0-tól 1-ig (az 1 nincs benne).", "A random.shuffle(lista) helyben összekeveri a listát (nem ad vissza újat)."];
+
+    /* ---- „Írd meg!” ---- */
+    const WRITE = [
+      [
+        () => { const [x1, x2] = shuffle([2, 3, 5, 10, 20, 50, 70]).slice(0, 2), x3 = rnd(2, 12) ** 2; return { q: "Kérj be egy pozitív számot (<code>float</code>), és írd ki a négyzetgyökét <b>két tizedesre</b> kerekítve!",
+          code: J("import math", "", 'x = float(input("Szám: "))', 'print(f"A gyöke: {round(math.sqrt(x), 2)}")'), tests: [x1, x2, x3].map(x => ({ ins: [S(x)], exp: [r2(Math.sqrt(x))] })), must: [IMP, has(/sqrt/, "használd a math.sqrt()-ot.")], fstr: true, ex: "import math, aztán round(math.sqrt(x), 2)." }; },
+        () => { const [a, b] = two(1, 20); return { q: "Kérd be a kör sugarát (<code>float</code>), és írd ki a kör kerületét és területét, mindkettőt <b>két tizedesre</b> kerekítve! (K = 2 · r · π, T = r² · π; a π a <code>math.pi</code>.)",
+          code: J("import math", "", 'r = float(input("Sugár: "))', "k = 2 * r * math.pi", "t = r ** 2 * math.pi", 'print(f"Kerület: {round(k, 2)}")', 'print(f"Terület: {round(t, 2)}")'), tests: [a, b].map(r => ({ ins: [S(r)], exp: [r2(2 * r * Math.PI), r2(r * r * Math.PI)] })), must: [IMP, has(/\bpi\b/, "a π-t a math.pi adja (ne írd be kézzel, hogy 3.14).")], fstr: true, ex: "math.pi pontosabb, mint a 3.14; a kerekítés csak a kiírásnál jön." }; },
+        () => { const [p, q] = shuffle([[3, 4], [5, 12], [6, 8], [2, 3], [1, 1], [4, 7]]).slice(0, 2); return { q: "Kérd be egy derékszögű háromszög két befogóját (<code>int</code>), és írd ki az átfogót <b>két tizedesre</b> kerekítve! (Pitagorasz: c = √(a² + b²).)",
+          code: J("import math", "", 'a = int(input("a = "))', 'b = int(input("b = "))', "c = math.sqrt(a ** 2 + b ** 2)", 'print(f"Az átfogó: {round(c, 2)}")'), tests: [p, q].map(([a, b]) => ({ ins: [S(a), S(b)], exp: [r2(Math.sqrt(a * a + b * b))] })), must: [IMP, has(/sqrt/, "a gyököt a math.sqrt() vonja.")], fstr: true, ex: "Zárójel: math.sqrt(a ** 2 + b ** 2), és csak a végén kerekíts." }; }
+      ],
+      [
+        () => { const [v, w] = two(1, 6); return { q: "Dobj egy dobókockával a <code>random.randint(1, 6)</code>-tal, és írd ki: <code>Dobtál: 4</code> (a 4 helyén a dobás).",
+          code: J("import random", "", "dobas = random.randint(1, 6)", 'print(f"Dobtál: {dobas}")'), tests: [v, w].map(x => ({ ins: [], rig: { randint: [x] }, exp: [x] })), must: [IMP, RI(1, 6)], fstr: true, ex: "import random a program elején; a dobást változóba tedd, és f-stringgel írd ki." }; },
+        () => { const d = [rnd(1, 6), rnd(1, 6)]; let e = [rnd(1, 6), rnd(1, 6)]; while (e[0] + e[1] === d[0] + d[1]) e = [rnd(1, 6), rnd(1, 6)]; return { q: "Dobj két kockával (kétszer <code>random.randint(1, 6)</code>), és írd ki mindkét dobást, aztán az összegüket!",
+          code: J("import random", "", "a = random.randint(1, 6)", "b = random.randint(1, 6)", 'print(f"Dobások: {a} és {b}")', 'print(f"Összeg: {a + b}")'), tests: [d, e].map(x => ({ ins: [], rig: { randint: x }, exp: [x[0], x[1], x[0] + x[1]] })), must: [IMP, RI(1, 6)], fstr: true, ex: "Két külön dobás két külön változóba; az összeg a + b." }; },
+        () => { const n1 = rnd(2, 6) * 50, n2 = rnd(1, 6) * 50 + rnd(1, 49); return { q: "Kérd be, hány diák megy kirándulni (<code>int</code>)! Egy buszba 50 ember fér. Írd ki, hány busz kell! Használd a <code>math.ceil()</code>-t.",
+          code: J("import math", "", 'diakok = int(input("Diákok száma: "))', "buszok = math.ceil(diakok / 50)", 'print(f"{buszok} busz kell.")'), tests: [n2, n1].map(n => ({ ins: [S(n)], exp: [Math.ceil(n / 50)] })), must: [IMP, has(/ceil/, "felfelé kerekíts: math.ceil().")], fstr: true, ex: "A maradék diákoknak is kell busz, ezért felfelé kerekítünk: math.ceil(diakok / 50)." }; },
+        () => { const nv = shuffle(NEV).slice(0, 4), [i, j] = two(0, 3); return { q: "Írd a program elejére ezt a listát, pontosan így: <code>nevek = " + esc(Q(nv)) + "</code>. Sorsolj ki egy nevet a <code>random.choice()</code>-szal, és írd ki: <code>A nyertes: " + nv[0] + "</code> (a név helyén a kisorsolt név).",
+          code: J("import random", "", "nevek = " + Q(nv), "nyertes = random.choice(nevek)", 'print(f"A nyertes: {nyertes}")'), tests: [i, j].map(x => ({ ins: [], rig: { choice: [x] }, exp: [{ s: nv[x] }] })), must: [IMP, has(/choice\s*\(/, "a sorsolás: random.choice(nevek).")], fstr: true, ex: "A choice a lista egy elemét adja; ezt tedd változóba." }; }
+      ],
+      [
+        () => { const [g1, g2] = two(1, 100); const T = g => { const t = tippek(g); const seq = t.slice(0, -1).map(x => x < g ? "Nagyobb!" : "Kisebb!"); return { ins: t.map(S), rig: { randint: [g] }, seq: seq.concat(["Eltaláltad!"]), exp: [t.length] }; };
+          return { q: "Számkitaláló! A gép gondol egy számra: <code>random.randint(1, 100)</code>. Kérd be a tippet (<code>int</code>), amíg el nem találja. Ha a tipp kisebb, írd ki: <code>Nagyobb!</code>, ha nagyobb: <code>Kisebb!</code>. A végén: <code>Eltaláltad! 5 tippből.</code> (az 5 helyén a tippek száma).",
+          code: J("import random", "", "gondolt = random.randint(1, 100)", "db = 1", 'tipp = int(input("Tipp: "))', "while tipp != gondolt:", I("if tipp < gondolt:"), I(I('print("Nagyobb!")')), I("else:"), I(I('print("Kisebb!")')), I('tipp = int(input("Tipp: "))'), I("db += 1"), 'print(f"Eltaláltad! {db} tippből.")'), tests: [T(g1), T(g2)], must: [IMP, RI(1, 100), has(/\bwhile\b/, "a bekérést while ciklus ismételje.")], fstr: true, ex: "while tipp != gondolt: … a ciklusban új tippet kérsz, és a db-t növeled. Az első tipp a ciklus előtt jön." }; },
+        () => ({ q: "Írj egy <code>kocka()</code> nevű függvényt (paraméter nélkül), amely egy dobókocka-dobást ad vissza: véletlen egész számot 1-től 6-ig! A gép sokszor meghívja, és megnézi az eredményeket.",
+          code: J("import random", "", "def kocka():", I("return random.randint(1, 6)")), fname: "kocka", tests: T1([["type(kocka()).__name__", "int", "A kocka() nem egész számot ad vissza (a randint egészet ad; a random.random() törtet)."], ["all(1 <= kocka() <= 6 for i in range(300))", "True", "A kocka() néha 1 és 6 közé nem eső számot ad vissza. A határok: randint(1, 6)."], ["len(set(kocka() for i in range(300)))", "6", "A kocka() 300 hívásra sem adta ki mind a hat értéket (1, 2, 3, 4, 5, 6). A randint mindkét határa benne van: randint(1, 6)."]]), must: [IMP, has(/\breturn\b/, "a függvény return-nel adja vissza a dobást.")], ex: "A return random.randint(1, 6) elég: minden hívás új dobás." }),
+        () => ({ q: "Írj egy <code>dobasok(n)</code> nevű függvényt, amely egy <b>listát</b> ad vissza n darab dobókocka-dobással (mindegyik <code>random.randint(1, 6)</code>)!",
+          code: J("import random", "", "def dobasok(n):", I("lista = []"), I("for i in range(n):"), I(I("lista.append(random.randint(1, 6))")), I("return lista")), fname: "dobasok", tests: T1([["len(dobasok(10))", "10", "A dobasok(10) nem 10 elemű listát ad vissza."], ["dobasok(0)", "[]", "A dobasok(0) eredménye üres lista legyen: []."], ["all(1 <= x <= 6 for x in dobasok(500))", "True", "A listában 1 és 6 közé nem eső szám is van."], ["len(set(dobasok(500)))", "6", "500 dobás között sincs meg mind a hat érték: randint(1, 6) kell."]]), must: [IMP, has(/\breturn\b/, "a függvény return-nel adja vissza a listát.")], ex: "Üres lista, for ciklus n-szer, append, és a ciklus UTÁN return lista." }),
+        () => ({ q: "Írj egy <code>jelszo(n)</code> nevű függvényt, amely egy n karakter hosszú véletlen jelszót ad vissza (szövegként)! A karaktereket a <code>random.choice()</code> válassza ebből: <code>\"abcdefghijklmnopqrstuvwxyz0123456789\"</code>.",
+          code: J("import random", "", "def jelszo(n):", I('betuk = "abcdefghijklmnopqrstuvwxyz0123456789"'), I('s = ""'), I("for i in range(n):"), I(I("s += random.choice(betuk)")), I("return s")), fname: "jelszo", tests: T1([["len(jelszo(8))", "8", "A jelszo(8) nem 8 karakter hosszú."], ["type(jelszo(5)).__name__", "str", "A jelszo() szöveget (str) adjon vissza, ne listát."], ["all(c in 'abcdefghijklmnopqrstuvwxyz0123456789' for c in jelszo(200))", "True", "A jelszóban olyan karakter is van, amely nincs a megadott betűk között."], ["len(set(jelszo(10) for i in range(20))) > 15", "True", "A jelszavak nem véletlenszerűek: 20 hívásból sok egyforma lett."]]), must: [IMP, has(/choice\s*\(/, "a karaktereket a random.choice() válassza.")], ex: "Üres szövegből indulj (s = \"\"), és a ciklusban fűzz hozzá egy-egy véletlen karaktert: s += random.choice(betuk)." })
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” ---- */
+    const HIBA = [
+      [
+        () => { const a = rnd(2, 12) ** 2; return pick([
+          { code: J("print(math.sqrt(" + a + "))"), err: "NameError", fix: J("import math", "print(math.sqrt(" + a + "))"), sol: "Hiányzik az import math: a Python nem tudja, mi a math." },
+          { code: J("import math", "print(sqrt(" + a + "))"), err: "NameError", fix: J("import math", "print(math.sqrt(" + a + "))"), sol: "Az import math után a függvény neve math.sqrt: a math. előtag nélkül a sqrt ismeretlen név." },
+          { code: J("import math", "print(math.sqrt(" + a + "))"), err: "", sol: "Hibátlan: " + Math.sqrt(a) + ".0." }]); }
+      ],
+      [
+        () => { const a = rnd(2, 9) ** 2; return pick([
+          { code: J("import math", "print(math.sqrt(-" + a + "))"), err: "ValueError", fix: J("import math", "print(math.sqrt(" + a + "))"), sol: "Negatív számnak nincs (valós) négyzetgyöke: ValueError: math domain error." },
+          { code: J("import random", "print(random.randint(6))"), err: "TypeError", fix: J("import random", "print(random.randint(1, 6))"), sol: "A randint két számot vár: az alsó és a felső határt. Egy argumentummal TypeError." },
+          { code: J("import math", "print(math.squareroot(" + a + "))"), err: "AttributeError", fix: J("import math", "print(math.sqrt(" + a + "))"), sol: "A math modulban nincs squareroot nevű függvény: a neve sqrt." },
+          { code: J("import math", "print(math.floor(" + rnd(1, 9) + ".5))"), err: "", sol: "Hibátlan: a floor lefelé kerekít." }]); }
+      ],
+      [
+        () => pick([
+          { code: J("import random", "nevek = []", "print(random.choice(nevek))"), err: "IndexError", fix: J("import random", 'nevek = ["Anna"]', "print(random.choice(nevek))"), sol: "Üres listából a choice nem tud választani: IndexError: Cannot choose from an empty sequence." },
+          { code: J("import random", "print(random.randint(6, 1))"), err: "ValueError", fix: J("import random", "print(random.randint(1, 6))"), sol: "Az alsó határ jön előre: randint(1, 6). Fordítva üres a tartomány: ValueError." },
+          { code: J("import Math", "print(Math.sqrt(4))"), err: "ModuleNotFoundError", fix: J("import math", "print(math.sqrt(4))"), sol: "A modul neve kisbetűs: math. Math nevű modul nincs." },
+          { code: J("from math import sqrt", "print(math.sqrt(4))"), err: "NameError", fix: J("from math import sqrt", "print(sqrt(4))"), sol: "A from math import sqrt csak a sqrt nevet hozza be, a math nevet nem. Ilyenkor elég: sqrt(4)." },
+          { code: J("from math import sqrt", "print(sqrt(4))"), err: "", sol: "Hibátlan: a from … import után a math. előtag nélkül hívjuk." }])
+      ]
+    ];
+    const HPOOL = ["", "NameError", "ValueError", "TypeError", "AttributeError", "IndexError", "ModuleNotFoundError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => { const x = rnd(2, 12) ** 2, y = pick([2, 3, 5, 10]); return { q: "Ennek a programnak a beírt szám négyzetgyökét kellene kiírnia két tizedesre, de hibával leáll. Javítsd ki!",
+          starter: J('x = float(input("Szám: "))', 'print(f"A gyöke: {round(math.sqrt(x), 2)}")') + "\n", code: J("import math", "", 'x = float(input("Szám: "))', 'print(f"A gyöke: {round(math.sqrt(x), 2)}")'), tests: [x, y].map(v => ({ ins: [S(v)], exp: [r2(Math.sqrt(v))] })), must: [IMP], fstr: true, ex: "A math modult be kell hozni: import math a program elejére." }; },
+        () => { const a = pick([3, 6, 5]), b = { 3: 4, 6: 8, 5: 12 }[a]; return { q: "Ennek a programnak az átfogót kellene kiírnia, de hibával leáll. Javítsd ki!",
+          starter: J("import math", "", "a = " + a, "b = " + b, "c = sqrt(a ** 2 + b ** 2)", 'print(f"Az átfogó: {c}")') + "\n", code: J("import math", "", "a = " + a, "b = " + b, "c = math.sqrt(a ** 2 + b ** 2)", 'print(f"Az átfogó: {c}")'), tests: [{ ins: [], exp: [Math.sqrt(a * a + b * b)] }], fstr: true, ex: "Az import math után math.sqrt(…) a neve (vagy az elején: from math import sqrt)." }; }
+      ],
+      [
+        () => ({ q: "Ennek a <code>kocka()</code> függvénynek egy dobókocka-dobást (1–6) kellene visszaadnia, de valami nem stimmel vele. Javítsd ki!",
+          starter: J("import random", "", "def kocka():", I("return random.randint(0, 6)")) + "\n", code: J("import random", "", "def kocka():", I("return random.randint(1, 6)")), fname: "kocka", tests: T1([["all(1 <= kocka() <= 6 for i in range(300))", "True", "A kocka() néha 1 és 6 közé nem eső számot ad vissza (például 0-t)."], ["len(set(kocka() for i in range(300)))", "6", "A kocka() nem adja ki mind a hat értéket."]]), ex: "A randint mindkét határa benne van: randint(0, 6) a 0-t is dobhatja. Helyesen: randint(1, 6)." }),
+        () => { const n1 = rnd(1, 6) * 50 + rnd(1, 49), n2 = rnd(2, 6) * 50; return { q: "Ennek a programnak azt kellene kiírnia, hány busz kell (egy buszba 50 ember fér), de kevesebbet ír ki, mint kellene. Javítsd ki!",
+          starter: J("import math", "", 'diakok = int(input("Diákok száma: "))', "buszok = math.floor(diakok / 50)", 'print(f"{buszok} busz kell.")') + "\n", code: J("import math", "", 'diakok = int(input("Diákok száma: "))', "buszok = math.ceil(diakok / 50)", 'print(f"{buszok} busz kell.")'), tests: [n1, n2].map(n => ({ ins: [S(n)], exp: [Math.ceil(n / 50)] })), fstr: true, ex: "A floor lefelé kerekít, így a maradék diákok kimaradnak. Felfelé kell: math.ceil." }; }
+      ],
+      [
+        () => ({ q: "Ennek az <code>atlag_dobas(n)</code> függvénynek n kockadobás átlagát kellene visszaadnia (sok dobásnál ez 3.5 körül van), de nem jó. Javítsd ki!",
+          starter: J("import random", "", "def atlag_dobas(n):", I("for i in range(n):"), I(I("s = 0")), I(I("s += random.randint(1, 6)")), I("return s / n")) + "\n", code: J("import random", "", "def atlag_dobas(n):", I("s = 0"), I("for i in range(n):"), I(I("s += random.randint(1, 6)")), I("return s / n")), fname: "atlag_dobas", tests: T1([["1 <= atlag_dobas(1) <= 6", "True", "Egy dobás átlaga maga a dobás: 1 és 6 között kellene lennie."], ["3.2 < atlag_dobas(5000) < 3.8", "True", "5000 dobás átlaga nem 3.5 körüli. Hol nullázódik az összeg?"]]), ex: "Az s = 0 a cikluson belül minden körben nullázta az összeget. A ciklus elé kell." }),
+        () => { const [g1, g2] = two(1, 100); const T = g => { const t = tippek(g); return { ins: t.map(S), rig: { randint: [g] }, exact: J(...t.slice(0, -1).map(x => x < g ? "Nagyobb!" : "Kisebb!"), "Eltaláltad! " + t.length + " tippből.") }; };
+          return { q: "Ebben a számkitalálóban a gép összekeveri a tanácsot: ha a tipp kicsi, azt írja: Kisebb!. Javítsd ki, hogy kicsi tippre <code>Nagyobb!</code>, nagyra <code>Kisebb!</code> legyen a válasz!",
+          starter: J("import random", "", "gondolt = random.randint(1, 100)", "db = 1", 'tipp = int(input("Tipp: "))', "while tipp != gondolt:", I("if tipp > gondolt:"), I(I('print("Nagyobb!")')), I("else:"), I(I('print("Kisebb!")')), I('tipp = int(input("Tipp: "))'), I("db += 1"), 'print(f"Eltaláltad! {db} tippből.")') + "\n",
+          code: J("import random", "", "gondolt = random.randint(1, 100)", "db = 1", 'tipp = int(input("Tipp: "))', "while tipp != gondolt:", I("if tipp < gondolt:"), I(I('print("Nagyobb!")')), I("else:"), I(I('print("Kisebb!")')), I('tipp = int(input("Tipp: "))'), I("db += 1"), 'print(f"Eltaláltad! {db} tippből.")'), tests: [T(g1), T(g2)], fstr: true, ex: "Ha a tipp kisebb a gondolt számnál, akkor kell a Nagyobb!: if tipp < gondolt." }; }
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "mi", kind: "kiir", L: MI.map(lv => lv.map(g => () => { const t = g(); return { code: t.vcode, ans: t.ans, sol: t.sol }; })) },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, MI, MK, MKSOL, FN, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, MI, MK, MKSOL, FN, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+  const J = (...l) => l.join("\n");
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: [], rows: 7 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  const tbox = (mod, fns, on) => '<div class="tbox"><span class="mod">' + esc(mod) + "</span>" + fns.map(f => '<span class="fn' + (f === on ? " on" : "") + '">' + esc(f) + "</span>").join("") + "</div>";
+  const MATHF = ["sqrt", "pi", "floor", "ceil", "…"], RANDF = ["randint", "choice", "random", "shuffle", "…"];
+  // számegyenes: x helye a floor és a ceil között; mark: { f: floor kiemelve, c: ceil kiemelve }, labels: alá írt szövegek
+  const nl = (x, lab) => { const f = Math.floor(x), c = Math.ceil(x); let h = ""; for (let i = f - 1; i <= c + 1; i++){ if (i === c) h += '<span class="x">' + x + "<small>x</small></span>"; h += '<span class="' + (i === f && lab[i] ? "f" : i === c && lab[i] ? "c" : "") + '">' + i + "<small>" + (lab[i] || "").split(", ").map(esc).join("<br>") + "</small></span>"; } return '<div class="nl">' + h + "</div>"; };
+  const vsx = (files, sel, code, term) => '<div class="vs"><div class="vs-bar"><span>' + esc(sel) + ' — VS Code</span><span class="run" title="Run Python File">▶</span></div><div class="vs-main"><div class="vs-exp"><div class="h">EXPLORER › KOVRAT</div>' +
+    files.map(f => '<div class="' + (f === sel ? "sel " : "") + (f === "random.py" ? "bad" : "") + '">🐍 ' + esc(f) + "</div>").join("") + '</div><div class="vs-ed"><pre>' + esc(code) + "</pre></div></div>" +
+    (term ? '<div class="vs-tab"><span>Problems</span><span>Output</span><b>Terminal</b></div><pre>' + term.map(r => r[0] === "p" ? '<span class="ps">PS C:\\Kovrat&gt;</span> ' + esc(r[1]) : r[0] === "e" ? '<span class="er">' + esc(r[1]) + "</span>" : r[0] === "k" ? '<span class="ok">' + esc(r[1]) + "</span>" : esc(r[1])).join("\n") + "</pre>" : "") + "</div>";
+  const DOBO = J("import random", "", "dobas = random.randint(1, 6)", 'print(f"Dobtál: {dobas}")');
+  const TRACE = [["p", "python random.py"], ["t", "Traceback (most recent call last):"], ["t", '  File "C:\\Kovrat\\random.py", line 1, in <module>'], ["t", "    import random"], ["t", '  File "C:\\Kovrat\\random.py", line 3, in <module>'], ["t", "    dobas = random.randint(1, 6)"], ["e", "AttributeError: module 'random' has no attribute 'randint'"], ["e", "(consider renaming 'C:\\Kovrat\\random.py' since it has the same"], ["e", "name as the standard library module named 'random' …)"]];
+  const POP = '<pre>math.<span class="cur"> </span></pre><div class="vs-pop"><div class="sel"><span><span class="ic">⬡</span> ceil</span><span class="doc">function</span></div><div><span><span class="ic">⬡</span> floor</span><span class="doc">function</span></div><div><span><span class="ic">⬡</span> pi</span><span class="doc">float</span></div><div><span><span class="ic">⬡</span> sqrt</span><span class="doc">function</span></div></div>';
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  function impFrames(){
+    const src = ["import math", "", "r = 3", "t = math.pi * r ** 2", "print(round(t, 2))"];
+    return [
+      { cap: "Az import math előveszi a math modult: ez egy eszköztár, tele matematikai függvényekkel és értékekkel. Import nélkül a Python nem ismeri.", html: srcHtml(src, 1) + tbox("math", MATHF) },
+      { cap: "Az r értéke 3.", html: srcHtml(src, 3) + varTbl({ r: 3 }) },
+      { cap: "math.pi: a pont azt jelenti, hogy a math eszköztárból a pi kell. Az értéke 3.141592653589793.", html: srcHtml(src, 4) + tbox("math", MATHF, "pi") + varTbl({ r: 3 }) },
+      { cap: "Először a hatvány: r ** 2 = 9. Aztán a szorzás: 3.14159… · 9 = 28.274333882308138. Ez lesz a t.", html: srcHtml(src, 4) + varTbl({ r: 3, t: "28.274333882308138" }) },
+      { cap: "A round(t, 2) két tizedesre kerekít (ez nem a math része, hanem beépített függvény, import nélkül is megy). Kiírja: 28.27.", html: srcHtml(src, 5) + outBox("28.27") }
+    ];
+  }
+  function kerekFrames(){
+    return [
+      { cap: "Négy módon lesz egy tizedes törtből egész szám. Nézzük a 3.7-et a számegyenesen: a 3 és a 4 között van.", html: nl(3.7, {}) },
+      { cap: "math.floor(3.7) = 3. A floor (padló) lefelé kerekít: a balra lévő, kisebb egész felé.", html: nl(3.7, { 3: "floor" }) },
+      { cap: "math.ceil(3.7) = 4. A ceil (mennyezet) felfelé kerekít: a jobbra lévő, nagyobb egész felé.", html: nl(3.7, { 3: "floor", 4: "ceil" }) },
+      { cap: "round(3.7) = 4, mert a 4 van közelebb. Az int(3.7) = 3: az int nem kerekít, csak levágja a tört részt.", html: nl(3.7, { 3: "floor, int", 4: "ceil, round" }) },
+      { cap: "Negatív számnál figyelj! A −2.5 a −3 és a −2 között van. A floor a kisebb felé visz: math.floor(−2.5) = −3. A ceil a nagyobb felé: −2.", html: nl(-2.5, { "-3": "floor", "-2": "ceil" }) },
+      { cap: "Az int(−2.5) levágja a tört részt: −2. A round(−2.5) is −2: pontosan félnél a Python a páros szám felé kerekít (ezt a 4. leckében láttad: round(2.5) = 2).", html: nl(-2.5, { "-3": "floor", "-2": "ceil, int, round" }) },
+      { cap: "Mikor melyik? Hány busz kell, hány doboz kell → ceil (a maradéknak is kell egy). Hány teljes csomag lesz → floor (vagy //). Átlag, pénz → round.", html: srcHtml(["import math", "print(math.floor(3.7), math.ceil(3.7), round(3.7), int(3.7))"], 2) + outBox("3 4 4 3") }
+    ];
+  }
+  function jatekFrames(){
+    const src = EX.jatek.code.split("\n");
+    return [
+      { cap: "A számkitaláló. Tegyük fel, hogy a gép a 7-re gondolt: a random.randint(1, 10) most 7-et adott. Ezt a játékos nem látja.", html: srcHtml(src, 3) + varTbl({ gondolt: 7 }) },
+      { cap: "A db számolja a tippeket, az első tipp a ciklus előtt jön: a játékos 5-öt ír be.", html: srcHtml(src, 5) + varTbl({ gondolt: 7, db: 1, tipp: 5 }) },
+      { cap: "5 != 7, igaz, tehát belépünk a ciklusba. 5 < 7, ezért kiírja: Nagyobb!", html: srcHtml(src, 8) + varTbl({ gondolt: 7, db: 1, tipp: 5 }) + outBox("Nagyobb!") },
+      { cap: "Új tipp: 8. A db 2 lesz. 8 != 7, újra a ciklusba; 8 < 7 hamis, ezért az else ág: Kisebb!", html: srcHtml(src, 10) + varTbl({ gondolt: 7, db: 2, tipp: 8 }) + outBox("Nagyobb!\nKisebb!") },
+      { cap: "Új tipp: 7. A db 3 lesz. Most a 7 != 7 hamis: a ciklus véget ér.", html: srcHtml(src, 6) + varTbl({ gondolt: 7, db: 3, tipp: 7 }) + outBox("Nagyobb!\nKisebb!") },
+      { cap: "A ciklus után kiírja: Eltaláltad! 3 tippből. Ha újra futtatod, a gép másik számra gondolhat.", html: srcHtml(src, 13) + outBox("Nagyobb!\nKisebb!\nEltaláltad! 3 tippből.") }
+    ];
+  }
+  function vsFrames(){
+    return [
+      { cap: "Kovrat dobókockás programot ír, és a fájlt random.py néven menti el, hiszen a randomról szól. Ez a csapda!", html: vsx(["random.py"], "random.py", DOBO) },
+      { cap: "Futtatja: hiba! A random modulnak nincs randint-je? Dehogynem van, csak a Python nem a valódi random modult töltötte be.", html: vsx(["random.py"], "random.py", DOBO, TRACE) },
+      { cap: "Az import random először a program mappájában keres. Ott talál egy random.py-t: a saját fájlt. Abban pedig nincs randint. (A régebbi Python ezt írja: partially initialized module 'random' … circular import.)", html: vsx(["random.py"], "random.py", DOBO, TRACE.slice(0, 5)) },
+      { cap: "A megoldás: nevezd át a fájlt (az Explorerben jobb klikk, Rename, vagy F2), például dobokocka.py-ra. Soha ne adj a programodnak modulnevet: random.py, turtle.py.", html: vsx(["dobokocka.py"], "dobokocka.py", DOBO) },
+      { cap: "Újra futtatva már megy. Ugyanez a csapda a turtle.py-jal és a legtöbb modul nevével. (A math kivétel, mert az a Python belsejébe van építve, de azt a nevet se használd.)", html: vsx(["dobokocka.py"], "dobokocka.py", DOBO, [["p", "python dobokocka.py"], ["k", "Dobtál: 4"], ["p", ""]]) }
+    ];
+  }
+  const MT = { imp: "import és a pont", kerek: "floor, ceil, round, int", jatek: "Számkitaláló", vs: "A random.py csapda" };
+  const MF = { imp: impFrames, kerek: kerekFrames, jatek: jatekFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "imp" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MT[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MT[PB.m]); }));
+  };
+  const slides = [
+    { k: "Alap", t: "Mi a modul?", h:
+      "<p>A modul egy <b>eszköztár</b>: kész függvények és értékek gyűjteménye, amelyet valaki már megírt. A Python sok ilyet hoz magával; ezt hívják <b>standard könyvtárnak</b>. Csak elő kell venni őket.</p>" + tbox("math", MATHF) + tbox("random", RANDF) +
+      "<ul><li>A <b>math</b>: matematika (gyökvonás, π, kerekítések).</li><li>A <b>random</b>: véletlen számok (kocka, sorsolás, keverés).</li><li>Előbb be kell hozni őket: <code>import math</code>. Import nélkül a Python nem ismeri a nevüket.</li></ul>" },
+    { k: "import", t: "import math, és a pont", h:
+      ex("imp") +
+      "<ul><li>Az <code>import math</code> a program <b>elejére</b> kerül, egyszer.</li><li>Utána: a modul neve, <b>pont</b>, a függvény neve: <code>math.sqrt(16)</code>. A pont azt jelenti: „a math-ból a sqrt”.</li><li>A <code>math.sqrt</code> mindig tizedes törtet (float) ad: <code>4.0</code>, nem 4.</li></ul>" + ex("noimp") + playBtn("imp") },
+    { k: "Kerekítés", t: "Lefelé és felfelé: floor és ceil", h:
+      ex("kerek") +
+      "<div class='ptwrap'><table class='pt'><tr><th></th><th>3.7</th><th>−2.5</th><th>mit csinál?</th></tr><tr><td>math.floor</td><td>3</td><td>−3</td><td style='font-family:var(--body)'>lefelé, a kisebb egész felé</td></tr><tr><td>math.ceil</td><td>4</td><td>−2</td><td style='font-family:var(--body)'>felfelé, a nagyobb egész felé</td></tr><tr><td>round</td><td>4</td><td>−2</td><td style='font-family:var(--body)'>a közelebbi egészre (félnél a páros felé)</td></tr><tr><td>int</td><td>3</td><td>−2</td><td style='font-family:var(--body)'>levágja a tört részt</td></tr></table></div>" +
+      ex("busz") + "<p>Hány busz kell 123 diáknak, ha egybe 50 fér? 123 / 50 = 2.46, de 2 busz kevés: a maradék 23 diáknak is kell egy. Ezért <b>felfelé</b> kerekítünk: 3.</p>" + playBtn("kerek") },
+    { k: "π és gyök", t: "Képletek: π és Pitagorasz", h:
+      ex("pi") + ex("pita") +
+      "<ul><li>A <code>math.pi</code> a π: 3.141592653589793. Nem függvény, ezért nincs utána zárójel.</li><li>A <code>math.sqrt(a ** 2 + b ** 2)</code> a Pitagorasz-tétel: a zárójelen belül előbb kiszámolódik az összeg.</li><li>A kerekítés a végén jöjjön, a kiírásnál: a számolás menjen pontosan.</li></ul>" },
+    { k: "from", t: "from math import …", h:
+      ex("from") +
+      "<p>A <code>from math import sqrt, pi</code> csak a felsorolt neveket hozza be, de azokat <b>előtag nélkül</b>: elég <code>sqrt(81)</code>. Ilyenkor viszont a <code>math.sqrt</code> nem működik (a math nevet nem hozta be).</p><p>Melyiket használd? Az <code>import math</code> a biztosabb: a kódban látszik, honnan jön a függvény. A feladatokban mindkettő jó.</p>" },
+    { k: "randint", t: "Véletlen egész: random.randint", h:
+      ex("randint") +
+      "<ul><li>A <code>random.randint(1, 6)</code> egy véletlen <b>egész</b> számot ad 1-től 6-ig: ez egy dobókocka.</li><li><b>Mindkét határ benne van:</b> az 1 és a 6 is kijöhet. (A <code>range(1, 6)</code>-nál a 6 nincs benne! A kettő különbözik.)</li><li>Minden hívás új dobás (lehet ugyanaz a szám is). Futtasd többször a példát!</li></ul>" },
+    { k: "choice, shuffle", t: "Véletlen elem, keverés, tört", h:
+      ex("choice") + ex("shuffle") + ex("random") +
+      "<ul><li><code>random.choice(lista)</code>: a lista egy véletlen <b>eleme</b> (szövegből egy véletlen betű).</li><li><code>random.shuffle(lista)</code>: <b>helyben</b> összekeveri a listát. Nem ad vissza semmit, ezért nem kell (és nem szabad) értékül adni: a <code>kartyak = random.shuffle(kartyak)</code> után a kartyak értéke None.</li><li><code>random.random()</code>: véletlen tört 0 és 1 között (a 0 lehet, az 1 nem).</li></ul>" },
+    { k: "seed", t: "Igazi véletlen? A seed", h:
+      ex("seed") +
+      "<p>A gép valójában számol: egy kezdőértékből (<b>mag</b>, angolul seed) képlettel gyártja a „véletlen” számokat. Ha a magot rögzíted (<code>random.seed(2026)</code>), minden futtatáskor <b>ugyanazokat</b> a számokat kapod. Ez teszteléshez jó: a hiba megismételhető.</p><p>Mag nélkül a Python mindig más kezdőértéket választ, ezért futásonként más jön ki. A feladatokban ne használd a seedet.</p>" },
+    { k: "Játék", t: "Egy kis játék: számkitaláló", h:
+      ex("jatek") +
+      "<ul><li>A <code>random.randint</code> kiválasztja a számot, a <code>while</code> addig kér tippet, amíg el nem találod (6. lecke).</li><li>A példa bemenetei között mind a tíz szám ott van, így a program előbb-utóbb eltalálja. A VS Code-ban te írod be a tippeket: felezéssel (5, aztán 8 vagy 3…) legfeljebb 4 tippből megvan!</li></ul>" + playBtn("jatek") },
+    { k: "Függvénnyel", t: "Véletlen a függvényben", h:
+      ex("kocka") +
+      "<p>A <code>kocka()</code> függvény minden hívásra új dobást ad vissza (10. lecke). Így a program olvasható: „tíz kockadobás egy listába”. A <code>dobasok.count(6)</code> megszámolja a hatosokat (a lista count metódusa ugyanúgy működik, mint a szövegé).</p>" },
+    { k: "VS Code", t: "A VS Code-ban: ajánló és fájlnév", h:
+      '<div class="vs"><div class="vs-bar"><span>program.py — VS Code</span><span class="run">▶</span></div>' + POP + "</div>" +
+      "<ul><li>Az <code>import math</code> után írd be: <code>math.</code> A pont után a VS Code felsorolja a modul függvényeit (Ctrl+szóköz is előhozza). Így nem kell fejből tudnod a pontos nevet.</li><li><b>A legnagyobb csapda:</b> ne nevezd a programodat <code>random.py</code>-nak vagy más modul nevére! Akkor az <code>import random</code> a te fájlodat tölti be, és furcsa AttributeError jön.</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Javítás</th></tr>" +
+      [["math.sqrt(16) import nélkül", "NameError: name 'math'", "import math az elejére"],
+       ["import math, aztán sqrt(16)", "NameError: name 'sqrt'", "math.sqrt(16)"],
+       ["import Math", "ModuleNotFoundError", "import math (kisbetű)"],
+       ["math.sqrt(-4)", "ValueError: math domain error", "nemnegatív szám"],
+       ["random.randint(6)", "TypeError: missing … 'b'", "random.randint(1, 6)"],
+       ["random.randint(6, 1)", "ValueError: empty range", "kisebb határ elöl"],
+       ["random.choice([])", "IndexError", "ne legyen üres a lista"],
+       ["randint(0, 6) dobókockának", "nincs hiba, de 0 is jöhet", "randint(1, 6)"],
+       ["lista = random.shuffle(lista)", "a lista None lesz", "random.shuffle(lista)"],
+       ["a fájl neve random.py", "AttributeError", "nevezd át"]].map(r => "<tr><td>" + esc(r[0]) + "</td><td style='font-family:var(--body)'>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" + ex("domain") }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen(l){ const t = pick(KIIR[l - 1])(); const k = P.kiir(t, "Mit ír ki?"); if (t.rq) k.q = "Mit ír ki ez a program, ha " + esc(t.rq) + "?<pre class='code'>" + esc(t.code) + "</pre>"; return k; } },
+    { id: "mi", name: "Milyen értéket adhat?", gen(l){
+      const t = pick(MI[l - 1])();
+      return P.choice((t.pre ? "<pre class='code'>" + esc(t.pre) + "</pre>" : "") + "Milyen értéket adhat ez a kifejezés? <code>" + esc(t.expr) + "</code>", esc(t.good), t.bad.map(esc), "<p>" + esc(t.sol) + "</p>", "Nem ez. A randint(a, b) egész számot ad, és az a és a b is lehet; a choice a lista egy elemét adja; a random.random() 0 és 1 közötti törtet (az 1 nem).");
+    } },
+    { id: "mk", name: "Melyik kell?", gen(l){
+      const it = pick(MK[l - 1]);
+      return P.choice("Melyik kell hozzá? <b>" + esc(it[0]) + "</b>", "<code>" + FN[it[1]] + "</code>", shuffle(FN.filter((_, i) => i !== it[1])).slice(0, 3).map(f => "<code>" + f + "</code>"), "<p>" + MKSOL[it[1]] + "</p>", "Nem ez. Gyök → sqrt; lefelé → floor; felfelé → ceil; legközelebbi → round; véletlen egész → randint; véletlen elem → choice; keverés → shuffle.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen: l => P.hiba(pick(HIBA[l - 1])(), HPOOL, "Nézd meg: be van hozva a modul (import)? Jó a neve (kisbetűvel)? Kell-e elé a math. vagy a random.? Jó számot kap a függvény (negatív a gyök alatt, üres lista, fordított határok)?") },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-11-modulok", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["import math", "a math modul behozása (a program elején)"], ["math.sqrt(x)", "négyzetgyök (float)"], ["math.pi", "π = 3.141592653589793"], ["math.floor(x) · math.ceil(x)", "lefelé · felfelé kerekít egészre"], ["round(x) · int(x)", "legközelebbi egész · levágja a törtet (import nélkül)"], ["from math import sqrt", "a sqrt előtag nélkül: sqrt(x)"], ["import random", "a random modul behozása"], ["random.randint(a, b)", "véletlen egész a-tól b-ig (mindkettő benne)"], ["random.choice(lista)", "a lista egy véletlen eleme"], ["random.shuffle(lista)", "helyben összekeveri (nincs visszaadott érték)"], ["random.random()", "véletlen tört, 0 ≤ x < 1"], ["random.seed(n)", "rögzített mag: mindig ugyanazok a számok"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + r[1] + "</td></tr>").join("");
+})();
+</script>
+<script>
+/* Mindig a legfrissebb változat: ha a szerveren újabb a version.json, az oldal újratölt egy olyan címen (?v=…), amit semmilyen gyorsítótár nem tárolt még. Mobilon a fülre visszatéréskor is ellenőriz. */
+(function(){
+  var m = document.querySelector('meta[name="kovrat-version"]'), mine = m ? m.content : "";
+  function check(){
+    if (!window.fetch || !/^https?:$/.test(location.protocol)) return;
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if (!d || !d.v || d.v === mine) return;
+        var u = new URL(location.href);
+        if (u.searchParams.get("v") === d.v) return; // ezt már kértük: nincs végtelen újratöltés
+        u.searchParams.set("v", d.v);
+        location.replace(u.toString());
+      })
+      .catch(function(){});
+  }
+  check();
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") check(); });
+  window.addEventListener("pageshow", function(e){ if (e.persisted) check(); });
+})();
+</script>
