@@ -357,6 +357,14 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   a `py-check` `-X utf8`-cal fut. Lektor: 13 pont (szakmai: a `math.py` nem takarja el a math modult, mert beépített, ezért a csapda
   példája a `random.py` és a `turtle.py`; a pénzfeldobásnál a choice is jó lett volna; a névsorsolásnál a listát a diáknak kell beírnia),
   mind javítva, a tesztek újrafuttatva.
+- **12. lecke: Kivételkezelés: try és except** (`python-12-kivetelek`, 2026-11-03, Endi kérésére külön PR-ban): 15 dia, 4 levezetés (try és
+  except két bemenettel, else és finally, kérdezés amíg jó nem lesz, a kivétel a VS Code hibakeresőjében: Exception has occurred, BREAKPOINTS
+  Uncaught / Raised Exceptions), 6 típus (Mit ír ki?, Hányszor kérdez?, Melyik except kell?, Írd meg! jó és rossz bemenettel, Milyen hibát ad?,
+  Javítsd ki!). A közös modul: `tests[k].crash` (célzott üzenet leálláskor), `_kerr` a `calls`-ban (a `raise` ellenőrzése), EOFError válasz,
+  hibatipp a hiányzó except-re és az elírt hibanévre. Lektor: 26 pont (szakmai: a 13. lecke `with`-je zárja a fájlt, nem a finally; a
+  SyntaxError ↔ elírt név különbsége; a harmadik jelölő, User Uncaught Exceptions; a „7.0” matematikailag egész, kivéve; a 3,5 a diáknak szám,
+  a feladat szól róla; csupasz except minden Javítsd ki!-ben tiltva), mind javítva, a tesztek újrafuttatva. A `.githooks/pre-commit` ebben a
+  klónban nem volt futtatható (a verziót kézzel pótoltuk), a futtatási jog commitolva.
 
 ## Döntések és indokaik
 
