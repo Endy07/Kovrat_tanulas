@@ -993,14 +993,17 @@ const PYCORE = (function(){
   /* ---- Bírálat: a feladat (T) és a futások eredménye (rs) alapján. { ok, k, why } ---- */
   // T.tests[k]: { ins, exact?, exp?, seq?: [szövegek ebben a sorrendben], vars?: [[név, típus, érték]], rig?, files?, fout?: [[fájlnév, várt tartalom]] } · T.must / T.mustNot: [[regex, üzenet]] · T.fstr: kell-e f-string
   // a gép maga hívja meg a diák függvényét: tests[k].calls = [[hívás, várt kiírt érték], …] → a program végére „print("@@", hívás)” sorok
-  const callPost = t => (t.calls || []).map(c => 'print("@@", ' + c[0] + ")").join(String.fromCharCode(10));
+  // a 12. leckétől: _kerr(f, arg…) → a hívás által dobott kivétel neve, vagy "nincs hiba" (a raise ellenőrzéséhez)
+  const KERR = ["def _kerr(_f, *_a):", "    try:", "        _f(*_a)", "    except Exception as _e:", "        return type(_e).__name__", '    return "nincs hiba"'].join(String.fromCharCode(10));
+  const callPost = t => ((t.calls || []).some(c => /\b_kerr\(/.test(c[0])) ? KERR + String.fromCharCode(10) : "") + (t.calls || []).map(c => 'print("@@", ' + c[0] + ")").join(String.fromCharCode(10));
   const withCalls = (code, t) => t.calls && t.calls.length ? code + String.fromCharCode(10) + callPost(t) : code;
   function judge(T, code, rs){
     for (let k = 0; k < T.tests.length; k++){
       const t = T.tests[k], r = rs[k], ins = t.ins || [];
       const pre = !k ? "" : k === 1 ? "Az első próbára jó volt, de a másodikra nem. " : "Az előző próbákra jó volt, de " + az(k + 1) + (k + 1) + ". próbára nem. ";
       if (r.err && T.fname && r.etype === "NameError" && r.err.includes("'" + T.fname + "'")) return { ok: false, k, why: "Nincs " + T.fname + " nevű függvény a programodban. Pontosan így nevezd el: def " + T.fname + "(…):" };
-      if (r.err) return { ok: false, k, why: pre + "A program hibával állt le." };
+      // t.crash (a 12. leckétől): célzott magyarázat, ha erre a próbára a program hibával leáll (például nincs try)
+      if (r.err) return { ok: false, k, why: pre + "A program hibával állt le." + (t.crash ? " " + (typeof t.crash === "string" ? t.crash : t.crash[r.etype] || t.crash[""] || "") : "") };
       if (t.calls && t.calls.length){
         const got = String(r.out).split("\n").filter(l => l.startsWith("@@")).map(l => l.slice(3));
         for (let q = 0; q < t.calls.length; q++){
@@ -1155,6 +1158,7 @@ const P = (function(){
       if (/^(true|false)$/.test(n)) return "Az igaz és a hamis nagy kezdőbetűvel: True, False.";
       if (n === "math" || n === "random") return "Hiányzik az import: a program elejére írd be: import " + n + ". (Ha from " + n + " import …-tal hoztad be a függvényt, akkor " + n + ". nélkül írd, például " + (n === "math" ? "sqrt(4)" : "randint(1, 6)") + ".)";
       if (/^(sqrt|floor|ceil|pi)$/.test(n)) return "Ez a math modul része: math." + n + (n === "pi" ? "" : "(…)") + " (és a program elején import math). Vagy így hozd be: from math import " + n + ".";
+      if (/(Error|Exception)$/.test(n) && n !== "Exception") return "A hiba neve pontosan így írandó, nagy kezdőbetűkkel: ValueError, ZeroDivisionError, IndexError, TypeError. (Az except sorban az elírt név csak akkor derül ki, ha tényleg hiba keletkezik.)";
       if (/^(randint|choice|shuffle|uniform)$/.test(n)) return "Ez a random modul függvénye: random." + n + "(…) (és a program elején import random). Vagy így hozd be: from random import " + n + ".";
       return "Nincs ilyen nevű változó" + (n ? ": " + n : "") + ". Ha szöveget akartál kiírni, tedd idézőjelbe" + (n ? ": \"" + n + "\"" : "") + ". Ha változó, előbb adj neki értéket (és ugyanígy írd: a kis- és nagybetű is számít).";
     }
@@ -1174,13 +1178,14 @@ const P = (function(){
     if (/can't multiply sequence by non-int/.test(m)) return "Szöveget csak egész számmal lehet szorozni (\"ha\" * 3). Szöveget szöveggel nem.";
     if (/invalid literal for int\(\)/.test(m)) return "Az int() csak egész számot tud átalakítani. Tizedes törthöz float() kell (és pont, nem vessző: 3.5); betűt nem lehet számmá alakítani.";
     if (/could not convert string to float/.test(m)) return "Ez nem szám. Tizedesvessző helyett pontot írj: 3.5.";
+    if (/expected 'except' or 'finally' block/.test(m)) return "A try után kell egy except (vagy finally) blokk, a try-jal egy vonalban: try: … except ValueError: …. Ha a try blokk sorai nincsenek beljebb húzva, az is ezt a hibát adja.";
     if (/expected ':'/.test(m)) return "Hiányzik a kettőspont a sor végéről: if feltétel: (az elif és az else után is kell).";
     if (/expected an indented block/.test(m)) return "A kettőspont utáni sornak beljebb kell kezdődnie (4 szóköz, a VS Code-ban Tab): ez tartozik az if alá.";
     if (/unindent does not match/.test(m)) return "A behúzás nem egyezik: az egy blokkba tartozó sorok pontosan ugyanannyi szóközzel kezdődjenek.";
     if (etype === "IndentationError") return /unexpected indent/.test(m) ? "Szóköz (vagy tabulátor) van a sor elején. Az egyszerű utasítások a sor legelején kezdődnek." : "Behúzási hiba: a kettőspont utáni sor 4 szóközzel beljebb kezdődik.";
     if (etype === "SyntaxError") return "Szintaktikai hiba: a Python nem érti a sort. Nézd meg a zárójeleket, az idézőjeleket és a vesszőket. A hiba gyakran a jelzett sorban vagy közvetlenül előtte van.";
     if (etype === "ZeroDivisionError") return "Nullával osztottál.";
-    if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez.";
+    if (etype === "EOFError") return "A program több adatot kér be (input), mint ahány bemenetet megadtál. Írj be még egy sort a bemenetekhez. (Ha while True ciklusban kérsz be: a jó adat után kimaradt a break?)";
     if (/math domain error/.test(m)) return "Ezt a math nem tudja kiszámolni: például negatív számnak nincs (valós) négyzetgyöke. Nézd meg, mit adtál a függvénynek.";
     if (/partially initialized module|circular import|consider renaming/.test(m)) return "A fájlod neve ugyanaz, mint a modulé (például random.py vagy turtle.py), ezért a Python a saját fájlodat tölti be. Nevezd át (például dobokocka.py).";
     if (/module '(math|random)' has no attribute/.test(m)) return "Ebben a modulban nincs ilyen nevű függvény. Nézd meg a nevét (math: sqrt, floor, ceil, pi; random: randint, choice, random, shuffle), és a kis- és nagybetűt.";
@@ -1294,8 +1299,8 @@ const P = (function(){
     const opts = K.shuffle([{ l: good, ok: true }].concat(others.map(x => ({ l: x, ok: false }))));
     return { q, kind: "choice", options: opts, answer: good, sol, check: v => ({ ok: !!opts[v.idx].ok, msg: opts[v.idx].ok ? "Helyes!" : (typeof bad === "function" ? bad(opts[v.idx].l) : bad) }) };
   }
-  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError", IndexError: "IndexError", AttributeError: "AttributeError", ModuleNotFoundError: "ModuleNotFoundError", FileNotFoundError: "FileNotFoundError", UnsupportedOperation: "UnsupportedOperation" };
-  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", IndexError: "indexhiba: nincs ilyen sorszámú elem a listában", AttributeError: "attribútumhiba: ennek az értéknek (vagy modulnak) nincs ilyen metódusa, függvénye", ModuleNotFoundError: "nincs ilyen nevű modul", FileNotFoundError: "nincs ilyen nevű fájl", UnsupportedOperation: "a fájl nem úgy van megnyitva, ahogy használni akarod (olvasásra nyitottat írni, írásra nyitottat olvasni)", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
+  const ERRS = { TimeoutError: "Végtelen ciklus, sosem áll meg", "": "Nincs hiba, lefut", SyntaxError: "SyntaxError", NameError: "NameError", IndentationError: "IndentationError", TypeError: "TypeError", ValueError: "ValueError", ZeroDivisionError: "ZeroDivisionError", IndexError: "IndexError", AttributeError: "AttributeError", ModuleNotFoundError: "ModuleNotFoundError", EOFError: "EOFError", FileNotFoundError: "FileNotFoundError", UnsupportedOperation: "UnsupportedOperation" };
+  const ERR_HU = { SyntaxError: "szintaktikai hiba: a Python el sem kezdi futtatni, mert nem érti a sort", NameError: "ismeretlen név: nincs ilyen változó vagy függvény", IndentationError: "behúzási hiba: rossz helyen van szóköz a sor elején", TypeError: "típushiba: ezzel a típussal nem végezhető el a művelet", ValueError: "értékhiba: az érték nem alakítható át (például int(\"alma\"))", ZeroDivisionError: "nullával osztás", IndexError: "indexhiba: nincs ilyen sorszámú elem a listában", AttributeError: "attribútumhiba: ennek az értéknek (vagy modulnak) nincs ilyen metódusa, függvénye", ModuleNotFoundError: "nincs ilyen nevű modul", EOFError: "elfogyott a bemenet: a program több adatot kér be, mint amennyit a felhasználó beírt", FileNotFoundError: "nincs ilyen nevű fájl", UnsupportedOperation: "a fájl nem úgy van megnyitva, ahogy használni akarod (olvasásra nyitottat írni, írásra nyitottat olvasni)", TimeoutError: "a program nem áll meg, mert a ciklusfeltétel mindig igaz marad", "": "nincs hiba" };
   // „Milyen hibát ad?”: t = { code, err, sol }, a választható hibák listája (pool)
   function hiba(t, pool, tip){
     // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza

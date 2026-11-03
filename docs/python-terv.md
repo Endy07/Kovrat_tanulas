@@ -54,7 +54,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 9 | **Szövegek mélyebben** | `python-9-szovegek` | index és szelet (`s[1:4]`), `len`, `in`, metódusok (`upper` `lower` `strip` `count` `replace` `split`), bejárás karakterenként, a szöveg nem módosítható | ✅ kész (2026. 11. 01.) |
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | ✅ kész (2026. 11. 01.) |
 | 11 | **Modulok: `math` és `random`** | `python-11-modulok` | `import`, a pont, `from … import`, `math.sqrt` `pi` `floor` `ceil`, `random.randint` `choice` `shuffle` `random` `seed`, számkitaláló, a `random.py` fájlnév-csapda | ✅ kész (2026. 11. 01.) |
-| 12 | **Kivételkezelés: `try` és `except`** | `python-12-kivetelek` | a hiba elkapása, `except ValueError`, több `except`, `else`, `finally`, `as e`, ismételt bekérés, amíg jó nem lesz (`while True` + `try` + `break`) | tervezett |
+| 12 | **Kivételkezelés: `try` és `except`** | `python-12-kivetelek` | a hiba elkapása, `except ValueError`, több `except`, `else`, `finally`, `as e`, ismételt bekérés, amíg jó nem lesz (`while True` + `try` + `break`), `raise`, a csupasz `except:` veszélye | ✅ kész (2026. 11. 03.) |
 | 13 | **Szöveges fájlok** | `python-13-fajlok` | `open`, `with`, `encoding="utf-8"`, `read`, soronként (`for sor in f`), `strip`, `split(";")`, írás (`"w"`, `"a"`, `write`), `FileNotFoundError`, statisztika fájlból; a fájl helye a VS Code-ban | tervezett |
 | 14 | **Ismétlő próbadolgozat** | `python-ismetlo` | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | tervezett |
 
@@ -206,6 +206,25 @@ felépítésben, utána egy ismétlő próbadolgozat az 1–10. leckéből. Az O
   hívja a függvényt, és tulajdonságokat néz (tartomány, mind a hat érték kijön); a `calls` harmadik eleme a célzott üzenet.
   A `seq` a kiírások sorrendjét nézi (számkitaláló: Nagyobb!/Kisebb!).
 - **VS Code:** a metódus-ajánló a `math.` után; a `random.py` nevű fájl csapdája (a 3.13-as és a régebbi hibaüzenet is).
+
+### 12. Kivételkezelés: `try` és `except`
+
+- **Cél:** a program ne álljon le a felhasználó rossz válaszától; a hiba fajtája szerint reagáljon; kérdezzen, amíg jó választ nem kap.
+- **Fogalmak:** kivétel (futás közbeni hiba) ↔ SyntaxError (el sem indul, a try nem segít); `try:` / `except ValueError:`; a try többi
+  sora a hiba után kimarad; csak a megnevezett hibát kapja el; több `except`, `except (A, B):`; `else` (ha nem volt hiba), `finally`
+  (mindig); `as e`; `while True` + `try` + `break`; ellenőrzés feltétellel az `else`-ben (1–5); a try a cikluson belül (hibás elem
+  kihagyása); `raise ValueError("…")` a függvényben; a csupasz `except:` elrejti az elírást (NameError); `ValueError`,
+  `ZeroDivisionError`, `IndexError`, `TypeError`, `NameError`, `EOFError`.
+- **Tipikus hibák:** try után nincs except (`expected 'except' or 'finally' block`); kettőspont nélküli except; `except Valueerror:`
+  (NameError, de csak ha tényleg hiba jön); rossz hibát kap el; csupasz except; kimaradt break (a jó szám után is kérdez → EOFError);
+  az except-ben a létre sem jött változó kiírása (NameError); a try az egész ciklus körül; else az except előtt.
+- **Feladattípusok (kész):** Mit ír ki? (bemenettel) · Hányszor kérdez? (választós; a `py-check` megszámolja az input()-hívásokat) ·
+  Melyik except kell? (választós; a `py-check` lefuttatja a sort) · Írd meg! (jó és rossz bemenettel is: szó, tizedes tört, `3,5`, 0;
+  `crash`: célzott üzenet, ha a program leáll; a csupasz except tiltva) · Milyen hibát ad? (bemenettel; az elkapott hiba = „Nincs hiba”) ·
+  Javítsd ki!
+- **A `raise` ellenőrzése:** a `calls`-ban `_kerr(fv, arg)` → a dobott kivétel neve vagy `nincs hiba` (a keret maga teszi a program végére).
+- **VS Code:** a hibakereső megáll az el nem kapott kivételnél (Exception has occurred), a BREAKPOINTS panel Uncaught / Raised Exceptions
+  jelölője; rajzzal és levezetéssel.
 
 ## Technika
 

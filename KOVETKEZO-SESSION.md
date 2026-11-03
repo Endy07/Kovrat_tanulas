@@ -1,6 +1,27 @@
 # Következő session
 
-## 🧭 BELÉPÉSI PONT — 2026-11-01 éjjel (Python 11. lecke: modulok)
+## 🧭 BELÉPÉSI PONT — 2026-11-03 (Python 12. lecke: kivételkezelés)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–11. lecke (PR #5–#14; a 11. beolvasztva: `25a7fc6`).
+- **Új PR-ban** (`claude/lesson-12-exception-handling-n8ytkd`): **12. Kivételkezelés: try és except** (`python-12-kivetelek`): a kivétel,
+  `try`/`except`, a hiba fajtája, több `except`, `else`, `finally`, `as e`, `while True` + `try` + `break`, 1–5 ellenőrzés, hibás adat
+  kihagyása ciklusban, `raise`, a csupasz `except:` veszélye, a kivétel a VS Code hibakeresőjében. 15 dia, 4 levezetés, 6 feladattípus
+  (Mit ír ki?, Hányszor kérdez?, Melyik except kell?, Írd meg!, Milyen hibát ad?, Javítsd ki!).
+- **A közös modul bővült:** `tests[k].crash` (célzott üzenet, ha a program leáll), `_kerr(fv, arg)` a `calls`-ban (a `raise` ellenőrzése),
+  EOFError válasz a „Milyen hibát ad?”-ban, hibatipp a try utáni hiányzó except-re és az elírt hibanévre. Az 1–11. lecke HTML-je újraépítve.
+- **Tesztek:** `py-check --verify 40 python-12-kivetelek` 3584 futás, 0 hiba (a 3., 6., 10., 11. lecke 10-zel újra, 0 hiba); `lesson-test 40`
+  (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+
+**Következő lépés:** a PR beolvasztása után a **13. lecke: szöveges fájlok** (`python-13-fajlok`): `open`, `with`, `encoding="utf-8"`,
+`read`, soronként, `strip`, `split(";")`, írás (`"w"`, `"a"`), `FileNotFoundError` (try-jal, a 12. lecke folytatása), statisztika fájlból;
+a keret `files`/`fout` része már kész (a 11. leckénél előkészítve). VS Code: a fájl helye (a megnyitott mappa, a terminál munkakönyvtára).
+
+**Endi döntésére vár:** a 12. lecke PR-jének beolvasztása.
+
+---
+
+## (korábbi) BELÉPÉSI PONT — 2026-11-01 éjjel (Python 11. lecke: modulok)
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–10. lecke (PR #5–#13; a pult mindet ellenőrizte, Windowson is).
