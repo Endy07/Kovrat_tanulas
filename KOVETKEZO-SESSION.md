@@ -4,14 +4,14 @@
 
 **Hol tartunk:**
 - **Élesben:** a sorozatterv, a közös modul és az 1–11. lecke (PR #5–#14; a 11. beolvasztva: `25a7fc6`).
-- **Új PR-ban** (`claude/lesson-12-exception-handling-n8ytkd`): **12. Kivételkezelés: try és except** (`python-12-kivetelek`): a kivétel,
+- **Új PR-ban** (#15, `claude/lesson-12-exception-handling-n8ytkd`): **12. Kivételkezelés: try és except** (`python-12-kivetelek`): a kivétel,
   `try`/`except`, a hiba fajtája, több `except`, `else`, `finally`, `as e`, `while True` + `try` + `break`, 1–5 ellenőrzés, hibás adat
   kihagyása ciklusban, `raise`, a csupasz `except:` veszélye, a kivétel a VS Code hibakeresőjében. 15 dia, 4 levezetés, 6 feladattípus
   (Mit ír ki?, Hányszor kérdez?, Melyik except kell?, Írd meg!, Milyen hibát ad?, Javítsd ki!).
 - **A közös modul bővült:** `tests[k].crash` (célzott üzenet, ha a program leáll), `_kerr(fv, arg)` a `calls`-ban (a `raise` ellenőrzése),
   EOFError válasz a „Milyen hibát ad?”-ban, hibatipp a try utáni hiányzó except-re és az elírt hibanévre. Az 1–11. lecke HTML-je újraépítve.
 - **Tesztek:** `py-check --verify 40 python-12-kivetelek` 3584 futás, 0 hiba (a 3., 6., 10., 11. lecke 10-zel újra, 0 hiba); `lesson-test 40`
-  (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+  (Pyodide-dal) 720/720, 390 px, JS-hiba nincs. Lektor: 26 pont, mind javítva.
 
 **Következő lépés:** a PR beolvasztása után a **13. lecke: szöveges fájlok** (`python-13-fajlok`): `open`, `with`, `encoding="utf-8"`,
 `read`, soronként, `strip`, `split(";")`, írás (`"w"`, `"a"`), `FileNotFoundError` (try-jal, a 12. lecke folytatása), statisztika fájlból;
@@ -67,7 +67,7 @@ szöveges fájlok, ismétlő próbadolgozat az 1–10. leckéből; vagy vissza a
 - **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **9. Szövegek mélyebben** (`python-9-szovegek`):
   index és szelet, `[::-1]`, a szöveg nem módosítható, metódusok, `split`/`join`, `in`, bejárás, szöveg építése, a VS Code
   metódus-ajánlója. 12 dia, 4 levezetés, 6 feladattípus.
-- **Tesztek:** `py-check --verify 40 python-9-szovegek` 2683 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+- **Tesztek:** `py-check --verify 40 python-9-szovegek` 2683 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs. Lektor: 26 pont, mind javítva.
 
 **Következő lépés:** a PR beolvasztása után a **10. lecke: saját függvények** (`python-10-fuggvenyek`): `def`, paraméter, `return` vs.
 `print`, alapértelmezett érték. Az „Írd meg!” itt a függvényt hívja több argumentummal (a keret változói között a függvény nem
@@ -87,7 +87,7 @@ szerepel; a próbát a minta végére írt hívásokkal érdemes megoldani). Ezz
 - **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **8. Listák** (`python-8-listak`): index, `append`,
   bejárás, bekérés listába, `sum`/`max`/`min`/`in`, öt tétel Pythonban (a `programozasi-tetelek` leckéhez igazítva), a lista a VS Code
   Variables panelén. 13 dia, 4 levezetés, 6 feladattípus.
-- **Tesztek:** `py-check --verify 40 python-8-listak` 2494 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+- **Tesztek:** `py-check --verify 40 python-8-listak` 2494 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs. Lektor: 26 pont, mind javítva.
 
 **Következő lépés:** a PR beolvasztása után a **9. lecke: szövegek mélyebben** (`python-9-szovegek`): index és szelet, metódusok,
 `split`, bejárás karakterenként. Figyelj: a `python-dolgozat` lecke szöveges részével ne legyen ellentmondás (ugyanazok a metódusok).
@@ -108,7 +108,7 @@ szerepel; a próbát a minta végére írt hívásokkal érdemes megoldani). Ezz
     40-nel újrafuttatva: 0 hiba.
   - **7. Számlálós ciklus: for és range** (`python-7-for`): range három alakja, visszafelé, for vagy while, összegzés, megszámlálás,
     for szövegen, egymásba ágyazott ciklus, lépésenkénti futtatás a VS Code-ban (töréspont, F5, F10). 11 dia, 4 levezetés, 6 típus.
-- **Tesztek:** `py-check --verify 40 python-7-for` 2527 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+- **Tesztek:** `py-check --verify 40 python-7-for` 2527 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs. Lektor: 26 pont, mind javítva.
 
 **Következő lépés:** a PR beolvasztása után a **8. lecke: listák** (`python-8-listak`), a terv szerint (a programozási tételek Pythonban).
 
@@ -167,7 +167,7 @@ a futtató 6 mp után leállítja; a py-check-nek nincs időkorlátja, a generá
 - **Új PR-ban** (`claude/python-sorozat-alapok-wtcsgc`, a `main`-ről folytatva): **4. Műveletek és beépített függvények**
   (`python-4-muveletek`): `/ // % **`, műveleti sorrend, `+=`, `round` (páros felé), `abs`, `max`, `min`, a maradék a gyakorlatban,
   a Python REPL a VS Code termináljában. 12 dia, 4 levezetés, 6 feladattípus.
-- **Tesztek:** `py-check --verify 40 python-4-muveletek` 3176 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs.
+- **Tesztek:** `py-check --verify 40 python-4-muveletek` 3176 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 720/720, 390 px, JS-hiba nincs. Lektor: 26 pont, mind javítva.
 
 **Következő lépés:** a PR beolvasztása után az **5. lecke: feltételek (`if`, `elif`, `else`)** (`python-5-elagazas`), a terv szerint,
 VS Code-os példákkal, az alapoktól (nem tudjuk, volt-e már `if` az iskolában).
