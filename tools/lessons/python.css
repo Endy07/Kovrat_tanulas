@@ -32,3 +32,11 @@
 .big-note{border:2px solid var(--led);border-radius:14px;padding:12px 16px;max-width:70ch}
 .next{display:flex;flex-wrap:wrap;gap:10px}
 #cheat td{text-align:left}
+/* a 13. leckétől: a program mappájának fájljai */
+.pyfiles{display:flex;flex-direction:column;gap:8px}
+.pyed .pyfile{min-height:60px}
+.pynote{font-size:.85rem;margin:0}
+.pyout-b .fh{color:#FFB01F}
+.ffile{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0}
+.ffile-h{display:block;font-family:var(--mono);font-size:.78rem;padding:4px 10px;background:var(--surface);border-bottom:1px solid var(--line);color:var(--muted)}
+.ffile pre{margin:0;padding:8px 10px;font-family:var(--mono);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-ligatures:none}

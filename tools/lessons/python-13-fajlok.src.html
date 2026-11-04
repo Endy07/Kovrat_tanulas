@@ -1,0 +1,454 @@
+<!--@HEAD-->
+<title>Python 13: szöveges fájlok</title>
+<style>
+.vs{background:#1e1e1e;color:#d4d4d4;border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:.85rem;border:1.5px solid #3A4656}
+.vs-bar{display:flex;justify-content:space-between;align-items:center;background:#2d2d2d;padding:5px 12px;color:#9da5b4;font-size:.75rem;gap:8px}
+.vs-bar .run{color:#89d185;font-size:.95rem}
+.vs-main{display:grid;grid-template-columns:minmax(110px,36%) 1fr}
+.vs-exp{background:#252526;padding:6px 0;font-size:.78rem;color:#cccccc;border-right:1px solid #3c3c3c;min-width:0}
+.vs-exp .h{padding:0 10px 4px;font-size:.68rem;letter-spacing:.06em;color:#9da5b4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vs-exp div{padding:1px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vs-exp .sel{background:#37373d}
+.vs-exp .new{color:#89d185}
+.vs-ed{min-width:0}
+.vs pre{margin:0;padding:8px 12px;white-space:pre;overflow-x:auto;line-height:1.5;font-family:var(--mono)}
+.vs-tab{display:flex;gap:16px;background:#252526;padding:4px 12px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#9da5b4;border-top:1px solid #3c3c3c}
+.vs-tab b{color:#e7e7e7;border-bottom:1px solid #e7e7e7}
+.vs .ps{color:#9da5b4}
+.vs .er{color:#f48771}
+.vs .ok{color:#89d185}
+.fl{font-family:var(--mono);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin:8px 0;max-width:520px}
+.fl-h{display:block;font-size:.78rem;padding:4px 10px;background:var(--surface);border-bottom:1px solid var(--line);color:var(--muted)}
+.fl div{padding:2px 10px;white-space:pre}
+.fl div.cur{background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.fl div.add{background:color-mix(in srgb,#2fa84f 20%,var(--surface))}
+.fl .nl{color:var(--accent);font-size:.8em}
+.fl .n{display:inline-block;width:1.8em;color:var(--muted)}
+.pb-stage .fl{border-color:#3A4656}
+.pb-stage .fl-h{background:#1A222C;border-color:#3A4656;color:#8C99AA}
+.pb-stage .fl div.cur{background:#3a3a12}
+.pb-stage .fl div.add{background:#163a22}
+.pb-stage .fl .n{color:#8C99AA}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 13. lecke</span>
+  <h1>Szöveges fájlok: olvasás és írás</h1>
+  <p class="lead">Amit a program a változóiban tart, az a program végén elvész. Ami <b>fájlban</b> van, az megmarad: holnap is ott lesz, és más program is elolvashatja. Ebben a leckében a program fájlból olvas (például jegyeket, neveket, pontszámokat), számol velük, és fájlba is ír.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: írd át a jegyek.txt tartalmát (soronként egy jegy), és futtasd újra</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Előtte:</b> az 1–12. lecke (főleg a <a href="python-7-for.html">for</a>, a <a href="python-9-szovegek.html">szövegek</a> és a <a href="python-12-kivetelek.html">kivételkezelés</a>). <b>Ebben a leckében:</b> <code>open</code>, <code>with</code>, <code>encoding="utf-8"</code>, <code>read</code>, soronként olvasás, <code>strip</code>, <code>split(";")</code>, írás (<code>"w"</code>) és hozzáfűzés (<code>"a"</code>), <code>write</code>, a <code>FileNotFoundError</code> elkapása, statisztika fájlból, és hogy a VS Code-ban hol keresi a program a fájlt.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Tananyag, lépésről lépésre</h2>
+  <p>Egy dián egy új dolog. A „▶ Kipróbálom” gomb a fenti futtatóba tölti a példát a fájljaival együtt. A fájlok tartalmát is átírhatod. Ha a program fájlba ír, a futás után a kimenet alatt látod, mi lett benne.</p>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések</h2>
+  <p>A sárga sor fut éppen. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="olvas" aria-selected="true">Soronként olvasás</button>
+    <button class="tab" data-m="csv" aria-selected="false">split(";") a sorokon</button>
+    <button class="tab" data-m="iras" aria-selected="false">"w" vagy "a"?</button>
+    <button class="tab" data-m="vs" aria-selected="false">Hol a fájl? (VS Code)</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Hat feladattípus, három szinten. Az „Írd meg!” feladatoknál a gép a programodat <b>más tartalmú fájllal is</b> lefuttatja, tehát a fájlból kell olvasnod, nem fejből kiírnod. Ha a programnak fájlba kell írnia, a gép a fájl tartalmát is összeveti. A fájlt mindig <code>encoding="utf-8"</code>-tal nyisd meg. A „📝 Próbadolgozat” 12 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+  <div class="two-col">
+    <div class="trick"><span class="t">with open(…) as f:</span><span>A fájl a blokk végén magától bezáródik. A fájllal dolgozó sorok a with alá kerülnek, beljebb húzva.</span></div>
+    <div class="trick"><span class="t">Mindig strip()</span><span>A beolvasott sor végén ott a láthatatlan sorvége-jel (<code>\n</code>). <code>sor.strip()</code> levágja.</span></div>
+    <div class="trick"><span class="t">"w" töröl!</span><span>A <code>"w"</code> a meglévő fájlt kiüríti, és elölről írja. Ha a régi sorok maradjanak: <code>"a"</code>.</span></div>
+    <div class="trick"><span class="t">A write nem tesz sortörést</span><span><code>f.write(nev + "\n")</code> vagy <code>f.write(f"{x}\n")</code>. Számot csak szövegként: <code>str(x)</code>.</span></div>
+  </div>
+  <div class="next">
+    <a class="btn" href="python-12-kivetelek.html">← 12. lecke: kivételkezelés</a>
+    <a class="btn primary" href="python-dolgozat.html">Ismételj a dolgozat-leckén (1–4. és 9. lecke) →</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\\n/g, " sorvége-jel "], [/\s==\s/g, " egyenlő-e "], [/\s!=\s/g, " nem egyenlő "], [/\s&gt;=\s|\s>=\s/g, " nagyobb vagy egyenlő, mint "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\+=/g, " plusz egyenlő "], [/\s=\s/g, " legyen "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ---------- */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const F = a => a.join("\n") + "\n";           // fájltartalom: soronként, a végén is sorvége-jellel
+    const NEV = ["Anna", "Bence", "Kovrat", "Lili", "Máté", "Réka", "Dani", "Emma", "Zsófi", "Ádám"];
+    const VAROS = ["Debrecen", "Eger", "Hajdúszoboszló", "Nyíregyháza", "Balmazújváros"];
+    const nevek = k => shuffle(NEV).slice(0, k);
+    const jegyek = k => { const a = []; for (let i = 0; i < k; i++) a.push(rnd(1, 5)); return a; };
+    const sum = a => a.reduce((x, y) => x + y, 0);
+    const WITH = has(/\bwith\s+open\s*\(/, "a fájlt with open(…) as f: alakban nyisd meg (így magától bezáródik).");
+    const ENC = has(/encoding\s*=\s*["']utf-?8["']/i, "add meg a kódolást: open(…, encoding=\"utf-8\"), különben Windowson az ékezetek elromolhatnak.");
+    const MODE = (m, msg) => has(new RegExp("open\\s*\\([^)]*[\"']" + m + "[\"']"), msg);
+    const TRYF = [has(/\btry\s*:/, "a megnyitást tedd egy try: blokkba."), has(/except\s+FileNotFoundError\b/, "a hiányzó fájlt except FileNotFoundError: ágban kapd el.")];
+    // „Mi lesz a fájlban?”: a program után kiírjuk a fájl tartalmát
+    const showF = (code, fn) => J(code, 'with open("' + fn + '", encoding="utf-8") as _f:', I('print(_f.read(), end="")'));
+    const two = g => { let a = g(), b = g(), n = 0; while (JSON.stringify(a) === JSON.stringify(b) && n++ < 20) b = g(); return [a, b]; };
+
+    /* ---- A diák példái (files: a program mappájában lévő fájlok) ---- */
+    const JEGY = { "jegyek.txt": F(["5", "4", "3", "5", "4"]) };
+    const DIAK = { "diakok.txt": F(["Anna;15;Debrecen", "Bence;16;Eger", "Kovrat;15;Debrecen", "Lili;17;Nyíregyháza"]) };
+    const VERS = { "vers.txt": F(["Ez a világ amilyen nagy,", "olyan kicsi lehet,", "ha két ember összeér."]) };
+    const EX = {
+      hero: { code: J("osszeg = 0", "db = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), I(I("db += 1")), 'print(f"{db} jegy, az átlag: {round(osszeg / db, 2)}")'), files: JEGY },
+      read: { code: J('f = open("vers.txt", encoding="utf-8")', "szoveg = f.read()", "f.close()", "print(szoveg)", "print(len(szoveg))"), files: VERS },
+      with: { code: J('with open("vers.txt", encoding="utf-8") as f:', I("szoveg = f.read()"), "print(szoveg)", 'print("A fájl már be van zárva.")'), files: VERS },
+      sorok: { code: J('with open("vers.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(sor)"))), files: VERS },
+      strip: { code: J('with open("vers.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(sor.strip())"))), files: VERS },
+      repr: { code: J('with open("vers.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(repr(sor), len(sor))"))), files: VERS },
+      stat: { code: J("jegyek = []", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("jegyek.append(int(sor.strip()))")), "print(jegyek)", 'print(f"Összeg: {sum(jegyek)}, legjobb: {max(jegyek)}")', 'print(f"Ötösök száma: {jegyek.count(5)}")'), files: JEGY },
+      csv: { code: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("nev = adat[0]")), I(I("kor = int(adat[1])")), I(I("varos = adat[2]")), I(I('print(f"{nev} {kor} éves, {varos}")'))), files: DIAK },
+      csv2: { code: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('nev, kor, varos = sor.strip().split(";")')), I(I('if varos == "Debrecen":')), I(I(I("print(nev)")))), files: DIAK },
+      w: { code: J('with open("koszones.txt", "w", encoding="utf-8") as f:', I('f.write("Szia, Kovrat!\\n")'), I('f.write("Ma fájlokat tanulunk.\\n")'), 'print("Kész.")'), files: {} },
+      a: { code: J('with open("naplo.txt", "a", encoding="utf-8") as f:', I('f.write("Ma is gyakoroltam.\\n")'), 'print("Beírva a naplóba.")'), files: { "naplo.txt": F(["Hétfő: 20 perc", "Kedd: 15 perc"]) } },
+      wtorol: { code: J('with open("naplo.txt", "w", encoding="utf-8") as f:', I('f.write("Ma is gyakoroltam.\\n")'), 'print("Beírva a naplóba.")'), files: { "naplo.txt": F(["Hétfő: 20 perc", "Kedd: 15 perc"]) } },
+      szam: { code: J('with open("negyzetek.txt", "w", encoding="utf-8") as f:', I("for i in range(1, 6):"), I(I('f.write(f"{i} négyzete: {i * i}\\n")'))), files: {} },
+      szamhiba: { code: J('with open("szam.txt", "w", encoding="utf-8") as f:', I("f.write(42)")), files: {}, err: "TypeError" },
+      feld: { code: J("jegyek = []", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("jegyek.append(int(sor))")), "atlag = sum(jegyek) / len(jegyek)", 'with open("eredmeny.txt", "w", encoding="utf-8") as f:', I('f.write(f"Jegyek száma: {len(jegyek)}\\n")'), I('f.write(f"Átlag: {round(atlag, 2)}\\n")'), 'print("Az eredmény az eredmeny.txt-ben.")'), files: JEGY },
+      nincs: { code: J('with open("jegy.txt", encoding="utf-8") as f:', I("print(f.read())")), files: JEGY, err: "FileNotFoundError" },
+      nincs2: { code: J("try:", I('with open("jegy.txt", encoding="utf-8") as f:'), I(I("print(f.read())")), "except FileNotFoundError:", I('print("Nincs ilyen fájl: jegy.txt. Jó a neve?")')), files: JEGY },
+      zart: { code: J('with open("vers.txt", encoding="utf-8") as f:', I("elso = f.read()"), "masodik = f.read()"), files: VERS, err: "ValueError" }
+    };
+
+    /* ---- „Mit ír ki?” (a mappában lévő fájllal) ---- */
+    const KIIR = [
+      [
+        () => { const n = nevek(3); return { files: { "nevek.txt": F(n) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("szoveg = f.read()"), "print(szoveg)"), ans: J(...n), sol: "A read() az egész fájlt egyetlen szövegként adja, a sorvége-jelekkel együtt; a print így pontosan a fájl sorait írja ki." }; },
+        () => { const n = nevek(rnd(2, 4)); return { files: { "nevek.txt": F(n) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('print("- " + sor.strip())'))), ans: J(...n.map(x => "- " + x)), sol: "A for soronként megy végig a fájlon; a strip() levágja a sor végéről a \\n-t, így nincs üres sor közöttük." }; },
+        () => { const n = nevek(rnd(2, 6)); return { files: { "nevek.txt": F(n) }, code: J("db = 0", 'with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("db += 1")), 'print(f"{db} név van a fájlban.")'), ans: n.length + " név van a fájlban.", sol: "Megszámlálás: minden sornál eggyel nő a db. A fájlban " + n.length + " sor van." }; }
+      ],
+      [
+        () => { const n = nevek(rnd(2, 3)); return { files: { "nevek.txt": F(n) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(sor)"))), ans: J(...n.map(x => x + "\n")).replace(/\n$/, ""), sol: "Csapda: a sor végén ott a \\n, és a print is tesz egy sortörést. Ezért minden név után egy üres sor jön. A strip() ezen segít." }; },
+        () => { const j = jegyek(rnd(3, 5)); return { files: { "jegyek.txt": F(j.map(S)) }, code: J("osszeg = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), "print(osszeg)"), ans: S(sum(j)), sol: "Az int() a sor végi \\n-t nem bánja (mint a szóközt sem): int(\"5\\n\") = 5. Összegzés: " + j.join(" + ") + " = " + sum(j) + "." }; },
+        () => { const n = nevek(3), k = n.map(() => rnd(14, 18)); return { files: { "diakok.txt": F(n.map((x, i) => x + ";" + k[i])) }, code: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("print(adat[0])"))), ans: J(...n), sol: "A split(\";\") a sort a pontosvesszőknél darabolja: [\"" + n[0] + "\", \"" + k[0] + "\"]. Az adat[0] az első rész, a név." }; },
+        () => { const n = nevek(4), k = n.map(() => rnd(14, 18)); const ok = n.filter((x, i) => k[i] >= 16); return { files: { "diakok.txt": F(n.map((x, i) => x + ";" + k[i])) }, code: J("db = 0", 'with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("if int(adat[1]) >= 16:")), I(I(I("db += 1"))), 'print(f"{db} diák legalább 16 éves.")'), ans: ok.length + " diák legalább 16 éves.", sol: "Az adat[1] a kor, szövegként: int() kell az összehasonlításhoz. Legalább 16 éves: " + (ok.join(", ") || "senki") + "." }; }
+      ],
+      [
+        () => { const n = nevek(rnd(2, 3)); return { files: { "nevek.txt": F(n) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(len(sor))"))), ans: J(...n.map(x => S(x.length + 1))), sol: "Csapda: a len(sor) a \\n-t is beleszámolja! Minden név hossza eggyel több: " + n.map(x => x + " → " + (x.length + 1)).join(", ") + ". A len(sor.strip()) adná a betűk számát." }; },
+        () => { const a = pick(NEV), b = pick(NEV.filter(x => x !== a)); return { files: {}, code: J('with open("ki.txt", "w", encoding="utf-8") as f:', I('f.write("' + a + '\\n")'), I('f.write("' + b + '\\n")'), 'with open("ki.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('print(sor.strip() + "!")'))), ans: J(a + "!", b + "!"), sol: "Az első with megírja a ki.txt-t (két sor), és bezárja. A második with olvasásra nyitja meg, és soronként kiírja." }; },
+        () => { const r = nevek(2), u = pick(NEV.filter(x => !r.includes(x))); return { files: { "nevsor.txt": F(r) }, code: J('with open("nevsor.txt", "a", encoding="utf-8") as f:', I('f.write("' + u + '\\n")'), "db = 0", 'with open("nevsor.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("db += 1")), "print(db)"), ans: "3", sol: "Az \"a\" a fájl végére írja az új nevet, a régi két sor megmarad: 3 sor lesz. (A \"w\" törölné a régieket: akkor 1 lenne.)" }; },
+        () => { const p = nevek(3).map(x => [x, rnd(40, 99)]); while (new Set(p.map(x => x[1])).size < 3) p[2][1] = rnd(40, 99); const m = p.reduce((a, b) => b[1] > a[1] ? b : a);
+          return { files: { "pontok.txt": F(p.map(x => x[0] + ";" + x[1])) }, code: J("legjobb = 0", 'gyoztes = ""', 'with open("pontok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('nev, pont = sor.strip().split(";")')), I(I("if int(pont) > legjobb:")), I(I(I("legjobb = int(pont)"))), I(I(I("gyoztes = nev"))), 'print(f"{gyoztes}: {legjobb}")'), ans: m[0] + ": " + m[1], sol: "Maximumkiválasztás fájlból: a nev, pont = … a két részt két változóba teszi. A legtöbb pont: " + m[1] + " (" + m[0] + ")." }; }
+      ]
+    ];
+
+    /* ---- „Mi lesz a fájlban?” (a py-check a program után kiírja a fájl tartalmát) ---- */
+    const FAJL = [
+      [
+        () => { const a = pick(NEV), b = pick(NEV.filter(x => x !== a)), nl = Math.random() < 0.5; return { fn: "ki.txt", files: {}, code: J('with open("ki.txt", "w", encoding="utf-8") as f:', I('f.write("' + a + (nl ? "\\n" : "") + '")'), I('f.write("' + b + (nl ? "\\n" : "") + '")')), ans: nl ? J(a, b) : a + b, sol: nl ? "Mindkét szöveg végén \\n van: két sor lesz." : "Csapda: a write nem tesz sortörést, ezért a két név egybeírva, egy sorba kerül: " + a + b + "." }; },
+        () => { const n = rnd(3, 5); return { fn: "szamok.txt", files: {}, code: J('with open("szamok.txt", "w", encoding="utf-8") as f:', I("for i in range(1, " + (n + 1) + "):"), I(I('f.write(f"{i}\\n")'))), ans: J(...Array.from({ length: n }, (_, i) => S(i + 1))), sol: "A ciklus " + n + "-szer fut, minden körben egy szám és egy sorvége-jel kerül a fájlba." }; }
+      ],
+      [
+        () => { const r = nevek(2), u = pick(NEV.filter(x => !r.includes(x))), m = pick(["w", "a"]); return { fn: "nevsor.txt", files: { "nevsor.txt": F(r) }, code: J('with open("nevsor.txt", "' + m + '", encoding="utf-8") as f:', I('f.write("' + u + '\\n")')), ans: m === "a" ? J(...r, u) : u, sol: m === "a" ? "Az \"a\" (append, hozzáfűzés) a végére írja az új sort; a régiek megmaradnak." : "A \"w\" megnyitáskor kiüríti a fájlt: a régi nevek elvesznek, csak az új lesz benne." }; },
+        () => { const n = rnd(2, 4), k = rnd(2, 9); return { fn: "szorzo.txt", files: {}, code: J("k = " + k, 'with open("szorzo.txt", "w", encoding="utf-8") as f:', I("for i in range(1, " + (n + 1) + "):"), I(I('f.write(f"{i} * {k} = {i * k}\\n")'))), ans: J(...Array.from({ length: n }, (_, i) => (i + 1) + " * " + k + " = " + (i + 1) * k)), sol: "Az f-stringben kiszámolódik az i * k, és minden sor végére \\n kerül." }; },
+        () => { const a = pick(NEV), b = pick(NEV.filter(x => x !== a)); return { fn: "ki.txt", files: {}, code: J('with open("ki.txt", "w", encoding="utf-8") as f:', I('f.write("' + a + '\\n")'), 'with open("ki.txt", "w", encoding="utf-8") as f:', I('f.write("' + b + '\\n")')), ans: b, sol: "Kétszer nyitja meg \"w\"-vel: a második megnyitás kiüríti a fájlt, ezért csak a " + b + " marad benne." }; }
+      ],
+      [
+        () => { const j = shuffle(jegyek(4).concat([rnd(4, 5)])); return { fn: "otosok.txt", files: { "jegyek.txt": F(j.map(S)) }, code: J('with open("jegyek.txt", encoding="utf-8") as be:', I('with open("otosok.txt", "w", encoding="utf-8") as ki:'), I(I("for sor in be:")), I(I(I("if int(sor) >= 4:"))), I(I(I(I("ki.write(sor)"))))), ans: J(...j.filter(x => x >= 4).map(S)), sol: "Kiválogatás fájlból fájlba: a 4-es és 5-ös sorok kerülnek át. A sor végén már ott a \\n, ezért a write(sor) után nem kell újabb." }; },
+        () => { const n = nevek(3); return { fn: "nagy.txt", files: { "nevek.txt": F(n) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("sorok = []"), I("for sor in f:"), I(I("sorok.append(sor.strip().upper())")), 'with open("nagy.txt", "w", encoding="utf-8") as f:', I("for s in sorok:"), I(I('f.write(s + "\\n")')), I('f.write(f"{len(sorok)} név\\n")')), ans: J(...n.map(x => x.toUpperCase()), "3 név"), sol: "Előbb beolvassa a neveket egy listába (nagybetűsen), aztán soronként kiírja őket, a végére pedig a darabszámot." }; },
+        () => { const r = nevek(1), u = nevek(3).filter(x => x !== r[0]).slice(0, 2); return { fn: "naplo.txt", files: { "naplo.txt": F(r) }, code: J("for nev in " + "[" + u.map(x => '"' + x + '"').join(", ") + "]:", I('with open("naplo.txt", "a", encoding="utf-8") as f:'), I(I('f.write(nev + "\\n")'))), ans: J(r[0], ...u), sol: "A ciklus minden körben újra megnyitja a fájlt, de \"a\"-val: mindig a végére ír, a régi sorok megmaradnak." }; }
+      ]
+    ];
+
+    /* ---- „Melyik kell?” (választós) ---- */
+    const FN = ['"r" (olvasás)', '"w" (írás)', '"a" (hozzáfűzés)', "sor.strip()", 'sor.split(";")', 'encoding="utf-8"', "str(x) vagy f-string", "with open(…) as f:"];
+    const MK = [
+      [["Csak olvasni akarok egy fájlból (ez az alapértelmezés).", 0], ["Új fájlt akarok írni; ha már van ilyen, a régi tartalma törlődjön.", 1], ["A meglévő fájl végére akarok írni úgy, hogy a régi sorok megmaradjanak.", 2], ["Naplót vezetek: minden futás egy új sort tegyen a régiek után.", 2]],
+      [["Le kell vágni a beolvasott sor végéről a láthatatlan sorvége-jelet (\\n).", 3], ["Szét kell szedni az „Anna;15;Debrecen” sort három részre.", 4], ["Azt akarom, hogy az ékezetes betűk (á, é, ő) Windowson is jól jöjjenek ki.", 5], ["A print(sor) után minden sor alatt egy fölösleges üres sor van.", 3]],
+      [["Egy számot akarok a fájlba írni, de a write csak szöveget fogad el.", 6], ["A fájl biztosan bezáródjon a végén, és ne kelljen close()-t írni.", 7], ["Egy pontszámot írok fájlba; a régi eredmény ne maradjon meg benne.", 1], ["A „Kovrat;15” sorból a kort akarom (a második rész).", 4]]
+    ];
+    const MKSOL = ["A megnyitás alapból olvasásra szól (\"r\"): open(\"x.txt\", encoding=\"utf-8\").", "A \"w\" (write) írásra nyit: ha nincs ilyen fájl, létrehozza; ha van, kiüríti.", "Az \"a\" (append) a fájl végére ír; a régi tartalom megmarad. Ha nincs ilyen fájl, létrehozza.", "A strip() levágja a sor elejéről és végéről a szóközt és a sorvége-jelet.", "A split(\";\") a pontosvesszőknél darabolja a sort, és listát ad: [\"Anna\", \"15\", \"Debrecen\"].", "Az encoding=\"utf-8\" mondja meg, hogyan vannak a betűk a fájlban. Nélküle Windowson az ékezetek elromolhatnak.", "A write csak szöveget ír: f.write(str(x) + \"\\n\") vagy f.write(f\"{x}\\n\").", "A with blokk végén a fájl magától bezáródik, akkor is, ha közben hiba jön."];
+
+    /* ---- „Írd meg!” ---- */
+    const WRITE = [
+      [
+        () => { const [a, b] = two(() => nevek(rnd(3, 4))); const T = n => ({ ins: [], files: { "nevek.txt": F(n) }, exact: J(...n.map((x, i) => (i + 1) + ". " + x)) });
+          return { q: "A <code>nevek.txt</code> minden sorában egy név van. Írd ki a neveket egymás alá, sorszámmal, így: <code>1. Anna</code>, <code>2. Bence</code> …",
+          code: J("i = 1", 'with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('print(f"{i}. {sor.strip()}")')), I(I("i += 1"))), tests: [T(a), T(b)], must: [WITH, ENC], fstr: true, ex: "Egy számláló (i) a ciklus előtt 1-ről indul, minden sornál nő. A sor végéről a strip() vágja le a \\n-t, különben üres sorok lennének." }; },
+        () => { const [a, b] = two(() => jegyek(rnd(4, 6))); const T = j => ({ ins: [], files: { "szamok.txt": F(j.map(x => S(x * rnd(1, 9)))) } }); const ta = T(a), tb = T(b); [ta, tb].forEach(t => { t.exp = [{ s: "Összeg: " + t.files["szamok.txt"].trim().split("\n").reduce((x, y) => x + +y, 0) }]; });
+          return { q: "A <code>szamok.txt</code> minden sorában egy egész szám van. Add össze őket, és írd ki: <code>Összeg: 42</code>",
+          code: J("osszeg = 0", 'with open("szamok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), 'print(f"Összeg: {osszeg}")'), tests: [ta, tb], must: [WITH, ENC], fstr: true, ex: "Összegzés: osszeg = 0 a ciklus előtt, a ciklusban osszeg += int(sor). Az int() a sor végi \\n-t nem bánja." }; },
+        () => { const [a, b] = two(() => pick(NEV)); return { q: "Kérd be a felhasználó nevét, és írd a <code>koszones.txt</code> fájlba ezt a két sort: <code>Szia, Anna!</code> (a név helyén a beírt név) és <code>Jó tanulást!</code>",
+          code: J('nev = input("Neved: ")', 'with open("koszones.txt", "w", encoding="utf-8") as f:', I('f.write(f"Szia, {nev}!\\n")'), I('f.write("Jó tanulást!\\n")')), tests: [a, b].map(n => ({ ins: [n], files: {}, fout: [["koszones.txt", J("Szia, " + n + "!", "Jó tanulást!") + "\n"]] })), must: [WITH, ENC, MODE("w", "írásra nyisd meg: open(\"koszones.txt\", \"w\", encoding=\"utf-8\").")], fstr: true, ex: "Írásra a \"w\" kell. A write nem tesz sortörést: mindkét sor végére írd oda: \\n." }; }
+      ],
+      [
+        () => { const g = () => { const a = []; for (let i = 0; i < 5; i++) a.push(rnd(-8, 25)); return a; }; const [a, b] = two(g);
+          const T = t => ({ ins: [], files: { "homerseklet.txt": F(t.map(S)) }, exp: [{ s: "Legmagasabb: " + Math.max(...t) }, { s: "Legalacsonyabb: " + Math.min(...t) }] });
+          return { q: "A <code>homerseklet.txt</code> minden sorában egy hőmérséklet van (egész szám, lehet negatív is). Írd ki a legnagyobbat és a legkisebbet: <code>Legmagasabb: 21</code> és <code>Legalacsonyabb: -3</code>",
+          code: J("adatok = []", 'with open("homerseklet.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("adatok.append(int(sor))")), 'print(f"Legmagasabb: {max(adatok)}")', 'print(f"Legalacsonyabb: {min(adatok)}")'), tests: [T(a), T(b)], must: [WITH, ENC], fstr: true, ex: "Olvasd be a számokat egy listába (append), utána jöhet a max() és a min()." }; },
+        () => { const g = () => { const n = nevek(5), k = n.map(() => rnd(14, 18)); k[0] = rnd(16, 18); k[1] = rnd(14, 15); return n.map((x, i) => [x, k[i]]); }; const [a, b] = two(g);
+          const T = d => ({ ins: [], files: { "diakok.txt": F(shuffle(d).map(x => x[0] + ";" + x[1])) }, exp: d.filter(x => x[1] >= 16).map(x => ({ s: x[0] })), not: d.filter(x => x[1] < 16).map(x => x[0]) });
+          return { q: "A <code>diakok.txt</code> minden sora: név;kor (például <code>Anna;15</code>). Írd ki azoknak a nevét, akik <b>legalább 16 évesek</b>, soronként egyet!",
+          code: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("if int(adat[1]) >= 16:")), I(I(I("print(adat[0])")))), tests: [T(a), T(b)], must: [WITH, ENC, has(/split\s*\(\s*["'];["']\s*\)/, "a sort a split(\";\") vágja szét.")], ex: "A sort a split(\";\") darabolja: adat[0] a név, adat[1] a kor (szövegként, ezért int(adat[1]))." }; },
+        () => { const [a, b] = two(() => jegyek(rnd(5, 8))); const T = j => ({ ins: [], files: { "jegyek.txt": F(j.map(S)) }, exp: [{ s: "Ötösök száma: " + j.filter(x => x === 5).length }] });
+          return { q: "A <code>jegyek.txt</code> minden sorában egy jegy van (1–5). Számold meg, hány ötös van, és írd ki: <code>Ötösök száma: 3</code>",
+          code: J("db = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('if sor.strip() == "5":')), I(I(I("db += 1"))), 'print(f"Ötösök száma: {db}")'), tests: [T(a), T(b)], must: [WITH, ENC], fstr: true, ex: "Figyelj: a sor \"5\\n\", nem \"5\". Vagy strip()-pel hasonlítsd össze (sor.strip() == \"5\"), vagy számmá alakítva (int(sor) == 5)." }; },
+        () => { const r = nevek(2), [u, v] = shuffle(NEV.filter(x => !r.includes(x))).slice(0, 2); const T = n => ({ ins: [n], files: { "nevsor.txt": F(r) }, fout: [["nevsor.txt", F(r.concat([n]))]] });
+          return { q: "A <code>nevsor.txt</code>-ben már van néhány név, soronként egy. Kérj be egy új nevet, és írd a fájl <b>végére</b>, új sorba! A régi nevek maradjanak meg.",
+          code: J('nev = input("Új név: ")', 'with open("nevsor.txt", "a", encoding="utf-8") as f:', I('f.write(nev + "\\n")')), tests: [T(u), T(v)], must: [WITH, ENC, MODE("a", "a végére íráshoz \"a\" (hozzáfűzés) kell, nem \"w\".")], ex: "Az \"a\" mód a fájl végére ír. A \"w\" törölné a régi neveket. A sor végére kell a \\n." }; }
+      ],
+      [
+        () => { const [a, b] = two(() => jegyek(rnd(3, 5)).map(x => x * rnd(1, 12))); const T = j => ({ ins: [], files: { "szamok.txt": F(j.map(S)) }, fout: [["duplak.txt", F(j.map(x => S(2 * x)))]] });
+          return { q: "A <code>szamok.txt</code> minden sorában egy egész szám van. Írd a <code>duplak.txt</code> fájlba minden szám <b>kétszeresét</b>, soronként egyet, ugyanabban a sorrendben!",
+          code: J('with open("szamok.txt", encoding="utf-8") as be:', I('with open("duplak.txt", "w", encoding="utf-8") as ki:'), I(I("for sor in be:")), I(I(I('ki.write(f"{int(sor) * 2}\\n")')))), tests: [T(a), T(b)], must: [ENC, MODE("w", "a duplak.txt-t írásra nyisd meg: \"w\".")], ex: "Két fájl kell: az egyikből olvasol, a másikba írsz. A write szöveget vár: f\"{int(sor) * 2}\\n\" (vagy str(…) + \"\\n\")." }; },
+        () => { const g = () => { const p = nevek(4).map(x => [x, rnd(30, 99)]); let m = Math.max(...p.map(x => x[1])); while (p.filter(x => x[1] === m).length > 1){ p[0][1] = rnd(30, 99); m = Math.max(...p.map(x => x[1])); } return p; }; const [a, b] = two(g);
+          const T = p => { const m = p.reduce((x, y) => y[1] > x[1] ? y : x); return { ins: [], files: { "pontok.txt": F(p.map(x => x[0] + ";" + x[1])) }, exp: [{ s: "A győztes: " + m[0] + " (" + m[1] + " pont)" }] }; };
+          return { q: "A <code>pontok.txt</code> minden sora: név;pontszám (például <code>Anna;87</code>). Írd ki, ki kapta a legtöbb pontot: <code>A győztes: Anna (87 pont)</code>",
+          code: J("legjobb = -1", 'gyoztes = ""', 'with open("pontok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("if int(adat[1]) > legjobb:")), I(I(I("legjobb = int(adat[1])"))), I(I(I("gyoztes = adat[0]"))), 'print(f"A győztes: {gyoztes} ({legjobb} pont)")'), tests: [T(a), T(b)], must: [WITH, ENC], fstr: true, ex: "Maximumkiválasztás: a legjobb pont és a hozzá tartozó név két változóban. Ha nagyobbat találsz, mindkettőt frissítsd." }; },
+        () => { const n = rnd(2, 5), lines = nevek(n); return { q: "Kérd be egy fájl nevét (<code>input</code>), és írd ki, hány sor van benne: <code>4 sor</code>. Ha nincs ilyen fájl, a program ne álljon le, hanem írja ki: <code>Nincs ilyen fájl!</code>",
+          code: J('nev = input("Fájl neve: ")', "try:", I('with open(nev, encoding="utf-8") as f:'), I(I("db = 0")), I(I("for sor in f:")), I(I(I("db += 1"))), I('print(f"{db} sor")'), "except FileNotFoundError:", I('print("Nincs ilyen fájl!")')),
+          tests: [{ ins: ["adatok.txt"], files: { "adatok.txt": F(lines) }, exp: [{ s: n + " sor" }], not: ["Nincs ilyen fájl!"] }, { ins: ["adat.txt"], files: { "adatok.txt": F(lines) }, exp: [{ s: "Nincs ilyen fájl!" }], crash: { FileNotFoundError: "Ha nincs ilyen fájl, FileNotFoundError jön: tedd a megnyitást egy try: blokkba, alá: except FileNotFoundError:", "": "" } }, { ins: ["nevek.txt"], files: { "nevek.txt": F(nevek(n + 1)) }, exp: [{ s: (n + 1) + " sor" }] }], must: [ENC].concat(TRYF), mustNot: [[/except\s*:/, "ne csupasz except: legyen: except FileNotFoundError:."]], fstr: true, noFileShow: true, ex: "A fájlnév most változóban van: open(nev, …). A megnyitás kerül a try alá; ha nincs ilyen fájl, az except FileNotFoundError: ága fut." }; },
+        () => { const g = () => shuffle(["Bevásárlás", "Matek lecke", "Edzés 5-kor", "Hívd fel Endit", "Python gyakorlás"]).slice(0, rnd(2, 3)); const [a, b] = two(g);
+          const T = l => ({ ins: l.concat(["vége"]), files: {}, fout: [["jegyzet.txt", F(l)]] });
+          return { q: "Jegyzetfüzet: kérj be sorokat egymás után, amíg azt nem írják be, hogy <code>vége</code>! Minden sort írj a <code>jegyzet.txt</code>-be, soronként egyet (a <code>vége</code> szó ne kerüljön bele).",
+          code: J('with open("jegyzet.txt", "w", encoding="utf-8") as f:', I("while True:"), I(I('sor = input("Jegyzet: ")')), I(I('if sor == "vége":')), I(I(I("break"))), I(I('f.write(sor + "\\n")'))), tests: [T(a), T(b)], must: [ENC, has(/\bwhile\b/, "a bekérést while ciklus ismételje.")], ex: "A while True ciklus a with alatt van: amíg nem „vége”, írja a sort (és a \\n-t). A vége után break." }; }
+      ]
+    ];
+
+    /* ---- „Milyen hibát ad?” (a mappában lévő fájlokkal) ---- */
+    const HIBA = [
+      [
+        () => { const j = { "jegyek.txt": F(jegyek(3).map(S)) }; return pick([
+          { files: j, code: J('with open("jegy.txt", encoding="utf-8") as f:', I("print(f.read())")), err: "FileNotFoundError", fix: J('with open("jegyek.txt", encoding="utf-8") as f:', I("print(f.read())")), sol: "A mappában jegyek.txt van, a program jegy.txt-t keres: nincs ilyen fájl. A névnek betűre egyeznie kell." },
+          { files: j, code: J('with open("jegyek", encoding="utf-8") as f:', I("print(f.read())")), err: "FileNotFoundError", fix: J('with open("jegyek.txt", encoding="utf-8") as f:', I("print(f.read())")), sol: "A kiterjesztés is a név része: jegyek.txt, nem jegyek." },
+          { files: j, code: J('with open("jegyek.txt", encoding="utf-8") as f:', I("print(f.read())")), err: "", sol: "Hibátlan: a fájl megvan, a program kiírja a tartalmát." },
+          { files: {}, code: J('with open("uj.txt", "w", encoding="utf-8") as f:', I('f.write("Szia\\n")')), err: "", sol: "Hibátlan: írásra (\"w\") megnyitva a nem létező fájl létrejön. Csak olvasásnál hiba, ha nincs meg." }]); }
+      ],
+      [
+        () => { const v = { "vers.txt": F(["Ez a világ", "amilyen nagy"]) }; return pick([
+          { files: v, code: J('with open("vers.txt", encoding="utf-8") as f:', I('f.write("Új sor\\n")')), err: "UnsupportedOperation", fix: J('with open("vers.txt", "a", encoding="utf-8") as f:', I('f.write("Új sor\\n")')), sol: "Mód nélkül a fájl olvasásra nyílik meg, írni nem lehet bele: io.UnsupportedOperation: not writable." },
+          { files: {}, code: J('with open("szam.txt", "w", encoding="utf-8") as f:', I("f.write(" + rnd(2, 99) + ")")), err: "TypeError", fix: J('with open("szam.txt", "w", encoding="utf-8") as f:', I('f.write("' + rnd(2, 99) + '\\n")')), sol: "A write csak szöveget fogad el: TypeError: write() argument must be str, not int. Helyesen: f.write(str(x)) vagy f-string." },
+          { files: v, code: J('with open("vers.txt", encoding="utf-8") as f:', I("szoveg = f.read()"), "print(f.read())"), err: "ValueError", fix: J('with open("vers.txt", encoding="utf-8") as f:', I("print(f.read())")), sol: "A with blokk után a fájl már be van zárva: ValueError: I/O operation on closed file. A fájlt olvasó sor a with alá kell, beljebb húzva." },
+          { files: { "diakok.txt": F(["Anna;15", "Bence;16"]) }, code: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("print(adat[2])"))), err: "IndexError", fix: J('with open("diakok.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('adat = sor.strip().split(";")')), I(I("print(adat[1])"))), sol: "Egy sorban két rész van (név és kor): az indexek 0 és 1. Az adat[2] nincs." }]); }
+      ],
+      [
+        () => pick([
+          { files: { "jegyek.txt": "5\n4\n\n3\n" }, code: J("osszeg = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), "print(osszeg)"), err: "ValueError", fix: J("osszeg = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("if sor.strip():")), I(I(I("osszeg += int(sor)"))), "print(osszeg)"), sol: "Csapda: a fájlban van egy üres sor! Az int(\"\\n\") nem megy: ValueError. (Az üres sort ki kell hagyni: if sor.strip(): …)" },
+          { files: { "nevek.txt": F(["Anna", "Bence"]) }, code: J("osszeg = 0", 'with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), "print(osszeg)"), err: "ValueError", fix: J("db = 0", 'with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("db += 1")), "print(db)"), sol: "A fájlban nevek vannak: az int(\"Anna\\n\") ValueError. Mindig nézd meg, mi van a fájlban!" },
+          { files: {}, code: J("try:", I('with open("adatok.txt", encoding="utf-8") as f:'), I(I("print(f.read())")), "except FileNotFoundError:", I('print("Nincs meg a fájl.")')), err: "", sol: "A mappa üres, a megnyitás FileNotFoundError-t ad, de az except elkapja: kiírja, hogy Nincs meg a fájl." },
+          { files: { "vers.txt": F(["Ez a világ"]) }, code: J('with open("vers.txt", "w", encoding="utf-8") as f:', I("print(f.read())")), err: "UnsupportedOperation", fix: J('with open("vers.txt", encoding="utf-8") as f:', I("print(f.read())")), sol: "A \"w\" írásra nyit (és ráadásul ki is üríti a fájlt!), olvasni nem lehet belőle: not readable." },
+          { files: { "nevek.txt": F(["Anna", "Bence"]) }, code: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I('if sor == "Anna":')), I(I(I('print("Megvan!")')))), err: "", sol: "Nincs hibaüzenet, de a Megvan! sem íródik ki: a sor \"Anna\\n\", nem \"Anna\". A sor.strip() == \"Anna\" lenne a jó." }])
+      ]
+    ];
+    const HPOOL = ["", "FileNotFoundError", "UnsupportedOperation", "ValueError", "TypeError", "IndexError", "NameError"];
+
+    /* ---- „Javítsd ki!” ---- */
+    const JAVIT = [
+      [
+        () => { const [a, b] = two(() => nevek(3)); const T = n => ({ ins: [], files: { "nevek.txt": F(n) }, exact: J(...n) });
+          return { q: "Ennek a programnak a neveket kellene kiírnia egymás alá, de minden név után egy üres sor is megjelenik. Javítsd ki!",
+          starter: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(sor)"))) + "\n", code: J('with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("print(sor.strip())"))), tests: [T(a), T(b)], must: [ENC], ex: "A sor végén ott a \\n, és a print is tesz egy sortörést. A print(sor.strip()) levágja a fölöslegeset." }; },
+        () => { const [a, b] = two(() => jegyek(4)); const T = j => ({ ins: [], files: { "jegyek.txt": F(j.map(S)) }, exp: [{ s: "Összeg: " + sum(j) }] });
+          return { q: "Ez a program Windowson rosszul olvashatja az ékezetes fájlokat, mert nem mondja meg a kódolást. Javítsd ki, hogy a fájlt UTF-8 kódolással nyissa meg!",
+          starter: J("osszeg = 0", 'with open("jegyek.txt") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), 'print(f"Összeg: {osszeg}")') + "\n", code: J("osszeg = 0", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("osszeg += int(sor)")), 'print(f"Összeg: {osszeg}")'), tests: [T(a), T(b)], must: [ENC], fstr: true, ex: "Az open második része: encoding=\"utf-8\". A böngészőben és sok gépen enélkül is jó, de Windowson az ékezetek elromolhatnak." }; }
+      ],
+      [
+        () => { const r = nevek(2), [u, v] = shuffle(NEV.filter(x => !r.includes(x))).slice(0, 2); const T = n => ({ ins: [n], files: { "nevsor.txt": F(r) }, fout: [["nevsor.txt", F(r.concat([n]))]] });
+          return { q: "Ennek a programnak a beírt nevet a <code>nevsor.txt</code> végére kellene írnia, de a régi nevek eltűnnek. Javítsd ki!",
+          starter: J('nev = input("Új név: ")', 'with open("nevsor.txt", "w", encoding="utf-8") as f:', I('f.write(nev + "\\n")')) + "\n", code: J('nev = input("Új név: ")', 'with open("nevsor.txt", "a", encoding="utf-8") as f:', I('f.write(nev + "\\n")')), tests: [T(u), T(v)], must: [MODE("a", "a végére íráshoz \"a\" kell.")], ex: "A \"w\" megnyitáskor kiüríti a fájlt. Hozzáfűzéshez \"a\" (append) kell." }; },
+        () => { const [a, b] = two(() => nevek(3)); const T = n => ({ ins: [], files: { "nevek.txt": F(n) }, fout: [["nagy.txt", F(n.map(x => x.toUpperCase()))]] });
+          return { q: "Ennek a programnak a neveket nagybetűvel, <b>soronként egyet</b> kellene a <code>nagy.txt</code>-be írnia, de minden egy sorba kerül. Javítsd ki!",
+          starter: J('with open("nevek.txt", encoding="utf-8") as be:', I('with open("nagy.txt", "w", encoding="utf-8") as ki:'), I(I("for sor in be:")), I(I(I("ki.write(sor.strip().upper())")))) + "\n", code: J('with open("nevek.txt", encoding="utf-8") as be:', I('with open("nagy.txt", "w", encoding="utf-8") as ki:'), I(I("for sor in be:")), I(I(I('ki.write(sor.strip().upper() + "\\n")')))), tests: [T(a), T(b)], ex: "A strip() levágta a \\n-t, a write pedig nem tesz újat. Írd hozzá: + \"\\n\"." }; }
+      ],
+      [
+        () => { const [a, b] = two(() => jegyek(4)); const T = j => ({ ins: [], files: { "jegyek.txt": F(j.map(S)) }, exp: [{ s: "Átlag: " + Math.round(sum(j) / j.length * 100) / 100 }] });
+          return { q: "Ennek a programnak a jegyek átlagát kellene kiírnia, de hibával leáll. Javítsd ki!",
+          starter: J("jegyek = []", 'with open("jegyek.txt", encoding="utf-8") as f:', I('print("Beolvasás…")'), "for sor in f:", I("jegyek.append(int(sor))"), 'print(f"Átlag: {round(sum(jegyek) / len(jegyek), 2)}")') + "\n", code: J("jegyek = []", 'with open("jegyek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("jegyek.append(int(sor))")), 'print(f"Átlag: {round(sum(jegyek) / len(jegyek), 2)}")'), tests: [T(a), T(b)], must: [ENC], fstr: true, ex: "A for ciklus a with blokkon kívül van: ott a fájl már be van zárva (ValueError: I/O operation on closed file). A ciklus kerüljön a with alá, beljebb húzva." }; },
+        () => { const l = nevek(3); return { q: "Ennek a programnak ki kellene írnia a <code>nevek.txt</code> sorainak számát (<code>3 sor</code>), és ha nincs ilyen fájl, azt, hogy <code>Nincs ilyen fájl!</code>. De ha nincs fájl, leáll. Javítsd ki!",
+          starter: J("db = 0", 'with open("nevek.txt", encoding="utf-8") as f:', I("for sor in f:"), I(I("db += 1")), 'print(f"{db} sor")') + "\n", code: J("try:", I("db = 0"), I('with open("nevek.txt", encoding="utf-8") as f:'), I(I("for sor in f:")), I(I(I("db += 1"))), I('print(f"{db} sor")'), "except FileNotFoundError:", I('print("Nincs ilyen fájl!")')), tests: [{ ins: [], files: { "nevek.txt": F(l) }, exp: [{ s: "3 sor" }], not: ["Nincs ilyen fájl!"] }, { ins: [], files: {}, exp: [{ s: "Nincs ilyen fájl!" }], crash: { FileNotFoundError: "Ha nincs meg a fájl, FileNotFoundError jön: kapd el try-jal (except FileNotFoundError:).", "": "" } }], must: TRYF, mustNot: [[/except\s*:/, "ne csupasz except: legyen: except FileNotFoundError:."]], fstr: true, ex: "A megnyitás (és ami a fájllal dolgozik) a try alá kerül; except FileNotFoundError: alá a hibaüzenet." }; }
+      ]
+    ];
+
+    const banks = [
+      { id: "kiir", kind: "kiir", L: KIIR },
+      { id: "fajl", kind: "kiir", L: FAJL.map(lv => lv.map(g => () => { const t = g(); return { code: showF(t.code, t.fn), files: t.files, ans: t.ans, sol: t.sol }; })) },
+      { id: "write", kind: "write", L: WRITE },
+      { id: "hiba", kind: "hiba", L: HIBA },
+      { id: "javit", kind: "write", L: JAVIT }
+    ];
+    return { KIIR, FAJL, MK, MKSOL, FN, WRITE, HIBA, HPOOL, JAVIT, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C);
+/*@/LOGIC*/
+
+  const { KIIR, FAJL, MK, MKSOL, FN, WRITE, HIBA, HPOOL, JAVIT, EX } = LOGIC;
+  const J = (...l) => l.join("\n");
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: [], rows: 7, files: EX.hero.files });
+  const ex = k => P.ex(EX[k].code, EX[k].ins, EX[k].files) + (EX[k].files && Object.keys(EX[k].files).length ? "<p class='dim'>A mappában: " + Object.keys(EX[k].files).map(n => "<code>" + esc(n) + "</code>").join(", ") + " (a Kipróbálom után a futtatóban látod és átírhatod)</p>" : "");
+
+  /* ---------- Rajzok ---------- */
+  // fájl soronként, a sorvége-jel láthatóan (↵); cur = kiemelt sor, add = új sor
+  const fl = (name, lines, o) => { o = o || {}; return '<div class="fl"><span class="fl-h">📄 ' + esc(name) + "</span>" + (lines.length ? lines.map((l, i) => '<div class="' + (o.cur === i ? "cur" : o.add != null && i >= o.add ? "add" : "") + '"><span class="n">' + (i + 1) + "</span>" + esc(l) + '<span class="nl">↵</span></div>').join("") : '<div><span class="n"></span><span class="dim">(üres)</span></div>') + "</div>"; };
+  const vsx = (folder, files, sel, code, term) => '<div class="vs"><div class="vs-bar"><span>' + esc(sel) + ' — VS Code</span><span class="run" title="Run Python File">▶</span></div><div class="vs-main"><div class="vs-exp"><div class="h">EXPLORER › ' + esc(folder) + "</div>" +
+    files.map(f => '<div class="' + (f[0] === sel ? "sel " : "") + (f[1] || "") + '">' + (/\.py$/.test(f[0]) ? "🐍 " : "📄 ") + esc(f[0]) + "</div>").join("") + '</div><div class="vs-ed"><pre>' + esc(code) + "</pre></div></div>" +
+    (term ? '<div class="vs-tab"><span>Problems</span><span>Output</span><b>Terminal</b></div><pre>' + term.map(r => r[0] === "p" ? '<span class="ps">PS ' + esc(r[2] || "C:\\Kovrat") + "&gt;</span> " + esc(r[1]) : r[0] === "e" ? '<span class="er">' + esc(r[1]) + "</span>" : r[0] === "k" ? '<span class="ok">' + esc(r[1]) + "</span>" : esc(r[1])).join("\n") + "</pre>" : "") + "</div>";
+  const PROG = J('with open("jegyek.txt", encoding="utf-8") as f:', "    for sor in f:", "        print(sor.strip())");
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  const NM = ["Anna", "Bence", "Kovrat"];
+  function olvasFrames(){
+    const src = ['with open("nevek.txt", encoding="utf-8") as f:', "    for sor in f:", "        print(sor.strip())", 'print("Kész.")'];
+    return [
+      { cap: "A nevek.txt-ben három sor van. Minden sor végén ott egy láthatatlan sorvége-jel: a Pythonban \\n, itt a ↵ mutatja.", html: fl("nevek.txt", NM) },
+      { cap: "Az open megnyitja a fájlt olvasásra, a with az f nevet adja neki. A with blokk végén a fájl magától bezáródik.", html: srcHtml(src, 1) + fl("nevek.txt", NM) },
+      { cap: "A for soronként megy végig a fájlon. Első kör: a sor értéke \"Anna\\n\": a név és a sorvége-jel.", html: srcHtml(src, 2) + fl("nevek.txt", NM, { cur: 0 }) + varTbl({ sor: '"Anna\\n"' }) },
+      { cap: "A strip() levágja a \\n-t, a print kiírja: Anna. (A strip nélkül a print a saját sortörése mellé a \\n-t is kiírná: üres sor lenne.)", html: srcHtml(src, 3) + varTbl({ sor: '"Anna\\n"', "sor.strip()": '"Anna"' }) + outBox("Anna") },
+      { cap: "Második kör: sor = \"Bence\\n\", kiírja: Bence.", html: srcHtml(src, 3) + fl("nevek.txt", NM, { cur: 1 }) + outBox("Anna\nBence") },
+      { cap: "Harmadik kör: sor = \"Kovrat\\n\". Több sor nincs, a ciklus véget ér.", html: srcHtml(src, 3) + fl("nevek.txt", NM, { cur: 2 }) + outBox("Anna\nBence\nKovrat") },
+      { cap: "A with blokk véget ért: a fájl bezárult. Jöhet a következő sor: Kész.", html: srcHtml(src, 4) + outBox("Anna\nBence\nKovrat\nKész.") }
+    ];
+  }
+  function csvFrames(){
+    const L = ["Anna;15;Debrecen", "Bence;16;Eger", "Kovrat;15;Debrecen"];
+    const src = ['with open("diakok.txt", encoding="utf-8") as f:', "    for sor in f:", '        adat = sor.strip().split(";")', "        if int(adat[1]) >= 16:", "            print(adat[0])"];
+    return [
+      { cap: "A diakok.txt minden sorában három adat van, pontosvesszővel elválasztva: név, kor, város. Ez a CSV-szerű fájl; a táblázatkezelők is tudnak ilyet menteni.", html: fl("diakok.txt", L) },
+      { cap: "Első sor: \"Anna;15;Debrecen\\n\". A strip() levágja a \\n-t, a split(\";\") a pontosvesszőknél három részre vágja: egy lista lesz belőle.", html: srcHtml(src, 3) + fl("diakok.txt", L, { cur: 0 }) + varTbl({ adat: '["Anna", "15", "Debrecen"]' }) },
+      { cap: "Az adat[1] a kor, de szövegként: \"15\". Az int() kell az összehasonlításhoz. 15 >= 16 hamis: nem írja ki.", html: srcHtml(src, 4) + varTbl({ "adat[1]": '"15"', "int(adat[1])": 15 }) },
+      { cap: "Második sor: [\"Bence\", \"16\", \"Eger\"]. 16 >= 16 igaz: kiírja az adat[0]-t, a nevet.", html: srcHtml(src, 5) + fl("diakok.txt", L, { cur: 1 }) + varTbl({ adat: '["Bence", "16", "Eger"]' }) + outBox("Bence") },
+      { cap: "Harmadik sor: Kovrat 15 éves, nem írja ki. Miért kell a strip()? Nélküle az utolsó rész \"Debrecen\\n\" lenne, és a varos == \"Debrecen\" hamis lenne.", html: srcHtml(src, 4) + fl("diakok.txt", L, { cur: 2 }) + varTbl({ adat: '["Kovrat", "15", "Debrecen"]' }) + outBox("Bence") }
+    ];
+  }
+  function irasFrames(){
+    const R = ["Hétfő: 20 perc", "Kedd: 15 perc"];
+    return [
+      { cap: "A naplo.txt-ben már van két sor. Kovrat egy új sort akar hozzáírni: Szerda: 30 perc.", html: fl("naplo.txt", R) },
+      { cap: "Az \"a\" (append, hozzáfűzés) módban a Python a fájl végére áll. A régi sorok megmaradnak.", html: srcHtml(['with open("naplo.txt", "a", encoding="utf-8") as f:', '    f.write("Szerda: 30 perc\\n")'], 1) + fl("naplo.txt", R) },
+      { cap: "A write a végére írja az új sort. A \\n-t nekünk kell odaírni: a write nem tesz sortörést.", html: srcHtml(['with open("naplo.txt", "a", encoding="utf-8") as f:', '    f.write("Szerda: 30 perc\\n")'], 2) + fl("naplo.txt", R.concat(["Szerda: 30 perc"]), { add: 2 }) },
+      { cap: "Most ugyanez \"w\"-vel (write, írás). Vigyázat: a \"w\" a megnyitás pillanatában kiüríti a fájlt!", html: srcHtml(['with open("naplo.txt", "w", encoding="utf-8") as f:', '    f.write("Szerda: 30 perc\\n")'], 1) + fl("naplo.txt", []) },
+      { cap: "A write beírja az új sort, de a hétfő és a kedd elveszett. A \"w\" akkor jó, ha mindig elölről akarod megírni a fájlt (például egy eredményt). Ha nincs még ilyen fájl, mindkét mód létrehozza.", html: srcHtml(['with open("naplo.txt", "w", encoding="utf-8") as f:', '    f.write("Szerda: 30 perc\\n")'], 2) + fl("naplo.txt", ["Szerda: 30 perc"], { add: 0 }) }
+    ];
+  }
+  function vsFrames(){
+    const ok = [["jegyek.py"], ["jegyek.txt"]];
+    return [
+      { cap: "A VS Code-ban a File menü Open Folder… pontjával nyisd meg a mappát, ahol a program van (itt C:\\Kovrat). Az Explorerben látod: a jegyek.py és a jegyek.txt egy mappában van.", html: vsx("KOVRAT", ok, "jegyek.py", PROG) },
+      { cap: "A ▶ (Run Python File) a terminálban futtatja. A terminál a megnyitott mappában áll (PS C:\\Kovrat>), a program ott keresi a jegyek.txt-t, és megtalálja.", html: vsx("KOVRAT", ok, "jegyek.py", PROG, [["p", "python jegyek.py"], ["t", "5"], ["t", "4"], ["t", "3"], ["p", ""]]) },
+      { cap: "Csapda: Kovrat a jegyek.txt-t az Asztalra mentette. A program mappájában nincs ott, ezért FileNotFoundError jön.", html: vsx("KOVRAT", [["jegyek.py"]], "jegyek.py", PROG, [["p", "python jegyek.py"], ["t", "Traceback (most recent call last): …"], ["e", "FileNotFoundError: [Errno 2] No such file or directory: 'jegyek.txt'"]]) },
+      { cap: "Másik csapda: ha a szülőmappát nyitod meg (C:\\Users\\Kovrat), a terminál ott áll, és ott keresi a fájlt, akkor is, ha a program a Kovrat mappában van. A fájlnév a terminál mappájához képest érvényes.", html: vsx("KOVRAT (C:\\USERS\\KOVRAT)", [["Kovrat"], ["   jegyek.py"], ["   jegyek.txt"]], "jegyek.py", PROG, [["p", "python Kovrat\\jegyek.py", "C:\\Users\\Kovrat"], ["e", "FileNotFoundError: [Errno 2] No such file or directory: 'jegyek.txt'"]]) },
+      { cap: "A megoldás: a programot és a fájlt tedd egy mappába, és pontosan azt a mappát nyisd meg. Új szövegfájlt az Explorerben a New File… gombbal készíthetsz (a neve végén .txt). Ha a program \"w\"-vel ír, az új fájl ugyanitt jelenik meg.", html: vsx("KOVRAT", [["jegyek.py"], ["jegyek.txt"], ["eredmeny.txt", "new"]], "eredmeny.txt", "Jegyek száma: 5\nÁtlag: 4.2") }
+    ];
+  }
+  const MT = { olvas: "Soronként olvasás", csv: "split(\";\") a sorokon", iras: "\"w\" vagy \"a\"?", vs: "Hol a fájl? (VS Code)" };
+  const MF = { olvas: olvasFrames, csv: csvFrames, iras: irasFrames, vs: vsFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "olvas" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MT[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+  const playBtn = m => "<p><button class='btn' data-play='" + m + "'>▶ Nézd meg lépésenként</button></p>";
+
+  /* ---------- Diák ---------- */
+  const init = el => {
+    P.bindTry(el);
+    el.querySelectorAll("[data-play]").forEach(b => b.addEventListener("click", () => { PB.m = b.dataset.play; $$("#pb-methods .tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.m === PB.m))); playTo(MF[PB.m](), MT[PB.m]); }));
+  };
+  const td = s => "<td style='font-family:var(--body)'>" + esc(s) + "</td>";
+  const slides = [
+    { k: "Alap", t: "Mi a szöveges fájl?", h:
+      fl("nevek.txt", NM) +
+      "<ul><li>A szöveges fájl (.txt) sorokból áll. Minden sor végén egy láthatatlan <b>sorvége-jel</b> van; a Pythonban ez a <code>\\n</code> (itt a ↵ mutatja).</li><li>A változók a program végén elvesznek, a fájl megmarad. Így lehet adatot eltenni, és más programnak átadni.</li><li>A fájlt a Jegyzettömbben vagy a VS Code-ban is megnyithatod és átírhatod.</li></ul>" },
+    { k: "open", t: "Megnyitás és olvasás: open, read", h:
+      ex("read") +
+      "<ul><li><code>open(\"vers.txt\", encoding=\"utf-8\")</code> megnyitja a fájlt olvasásra. Az eredménye egy fájl-objektum (itt az <code>f</code>).</li><li><code>f.read()</code> az egész fájlt egyetlen szövegként adja vissza, a sorvége-jelekkel együtt.</li><li>A végén <code>f.close()</code> bezárja. Ezt könnyű elfelejteni, ezért jobb a következő dia módszere.</li></ul>" },
+    { k: "with", t: "with: a fájl magától bezáródik", h:
+      ex("with") +
+      "<ul><li><code>with open(…) as f:</code> megnyitja a fájlt, és <code>f</code>-nek nevezi. Ami a fájllal dolgozik, az a with alá kerül, beljebb húzva (mint az if-nél).</li><li>A blokk végén a fájl <b>magától bezáródik</b>, akkor is, ha közben hiba jön. Ezért ezt használjuk mindig.</li><li>A with után a szöveg (<code>szoveg</code>) megmarad, csak a fájl zárult be.</li></ul>" },
+    { k: "utf-8", t: "encoding=\"utf-8\": az ékezetek miatt", h:
+      "<p>A gép a betűket számokként tárolja; a <b>kódolás</b> mondja meg, melyik szám melyik betű. A mai fájlok szinte mind <b>UTF-8</b> kódolásúak (a VS Code jobb alsó sarkában is ez áll: UTF-8).</p><ul><li>Ha nem adod meg, a Python a gép alapbeállítását használja. Windowson ez sokszor más, és az <code>árvíztűrő</code>-ből <code>Ã¡rvÃ­ztÅ±rÅ‘</code> lesz, vagy <code>UnicodeDecodeError</code> jön.</li><li>Ezért <b>mindig</b> írd oda: <code>open(\"…\", encoding=\"utf-8\")</code>, olvasásnál és írásnál is.</li><li>A böngészős futtató mindig UTF-8-at használ, itt nem látszana a hiba. A gyakorlófeladatok mégis kérik, hogy szokd meg.</li></ul>" },
+    { k: "Soronként", t: "Soronként: for sor in f", h:
+      ex("sorok") +
+      "<p>A <code>for sor in f:</code> soronként megy végig a fájlon: minden körben a <code>sor</code> a következő sor. De nézd meg a kimenetet: minden sor után <b>üres sor</b> van! Mert a sor végén ott a <code>\\n</code>, és a print is tesz egy sortörést.</p>" + ex("repr") + "<p>A <code>repr(sor)</code> megmutatja a láthatatlant: <code>'Ez a világ amilyen nagy,\\n'</code>. A hossza is eggyel több.</p>" + playBtn("olvas") },
+    { k: "strip", t: "strip(): le a sorvége-jellel", h:
+      ex("strip") +
+      "<ul><li><code>sor.strip()</code> levágja a sor elejéről és végéről a szóközt és a <code>\\n</code>-t (9. lecke). Így nincs üres sor.</li><li>Összehasonlításnál is kell: a <code>sor == \"Anna\"</code> hamis, mert a sor <code>\"Anna\\n\"</code>. A <code>sor.strip() == \"Anna\"</code> a jó.</li><li>Az <code>int(sor)</code> a <code>\\n</code>-t nem bánja (<code>int(\"5\\n\")</code> = 5), de a strip ott sem árt.</li></ul>" },
+    { k: "Statisztika", t: "Számok a fájlból: összeg, maximum, darab", h:
+      ex("stat") +
+      "<p>A szokásos minta: üres lista, a ciklusban minden sort számmá alakítva hozzáfűzünk (<code>append</code>), a végén jöhet a <code>sum</code>, a <code>max</code>, a <code>count</code>, az átlag (8. lecke). A fájl tartalmát a futtatóban átírhatod: futtasd újra más jegyekkel!</p>" },
+    { k: "split", t: "Több adat egy sorban: split(\";\")", h:
+      ex("csv") +
+      "<ul><li>Gyakori, hogy egy sorban több adat van, pontosvesszővel elválasztva: <code>Anna;15;Debrecen</code>. A táblázatkezelők is tudnak ilyen (CSV) fájlt menteni.</li><li><code>sor.strip().split(\";\")</code> listát ad: <code>[\"Anna\", \"15\", \"Debrecen\"]</code>. Az <code>adat[0]</code> a név, az <code>adat[1]</code> a kor (szövegként, ezért <code>int()</code>).</li></ul>" + ex("csv2") + "<p>Rövidebben: <code>nev, kor, varos = …split(\";\")</code> a lista három elemét egyszerre három változóba teszi (ha pontosan három része van a sornak).</p>" + playBtn("csv") },
+    { k: "\"w\"", t: "Írás fájlba: \"w\" és write", h:
+      ex("w") +
+      "<ul><li>Írásra a második adat a mód: <code>\"w\"</code> (write). Ha nincs ilyen fájl, létrejön.</li><li><code>f.write(\"…\")</code> beírja a szöveget. <b>Nem tesz sortörést</b>: a <code>\\n</code>-t neked kell a végére írni.</li><li>A futtatóban a kimenet alatt látod, mi lett a fájlban.</li></ul>" },
+    { k: "\"a\"", t: "\"w\" töröl, \"a\" hozzáfűz", h:
+      ex("a") + ex("wtorol") +
+      "<div class='ptwrap'><table class='pt'><tr><th>Mód</th><th>Mit csinál?</th><th>Ha nincs ilyen fájl</th></tr>" +
+      [['"r" (vagy semmi)', "olvasás", "FileNotFoundError"], ['"w"', "írás: megnyitáskor kiüríti a fájlt!", "létrehozza"], ['"a"', "hozzáfűzés: a végére ír, a régi megmarad", "létrehozza"]].map(r => "<tr><td>" + esc(r[0]) + "</td>" + td(r[1]) + td(r[2]) + "</tr>").join("") + "</table></div>" + playBtn("iras") },
+    { k: "Számok", t: "Számot írni: szövegként", h:
+      ex("szam") + ex("szamhiba") +
+      "<p>A <code>write</code> csak szöveget fogad el: a <code>f.write(42)</code> TypeError. Számot így írj: <code>f.write(str(x) + \"\\n\")</code>, vagy f-stringgel: <code>f.write(f\"{x}\\n\")</code>.</p>" },
+    { k: "Feldolgozás", t: "Olvasás → számolás → írás", h:
+      ex("feld") +
+      "<p>A legtöbb fájlos feladat ilyen: beolvasod az adatokat (egy listába), kiszámolod, ami kell, és az eredményt kiírod a képernyőre vagy egy másik fájlba. Két with blokk egymás után: az elsőben olvasol, a másodikban írsz.</p>" },
+    { k: "Nincs fájl", t: "Ha nincs ilyen fájl: FileNotFoundError", h:
+      ex("nincs") + ex("nincs2") +
+      "<ul><li>Ha a fájl neve rossz (vagy nincs a program mappájában), olvasásnál <code>FileNotFoundError</code> jön.</li><li>A 12. lecke módszere itt is működik: a megnyitás a try alá, és <code>except FileNotFoundError:</code>.</li><li>A névnek betűre egyeznie kell, a kiterjesztéssel együtt: <code>jegyek.txt</code>, nem <code>jegyek</code>.</li></ul>" },
+    { k: "VS Code", t: "Hol keresi a program a fájlt?", h:
+      vsx("KOVRAT", [["jegyek.py"], ["jegyek.txt"]], "jegyek.py", PROG, [["p", "python jegyek.py"], ["t", "5"], ["t", "4"], ["t", "3"]]) +
+      "<ul><li>A program abban a mappában keresi a fájlt, ahol a <b>terminál</b> áll (a <code>PS C:\\Kovrat&gt;</code> utáni rész). A VS Code-ban ez a megnyitott mappa.</li><li>Ezért: a <code>.py</code> és a <code>.txt</code> legyen egy mappában, és a VS Code-ban azt a mappát nyisd meg (File → Open Folder…).</li><li>Új szövegfájl: az Explorerben a New File… gomb, a név végén <code>.txt</code>.</li></ul>" + playBtn("vs") },
+    { k: "Hibák", t: "Tipikus hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Javítás</th></tr>" +
+      [["rossz fájlnév, vagy más mappában van", "FileNotFoundError", "pontos név, egy mappában"],
+       ["print(sor)", "üres sor minden sor után", "print(sor.strip())"],
+       ['sor == "Anna"', "mindig hamis (a végén \\n)", 'sor.strip() == "Anna"'],
+       ['"w" a hozzáfűzéshez', "a régi tartalom törlődik", '"a"'],
+       ['f.write(nev) a \\n nélkül', "minden egy sorba kerül", 'f.write(nev + "\\n")'],
+       ["f.write(42)", "TypeError: … must be str", 'f.write(f"{x}\\n")'],
+       ["írás olvasásra nyitott fájlba", "UnsupportedOperation: not writable", '"w" vagy "a"'],
+       ["olvasás a with blokk után", "ValueError: … closed file", "a with alá, beljebb"],
+       ["üres sor a számok között", "ValueError: int()", "if sor.strip(): …"],
+       ["encoding nélkül, Windowson", "elromlott ékezetek", 'encoding="utf-8"']].map(r => "<tr><td>" + esc(r[0]) + "</td>" + td(r[1]) + "<td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" + ex("zart") }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás ---------- */
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: l => P.kiir(pick(KIIR[l - 1])(), "Mit ír ki?") },
+    { id: "fajl", name: "Mi lesz a fájlban?", gen(l){ const t = pick(FAJL[l - 1])(); return P.kiir({ q: "Mi lesz a <code>" + esc(t.fn) + "</code> fájlban, miután ez a program lefutott?", lbl: "A " + t.fn + " tartalma, soronként", files: t.files, code: t.code, ans: t.ans, sol: t.sol }, "Mi lesz a fájlban?"); } },
+    { id: "mk", name: "Melyik kell?", gen(l){
+      const it = pick(MK[l - 1]);
+      return P.choice("Melyik kell hozzá? <b>" + esc(it[0]) + "</b>", "<code>" + esc(FN[it[1]]) + "</code>", shuffle(FN.filter((_, i) => i !== it[1])).slice(0, 3).map(f => "<code>" + esc(f) + "</code>"), "<p>" + esc(MKSOL[it[1]]) + "</p>", "Nem ez. Olvasás → \"r\" (ez az alap); új tartalom → \"w\"; a végére → \"a\"; a \\n le → strip(); darabolás → split(\";\"); ékezetek → encoding=\"utf-8\"; szám a fájlba → str(x); biztos bezárás → with.");
+    } },
+    { id: "irdmeg", name: "Írd meg!", gen: l => P.task(pick(WRITE[l - 1])(), "Írd meg!") },
+    { id: "hiba", name: "Milyen hibát ad?", gen: l => P.hiba(pick(HIBA[l - 1])(), HPOOL, "Nézd meg: megvan a fájl ezen a néven (kiterjesztéssel)? Jó módban van megnyitva (olvasás vagy írás)? A with alatt dolgozik a fájllal? Szöveget ír a write? Mi van pontosan a fájlban (üres sor, név a szám helyett)?") },
+    { id: "javit", name: "Javítsd ki!", gen: l => P.task(pick(JAVIT[l - 1])(), "Javítsd ki!") }
+  ];
+  K.practice($("#practice"), { id: "python-13-fajlok", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [['with open("x.txt", encoding="utf-8") as f:', "megnyitás olvasásra; a blokk végén magától bezáródik"], ["szoveg = f.read()", "az egész fájl egy szövegként"], ["for sor in f:", "soronként (a sor végén \\n)"], ["sor.strip()", "le a \\n-t és a szóközöket"], ['adat = sor.strip().split(";")', '"Anna;15" → ["Anna", "15"]'], ['open("x.txt", "w", encoding="utf-8")', "írás: új fájl, vagy a régit kiüríti"], ['open("x.txt", "a", encoding="utf-8")', "hozzáfűzés a végére"], ['f.write("Szia\\n")', "írás (nem tesz sortörést, csak szöveget fogad)"], ['f.write(f"{x}\\n")', "szám írása szövegként"], ["except FileNotFoundError:", "ha nincs ilyen fájl"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td></tr>").join("");
+})();
+</script>
+<!--@UPDATE-->
