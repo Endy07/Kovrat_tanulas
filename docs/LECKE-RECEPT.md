@@ -630,3 +630,15 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
   állt le: a `py-check` 40-nél beragadt, a böngészőben lefagyott volna az oldal. Különböző értékekhez keverj egy tartományt
   (`shuffle([...]).slice(0, k)`), ne ismételgess.
 
+### A Python-sorozat 14. leckéje (ismétlő próbadolgozat, 2026. 11. 04.)
+
+- **Más leckék feladatai újrahasznosítva:** `<!--@PYLOGIC a b …-->` (a `<!--@PYJS-->` után) → a build mindegyik lecke `/*@LOGIC*/` blokkját
+  saját függvénybe teszi, eredménye `PYL["python-5-elagazas"]` (`KIIR`, `WRITE`, `HIBA`, `HPOOL`, `JAVIT`, `banks`…). A 14. lecke LOGIC-ja
+  harmadik paraméterként kapja (`typeof PYL === "undefined" ? {} : PYL`). A `py-check` a jelölőt olvasva ugyanígy építi fel.
+- **Ha egy leckét javítasz, a 14.-et is építsd újra** (`node tools/lessons/build.js python-14-ismetlo`), mert a feladatai bele vannak másolva.
+- **`node -e "require('./build.js')"` név nélkül MINDEN leckét újraépít** (a régi, nem Python-leckéket is): ilyenkor `git checkout` a nem kívánt HTML-ekre.
+- **A feladatlap** (`lapNew`) a gyakorló generátorait használja (`GEN[k](szint)`), a `t.mount` / `t.check` / `t.options` közös felületén;
+  a `lesson-test.js` nem nézi, ezért külön Playwright-próba ellenőrzi (192/192: minden szinten 6 lap, a mintamegoldás átmegy).
+- **A biztonsági ellenőrző** a `$$`-t tartalmazó heredocot nem tudja értelmezni (rm-gyanú): a javítószkriptet írd fájlba, és úgy futtasd.
+
+- **Szövegcserés javítás után mindig építs és tesztelj újra a böngészőben:** a dia-szövegek JS-idézőjelben vannak; egy beszúrt `"a" in s` escapelés nélkül az egész szkriptet megölte (0 dia, JS-hiba). Gyors ellenőrzés a kész HTML-en: minden `<script>` tartalma `new Function(…)`-nel lefordul-e.

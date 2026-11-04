@@ -16,6 +16,8 @@ const head = `<meta charset="utf-8">
 <link rel="stylesheet" href="${FONTS}">
 <style>
 ${css}</style>`;
+// egy lecke /*@LOGIC*/ blokkja (a py-check.js is így olvassa)
+const logicOf = l => { const m = /\/\*@LOGIC\*\/([\s\S]*?)\/\*@\/LOGIC\*\//.exec(rd(l + ".src.html")); if (!m) throw new Error("nincs LOGIC: " + l); return m[1]; };
 let names = process.argv.slice(2);
 if (!names.length) names = fs.readdirSync(dir).filter(f => f.endsWith(".src.html")).map(f => f.replace(".src.html", ""));
 for (const n of names) {
@@ -27,7 +29,9 @@ for (const n of names) {
        // helyesírás-leckék: a közös helyesírás-készlet (betűk, elválasztás, ábécérend, tollbamondás)
        .replace("<!--@HJS-->", () => "<style>\n" + rd("helyesiras.css") + "</style>\n<script>\n" + rd("helyesiras.js") + "</script>")
        // Python-sorozat: a közös Python-modul (futtató, ellenőrzés, feladatfajták)
-       .replace("<!--@PYJS-->", () => "<style>\n" + rd("python.css") + "</style>\n<script>\n" + rd("python.js") + "</script>");
+       .replace("<!--@PYJS-->", () => "<style>\n" + rd("python.css") + "</style>\n<script>\n" + rd("python.js") + "</script>")
+       // ismétlő lecke: más Python-leckék feladatlogikája (a /*@LOGIC*/ blokkjuk), PYL["python-5-elagazas"] alakban
+       .replace(/<!--@PYLOGIC ([^>]*?)-->/, (m, list) => "<script>\nconst PYL = {};\n" + list.trim().split(/\s+/).map(l => "PYL[" + JSON.stringify(l) + "] = (function(){\n" + logicOf(l) + "\nreturn LOGIC;\n})();\n").join("") + "</script>");
   fs.writeFileSync(path.join(root, n + ".html"), s);
   console.log("kész:", n + ".html", Math.round(s.length / 1024) + " KB");
 }

@@ -1,5 +1,24 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-04 (Python 14. lecke: ismétlő próbadolgozat — a sorozat vége)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–13. lecke (PR #5–#16; a 13. beolvasztva: `a81d969`).
+- **Új PR-ban** (`claude/lesson-12-exception-handling-n8ytkd`, a `main`-ről újraindítva): **14. Ismétlő próbadolgozat** (`python-14-ismetlo`):
+  tíz összefoglaló dia + hibák + tanácsok, 3 levezetés, vegyes gyakorlás az 1–10. lecke saját feladataiból (címkével), új Összetett feladat,
+  próbadolgozat (12), feladatlap (8 feladat, „Megoldom itt”, nyomtatható).
+- **Technika:** a build `<!--@PYLOGIC …-->` jelölője behúzza a leckék `/*@LOGIC*/` blokkját (`PYL`); a `py-check` is így olvassa, és a behúzott
+  bankokat is újraellenőrzi. **Ha egy 1–10. leckét javítasz, a 14.-et is építsd újra.**
+- **Tesztek:** `py-check --verify 40 python-14-ismetlo` 29 282 futás, 0 hiba; `lesson-test 40` (Pyodide-dal) 600/600, 390 px, JS-hiba nincs;
+  a feladatlap külön Playwright-próbával 192/192. Lektor: 25 pont, mind javítva (utána `py-check 15`, `lesson-test 20`, feladatlap újra).
+
+**A tervezett Python-sorozat (1–14.) ezzel teljes.** Lehetséges folytatás (Endi döntése): az iskola tényleges anyagához igazítás (Kovrat
+füzete, órai feladatok), OOP alapjai, vagy vissza a helyesíráshoz, ha megjött Kovrat chatje.
+
+**Endi döntésére vár:** a 14. lecke PR-jének beolvasztása, és hogy mi legyen a következő téma.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-11-04 (Python 13. lecke: szöveges fájlok)
 
 **Hol tartunk:**

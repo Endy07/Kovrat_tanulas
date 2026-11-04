@@ -103,7 +103,11 @@ function series(name, N){
   const blk = (txt, b) => { const m = new RegExp("/\\*@" + b + "\\*/([\\s\\S]*?)/\\*@/" + b + "\\*/").exec(txt); if (!m) throw new Error("nincs blokk: " + b); return m[1]; };
   const H = new Function(blk(lib, "HARNESS") + "\nreturn PY_HARNESS;")();
   const PC = new Function(blk(lib, "PYCORE") + "\nreturn PYCORE;")();
-  const L = new Function("K", "P", blk(lsrc, "LOGIC") + "\nreturn LOGIC;")({ rnd, pick, shuffle, esc }, { C: PC });
+  // ismétlő lecke: a behúzott leckék logikája (<!--@PYLOGIC a b …-->) PYL-ként
+  const PYL = {};
+  const um = /<!--@PYLOGIC ([^>]*?)-->/.exec(lsrc);
+  if (um) for (const l of um[1].trim().split(/\s+/)) PYL[l] = new Function("K", "P", blk(fs.readFileSync(path.join(__dirname, l + ".src.html"), "utf8"), "LOGIC") + "\nreturn LOGIC;")({ rnd, pick, shuffle, esc }, { C: PC });
+  const L = new Function("K", "P", "PYL", blk(lsrc, "LOGIC") + "\nreturn LOGIC;")({ rnd, pick, shuffle, esc }, { C: PC }, PYL);
   const jobs = [], chk = [];
   const add = (code, ins, f, t) => { const o = PC.optsOf(t); jobs.push(o ? { code, inputs: ins || [], opts: o } : { code, inputs: ins || [] }); chk.push(f); };
   const cnt = {}; const bad = [];

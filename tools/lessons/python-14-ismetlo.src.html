@@ -1,0 +1,294 @@
+<!--@HEAD-->
+<title>Python 14: ismétlő próbadolgozat</title>
+<style>
+.ltag{display:inline-block;font-family:var(--mono);font-size:.75rem;letter-spacing:.04em;border:1.5px solid var(--line);border-radius:999px;padding:1px 9px;margin-bottom:6px;color:var(--muted)}
+.ltag a{color:inherit}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:8px;margin:10px 0}
+.topics a{display:block;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;text-decoration:none;color:var(--ink);background:var(--surface)}
+.topics a b{font-family:var(--mono);color:var(--accent)}
+.topics a span{display:block;font-size:.85rem;color:var(--muted)}
+.lap{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lapt{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.lapt h3{margin:0 0 6px;font-size:1.05rem}
+.lapt .opts{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.lapt details{margin-top:8px}
+.lapt summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.lapt .fbx{margin-top:8px}
+.plan{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;font-family:var(--mono);font-size:.88rem}
+.plan span{border:1.5px solid var(--line);border-radius:8px;padding:3px 9px}
+.plan span.on{border-color:var(--led);background:color-mix(in srgb,var(--led) 22%,var(--surface));font-weight:700}
+.plan i{color:var(--muted);font-style:normal}
+.pb-stage .plan span{border-color:#3A4656}
+.pb-stage .plan span.on{border-color:var(--led);background:#3a3a12}
+@media print{.hero .panel,#deck,#pb,#pb-methods,#practice,.next,.lapt .row,.lapt .code-ed{display:none!important}.lapt details{display:block}}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Python a nulláról · 14. lecke</span>
+  <h1>Ismétlő próbadolgozat: az 1–10. lecke</h1>
+  <p class="lead">Itt az 1–10. lecke anyaga egyben: a <code>print</code>-től a saját függvényekig. Először nézd át a tíz témát röviden, aztán gyakorolj <b>vegyes</b> feladatokkal (a gép véletlenül választ leckét), végül írj egy <b>próbadolgozatot</b> vagy egy egész feladatlapot. Az „Összetett feladat” típus több témát kever egy programban, mint egy igazi dolgozat utolsó feladatai.</p>
+  <div class="panel">
+    <span class="eyebrow">Python a böngésződben: egy program, amelyben az 1–10. lecke szinte minden eszköze benne van</span>
+    <div id="play"></div>
+  </div>
+  <div class="big-note"><b>Hogyan használd?</b> 1. Olvasd végig a diákat (minden téma egy dia, a végén link a leckéhez). 2. Gyakorolj: <b>Mit ír ki?</b>, <b>Írd meg!</b>, <b>Milyen hibát ad?</b>, <b>Javítsd ki!</b> vegyesen, és <b>Összetett feladat</b>. 3. Írd meg a <b>📝 Próbadolgozatot</b> (12 feladat, a végén jegy), vagy kérj egy <b>feladatlapot</b> (5. rész). Ahol elakadsz, a feladat fölötti címke megmutatja, melyik leckét nézd át.</div>
+</header>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>A tíz lecke röviden</h2>
+  <p>Témánként egy dia: a legfontosabb szabályok, egy futtatható példa („▶ Kipróbálom”), és a link a teljes leckéhez. A végén a leggyakoribb hibák és a dolgozat tanácsai.</p>
+  <div class="topics" id="topics"></div>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Levezetések: összetett feladatok</h2>
+  <p>Egy dolgozatfeladat megoldása lépésről lépésre: először a terv (bekérés, feldolgozás, kiírás), aztán a program sorról sorra.</p>
+  <div class="tabs" id="pb-methods">
+    <button class="tab" data-m="terv" aria-selected="true">A terv: bekérés → feldolgozás → kiírás</button>
+    <button class="tab" data-m="jegyek" aria-selected="false">Jegyek: lista, átlag, legjobb</button>
+    <button class="tab" data-m="fuggv" aria-selected="false">Függvény: magánhangzók</button>
+  </div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás vegyesen</h2>
+  <p>Öt feladattípus, három szinten. Az első négy az 1–10. lecke feladatai közül választ véletlenül (a címke mutatja, melyikből); az „Összetett feladat” több témát kever. Az „Írd meg!” feladatoknál a gép több bemenettel is lefuttatja a programodat. Ahol függvényt kér a feladat, elég a függvényt megírnod: a gép maga hívja meg többféle értékkel, ne kérj be semmit. A „📝 Próbadolgozat” 12 vegyes feladat, menet közben nincs visszajelzés, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="ptwrap"><table class="pt" id="cheat"></table></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">5. rész</span><h2>Feladatlap</h2>
+  <p>Egy teljes feladatlap, mint egy dolgozat: 8 feladat az 1–10. leckéből. Oldd meg papíron vagy itt (a „✎ Megoldom itt” gombbal), és csak a végén nézd meg a megoldást. Az „Új feladatlap” mindig másikat ad; nyomtatni is lehet: ha egy megoldást sem nyitottál ki, a nyomtatott lapon minden feladat alatt ott a megoldása; ha kinyitottál néhányat, csak azok.</p>
+  <div class="row"><label class="mono" for="llvl">Nehézség</label> <select id="llvl"><option value="1">könnyű</option><option value="2" selected>közepes</option><option value="3">nehéz</option><option value="0">vegyes</option></select> <button class="btn primary" id="lnew">Új feladatlap</button> <button class="btn" id="lprint">Nyomtatás</button></div>
+  <div class="lap" id="lap"></div>
+  <div class="next">
+    <a class="btn" href="python-13-fajlok.html">← 13. lecke: fájlok</a>
+    <a class="btn primary" href="python-dolgozat.html">A dolgozat-lecke (1–4. és 9. lecke) →</a>
+  </div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@PYJS-->
+<!--@PYLOGIC python-1-kiiras python-2-valtozok python-3-input python-4-muveletek python-5-elagazas python-6-while python-7-for python-8-listak python-9-szovegek python-10-fuggvenyek-->
+<script>
+(function(){
+  const { $, $$, rnd, pick, shuffle, esc } = K;
+  K.tts.rules.push([/<code>(.*?)<\/code>/g, "$1"], [/\s==\s/g, " egyenlő-e "], [/\s!=\s/g, " nem egyenlő "], [/\s&gt;=\s|\s>=\s/g, " nagyobb vagy egyenlő, mint "], [/\s&gt;\s|\s>\s/g, " nagyobb, mint "], [/\s&lt;\s|\s<\s/g, " kisebb, mint "], [/\+=/g, " plusz egyenlő "], [/\s=\s/g, " legyen "], [/\*\*/g, " a következő hatványra: "], [/#/g, " kettőskereszt "]);
+
+/*@LOGIC*/
+  /* ---------- A feladatok logikája (DOM nélkül; a py-check.js Node-ban, valódi Pythonnal ellenőrzi) ----------
+     Az 1–10. lecke feladatai a PYL-ből jönnek (a build behúzza a logikájukat); itt csak az új, összetett feladatok vannak. */
+  const LOGIC = (function(rnd, pick, shuffle, esc, C, PYL){
+    const J = (...l) => l.join("\n");
+    const I = s => "    " + s;
+    const S = x => String(x);
+    const has = (re, m) => [re, m];
+    const r2 = x => Math.round(x * 100) / 100;
+    const LES = [["python-1-kiiras", 1, "A print"], ["python-2-valtozok", 2, "Változók és típusok"], ["python-3-input", 3, "Adatbekérés: input"], ["python-4-muveletek", 4, "Műveletek"], ["python-5-elagazas", 5, "Feltételek: if"], ["python-6-while", 6, "Ismétlés: while"], ["python-7-for", 7, "for és range"], ["python-8-listak", 8, "Listák"], ["python-9-szovegek", 9, "Szövegek"], ["python-10-fuggvenyek", 10, "Saját függvények"]];
+    const SZAVAK = ["alma", "Python", "programozás", "kutya", "iskola", "számítógép", "Debrecen", "ablak"];
+    const MONDAT = ["Ma Python dolgozatot írunk", "A macska alszik a kanapén", "Holnap este moziba megyünk", "Szeretem a programozást nagyon", "Kovrat jól tud programozni"];
+    const T1 = calls => [{ ins: [], calls }];
+    const MAGAN = "aáeéiíoóöőuúüű";
+    const vow = s => [...s.toLowerCase()].filter(c => MAGAN.includes(c)).length;
+    const prim = n => { if (n < 2) return false; for (let d = 2; d * d <= n; d++) if (n % d === 0) return false; return true; };
+    const two = (a, b) => { let x = rnd(a, b), y = rnd(a, b); while (y === x) y = rnd(a, b); return [x, y]; };
+
+    /* ---- A diák példái ---- */
+    const EX = {
+      hero: { code: J("def ertekeles(atlag):", I("if atlag >= 4.5:"), I(I('return "kiváló"')), I("elif atlag >= 3.5:"), I(I('return "jó"')), I("else:"), I(I('return "gyakorolni kell"')), "", 'nev = input("Neved: ")', 'db = int(input("Hány jegyed van? "))', "jegyek = []", "for i in range(db):", I('jegyek.append(int(input(f"{i + 1}. jegy: ")))'), "atlag = sum(jegyek) / len(jegyek)", 'print(f"{nev.upper()}: átlag {round(atlag, 2)}, legjobb {max(jegyek)}")', 'print(f"Értékelés: {ertekeles(atlag)}")'), ins: ["Kovrat", "4", "5", "4", "5", "3"] },
+      p1: { code: J('print("Szia, világ!")', "print(2 + 3, 10 / 4)", 'print("Python", "a", "nulláról")', "print()", "# ez megjegyzés, nem fut le", 'print("vége")') },
+      p2: { code: J('nev = "Kovrat"', "kor = 15", "magassag = 1.72", "tanulo = True", "kor = kor + 1", 'print(f"{nev} {kor} éves, {magassag} m")', "print(type(kor), type(magassag), type(nev), type(tanulo))") },
+      p3: { code: J('nev = input("Neved: ")', 'kor = int(input("Korod: "))', 'print(f"Szia, {nev}! Jövőre {kor + 1} éves leszel.")'), ins: ["Anna", "15"] },
+      p4: { code: J("print(17 / 5, 17 // 5, 17 % 5, 2 ** 10)", "print(round(3.14159, 2), abs(-7), max(3, 9, 4), min(3, 9, 4))", "perc = 135", 'print(f"{perc // 60} óra {perc % 60} perc")') },
+      p5: { code: J('pont = int(input("Pontszám: "))', "if pont >= 85:", I('print("Jeles")'), "elif pont >= 55:", I('print("Megfelelt")'), "else:", I('print("Gyakorolni kell")'), "if pont % 2 == 0 and pont > 0:", I('print("Páros pozitív")')), ins: ["73"] },
+      p6: { code: J("osszeg = 0", 'x = int(input("Szám (0 = vége): "))', "while x != 0:", I("osszeg += x"), I('x = int(input("Szám (0 = vége): "))'), 'print(f"Az összeg: {osszeg}")'), ins: ["5", "8", "2", "0"] },
+      p7: { code: J("for i in range(1, 6):", I('print(i, "*", i, "=", i * i)'), "db = 0", 'for betu in "programozás":', I('if betu == "o":'), I(I("db += 1")), 'print(f"o betű: {db} db")') },
+      p8: { code: J("jegyek = [5, 3, 4, 5, 2]", "print(jegyek[0], jegyek[-1], len(jegyek))", "jegyek.append(4)", 'print(f"Összeg: {sum(jegyek)}, max: {max(jegyek)}")', "otos = 0", "for j in jegyek:", I("if j == 5:"), I(I("otos += 1")), 'print(f"Ötösök: {otos}")') },
+      p9: { code: J('s = "Programozás"', "print(s[0], s[-1], s[0:4], s[::-1])", "print(s.upper(), s.count(\"o\"), len(s))", 'szavak = "Ma Python dolgozat van".split()', "print(szavak, len(szavak))") },
+      p10: { code: J("def terulet(a, b):", I("return a * b"), "", "def udvozol(nev, koszones=\"Szia\"):", I('return f"{koszones}, {nev}!"'), "", "print(terulet(3, 4))", 'print(udvozol("Anna"))', 'print(udvozol("Bence", "Helló"))') }
+    };
+
+    /* ---- „Összetett feladat”: több témát kever (új, ezért a py-check külön ellenőrzi) ---- */
+    const OSSZ = [
+      [
+        () => { const [a, b] = two(1, 99), c = rnd(1, 99); return { q: "Kérj be két egész számot! Írd ki a nagyobbat így: <code>A nagyobb: 12</code>. Ha egyenlők, ezt írd ki: <code>Egyenlők</code>.",
+          code: J('a = int(input("Első szám: "))', 'b = int(input("Második szám: "))', "if a > b:", I('print(f"A nagyobb: {a}")'), "elif b > a:", I('print(f"A nagyobb: {b}")'), "else:", I('print("Egyenlők")')), tests: [{ ins: [S(a), S(b)], exp: [{ s: "A nagyobb: " + Math.max(a, b) }], not: ["Egyenlők"] }, { ins: [S(b), S(a)], exp: [{ s: "A nagyobb: " + Math.max(a, b) }], not: ["Egyenlők"] }, { ins: [S(c), S(c)], exp: [{ s: "Egyenlők" }], not: ["A nagyobb"] }], must: [has(/\bif\b/, "a döntéshez if kell.")], fstr: true, ex: "3. lecke (int(input())) + 5. lecke (if, elif, else). Próbáld ki mindhárom esetet: az első nagyobb, a második nagyobb, egyenlők." }; },
+        () => { const [a, b] = two(3, 30); return { q: "Kérj be egy pozitív egész számot (n)! Add össze a számokat 1-től n-ig (n is benne van), és írd ki: <code>Összeg: 15</code>",
+          code: J('n = int(input("n = "))', "osszeg = 0", "for i in range(1, n + 1):", I("osszeg += i"), 'print(f"Összeg: {osszeg}")'), tests: [a, b].map(n => ({ ins: [S(n)], exp: [{ s: "Összeg: " + n * (n + 1) / 2 }] })), must: [has(/\b(for|while)\b/, "a számokat ciklussal add össze.")], fstr: true, ex: "7. lecke: range(1, n + 1), mert a záró érték nincs benne. Összegzés: osszeg = 0 a ciklus előtt, osszeg += i a ciklusban." }; },
+        () => { const [a, b] = shuffle(SZAVAK).slice(0, 2); return { q: "Kérj be egy szót! Írd ki visszafelé és a hosszát, két sorban: <code>Visszafelé: amla</code> és <code>Hossz: 4</code>",
+          code: J('szo = input("Egy szó: ")', 'print(f"Visszafelé: {szo[::-1]}")', 'print(f"Hossz: {len(szo)}")'), tests: [a, b].map(w => ({ ins: [w], exp: [{ s: "Visszafelé: " + [...w].reverse().join("") }, { s: "Hossz: " + w.length }] })), fstr: true, ex: "9. lecke: a szo[::-1] visszafelé adja a szöveget, a len(szo) a hosszát." }; }
+      ],
+      [
+        () => { const g = () => { const n = rnd(3, 5), j = []; for (let i = 0; i < n; i++) j.push(rnd(1, 5)); return j; }; let a = g(), b = g(); while (a.join() === b.join()) b = g();
+          const T = j => ({ ins: [S(j.length)].concat(j.map(S)), exp: [{ s: "Átlag: " + r2(j.reduce((x, y) => x + y, 0) / j.length) }, { s: "Legjobb: " + Math.max(...j) }] });
+          return { q: "Kérd be, hány jegy lesz, aztán egyenként a jegyeket (<code>int</code>)! Írd ki az átlagot két tizedesre kerekítve és a legjobb jegyet: <code>Átlag: 4.25</code> és <code>Legjobb: 5</code>",
+          code: J('db = int(input("Hány jegy? "))', "jegyek = []", "for i in range(db):", I('jegyek.append(int(input("Jegy: ")))'), 'print(f"Átlag: {round(sum(jegyek) / len(jegyek), 2)}")', 'print(f"Legjobb: {max(jegyek)}")'), tests: [T(a), T(b)], must: [has(/\b(for|while)\b/, "a jegyeket ciklussal kérd be."), has(/round\s*\(/, "két tizedesre kerekíts: round(…, 2).")], fstr: true, ex: "8. lecke: üres lista, a ciklusban append, a végén sum / len és max. A kerekítés: round(…, 2)." }; },
+        () => { const g = () => { const a = []; for (let i = 0; i < rnd(3, 6); i++) a.push(rnd(1, 40)); return a; }; let a = g(), b = g(); while (a.join() === b.join()) b = g();
+          const T = l => ({ ins: l.map(S).concat(["0"]), exp: [{ s: "Páros számok: " + l.filter(x => x % 2 === 0).length }] });
+          return { q: "Kérj be egész számokat, amíg 0-t nem írnak be! Számold meg, hány páros szám volt közöttük (a 0-t ne számold), és írd ki: <code>Páros számok: 3</code>",
+          code: J("db = 0", 'x = int(input("Szám (0 = vége): "))', "while x != 0:", I("if x % 2 == 0:"), I(I("db += 1")), I('x = int(input("Szám (0 = vége): "))'), 'print(f"Páros számok: {db}")'), tests: [T(a), T(b)], must: [has(/\bwhile\b/, "a bekérést while ciklus ismételje (amíg nem 0).")], fstr: true, ex: "6. lecke: az első bekérés a ciklus előtt, a következő a ciklus végén. Páros: x % 2 == 0 (4. és 5. lecke)." }; },
+        () => { const T = m => { const w = m.split(" "); return { ins: [m], exp: [{ s: "Szavak: " + w.length }, { s: "Leghosszabb: " + w.reduce((x, y) => y.length > x.length ? y : x) }] }; };
+          const ok = MONDAT.filter(m => { const w = m.split(" "), L = Math.max(...w.map(x => x.length)); return w.filter(x => x.length === L).length === 1; }); const [a, b] = shuffle(ok).slice(0, 2);
+          return { q: "Kérj be egy mondatot! Írd ki, hány szóból áll, és melyik a leghosszabb szava: Ha a mondat <code>Ma Python dolgozatot írunk</code>, ezt írd ki: <code>Szavak: 4</code> és <code>Leghosszabb: dolgozatot</code> (a szavakat szóköz választja el; a leghosszabb csak egy van).",
+          code: J('mondat = input("Mondat: ")', "szavak = mondat.split()", 'leghosszabb = ""', "for szo in szavak:", I("if len(szo) > len(leghosszabb):"), I(I("leghosszabb = szo")), 'print(f"Szavak: {len(szavak)}")', 'print(f"Leghosszabb: {leghosszabb}")'), tests: [T(a), T(b)], must: [has(/split\s*\(/, "a mondatot a split() bontsa szavakra.")], fstr: true, ex: "9. lecke: split() → lista. 8. lecke: maximumkiválasztás, itt a hossz szerint: if len(szo) > len(leghosszabb)." }; }
+      ],
+      [
+        () => ({ q: "Írj egy <code>osztok(n)</code> nevű függvényt, amely egy <b>listában</b> adja vissza az n pozitív osztóit, növekvő sorrendben! Például <code>osztok(12)</code> → <code>[1, 2, 3, 4, 6, 12]</code>",
+          code: J("def osztok(n):", I("lista = []"), I("for d in range(1, n + 1):"), I(I("if n % d == 0:")), I(I(I("lista.append(d)"))), I("return lista")), fname: "osztok", tests: T1([["osztok(12)", "[1, 2, 3, 4, 6, 12]"], ["osztok(1)", "[1]"], ["osztok(7)", "[1, 7]"], ["osztok(" + pick([18, 20, 28, 30]) + ")", null]].map(c => c[1] == null ? [c[0], "[" + (n => { const r = []; for (let d = 1; d <= n; d++) if (n % d === 0) r.push(d); return r; })(+c[0].match(/\d+/)[0]).join(", ") + "]"] : c)), must: [has(/\breturn\b/, "a függvény return-nel adja vissza a listát.")], ex: "10. lecke: def és return. 7. lecke: for d in range(1, n + 1). 8. lecke: kiválogatás append-del: ha n % d == 0, d osztó." }),
+        () => ({ q: "Írj egy <code>jegy(pont)</code> nevű függvényt, amely a pontszámból (0–100) a jegyet adja vissza számként: 85-től 5, 70-től 4, 55-től 3, 40-től 2, 40 alatt 1.",
+          code: J("def jegy(pont):", I("if pont >= 85:"), I(I("return 5")), I("elif pont >= 70:"), I(I("return 4")), I("elif pont >= 55:"), I(I("return 3")), I("elif pont >= 40:"), I(I("return 2")), I("else:"), I(I("return 1"))), fname: "jegy", tests: T1([["jegy(100)", "5"], ["jegy(85)", "5"], ["jegy(84)", "4"], ["jegy(70)", "4"], ["jegy(55)", "3"], ["jegy(54)", "2"], ["jegy(40)", "2"], ["jegy(39)", "1"], ["jegy(0)", "1"]]), must: [has(/\breturn\b/, "a jegyet return-nel add vissza (ne print-tel).")], ex: "5. lecke: elif lánc, fentről lefelé, a legnagyobb határral kezdve. 10. lecke: return. A határok is számítanak: jegy(85) = 5, jegy(84) = 4." }),
+        () => ({ q: "Írj egy <code>maganhangzok(s)</code> nevű függvényt, amely visszaadja, hány magánhangzó van az s szövegben! Magánhangzó: <code>aáeéiíoóöőuúüű</code>, kis- és nagybetűvel is (az „Alma”-ban 2 van).",
+          code: J("def maganhangzok(s):", I("db = 0"), I("for betu in s.lower():"), I(I('if betu in "aáeéiíoóöőuúüű":')), I(I(I("db += 1"))), I("return db")), fname: "maganhangzok", tests: T1(["Alma", "programozás", "KOVRAT", "xyz", "Árvíztűrő tükörfúrógép", ""].map(w => ["maganhangzok(" + JSON.stringify(w) + ")", S(vow(w))])), must: [has(/\breturn\b/, "a darabszámot return-nel add vissza.")], ex: "9. lecke: for betu in s, és az in a betű keresésére. A kisbetűsítés (s.lower()) miatt a nagybetűt is megtalálja. 10. lecke: return db a ciklus után." }),
+        () => { const p = pick([7, 13, 29, 31, 37, 41, 53, 97]), q = pick([9, 15, 21, 27, 33, 49, 51, 91]); return { q: "Kérj be egy egész számot (legalább 2)! Írd ki, prímszám-e: <code>Prím</code> vagy <code>Nem prím</code>. (Prím az a szám, amelynek pontosan két osztója van: 1 és önmaga.)",
+          code: J('n = int(input("Szám: "))', "osztok = 0", "for d in range(1, n + 1):", I("if n % d == 0:"), I(I("osztok += 1")), "if osztok == 2:", I('print("Prím")'), "else:", I('print("Nem prím")')), tests: [{ ins: [S(p)], exp: [{ s: "Prím" }], not: ["Nem prím"] }, { ins: [S(q)], exp: [{ s: "Nem prím" }] }, { ins: ["2"], exp: [{ s: "Prím" }], not: ["Nem prím"] }, { ins: [S(pick([4, 6, 8, 10]))], exp: [{ s: "Nem prím" }] }], must: [has(/\b(for|while)\b/, "az osztókat ciklussal keresd.")], ex: "Megszámlálás (8. lecke) ciklussal (7. lecke): hány d osztja n-t (n % d == 0)? Ha pontosan 2, prím (5. lecke: if)." }; }
+      ]
+    ];
+
+    const banks = [{ id: "ossz", kind: "write", L: OSSZ }].concat(LES.flatMap(([n]) => (PYL[n] && PYL[n].banks || []).map(b => Object.assign({}, b, { id: n + ":" + b.id }))));
+    return { LES, OSSZ, EX, banks };
+  })(K.rnd, K.pick, K.shuffle, K.esc, P.C, typeof PYL === "undefined" ? {} : PYL);
+/*@/LOGIC*/
+
+  const { LES, OSSZ, EX } = LOGIC;
+  const J = (...l) => l.join("\n");
+
+  /* ---------- Hero ---------- */
+  P.heroEditor($("#play"), { code: EX.hero.code, inputs: EX.hero.ins, rows: 10 });
+  const ex = k => P.ex(EX[k].code, EX[k].ins) + (EX[k].ins && EX[k].ins.length ? "<p class='dim'>Bemenet: " + EX[k].ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "</p>" : "");
+  const href = n => n + ".html";
+  $("#topics").innerHTML = LES.map(([n, k, t]) => '<a href="' + href(n) + '"><b>' + k + ".</b> " + esc(t) + "<span>a teljes lecke →</span></a>").join("");
+
+  /* ---------- Levezetések ---------- */
+  const { srcHtml, varTbl, outBox } = P;
+  const plan = on => '<div class="plan">' + [["bekérés", 0], ["feldolgozás", 1], ["kiírás", 2]].map(([t, i]) => (i ? "<i>→</i>" : "") + '<span class="' + (on === i ? "on" : "") + '">' + t + "</span>").join("") + "</div>";
+  function tervFrames(){
+    const src = ["# 1. bekérés", 'a = int(input("Első: "))', 'b = int(input("Második: "))', 'c = int(input("Harmadik: "))', "# 2. feldolgozás", "osszeg = a + b + c", "legnagyobb = max(a, b, c)", "# 3. kiírás", 'print(f"Összeg: {osszeg}")', 'print(f"Legnagyobb: {legnagyobb}")'];
+    return [
+      { cap: "A feladat: kérj be három egész számot, és írd ki az összegüket és a legnagyobbat. Mielőtt gépelsz, tervezz: mit kell bekérni, mit kell kiszámolni, mit kell kiírni?", html: plan(-1) },
+      { cap: "Bekérés: három szám, mindegyik int(input(…)), mert számolni akarunk velük (3. lecke). A felhasználó ezt írja be: 4, 9, 2.", html: srcHtml(src, 4) + plan(0) + varTbl({ a: 4, b: 9, c: 2 }) },
+      { cap: "Feldolgozás: az eredmények változóba kerülnek. Az összeg a + b + c, a legnagyobb a max(a, b, c) (4. lecke).", html: srcHtml(src, 7) + plan(1) + varTbl({ a: 4, b: 9, c: 2, osszeg: 15, legnagyobb: 9 }) },
+      { cap: "Kiírás: f-stringgel, ahogy a dolgozat kéri. A kiírt mondat a feladatból jön.", html: srcHtml(src, 10) + plan(2) + outBox("Összeg: 15\nLegnagyobb: 9") },
+      { cap: "A megjegyzések (# …) csak neked szólnak, a Python átugorja őket. A dolgozatban is jó, ha a program így, három részre tagolva áll.", html: srcHtml(src, 1) + plan(-1) }
+    ];
+  }
+  function jegyekFrames(){
+    const src = ['db = int(input("Hány jegy? "))', "jegyek = []", "for i in range(db):", '    jegyek.append(int(input("Jegy: ")))', "atlag = sum(jegyek) / len(jegyek)", 'print(f"Átlag: {round(atlag, 2)}")', 'print(f"Legjobb: {max(jegyek)}")', "if atlag >= 4.5:", '    print("Kitűnő munka!")'];
+    return [
+      { cap: "Előre nem tudjuk, hány jegy lesz: ezért először a darabszámot kérjük be. A felhasználó 3-at ír.", html: srcHtml(src, 1) + varTbl({ db: 3 }) },
+      { cap: "Az üres lista gyűjti majd a jegyeket (8. lecke).", html: srcHtml(src, 2) + varTbl({ db: 3, jegyek: "[]" }) },
+      { cap: "A for ciklus db-szer fut (range(3): i = 0, 1, 2). Minden körben bekér egy jegyet, és a lista végére fűzi. A beírt jegyek: 5, 4, 5.", html: srcHtml(src, 4) + varTbl({ i: 0, jegyek: "[5]" }) },
+      { cap: "A ciklus végére a lista: [5, 4, 5].", html: srcHtml(src, 4) + varTbl({ i: 2, jegyek: "[5, 4, 5]" }) },
+      { cap: "Az átlag: sum / len = 14 / 3 = 4.666…, ezt csak a kiírásnál kerekítjük: 4.67. A legjobb jegy a max(jegyek): 5.", html: srcHtml(src, 7) + varTbl({ jegyek: "[5, 4, 5]", atlag: "4.666666666666667" }) + outBox("Átlag: 4.67\nLegjobb: 5") },
+      { cap: "Végül egy feltétel (5. lecke): az atlag (4.666…, nem a kerekített érték) >= 4.5 igaz, ezért kiírja: Kitűnő munka!", html: srcHtml(src, 9) + outBox("Átlag: 4.67\nLegjobb: 5\nKitűnő munka!") }
+    ];
+  }
+  function fuggvFrames(){
+    const src = ["def maganhangzok(s):", "    db = 0", "    for betu in s.lower():", '        if betu in "aáeéiíoóöőuúüű":', "            db += 1", "    return db", "", 'print(maganhangzok("Alma"))'];
+    return [
+      { cap: "A def csak elkészíti a függvényt, a belseje még nem fut le. Az első sor, ami tényleg csinál valamit, a 8.: meghívja a függvényt az \"Alma\" szöveggel.", html: srcHtml(src, 1) },
+      { cap: "A hívás: az s paraméter értéke \"Alma\". A db helyi változó 0-ról indul.", html: srcHtml(src, 2) + varTbl({ s: '"Alma"', db: 0 }) },
+      { cap: "A for a kisbetűs szövegen megy végig: \"alma\". Első betű: a. Benne van a magánhangzók között: db = 1.", html: srcHtml(src, 5) + varTbl({ betu: '"a"', db: 1 }) },
+      { cap: "l, m: nem magánhangzó, a db marad. Az utolsó betű a: db = 2.", html: srcHtml(src, 5) + varTbl({ betu: '"a"', db: 2 }) },
+      { cap: "A ciklus után a return visszaadja a 2-t a hívás helyére, és a print kiírja. (Ha return helyett print lenne a függvényben, kiírná a 2-t, de None-t adna vissza, ezért a print alatta None-t is kiírna.)", html: srcHtml(src, 6) + varTbl({ db: 2 }) + outBox("2") }
+    ];
+  }
+  const MT = { terv: "A terv: bekérés → feldolgozás → kiírás", jegyek: "Jegyek: lista, átlag, legjobb", fuggv: "Függvény: magánhangzók" };
+  const MF = { terv: tervFrames, jegyek: jegyekFrames, fuggv: fuggvFrames };
+  const pb = K.player($("#pb"));
+  const PB = { m: "terv" };
+  function pbNew(auto){ $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === PB.m))); pb.load(MF[PB.m](), MT[PB.m], auto); }
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b){ PB.m = b.dataset.m; pbNew(false); } });
+  pbNew(false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Diák ---------- */
+  const init = el => P.bindTry(el);
+  const go = n => "<p><a class='btn' href='" + href(LES[n - 1][0]) + "'>→ " + n + ". lecke: " + esc(LES[n - 1][2]) + "</a></p>";
+  const td = s => "<td style='font-family:var(--body)'>" + esc(s) + "</td>";
+  const slides = [
+    { k: "1.", t: "A print", h: ex("p1") + "<ul><li>A program fentről lefelé, soronként fut. A <code>print</code> kiír; a szöveg idézőjelbe kerül, a szám nem.</li><li>Több érték vesszővel: közéjük szóköz kerül. Üres <code>print()</code>: üres sor. <code>print(1, 2, sep=\"-\")</code> → <code>1-2</code>; az <code>end=\" \"</code> nem kezd új sort.</li><li>A <code>/</code> mindig tizedes törtet ad: <code>10 / 2</code> → <code>5.0</code>. A <code>#</code> utáni rész megjegyzés.</li></ul>" + go(1) },
+    { k: "2.", t: "Változók és típusok", h: ex("p2") + "<ul><li>Az <code>=</code> értékadás, jobbról balra: <code>kor = kor + 1</code>.</li><li>Négy típus: <code>int</code> (egész), <code>float</code> (tizedes tört), <code>str</code> (szöveg), <code>bool</code> (True/False).</li><li><code>\"5\" + \"5\"</code> → <code>55</code>, <code>5 + 5</code> → <code>10</code>. Típusváltás: <code>int(\"5\")</code> → 5, <code>str(5)</code> → <code>\"5\"</code>. f-string: <code>f\"{nev} {kor} éves\"</code>.</li></ul>" + go(2) },
+    { k: "3.", t: "Adatbekérés: input", h: ex("p3") + "<ul><li>Az <code>input()</code> <b>mindig szöveget</b> ad. Számhoz: <code>int(input(…))</code> vagy <code>float(input(…))</code>.</li><li>A program váza: bekérés → feldolgozás → kiírás.</li><li>Az <code>int(\"3.5\")</code> és az <code>int(\"alma\")</code> ValueError.</li></ul>" + go(3) },
+    { k: "4.", t: "Műveletek", h: ex("p4") + "<ul><li><code>//</code> egész osztás, <code>%</code> maradék, <code>**</code> hatvány. Sorrend: előbb a <code>**</code>, aztán <code>* / // %</code>, végül <code>+ -</code>; zárójellel változtathatsz.</li><li><code>x += 1</code> ugyanaz, mint <code>x = x + 1</code> (és így a <code>-=</code>, <code>*=</code> is).</li><li><code>round(x, 2)</code>, <code>abs</code>, <code>max</code>, <code>min</code>. Páros: <code>x % 2 == 0</code>.</li></ul>" + go(4) },
+    { k: "5.", t: "Feltételek: if", h: ex("p5") + "<ul><li>Összehasonlítás: <code>== != &lt; &gt; &lt;= &gt;=</code>; az <code>=</code> értékadás! <code>if feltétel:</code>, alatta 4 szóközzel beljebb.</li><li>Az <code>elif</code>-láncban csak az <b>első</b> igaz ág fut. <code>and</code>, <code>or</code>, <code>not</code>.</li></ul>" + go(5) },
+    { k: "6.", t: "Ismétlés: while", h: ex("p6") + "<ul><li>A <code>while</code> addig ismétel, amíg a feltétel igaz. A ciklusban valaminek változnia kell (itt az <code>x</code> új bemenete), különben végtelen ciklus. A <code>break</code> azonnal kilép a ciklusból.</li><li>Gyűjtő: <code>osszeg += x</code>, számláló: <code>db += 1</code>; mindkettő a ciklus <b>előtt</b> kap kezdőértéket.</li></ul>" + go(6) },
+    { k: "7.", t: "for és range", h: ex("p7") + "<ul><li><code>range(5)</code> → 0…4; <code>range(1, 6)</code> → 1…5: a záró érték nincs benne. <code>range(10, 0, -1)</code>: visszafelé.</li><li>A <code>for</code> szövegen betűnként, listán elemenként megy végig.</li></ul>" + go(7) },
+    { k: "8.", t: "Listák", h: ex("p8") + "<ul><li>Az index 0-tól indul, az utolsó: <code>lista[-1]</code>. <code>len</code>, <code>append</code>, <code>sum</code>, <code>max</code>, <code>min</code>, <code>in</code>.</li><li>A tételek: összegzés, megszámlálás, maximumkiválasztás, eldöntés, kiválogatás.</li><li>Az <code>append</code> elé nem kell értékadás: <code>lista.append(x)</code>.</li></ul>" + go(8) },
+    { k: "9.", t: "Szövegek", h: ex("p9") + "<ul><li>Index és szelet: <code>s[0]</code>, <code>s[1:4]</code> (a 4-es nincs benne), <code>s[::-1]</code>.</li><li>Az <code>upper</code>, <code>lower</code>, <code>strip</code>, <code>replace</code> új szöveget ad, ezért mentsd el: <code>s = s.strip()</code>. A <code>count</code> számot ad, a <code>split</code> listát.</li><li><code>\"a\" in s</code>: benne van-e; <code>for betu in s:</code> betűnként megy végig.</li><li>A szöveg betűnként nem módosítható.</li></ul>" + go(9) },
+    { k: "10.", t: "Saját függvények", h: ex("p10") + "<ul><li><code>def nev(parameter):</code>, a törzs beljebb. A <code>return</code> visszaadja az eredményt; a <code>print</code> csak kiírja (a függvény ilyenkor None-t ad).</li><li>Alapértelmezett paraméter: <code>koszones=\"Szia\"</code>. A függvényt meg is kell hívni!</li><li>A függvényben létrehozott változó helyi: kívülről nem látszik.</li></ul>" + go(10) },
+    { k: "Hibák", t: "A leggyakoribb hibák", h:
+      "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Lecke</th></tr>" +
+      [["hiányzó idézőjel vagy zárójel", "SyntaxError", "1."], ["Print nagybetűvel, elírt változónév", "NameError", "1–2."], ["\"5\" + 5", "TypeError", "2."], ["kimaradt int() az input körül", "összefűzi a szövegeket (\"5\" + \"3\" → 53), vagy TypeError", "3."], ["int(\"3.5\")", "ValueError", "3."], ["a + b / 2 az átlagnál", "rossz eredmény (zárójel!)", "4."], ["= az == helyett, kimaradt kettőspont", "SyntaxError", "5."], ["kimaradt i += 1", "végtelen ciklus", "6."], ["azt hiszed, a range(1, 10)-ben a 10 is benne van", "a 10 kimarad: range(1, 11) kell", "7."], ["lista[len(lista)]", "IndexError", "8."], ["s.upper() eredményét nem menti", "a szöveg nem változik", "9."], ["print a return helyett", "None", "10."]].map(r => "<tr><td>" + esc(r[0]) + "</td>" + td(r[1]) + "<td>" + esc(r[2]) + "</td></tr>").join("") + "</table></div>" },
+    { k: "Tanácsok", t: "Tanácsok a dolgozatra", h:
+      "<ul><li><b>Olvasd el kétszer a feladatot.</b> Mit kell bekérni? Mit kell kiírni, pontosan milyen mondattal?</li><li><b>Tervezz:</b> bekérés → feldolgozás → kiírás. Írd a részek elé megjegyzésnek.</li><li><b>Mindig f-string</b> a kiírásnál, és <code>int()</code>/<code>float()</code> az input körül, ha számolsz.</li><li><b>Próbáld ki több bemenettel</b>: kicsi, nagy, határ (pl. pontosan 85 pont), és ha van elágazás, minden ágat.</li><li><b>Hibaüzenetnél</b> nézd meg a sor számát és a hiba nevét: a Traceback utolsó sora a legfontosabb.</li><li><b>Ciklusnál</b>: mi a kezdőérték, mi változik, mikor áll le? Listánál: 0-tól indul az index.</li></ul>" }
+  ];
+  K.deck($("#deck"), slides.map(s => Object.assign({ init }, s)));
+
+  /* ---------- Gyakorlás: vegyesen az 1–10. leckéből ---------- */
+  const tag = n => { const l = LES.find(x => x[0] === n); return "<span class='ltag'><a href='" + href(n) + "'>" + l[1] + ". lecke · " + esc(l[2]) + "</a></span><br>"; };
+  const lv = (A, l) => A[Math.min(l, A.length) - 1];
+  const insQ = t => t.ins && t.ins.length ? " A bemenet: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "." : "";
+  // egy véletlen lecke, amelyben van ilyen feladat
+  const pickLes = key => pick(LES.filter(([n]) => PYL[n] && PYL[n][key] && PYL[n][key].length));
+  const GEN = {
+    kiir(l){ const [n] = pickLes("KIIR"), t = pick(lv(PYL[n].KIIR, l))(); const k = P.kiir(t, "Mit ír ki?"); if (t.ins && t.ins.length) k.q = k.q.replace("Mit ír ki ez a program?", "Mit ír ki a print? (A kérdést és a begépelt választ ne írd le.)"); k.q = tag(n) + k.q; return k; },
+    irdmeg(l){ const [n] = pickLes("WRITE"), t = P.task(pick(lv(PYL[n].WRITE, l))(), "Írd meg!"); t.q = tag(n) + t.q; return t; },
+    hiba(l){ const [n] = pickLes("HIBA"), t = pick(lv(PYL[n].HIBA, l))(); const h = P.hiba(t, PYL[n].HPOOL, "Olvasd végig sorról sorra: zárójel, idézőjel, kettőspont, behúzás, típus (szöveg vagy szám), index, és hogy van-e értéke a változónak."); if (t.ins && t.ins.length) h.q = h.q.replace("Milyen hibát ad ez a program, ha lefuttatod?", "Milyen hibát ad ez a program, ha a felhasználó ezt írja be: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "?"); h.q = tag(n) + h.q; return h; },
+    javit(l){ const [n] = pickLes("JAVIT"), t = P.task(pick(lv(PYL[n].JAVIT, l))(), "Javítsd ki!"); t.q = tag(n) + t.q; return t; },
+    ossz(l){ const t = P.task(pick(OSSZ[l - 1])(), "Összetett feladat"); t.q = "<span class='ltag'>több lecke együtt</span><br>" + t.q; return t; }
+  };
+  const types = [
+    { id: "kiir", name: "Mit ír ki?", gen: GEN.kiir },
+    { id: "irdmeg", name: "Írd meg!", gen: GEN.irdmeg },
+    { id: "hiba", name: "Milyen hibát ad?", gen: GEN.hiba },
+    { id: "javit", name: "Javítsd ki!", gen: GEN.javit },
+    { id: "ossz", name: "Összetett feladat", gen: GEN.ossz }
+  ];
+  K.practice($("#practice"), { id: "python-14-ismetlo", types, play: playTo, examN: 12 });
+
+  /* ---------- Puska ---------- */
+  const rows = [["print(\"Szia\", 5)", "kiírás; vessző: szóköz kerül közé"], ["x = int(input(\"Szám: \"))", "bekérés számként (az input mindig szöveg)"], ["print(f\"Összeg: {a + b}\")", "f-string"], ["// · % · ** · round(x, 2)", "egész osztás · maradék · hatvány · kerekítés"], ["if …: / elif …: / else:", "elágazás; == az egyenlőség"], ["while feltétel:", "ismétlés, amíg igaz"], ["for i in range(1, n + 1):", "1-től n-ig: a záró érték (n + 1) már nincs benne, ezért kell a + 1"], ["lista = []  ·  lista.append(x)", "üres lista · új elem a végére"], ["sum · max · min · len · in", "lista: összeg, legnagyobb, legkisebb, hossz, benne van-e"], ["s[0] · s[-1] · s[1:4] · s[::-1]", "első · utolsó betű · szelet · visszafelé"], ["s.upper() · s.strip() · s.split()", "nagybetűs · levágja a szélső szóközöket · szavakra bont (lista)"], ["def f(x):\n    return x * 2", "saját függvény; a return adja vissza az eredményt"]];
+  $("#cheat").innerHTML = "<tr><th>Python</th><th>Mit csinál?</th></tr>" + rows.map(r => "<tr><td style='white-space:pre'>" + esc(r[0]) + "</td><td>" + esc(r[1]) + "</td></tr>").join("");
+
+  /* ---------- Feladatlap: 8 feladat, mint egy dolgozat ---------- */
+  const LAP = ["kiir", "kiir", "kiir", "hiba", "irdmeg", "irdmeg", "javit", "ossz"];
+  const TN = { kiir: "Mit ír ki?", hiba: "Milyen hibát ad?", irdmeg: "Írd meg!", javit: "Javítsd ki!", ossz: "Összetett feladat" };
+  function lapNew(){
+    const v = +$("#llvl").value, box = $("#lap");
+    box.innerHTML = "";
+    LAP.forEach((k, i) => {
+      const l = v || rnd(1, 3), t = GEN[k](l), d = document.createElement("div");
+      d.className = "lapt";
+      d.innerHTML = "<h3>" + (i + 1) + ". feladat · " + TN[k] + "</h3><div class='prompt'>" + t.q + "</div>" +
+        (t.kind === "choice" ? "<div class='opts'>" + t.options.map((o, j) => "<button class='opt' data-o='" + j + "'>" + o.l + "</button>").join("") + "</div>" : "<div class='row'><button class='btn' data-a='open'>✎ Megoldom itt</button></div><div class='code-ed'></div><div class='row' hidden><button class='btn primary' data-a='chk'>Ellenőrzés</button></div>") +
+        "<div class='fbx' aria-live='polite'></div><details><summary>Megoldás</summary><div>" + t.sol + (typeof t.answer === "string" && /^<pre/.test(t.answer) ? t.answer : "<p><b>" + t.answer + "</b></p>") + "</div></details>";
+      box.appendChild(d);
+      const fb = $(".fbx", d);
+      const show = async r => { r = await r; fb.innerHTML = '<div class="feedback ' + (r.ok ? "ok" : "bad") + '">' + r.msg + "</div>"; };
+      if (t.kind === "choice") d.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => show(t.check({ idx: +b.dataset.o }))));
+      else {
+        let ed = null;
+        $('[data-a="open"]', d).addEventListener("click", e => { if (ed) return; ed = t.mount($(".code-ed", d)); e.target.closest(".row").hidden = true; $('[data-a="chk"]', d).closest(".row").hidden = false; });
+        $('[data-a="chk"]', d).addEventListener("click", async e => { const b = e.target; b.disabled = true; fb.innerHTML = "<p class='dim'>Ellenőrzöm…</p>"; await show(t.check(ed.raw())); b.disabled = false; });
+      }
+    });
+  }
+  $("#lnew").addEventListener("click", lapNew);
+  $("#lprint").addEventListener("click", () => window.print());
+  // nyomtatás: ha egy megoldás sincs kinyitva, mind kinyílik a nyomtatás idejére
+  addEventListener("beforeprint", () => { const ds = $$("#lap details"); if (!ds.some(d => d.open)) ds.forEach(d => { d.open = true; d.dataset.auto = "1"; }); });
+  addEventListener("afterprint", () => $$("#lap details[data-auto]").forEach(d => { d.open = false; delete d.dataset.auto; }));
+  lapNew();
+})();
+</script>
+<!--@UPDATE-->
