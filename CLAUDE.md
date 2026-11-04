@@ -401,7 +401,7 @@ Endi kérése: Kovrat feltölti a füzet- és táblafotóit, és a rendszer leck
 - **Tesztek:** `node tools/fuzet/teszt/apps-script-teszt.js` (a valódi `Code.gs` a hamis Apps Scriptben, 38/38) és
   `node tools/fuzet/teszt/e2e.js` (böngésző 390 px → hamis Apps Script → figyelő hamis rclone/claude/gh-val, valódi gittel,
   ideiglenes originnel → állapot vissza → a lecke megnyitása, visszajelzés, `lesson-test` a kész leckén; hibás esetek:
-  kép a commitban, tiltott szöveg, nem lecke, claude-hiba, időtúllépés, kikapcsolt gép, megszakadt munka; 61/61).
+  kép a commitban, tiltott szöveg, nem lecke, claude-hiba, időtúllépés, kikapcsolt gép, megszakadt munka, Windows-os sorvégek; 64/64).
 - **Endi teendője:** `tools/fuzet/README.md` („Endi teendői”, „Az első valódi próba”). **2. lépés:** második vélemény a
   helyi Qwen vision-modelltől a `[?]`-es részekre.
 

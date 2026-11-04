@@ -182,7 +182,14 @@ async function feldolgoz(r) {
   if (fs.existsSync(fa)) fs.rmSync(fa, { recursive: true, force: true });
   await git(["worktree", "prune"]);
   fs.mkdirSync(path.dirname(fa), { recursive: true });
-  await git(["worktree", "add", "-B", ag, fa, CFG.remote + "/" + CFG.alapag]);
+  // a munkafa mindig LF-es (Windowson a rendszerszintű core.autocrlf=true CRLF-et tenne ki): a munkafa SAJÁT beállítása
+  // (worktree-szintű config, ez minden más szintet felülír), Endi fő munkapéldányát nem érinti. Előbb üresen jön létre,
+  // a beállítás után kerülnek ki a fájlok.
+  await git(["worktree", "add", "--no-checkout", "-B", ag, fa, CFG.remote + "/" + CFG.alapag]);
+  await git(["config", "extensions.worktreeConfig", "true"]);
+  await git(["config", "--worktree", "core.autocrlf", "false"], fa);
+  await git(["config", "--worktree", "core.eol", "lf"], fa);
+  await git(["reset", "-q", "--hard"], fa);
   const alap = (await git(["rev-parse", "HEAD"], fa)).trim();
 
   try {

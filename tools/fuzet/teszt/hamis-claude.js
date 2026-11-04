@@ -30,10 +30,16 @@ process.stdin.on("end", () => {
   const src = fs.readFileSync(path.join(process.cwd(), "tools", "fuzet", "minta-lecke.src.html"), "utf8").replace(/__LECKE__/g, lecke).replace(/__CIM__/g, cim);
   fs.writeFileSync(path.join("tools", "lessons", lecke + ".src.html"), mod === "tiltott" ? src.replace("<h1>", "<!-- " + process.env.HAMIS_TILTOTT + " --><h1>") : src);
   sh("node", ["tools/lessons/build.js", lecke]);
-  let idx = fs.readFileSync("index.html", "utf8");
+  // sorvég-független: a mintákat a fájl saját sorvégével keresi (CRLF-es munkafában is), és így is írja vissza
+  const nyers = fs.readFileSync("index.html", "utf8"), NL = /\r\n/.test(nyers) ? "\r\n" : "\n";
+  if (process.env.HAMIS_NAPLO) fs.appendFileSync(process.env.HAMIS_NAPLO, "claude: a munkafa index.html sorvége: " + (NL === "\n" ? "LF" : "CRLF") + "\n");
+  let idx = nyers.replace(/\r\n/g, "\n");
   const link = '    <a class="lesson" href="' + lecke + '.html">\n      <span class="bits">½ + ⅓</span>\n      <span><b>' + cim + '</b><span class="d">A füzetedből: közös nevező, bővítés, összeadás, egyszerűsítés. 3 dia, 2 levezetés, 2 feladattípus, próbadolgozat.</span></span>\n    </a>\n';
+  const elotte = idx;
   if (!idx.includes('<h2>A füzetedből</h2>')) idx = idx.replace('  <div class="group">\n  <h2>Python a nulláról</h2>', '  <div class="group">\n  <h2>A füzetedből</h2>\n  <div class="list">\n' + link + '  </div>\n  </div>\n  <div class="group">\n  <h2>Python a nulláról</h2>');
   else idx = idx.replace('<h2>A füzetedből</h2>\n  <div class="list">\n', m => m + link);
+  if (idx === elotte) { console.error("hamis claude: nem találtam a helyet az index.html-ben"); process.exit(4); }
+  idx = idx.replace(/\n/g, NL);
   fs.writeFileSync("index.html", idx);
   const add = ["tools/lessons/" + lecke + ".src.html", lecke + ".html", "index.html"];
   if (mod === "kep") { fs.writeFileSync("fuzet-foto.jpg", fs.readFileSync(job.kepek[0].fajl)); add.push("fuzet-foto.jpg"); }

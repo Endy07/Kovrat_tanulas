@@ -657,4 +657,10 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
   aszinkron indítsd (`spawn`), a `spawnSync` megállítja a szervert, és a betöltés időtúllépéssel elszáll.
 - **Verzióeltérés a tesztben:** ha az oldal más `version.json`-t lát, mint a saját metája, újratölt `?v=`-vel (a „context destroyed”
   hiba oka): a teszt-fájlszerver a lecke ágát szolgálja ki elsőnek.
+- **Windows, `core.autocrlf=true` (Endi gépén rendszerszinten):** a figyelő munkafája CRLF-fel jött ki, és a `\n`-es minták
+  (a hamis claude-ban) nem illeszkedtek az `index.html`-re. Javítás: a figyelő a munkafát `--no-checkout`-tal hozza létre,
+  worktree-szintű `core.autocrlf=false` és `core.eol=lf` (`extensions.worktreeConfig`), aztán `reset --hard`; Endi fő
+  munkapéldányát ez nem érinti. Szövegcserénél a fájlt sorvég-függetlenül kezeld (CRLF → LF, csere, vissza).
+- **A homályosság közepes (6 px-es) esete platformfüggő** (a böngésző kicsinyítése és JPEG-kódolója eltér): az e2e csak az éles
+  (nem jelez) és az erősen elmosott (jelez) esetet követeli meg, a 6 px-est kiírja.
 

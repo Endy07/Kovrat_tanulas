@@ -62,6 +62,9 @@ Kézzel, látható ablakban: `egyszer.cmd` (egy kör, aztán vége).
 - nem módosította a `tools/fuzet/`-et, a `.githooks/`-ot, a `.gitignore`-t, a `CLAUDE.md`-t; ha közös készletfájlt
   (`kit.js`, `python.js`…) módosított, a PR-ben külön figyelmeztetés van.
 
+A munkafa mindig LF-es: a figyelő a saját munkafájában `core.autocrlf=false` és `core.eol=lf` beállítást ad (worktree-szinten,
+ezért a gép rendszerszintű `core.autocrlf=true`-ja és a fő munkapéldány nem számít, és nem is változik).
+
 Ha bármi nem stimmel: nincs push, az állapot „hiba”, a részlet a naplóban és az `allapot.json` `reszlet` mezőjében.
 
 ## Tesztelés (valódi Google-fiók nélkül)

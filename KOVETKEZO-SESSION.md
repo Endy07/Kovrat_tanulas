@@ -6,7 +6,7 @@
 - **Új PR-ban** (`claude/trusting-edison-m0khni`): a füzet-feldolgozó. `fuzet.html` (feltöltés, galéria, állapot), Apps Script
   (`tools/fuzet/apps-script/Code.gs`), figyelő Endi gépére (`tools/fuzet/figyelo/`), feldolgozó prompt (`tools/fuzet/feldolgozo-prompt.md`),
   lecke-váz (`tools/fuzet/minta-lecke.src.html`), közös leckerész (`tools/lessons/fuzet-lecke.js`, `<!--@FUZETJS-->`). Áttekintés: `tools/fuzet/README.md`.
-- **Tesztek:** `node tools/fuzet/teszt/apps-script-teszt.js` (38/38), `node tools/fuzet/teszt/e2e.js` (61/61; a felhőben is fut, a hamis
+- **Tesztek:** `node tools/fuzet/teszt/apps-script-teszt.js` (38/38), `node tools/fuzet/teszt/e2e.js` (64/64; a felhőben is fut, a hamis
   Apps Script a valódi `Code.gs`-t futtatja).
 
 **Endi teendői:** a PR beolvasztása; az Apps Script telepítése (`tools/fuzet/apps-script/TELEPITES.md`), a családi kód, a figyelő
