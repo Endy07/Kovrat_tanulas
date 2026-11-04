@@ -641,3 +641,4 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
   a `lesson-test.js` nem nézi, ezért külön Playwright-próba ellenőrzi (192/192: minden szinten 6 lap, a mintamegoldás átmegy).
 - **A biztonsági ellenőrző** a `$$`-t tartalmazó heredocot nem tudja értelmezni (rm-gyanú): a javítószkriptet írd fájlba, és úgy futtasd.
 
+- **Szövegcserés javítás után mindig építs és tesztelj újra a böngészőben:** a dia-szövegek JS-idézőjelben vannak; egy beszúrt `"a" in s` escapelés nélkül az egész szkriptet megölte (0 dia, JS-hiba). Gyors ellenőrzés a kész HTML-en: minden `<script>` tartalma `new Function(…)`-nel lefordul-e.

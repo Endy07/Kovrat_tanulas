@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261104005001">
+<meta name="kovrat-version" content="20261104005100">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -3413,7 +3413,7 @@ return LOGIC;
     { k: "6.", t: "Ismétlés: while", h: ex("p6") + "<ul><li>A <code>while</code> addig ismétel, amíg a feltétel igaz. A ciklusban valaminek változnia kell (itt az <code>x</code> új bemenete), különben végtelen ciklus. A <code>break</code> azonnal kilép a ciklusból.</li><li>Gyűjtő: <code>osszeg += x</code>, számláló: <code>db += 1</code>; mindkettő a ciklus <b>előtt</b> kap kezdőértéket.</li></ul>" + go(6) },
     { k: "7.", t: "for és range", h: ex("p7") + "<ul><li><code>range(5)</code> → 0…4; <code>range(1, 6)</code> → 1…5: a záró érték nincs benne. <code>range(10, 0, -1)</code>: visszafelé.</li><li>A <code>for</code> szövegen betűnként, listán elemenként megy végig.</li></ul>" + go(7) },
     { k: "8.", t: "Listák", h: ex("p8") + "<ul><li>Az index 0-tól indul, az utolsó: <code>lista[-1]</code>. <code>len</code>, <code>append</code>, <code>sum</code>, <code>max</code>, <code>min</code>, <code>in</code>.</li><li>A tételek: összegzés, megszámlálás, maximumkiválasztás, eldöntés, kiválogatás.</li><li>Az <code>append</code> elé nem kell értékadás: <code>lista.append(x)</code>.</li></ul>" + go(8) },
-    { k: "9.", t: "Szövegek", h: ex("p9") + "<ul><li>Index és szelet: <code>s[0]</code>, <code>s[1:4]</code> (a 4-es nincs benne), <code>s[::-1]</code>.</li><li>Az <code>upper</code>, <code>lower</code>, <code>strip</code>, <code>replace</code> új szöveget ad, ezért mentsd el: <code>s = s.strip()</code>. A <code>count</code> számot ad, a <code>split</code> listát.</li><li><code>"a" in s</code>: benne van-e; <code>for betu in s:</code> betűnként megy végig.</li><li>A szöveg betűnként nem módosítható.</li></ul>" + go(9) },
+    { k: "9.", t: "Szövegek", h: ex("p9") + "<ul><li>Index és szelet: <code>s[0]</code>, <code>s[1:4]</code> (a 4-es nincs benne), <code>s[::-1]</code>.</li><li>Az <code>upper</code>, <code>lower</code>, <code>strip</code>, <code>replace</code> új szöveget ad, ezért mentsd el: <code>s = s.strip()</code>. A <code>count</code> számot ad, a <code>split</code> listát.</li><li><code>\"a\" in s</code>: benne van-e; <code>for betu in s:</code> betűnként megy végig.</li><li>A szöveg betűnként nem módosítható.</li></ul>" + go(9) },
     { k: "10.", t: "Saját függvények", h: ex("p10") + "<ul><li><code>def nev(parameter):</code>, a törzs beljebb. A <code>return</code> visszaadja az eredményt; a <code>print</code> csak kiírja (a függvény ilyenkor None-t ad).</li><li>Alapértelmezett paraméter: <code>koszones=\"Szia\"</code>. A függvényt meg is kell hívni!</li><li>A függvényben létrehozott változó helyi: kívülről nem látszik.</li></ul>" + go(10) },
     { k: "Hibák", t: "A leggyakoribb hibák", h:
       "<div class='ptwrap'><table class='pt'><tr><th>Hiba</th><th>Mi történik?</th><th>Lecke</th></tr>" +
