@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="kovrat-version" content="20261103200315">
+<meta name="kovrat-version" content="20261104002059">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -793,6 +793,15 @@ const K = (function(){
 .big-note{border:2px solid var(--led);border-radius:14px;padding:12px 16px;max-width:70ch}
 .next{display:flex;flex-wrap:wrap;gap:10px}
 #cheat td{text-align:left}
+/* a 13. leckétől: a program mappájának fájljai */
+.pyfiles{display:flex;flex-direction:column;gap:8px}
+.pyed .pyfile{min-height:60px}
+.pynote{font-size:.85rem;margin:0}
+.pyout-b .fh{color:#FFB01F}
+.ffile{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0}
+.ffile-h{display:block;font-family:var(--mono);font-size:.78rem;padding:4px 10px;background:var(--surface);border-bottom:1px solid var(--line);color:var(--muted)}
+.ffile pre{margin:0;padding:8px 10px;font-family:var(--mono);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-ligatures:none}
+.pyed .pyfiles label{text-transform:none;letter-spacing:.02em}
 </style>
 <script>
 /* A Python-sorozat (python-1-…, python-2-…) közös modulja. A forrásban a <!--@PYJS--> jelölő hozza be (a <!--@KITJS--> után).
@@ -1029,7 +1038,8 @@ const PYCORE = (function(){
       if (r.used < ins.length) return { ok: false, k, why: pre + "A programod csak " + r.used + " adatot kért be az input()-tal, de " + ins.length + " kellene." };
       if (t.exact != null){
         const d = diffExact(r.out, t.exact);
-        if (d) return { ok: false, k, why: pre + (/\{[^{}\n]+\}/.test(r.out) && !/\{[^{}\n]+\}/.test(t.exact) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a nyitó idézőjel elől? Helyesen: print(f\"… {valtozo} …\"). " : "") + d.why, exact: true };
+        if (d) return { ok: false, k, why: pre + (/\{[^{}\n]+\}/.test(r.out) && !/\{[^{}\n]+\}/.test(t.exact) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a nyitó idézőjel elől? Helyesen: print(f\"… {valtozo} …\"). " : "")
+          + (t.files && /\n[ \t]*\n/.test(normOut(r.out)) && !/\n[ \t]*\n/.test(normOut(t.exact)) ? "Üres sorok vannak a kimenetben: a fájl minden sora \\n-nel (sorvégjellel) végződik, és a print is tesz egyet. Vágd le: sor.strip(). " : "") + d.why, exact: true };
       }
       if (t.exp){
         const miss = cmpOut(r.out, t.exp);
@@ -1055,6 +1065,7 @@ const PYCORE = (function(){
         const got = (r.files || {})[fn];
         if (got == null) return { ok: false, k, why: pre + "Nem jött létre " + azW(fn) + fn + " fájl. Nyisd meg írásra: open(\"" + fn + "\", \"w\", encoding=\"utf-8\"), és írj bele a write()-tal." };
         const d = diffExact(got, want);
+        if (d && normOut(want).includes("\n") && !normOut(got).includes("\n") && got !== "") return { ok: false, k, why: pre + AzW(fn) + fn + " fájlban minden egy sorba került. A write() nem tesz sortörést: írd a szöveg végére: \\n (például f.write(nev + \"\\n\"))." };
         if (d) return { ok: false, k, why: pre + AzW(fn) + fn + " fájl tartalma nem jó. " + d.why.replace("A program nem írt ki semmit. Kell egy print(…).", "A fájl üres: írtál bele a write()-tal? (A print a képernyőre ír, nem a fájlba.)").replace("Kell egy print(…).", "") };
       }
       for (const x of (t.not || [])) if (String(r.out).includes(x)) return { ok: false, k, why: pre + "Erre a bemenetre ezt nem kellene kiírnia: " + fmtE(x) + ". Nézd meg a feltételt: melyik ág fut le?" };
@@ -1240,31 +1251,40 @@ const P = (function(){
       } else if (e.key === "Escape") ta.dataset.esc = "1";
     });
   }
-  // o: { code, inputs, noInput, primary, rows }
+  // a mappa fájljai (a 13. leckétől): egy szerkeszthető mező fájlonként
+  const filesBox = files => '<div class="pyfiles">' + (Object.keys(files).length ? Object.keys(files).map(n => '<div><label>📄 ' + esc(n) + ' (a program mappájában)</label><textarea class="pyfile" data-n="' + esc(n) + '" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="' + esc(n) + '"></textarea></div>').join("") : '<p class="dim pynote">A program mappája most üres. Amit a program fájlba ír, a futás után a kimenet alatt látod.</p>') + "</div>";
+  // a futás után: az új vagy megváltozott fájlok tartalma
+  const filesAfter = (before, after) => { const ch = Object.keys(after || {}).filter(n => (before || {})[n] !== after[n]); return ch.length ? ch.map(n => '\n<span class="fh">📄 ' + esc(n) + (n in (before || {}) ? " (megváltozott)" : " (új fájl)") + ":</span>\n" + (after[n] === "" ? '<span class="dim">(üres)</span>' : esc(after[n].replace(/\n$/, "")))).join("\n") : ""; };
+  // o: { code, inputs, noInput, primary, rows, files? ({név: tartalom}; ha meg van adva, a program saját mappában fut ezekkel a fájlokkal) }
   function editor(root, o){
     o = o || {};
     root.innerHTML =
       '<div class="pyed"><div><label>Python-kód</label><textarea class="pyta" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Python-kód"></textarea></div>' +
-      '<div class="pyright">' + (o.noInput ? "" : '<div><label>Bemenetek: amit a gépre beírnál, soronként egy</label><textarea class="pyin" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Bemenetek, soronként egy"></textarea></div>') +
+      '<div class="pyright">' + (o.noInput ? "" : '<div><label>Bemenetek: amit a gépre beírnál, soronként egy</label><textarea class="pyin" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Bemenetek, soronként egy"></textarea></div>') + '<div class="pyfw"></div>' +
       '<div class="row"><button class="btn' + (o.primary ? " primary" : "") + '" type="button" data-p="run">▶ Futtatás</button><span class="pyst" aria-live="polite"></span></div>' +
       '<div class="pyout"><div class="pyout-h">Kimenet</div><pre class="pyout-b"><span class="dim">Nyomd meg: ▶ Futtatás</span></pre></div></div></div>';
-    const ta = $(".pyta", root), inp = $(".pyin", root), out = $(".pyout-b", root), st = $(".pyst", root), btn = $('[data-p="run"]', root);
+    const ta = $(".pyta", root), inp = $(".pyin", root), out = $(".pyout-b", root), st = $(".pyst", root), btn = $('[data-p="run"]', root), fw = $(".pyfw", root);
     if (o.rows) ta.style.minHeight = o.rows * 22 + "px";
     ta.value = o.code || ""; if (inp) inp.value = (o.inputs || []).join("\n");
+    let fmode = false;
+    const setFiles = f => { fmode = !!f; fw.innerHTML = f ? filesBox(f) : ""; if (f) fw.querySelectorAll(".pyfile").forEach(t => { t.value = f[t.dataset.n]; t.rows = Math.min(8, Math.max(3, String(f[t.dataset.n]).split("\n").length)); }); };
+    const curFiles = () => { const f = {}; fw.querySelectorAll(".pyfile").forEach(t => { f[t.dataset.n] = t.value.replace(/\r/g, ""); }); return f; };
+    setFiles(o.files);
     tab4(ta);
     const stText = { idle: "Az első futtatáskor betölt a Python (kb. 10 MB, csak egyszer).", loading: "A Python betöltése… (az első alkalommal fél perc is lehet)", ready: "", failed: failMsg };
     PY.on(s => { st.textContent = stText[s] || ""; });
     const inputs = () => !inp || inp.value === "" ? [] : inp.value.replace(/\r/g, "").split("\n");
     async function run(){
       btn.disabled = true; out.innerHTML = '<span class="dim">Fut…</span>';
-      const r = await PY.run(ta.value, inputs());
+      const f0 = fmode ? curFiles() : null;
+      const r = await PY.run(ta.value, inputs(), f0 ? { files: f0 } : undefined);
       btn.disabled = false;
       if (r.fail){ out.innerHTML = '<span class="e">' + esc(failMsg) + "</span>"; return r; }
-      out.innerHTML = segsHtml(r.segs, r.err, r.line) || '<span class="dim">(a program nem írt ki semmit)</span>';
+      out.innerHTML = (segsHtml(r.segs, r.err, r.line) || '<span class="dim">(a program nem írt ki semmit)</span>') + (f0 ? filesAfter(f0, r.files) : "");
       return r;
     }
     btn.addEventListener("click", run);
-    return { get: () => ta.value, set(c, ins){ ta.value = c; if (inp) inp.value = (ins || []).join("\n"); }, inputs, run, raw: () => ({ code: ta.value }) };
+    return { get: () => ta.value, set(c, ins, files){ ta.value = c; if (inp) inp.value = (ins || []).join("\n"); setFiles(files); }, inputs, run, raw: () => ({ code: ta.value }) };
   }
 
   /* ---------- „Írd meg!” / „Javítsd ki!”: a diák programja minden próbabemenettel lefut, a PYCORE.judge dönt ---------- */
@@ -1285,11 +1305,13 @@ const P = (function(){
     return { ok: false, msg: esc(j.why) + shown + term(r.segs, r.err, r.line) };
   }
   const STARTER = "# Írd ide a programot\n";
+  // a mappában lévő fájlok a feladat szövegében
+  const filesHtml = (files, lead) => { const ks = Object.keys(files || {}); return ks.length ? "<p>" + (lead || (ks.length > 1 ? "A program mappájában ezek a fájlok vannak:" : "A program mappájában ez a fájl van:")) + "</p>" + ks.map(n => '<div class="ffile"><span class="ffile-h">📄 ' + esc(n) + "</span><pre>" + (files[n] === "" ? '<span class="dim">(üres)</span>' : esc(String(files[n]).replace(/\n$/, ""))) + "</pre></div>").join("") : ""; };
   // T: { q, code (minta), starter?, tests, must, mustNot, fstr, ex }
   function task(T, title){
-    const needIn = T.tests.some(t => (t.ins || []).length);
-    return { q: T.q, kind: "py", title,
-      mount: el => editor(el, { code: T.starter || STARTER, inputs: (T.tests[0].ins || []), noInput: !needIn }),
+    const needIn = T.tests.some(t => (t.ins || []).length), f0 = T.tests[0].files;
+    return { q: T.q + (f0 && !T.noFileShow ? filesHtml(f0, Object.keys(f0).length ? "A program mappájában ez van (a gép más tartalommal is kipróbálja):" : "") : ""), kind: "py", title,
+      mount: el => editor(el, { code: T.starter || STARTER, inputs: (T.tests[0].ins || []), noInput: !needIn, files: f0 }),
       answer: '<pre class="code">' + esc(T.code) + "</pre>",
       sol: "<p>" + T.ex + "</p>" + (needIn ? "<p>Próbabemenet: " + T.tests[0].ins.map(x => "<code>" + esc(x) + "</code>").join(" ") + "</p>" : "") + "<p>Egy jó megoldás:</p>",
       check: raw => check(T, raw) };
@@ -1299,9 +1321,9 @@ const P = (function(){
   // t: { code, ins?, ans, sol }
   function kiir(t, title){
     const n = C.normOut(t.ans).split("\n").length;
-    return { q: "Mit ír ki ez a program?" + (t.ins && t.ins.length ? " A bemenet: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "." : "") + "<pre class='code'>" + esc(t.code) + "</pre>",
+    return { q: (t.q || "Mit ír ki ez a program?") + (t.ins && t.ins.length ? " A bemenet: " + t.ins.map(x => "<code>" + esc(x) + "</code>").join(", ") + "." : "") + filesHtml(t.files) + "<pre class='code'>" + esc(t.code) + "</pre>",
       kind: "kiir", title,
-      mount: el => { el.innerHTML = '<label class="kiirlbl">A kimenet, ahogy a képernyőn megjelenik' + (n > 1 ? " (" + n + " sor)" : "") + ":</label><textarea class=\"kiirta\" rows=\"" + Math.min(Math.max(n, 1), 8) + "\" wrap=\"off\" spellcheck=\"false\" autocapitalize=\"off\" autocomplete=\"off\" aria-label=\"A kimenet\"></textarea>"; const ta = $("textarea", el); return { raw: () => ta.value }; },
+      mount: el => { el.innerHTML = '<label class="kiirlbl">' + (t.lbl || "A kimenet, ahogy a képernyőn megjelenik") + (n > 1 ? " (" + n + " sor)" : "") + ":</label><textarea class=\"kiirta\" rows=\"" + Math.min(Math.max(n, 1), 8) + "\" wrap=\"off\" spellcheck=\"false\" autocapitalize=\"off\" autocomplete=\"off\" aria-label=\"A kimenet\"></textarea>"; const ta = $("textarea", el); return { raw: () => ta.value }; },
       answer: '<pre class="code">' + esc(t.ans) + "</pre>", sol: "<p>" + t.sol + "</p>",
       check: v => C.kiirCheck(v, t.ans) };
   }
@@ -1317,7 +1339,7 @@ const P = (function(){
   function hiba(t, pool, tip){
     // az IndentationError a SyntaxError egyik fajtája: ne legyen a kettő egymás rossz válasza
     const good = ERRS[t.err], others = K.shuffle(pool.filter(e => e !== t.err && !(t.err === "IndentationError" && e === "SyntaxError"))).slice(0, 3).map(e => ERRS[e]);
-    return choice("Milyen hibát ad ez a program, ha lefuttatod?<pre class='code'>" + esc(t.code) + "</pre>", good, others,
+    return choice("Milyen hibát ad ez a program, ha lefuttatod?" + (t.files ? (Object.keys(t.files).length ? filesHtml(t.files) : "<p>A program mappája üres: nincs benne egy fájl sem.</p>") : "") + "<pre class='code'>" + esc(t.code) + "</pre>", good, others,
       "<p>" + (t.err === "TimeoutError" ? "<b>Végtelen ciklus</b> (hibaüzenet nincs): " + ERR_HU[t.err] + ". " : t.err ? "<b>" + t.err + "</b>: " + ERR_HU[t.err] + ". " : "") + t.sol + "</p>",
       l => !t.err ? "Nem ez. Ez a program hibátlanul lefut." : "Nem ez. " + (l === ERRS[""] ? "Ez a program nem fut le hibátlanul. " : "") + (tip || "Olvasd végig a sort betűről betűre: zárójel, idézőjel, kis- és nagybetű, szóköz a sor elején."));
   }
@@ -1326,9 +1348,9 @@ const P = (function(){
   const TRY = [];
   let hero = null;
   const setHero = ed => { hero = ed; };
-  const ex = (code, ins) => { TRY.push([code, ins || []]); return '<pre class="code">' + esc(code) + "</pre><p><button class='btn' data-try='" + (TRY.length - 1) + "'>▶ Kipróbálom</button></p>"; };
-  const tryCode = (code, ins) => { if (!hero) return; hero.set(code, ins || []); hero.root.scrollIntoView({ behavior: "smooth", block: "center" }); hero.run(); };
-  const bindTry = el => el.querySelectorAll("[data-try]").forEach(b => b.addEventListener("click", () => { const t = TRY[+b.dataset.try]; tryCode(t[0], t[1]); }));
+  const ex = (code, ins, files) => { TRY.push([code, ins || [], files]); return '<pre class="code">' + esc(code) + "</pre><p><button class='btn' data-try='" + (TRY.length - 1) + "'>▶ Kipróbálom</button></p>"; };
+  const tryCode = (code, ins, files) => { if (!hero) return; hero.set(code, ins || [], files); hero.root.scrollIntoView({ behavior: "smooth", block: "center" }); hero.run(); };
+  const bindTry = el => el.querySelectorAll("[data-try]").forEach(b => b.addEventListener("click", () => { const t = TRY[+b.dataset.try]; tryCode(t[0], t[1], t[2]); }));
   function heroEditor(root, o){ const ed = editor(root, Object.assign({ primary: true }, o)); ed.root = root; setHero(ed); return ed; }
 
   /* ---------- Levezetés-lejátszó képkockái ---------- */
@@ -1336,7 +1358,7 @@ const P = (function(){
   const varTbl = v => { const ks = Object.keys(v); return ks.length ? '<div class="ptwrap" style="margin-top:8px"><table class="pt"><tr><th>változó</th>' + ks.map(k => "<th>" + esc(k) + "</th>").join("") + "</tr><tr><td>érték</td>" + ks.map(k => "<td>" + esc(v[k]) + "</td>").join("") + "</tr></table></div>" : ""; };
   const outBox = s => '<div class="fout"><span class="fout-h">Kimenet</span><pre>' + (s ? esc(s) : '<span class="dim">(még üres)</span>') + "</pre></div>";
 
-  return { C, PY, hint, term, segsHtml, editor, heroEditor, check, task, kiir, choice, hiba, ERRS, ex, bindTry, tryCode, srcHtml, varTbl, outBox, failMsg };
+  return { C, PY, hint, term, segsHtml, editor, heroEditor, check, task, kiir, choice, hiba, ERRS, ex, bindTry, tryCode, srcHtml, varTbl, outBox, failMsg, filesHtml };
 })();
 </script>
 <script>

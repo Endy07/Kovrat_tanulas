@@ -55,7 +55,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 10 | **Saját függvények** | `python-10-fuggvenyek` | `def`, paraméter, `return` vs. `print`, alapértelmezett érték, a függvény újrahasznosítása, helyi változó | ✅ kész (2026. 11. 01.) |
 | 11 | **Modulok: `math` és `random`** | `python-11-modulok` | `import`, a pont, `from … import`, `math.sqrt` `pi` `floor` `ceil`, `random.randint` `choice` `shuffle` `random` `seed`, számkitaláló, a `random.py` fájlnév-csapda | ✅ kész (2026. 11. 01.) |
 | 12 | **Kivételkezelés: `try` és `except`** | `python-12-kivetelek` | a hiba elkapása, `except ValueError`, több `except`, `else`, `finally`, `as e`, ismételt bekérés, amíg jó nem lesz (`while True` + `try` + `break`), `raise`, a csupasz `except:` veszélye | ✅ kész (2026. 11. 03.) |
-| 13 | **Szöveges fájlok** | `python-13-fajlok` | `open`, `with`, `encoding="utf-8"`, `read`, soronként (`for sor in f`), `strip`, `split(";")`, írás (`"w"`, `"a"`, `write`), `FileNotFoundError`, statisztika fájlból; a fájl helye a VS Code-ban | tervezett |
+| 13 | **Szöveges fájlok** | `python-13-fajlok` | `open`, `with`, `encoding="utf-8"`, `read`, soronként (`for sor in f`), `strip`, `split(";")`, írás (`"w"`, `"a"`, `write`), `FileNotFoundError`, statisztika fájlból; a fájl helye a VS Code-ban | ✅ kész (2026. 11. 04.) |
 | 14 | **Ismétlő próbadolgozat** | `python-ismetlo` | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | tervezett |
 
 **A 11–14. lecke (Endi döntése, 2026-11-01):** a 10.-es tanterv folytatása (modulok, kivételkezelés, fájlkezelés) ugyanabban a
@@ -225,6 +225,21 @@ felépítésben, utána egy ismétlő próbadolgozat az 1–10. leckéből. Az O
 - **A `raise` ellenőrzése:** a `calls`-ban `_kerr(fv, arg)` → a dobott kivétel neve vagy `nincs hiba` (a keret maga teszi a program végére).
 - **VS Code:** a hibakereső megáll az el nem kapott kivételnél (Exception has occurred), a BREAKPOINTS panel Uncaught / Raised Exceptions
   jelölője; rajzzal és levezetéssel.
+
+### 13. Szöveges fájlok
+
+- **Cél:** adat fájlból és fájlba: beolvasás soronként, számolás, eredmény kiírása; a hiányzó fájl kezelése.
+- **Fogalmak:** a sor és a sorvégjel (`\n`); `open(név, mód, encoding="utf-8")`, `read`, `close`; `with … as f:`; `for sor in f`; `strip`;
+  `split(";")` (CSV-szerű sorok, `nev, kor = …`); `"w"` (kiüríti), `"a"` (hozzáfűz); `write` (nem tesz sortörést, csak szöveget fogad);
+  két fájl egyszerre (`be`/`ki`); `FileNotFoundError` try-jal; a fájl helye (a terminál munkamappája, a VS Code-ban a megnyitott mappa).
+- **Tipikus hibák:** üres sorok (`print(sor)`), `sor == "Anna"` (a `\n` miatt hamis), `"w"` a hozzáfűzéshez, `write` `\n` nélkül, `write(42)`
+  (TypeError), írás olvasásra nyitott fájlba (UnsupportedOperation), olvasás a with után (ValueError), üres sor a számok között, rossz
+  fájlnév / mappa (FileNotFoundError, `jegyek.txt.txt`), encoding nélkül a régebbi Python Windowson elrontja az ékezeteket.
+- **Feladattípusok (kész):** Mit ír ki? (a mappában lévő fájllal) · Mi lesz a fájlban? (a `py-check` a program után kiírja a fájlt) ·
+  Melyik kell? (mód, strip, split, encoding, str, with) · Írd meg! (más tartalmú fájllal is; `fout` a kiírt fájlra) · Milyen hibát ad? · Javítsd ki!
+- **Technika:** a futtató szerkesztőjében a mappa fájljai szerkeszthetők (`editor({ files })`), a futás után az új/megváltozott fájlok
+  látszanak; a feladatszövegben a `P.filesHtml` mutatja a fájlokat; célzott üzenet az üres sorokra és a `\n` nélküli write-ra.
+- ⚠️ A Python 3.15 (2026. október) óta a UTF-8 az alapértelmezett kódolás Windowson is (PEP 686); a lecke ezért „a régebbi Python”-ról beszél.
 
 ## Technika
 
