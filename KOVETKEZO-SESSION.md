@@ -1,5 +1,22 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-04 (Füzetből lecke)
+
+**Hol tartunk:**
+- **Új PR-ban** (`claude/trusting-edison-m0khni`): a füzet-feldolgozó. `fuzet.html` (feltöltés, galéria, állapot), Apps Script
+  (`tools/fuzet/apps-script/Code.gs`), figyelő Endi gépére (`tools/fuzet/figyelo/`), feldolgozó prompt (`tools/fuzet/feldolgozo-prompt.md`),
+  lecke-váz (`tools/fuzet/minta-lecke.src.html`), közös leckerész (`tools/lessons/fuzet-lecke.js`, `<!--@FUZETJS-->`). Áttekintés: `tools/fuzet/README.md`.
+- **Tesztek:** `node tools/fuzet/teszt/apps-script-teszt.js` (38/38), `node tools/fuzet/teszt/e2e.js` (61/61; a felhőben is fut, a hamis
+  Apps Script a valódi `Code.gs`-t futtatja).
+
+**Endi teendői:** a PR beolvasztása; az Apps Script telepítése (`tools/fuzet/apps-script/TELEPITES.md`), a családi kód, a figyelő
+(`tools/fuzet/figyelo/README.md`), az első valódi próba egy matekos füzetoldallal (`tools/fuzet/README.md`).
+
+**Következő lépés (2.):** második vélemény a helyi Qwen vision-modelltől a `[?]`-es részekre (a figyelő veti össze a két olvasatot).
+Előtte: az első valódi próba tanulságai alapján a feldolgozó prompt javítása.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-11-04 (Python 14. lecke: ismétlő próbadolgozat — a sorozat vége)
 
 **Hol tartunk:**

@@ -1,0 +1,26 @@
+{
+  "_leiras": "Másold le figyelo.config.json néven (az nincs commitolva), és írd át. A részletek: README.md.",
+  "repo": "C:\\xampp\\htdocs\\Kovrat",
+  "munkamappa": "C:\\Fuzetek\\munka",
+  "tavoli": "gdrive:Füzetek",
+  "percenkent": 3,
+  "rclone": [
+    "rclone"
+  ],
+  "claude": [
+    "claude"
+  ],
+  "claudeModell": "",
+  "gh": [
+    "gh"
+  ],
+  "github": "Endy07/Kovrat_tanulas",
+  "alapag": "main",
+  "tiltott": [
+    "<a családi kód>",
+    "<a diák vezetékneve>",
+    "<a tanár neve>"
+  ],
+  "idokorlatPerc": 120,
+  "maxProba": 2
+}

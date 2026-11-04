@@ -2,3 +2,5 @@
 szamrendszerek/
 # Böngészős tesztek képernyőképei (ideiglenes)
 .playwright-mcp/
+# Füzet-figyelő: helyi beállítás (családi kód, nevek a tiltólistán)
+tools/fuzet/figyelo/figyelo.config.json
