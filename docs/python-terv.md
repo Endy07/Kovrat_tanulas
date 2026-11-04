@@ -56,7 +56,7 @@ A sorrend elve: **egy új fogalom leckénként**, és minden lecke csak a koráb
 | 11 | **Modulok: `math` és `random`** | `python-11-modulok` | `import`, a pont, `from … import`, `math.sqrt` `pi` `floor` `ceil`, `random.randint` `choice` `shuffle` `random` `seed`, számkitaláló, a `random.py` fájlnév-csapda | ✅ kész (2026. 11. 01.) |
 | 12 | **Kivételkezelés: `try` és `except`** | `python-12-kivetelek` | a hiba elkapása, `except ValueError`, több `except`, `else`, `finally`, `as e`, ismételt bekérés, amíg jó nem lesz (`while True` + `try` + `break`), `raise`, a csupasz `except:` veszélye | ✅ kész (2026. 11. 03.) |
 | 13 | **Szöveges fájlok** | `python-13-fajlok` | `open`, `with`, `encoding="utf-8"`, `read`, soronként (`for sor in f`), `strip`, `split(";")`, írás (`"w"`, `"a"`, `write`), `FileNotFoundError`, statisztika fájlból; a fájl helye a VS Code-ban | ✅ kész (2026. 11. 04.) |
-| 14 | **Ismétlő próbadolgozat** | `python-ismetlo` | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | tervezett |
+| 14 | **Ismétlő próbadolgozat** | `python-14-ismetlo` | vegyes feladatlap az 1–10. leckéből, a dolgozat-lecke mintájára | ✅ kész (2026. 11. 04.) |
 
 **A 11–14. lecke (Endi döntése, 2026-11-01):** a 10.-es tanterv folytatása (modulok, kivételkezelés, fájlkezelés) ugyanabban a
 felépítésben, utána egy ismétlő próbadolgozat az 1–10. leckéből. Az OOP alapjai most kimaradnak.
@@ -240,6 +240,17 @@ felépítésben, utána egy ismétlő próbadolgozat az 1–10. leckéből. Az O
 - **Technika:** a futtató szerkesztőjében a mappa fájljai szerkeszthetők (`editor({ files })`), a futás után az új/megváltozott fájlok
   látszanak; a feladatszövegben a `P.filesHtml` mutatja a fájlokat; célzott üzenet az üres sorokra és a `\n` nélküli write-ra.
 - ⚠️ A Python 3.15 (2026. október) óta a UTF-8 az alapértelmezett kódolás Windowson is (PEP 686); a lecke ezért „a régebbi Python”-ról beszél.
+
+### 14. Ismétlő próbadolgozat (`python-ismetlo` helyett `python-14-ismetlo`)
+
+- **Cél:** az 1–10. lecke egyben, dolgozat előtt: átnézés, vegyes gyakorlás, próbadolgozat, feladatlap.
+- **Felépítés:** tíz összefoglaló dia (leckénként a lényeg, futtatható példa, link) + a leggyakoribb hibák + tanácsok; 3 levezetés (a terv:
+  bekérés → feldolgozás → kiírás; jegyek listával; függvény: magánhangzók); 5 típus: Mit ír ki?, Írd meg!, Milyen hibát ad?, Javítsd ki!
+  (vegyesen az 1–10. lecke saját feladataiból, címkével: melyik lecke), Összetett feladat (új: több téma egy programban, 3 × 3–4 sablon);
+  próbadolgozat (12); feladatlap (8 feladat: 3 × Mit ír ki?, Milyen hibát ad?, 2 × Írd meg!, Javítsd ki!, Összetett), „Megoldom itt”, nyomtatható.
+- **Technika:** a build a `<!--@PYLOGIC python-1-kiiras … python-10-fuggvenyek-->` jelölőre behúzza a leckék `/*@LOGIC*/` blokkját (`PYL[név]`);
+  a `py-check` ugyanígy olvassa, és a behúzott leckék bankjait is újraellenőrzi (40-nel 29 282 futás). Így egy javítás a leckében
+  a 14. leckébe is bekerül (újraépítéskor).
 
 ## Technika
 

@@ -29,7 +29,7 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `tools/lessons/` | Közös leckekészlet: `kit.css`, `kit.js` (diák, lejátszó, gyakorló, HTML/CSS-szerkesztő, **elszigetelt JS-futtató** `K.jsrun`/`K.jseditor`, felolvasás), `update.js`, `build.js`. `node tools/lessons/build.js [név]` állítja elő a gyökérbeli önálló HTML-t. |
 | `python-dolgozat.html` | A 9.-es Python-dolgozat leckéje (2026. 10. 25.), **böngészőben futó Pythonnal** (Pyodide). Forrás: `tools/lessons/python-dolgozat.src.html`. |
 | `tools/lessons/py-check.js` | A Python-dolgozat ellenőrzője a helyi Pythonnal: `--write` (az 52 feladat példafutása a forrásba), `--verify N` (minden generált feladat mintamegoldása átmegy-e; a „Mit ír ki?” egyezik-e a valódi Pythonnal). |
-| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html`, `python-7-for.html`, `python-8-listak.html`, `python-9-szovegek.html`, `python-10-fuggvenyek.html`, `python-11-modulok.html`, `python-12-kivetelek.html`, `python-13-fajlok.html` | A **Python-sorozat a nulláról** (2026. 11. 01.): az 1–10. lecke, és a 10.-es tanterv folytatása (11. modulok, 12. kivételek, 13. fájlok; tervezett: ismétlő próbadolgozat). Terv: [`docs/python-terv.md`](docs/python-terv.md). Forrás: `tools/lessons/python-*.src.html`. |
+| `python-1-kiiras.html`, `python-2-valtozok.html`, `python-3-input.html`, `python-4-muveletek.html`, `python-5-elagazas.html`, `python-6-while.html`, `python-7-for.html`, `python-8-listak.html`, `python-9-szovegek.html`, `python-10-fuggvenyek.html`, `python-11-modulok.html`, `python-12-kivetelek.html`, `python-13-fajlok.html`, `python-14-ismetlo.html` | A **Python-sorozat a nulláról** (2026. 11. 01.): az 1–10. lecke, és a 10.-es tanterv folytatása (11. modulok, 12. kivételek, 13. fájlok, 14. ismétlő próbadolgozat az 1–10.-ből). Terv: [`docs/python-terv.md`](docs/python-terv.md). Forrás: `tools/lessons/python-*.src.html`. |
 | `tools/lessons/python.js`, `python.css` | A Python-sorozat közös modulja (a `<!--@PYJS-->` jelölő hozza be): Pyodide-futtató, futtató-szerkesztő, hibatippek, pontos kimenet-összevetés, a változók típusa/értéke, feladatfajták. Ellenőrző: `node tools/lessons/py-check.js --verify 40 <lecke>`. |
 | `helyesiras-*.html`, `tollbamondasok.html` | Magyar helyesírás (2026. 10. 30.): 1. betűk, ábécé, elválasztás · 2. magánhangzók hossza · 3. mássalhangzók hossza · 4. j vagy ly · 5. hasonulások · 6. felszólító mód · 7. igekötők · 8. összetett szavak és számok · 9. kis- és nagybetű · 10. vessző · 11. gyakori tévesztések (2026. 11. 01.) · a 44 tollbamondás nyomtatható gyűjtőoldala. Forrás: `tools/lessons/*.src.html`. |
 | `tools/lessons/helyesiras.js`, `helyesiras.css`, `helyesiras-check.js` | A helyesírás közös modulja (a `<!--@HJS-->` jelölő hozza be): betűk, elválasztás, ábécérend, hibatípusok, szövegösszevetés, **a tollbamondás-szövegek (`H.TEXTS`)**, a tollbamondás-felület. Ellenőrző: `node tools/lessons/helyesiras-check.js`. |
@@ -371,6 +371,14 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   mutatják a fájlokat; célzott üzenet az üres sorokra és a `\n` nélküli write-ra. Lektor: 26 pont (szakmai: a Python 3.15 óta Windowson is
   UTF-8 az alapértelmezés, ezért „a régebbi Python”; két jó válasz a Melyik kell?-ben; a `jegyek.txt.txt` csapda; csak fájlt nyitott meg, mappát
   nem; két fájl egyszerre a dián; a maximum kezdőértéke; „sorvégjel” egybeírva), mind javítva. A pontszám-generátor végtelen ciklusa javítva.
+  Élesben (PR #16, `a81d969`).
+- **14. lecke: Ismétlő próbadolgozat** (`python-14-ismetlo`, 2026-11-04, külön PR-ban): tíz összefoglaló dia az 1–10. leckéről + hibák +
+  tanácsok, 3 levezetés (terv, jegyek listával, függvény), 5 típus: Mit ír ki?, Írd meg!, Milyen hibát ad?, Javítsd ki! vegyesen az 1–10. lecke
+  saját feladataiból (címke: melyik lecke), és új Összetett feladat (több téma egy programban); próbadolgozat; feladatlap (8 feladat, „Megoldom
+  itt”, nyomtatható). A build új jelölője, `<!--@PYLOGIC …-->`, behúzza a leckék feladatlogikáját; a `py-check` ezt is olvassa. Lektor: 25 pont
+  (szakmai: a count számot, a split listát ad; a kerekítést a gép most megköveteli; a feltétel a kerekítetlen átlaggal dolgozik; a range(1, n + 1)
+  magyarázata; nyomtatáskor a megoldások; hiányzó témák az összefoglalóban: helyi változó, összehasonlító jelek, in, típusváltás, break, sep/end),
+  mind javítva, a tesztek újrafuttatva. **Ezzel a tervezett Python-sorozat (1–14.) teljes.**
 
 ## Döntések és indokaik
 
