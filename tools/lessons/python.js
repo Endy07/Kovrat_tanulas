@@ -233,7 +233,7 @@ const PYCORE = (function(){
       if (t.exact != null){
         const d = diffExact(r.out, t.exact);
         if (d) return { ok: false, k, why: pre + (/\{[^{}\n]+\}/.test(r.out) && !/\{[^{}\n]+\}/.test(t.exact) ? "A kimenetben kapcsos zárójel maradt: kimaradt az f a nyitó idézőjel elől? Helyesen: print(f\"… {valtozo} …\"). " : "")
-          + (t.files && /\n[ \t]*\n/.test(normOut(r.out)) && !/\n[ \t]*\n/.test(normOut(t.exact)) ? "Üres sorok vannak a kimenetben: a fájl minden sora \\n-nel (sorvége-jellel) végződik, és a print is tesz egyet. Vágd le: sor.strip(). " : "") + d.why, exact: true };
+          + (t.files && /\n[ \t]*\n/.test(normOut(r.out)) && !/\n[ \t]*\n/.test(normOut(t.exact)) ? "Üres sorok vannak a kimenetben: a fájl minden sora \\n-nel (sorvégjellel) végződik, és a print is tesz egyet. Vágd le: sor.strip(). " : "") + d.why, exact: true };
       }
       if (t.exp){
         const miss = cmpOut(r.out, t.exp);

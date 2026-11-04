@@ -1,5 +1,26 @@
 # Következő session
 
+## 🧭 BELÉPÉSI PONT — 2026-11-04 (Python 13. lecke: szöveges fájlok)
+
+**Hol tartunk:**
+- **Élesben:** a sorozatterv, a közös modul és az 1–12. lecke (PR #5–#15; a 12. beolvasztva: `5f82965`).
+- **Új PR-ban** (`claude/lesson-12-exception-handling-n8ytkd`, a `main`-ről újraindítva): **13. Szöveges fájlok** (`python-13-fajlok`):
+  `open`, `with`, `encoding="utf-8"`, `read`, soronként, `strip`, `split(";")`, `"w"`/`"a"`, `write`, két fájl egyszerre, `FileNotFoundError`,
+  a fájl helye a VS Code-ban. 15 dia, 4 levezetés, 6 feladattípus (Mit ír ki?, Mi lesz a fájlban?, Melyik kell?, Írd meg!, Milyen hibát ad?,
+  Javítsd ki!).
+- **A közös modul bővült:** a futtatóban a program mappájának fájljai szerkeszthetők (`editor({ files })`, `P.ex(code, ins, files)`), a futás
+  után az új/megváltozott fájlok látszanak; `P.filesHtml` a feladatszövegben; célzott üzenet az üres sorokra és a `\n` nélküli write-ra;
+  a `P.kiir` kérdése és címkéje felülírható. Az 1–12. lecke HTML-je újraépítve.
+- **Lektor:** 26 pont, mind javítva (köztük: a Python 3.15 óta Windowson is UTF-8 az alapértelmezés). A pontszám-generátor végtelen ciklusa
+  (a böngészőben lefagyasztotta volna az oldalt) javítva.
+
+**Következő lépés:** a PR beolvasztása után a **14. ismétlő próbadolgozat** (`python-ismetlo`): vegyes feladatlap az 1–10. leckéből, a
+dolgozat-lecke mintájára (`docs/python-terv.md`).
+
+**Endi döntésére vár:** a 13. lecke PR-jének beolvasztása.
+
+---
+
 ## 🧭 BELÉPÉSI PONT — 2026-11-03 (Python 12. lecke: kivételkezelés)
 
 **Hol tartunk:**

@@ -40,3 +40,4 @@
 .ffile{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0}
 .ffile-h{display:block;font-family:var(--mono);font-size:.78rem;padding:4px 10px;background:var(--surface);border-bottom:1px solid var(--line);color:var(--muted)}
 .ffile pre{margin:0;padding:8px 10px;font-family:var(--mono);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere;font-variant-ligatures:none}
+.pyed .pyfiles label{text-transform:none;letter-spacing:.02em}

@@ -618,3 +618,15 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 - **A csupasz `except:` és a bemenet vége:** a csupasz except az EOFError-t is elkapja, és a `while True` végtelen lesz: a böngészőben a 6 mp-es
   időkorlát állítja meg. Ezért a rossz bemenetes „Írd meg!”-eknél a `mustNot` tiltja a csupasz except-et.
 
+### A Python-sorozat 13. leckéje (szöveges fájlok, 2026. 11. 04.)
+
+- **Fájlok a futtatóban:** `P.editor(root, { files: {"jegyek.txt": "…"} })` (és a `P.ex(code, ins, files)`, a hero is): fájlonként egy
+  szerkeszthető mező; a program a saját üres munkamappájában fut ezekkel, a futás után az új vagy megváltozott fájlok a kimenet alatt.
+  `files: {}` = üres mappa (írós feladat, hiányzó fájl). A fájlos leckében **mindig adj `files`-t**, különben a program a Pyodide közös
+  mappájában (vagy a `py-check`-nél a repóban) fut.
+- **Feladatszöveg:** a `P.task`, `P.kiir`, `P.hiba` maga mutatja a `tests[0].files` / `t.files` tartalmát (`P.filesHtml`); a `noFileShow`
+  elnyomja (ha a diáknak kell kitalálnia a fájl nevét). A `P.kiir` `q`-ja és `lbl`-je felülírható („Mi lesz a fájlban?”).
+- **Végtelen ciklus a generátorban:** a „különböző pontszámok” `while`-ja (csak az egyik elemet sorsolta újra) 99-es holtversenynél soha nem
+  állt le: a `py-check` 40-nél beragadt, a böngészőben lefagyott volna az oldal. Különböző értékekhez keverj egy tartományt
+  (`shuffle([...]).slice(0, k)`), ne ismételgess.
+
