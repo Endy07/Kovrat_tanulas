@@ -642,3 +642,25 @@ KOVRAT_PYODIDE=<…>/package KOVRAT_URL=http://127.0.0.1:8765/ node tools/lesson
 - **A biztonsági ellenőrző** a `$$`-t tartalmazó heredocot nem tudja értelmezni (rm-gyanú): a javítószkriptet írd fájlba, és úgy futtasd.
 
 - **Szövegcserés javítás után mindig építs és tesztelj újra a böngészőben:** a dia-szövegek JS-idézőjelben vannak; egy beszúrt `"a" in s` escapelés nélkül az egész szkriptet megölte (0 dia, JS-hiba). Gyors ellenőrzés a kész HTML-en: minden `<script>` tartalma `new Function(…)`-nel lefordul-e.
+
+### Füzetből lecke (2026. 11. 04.): feltöltő, Apps Script, figyelő
+
+- **A füzetből készült lecke** a `tools/fuzet/minta-lecke.src.html` vázából indul, a `<!--@FUZETJS-->` jelölővel (`F.olvasat`,
+  `F.forras`); a feldolgozó prompt (`tools/fuzet/feldolgozo-prompt.md`) ezt a receptet követi. Leckenév: `fuzet-<dátum>-<téma>`.
+- **Kicsinyítés a böngészőben felezésekkel** (`canvasOf`): egy lépésben a `drawImage` nem átlagol, a vékony vonalak eltűnnek
+  vagy recések lesznek, és a homályosság-mérés értelmetlen lesz.
+- **Próbakép `blur` szűrővel:** a canvas szélén átlátszó sáv marad, ami JPEG-ben fekete keret, és „éles” élnek mérődik. Előbb
+  töltsd ki a vásznat a papír színével.
+- **Homályosság:** a gradiens 99,5%-os értéke 1000 és 500 px-en, és az arányuk (`homalyos(e1000, e500)`); egy abszolút határ
+  nem elég, mert a betűméret erősen befolyásolja. Csak figyelmeztet.
+- **Teszt saját fájlszerverrel:** ha a tesztelő folyamat maga szolgálja ki az oldalt, a gyermekfolyamatot (`lesson-test.js`)
+  aszinkron indítsd (`spawn`), a `spawnSync` megállítja a szervert, és a betöltés időtúllépéssel elszáll.
+- **Verzióeltérés a tesztben:** ha az oldal más `version.json`-t lát, mint a saját metája, újratölt `?v=`-vel (a „context destroyed”
+  hiba oka): a teszt-fájlszerver a lecke ágát szolgálja ki elsőnek.
+- **Windows, `core.autocrlf=true` (Endi gépén rendszerszinten):** a figyelő munkafája CRLF-fel jött ki, és a `\n`-es minták
+  (a hamis claude-ban) nem illeszkedtek az `index.html`-re. Javítás: a figyelő a munkafát `--no-checkout`-tal hozza létre,
+  worktree-szintű `core.autocrlf=false` és `core.eol=lf` (`extensions.worktreeConfig`), aztán `reset --hard`; Endi fő
+  munkapéldányát ez nem érinti. Szövegcserénél a fájlt sorvég-függetlenül kezeld (CRLF → LF, csere, vissza).
+- **A homályosság közepes (6 px-es) esete platformfüggő** (a böngésző kicsinyítése és JPEG-kódolója eltér): az e2e csak az éles
+  (nem jelez) és az erősen elmosott (jelez) esetet követeli meg, a 6 px-est kiírja.
+

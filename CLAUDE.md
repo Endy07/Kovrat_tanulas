@@ -43,6 +43,8 @@ lépésenkénti menet és minden eddigi buktató a megoldásával együtt.
 | `szamrendszerek/` | Kovrat füzetének 5 fotója (`.jfif`). **Nincs commitolva** (`.gitignore`), mert a repó nyilvános. |
 | `README.md` | GitHubos leírás + „Hol tartunk” szakasz |
 | `docs/LECKE-RECEPT.md` | Runbook: hogyan készül egy lecke hibamentesen |
+| `fuzet.html`, `tools/fuzet/` | **Füzetből lecke** (2026. 11. 04.): feltöltő- és galériaoldal (forrás: `tools/lessons/fuzet.src.html`), Apps Script webapp (`apps-script/Code.gs`), figyelő Endi gépére (`figyelo/figyelo.js`), feldolgozó prompt (`feldolgozo-prompt.md`), a lecke váza (`minta-lecke.src.html`), tesztek hamis Apps Scripttel/rclone-nal/claude-dal (`teszt/`). Áttekintés: `tools/fuzet/README.md`. |
+| `tools/lessons/fuzet-lecke.js`, `.css` | A füzetből készült leckék közös része (`<!--@FUZETJS-->`): `F.olvasat` („Ezt jól olvastam?”), `F.forras`. |
 | `PROJEKT-KONTEXTUS.md`, `PROJEKT-RESZLETES.md` | A Könyvjelzők-elemző olvassa. **Nem** munkadokumentum, de a lényeges változásnál frissítjük. |
 | `.playwright-mcp/` | A böngészős tesztek képernyőképei. Ideiglenes, nincs commitolva. |
 
@@ -379,6 +381,29 @@ gyakorló feladatok, mindent.” Felhős session, a `claude/python-sorozat-alapo
   (szakmai: a count számot, a split listát ad; a kerekítést a gép most megköveteli; a feltétel a kerekítetlen átlaggal dolgozik; a range(1, n + 1)
   magyarázata; nyomtatáskor a megoldások; hiányzó témák az összefoglalóban: helyi változó, összehasonlító jelek, in, típusváltás, break, sep/end),
   mind javítva, a tesztek újrafuttatva. **Ezzel a tervezett Python-sorozat (1–14.) teljes.**
+
+### Füzetből lecke (2026. 11. 04., a pulttal megtervezve)
+
+Endi kérése: Kovrat feltölti a füzet- és táblafotóit, és a rendszer leckét készít belőlük. Felhős session, a
+`claude/trusting-edison-m0khni` ágon, egy PR-ban; a beolvasztás és a telepítés Endié.
+
+- **Út:** `fuzet.html` (kamera/galéria, kicsinyítés 2000 px-re, homály- és sötétség-figyelmeztetés, füzet/tábla, galéria
+  kijelöléssel, tantárgy, állapot) → `text/plain` POST (nincs CORS-preflight) → **Apps Script** Endi fiókjában (Drive:
+  `<GYOKER_MAPPA>/beerkezett/<dátum>/`, `kepek.json`, `sor.json`; családi kód a Script Properties-ben, korlátok) →
+  **figyelő** Endi gépén (rclone `gdrive:`, pár percenként; `git worktree` új ágon az `origin/main`-ről, `claude -p` a
+  feldolgozó prompttal, ellenőrzés: nincs kép, nincs tiltott szöveg, van lecke és kezdőlap-link; push, `gh pr create`) →
+  `allapot.json` (csak a figyelő írja; benne az életjel: az oldal mutatja, ha a gép ki van kapcsolva).
+- **A kész lecke** a `minta-lecke.src.html` vázából: „Ezt jól olvastam?” (a `[?]`-es részek; Kovrat válasza a Drive
+  `visszajelzesek/` mappájába megy), a füzeted, diák, levezetések, gyakorlás 3 szinten, próbadolgozat, puska; a kezdőlapon
+  „A füzetedből” csoport. Matek/informatika gépi ellenőrzéssel, a többi választós és kitöltős; csak a füzet témája.
+- **Titok:** az Apps Script-cím és a családi kód csak Kovrat telefonjának `localStorage`-ában (vagy a `#cim=…&kod=…` linkben);
+  a figyelő beállítása (`figyelo.config.json`) nincs commitolva. A fotók csak a Drive-on és a figyelő munkamappájában.
+- **Tesztek:** `node tools/fuzet/teszt/apps-script-teszt.js` (a valódi `Code.gs` a hamis Apps Scriptben, 38/38) és
+  `node tools/fuzet/teszt/e2e.js` (böngésző 390 px → hamis Apps Script → figyelő hamis rclone/claude/gh-val, valódi gittel,
+  ideiglenes originnel → állapot vissza → a lecke megnyitása, visszajelzés, `lesson-test` a kész leckén; hibás esetek:
+  kép a commitban, tiltott szöveg, nem lecke, claude-hiba, időtúllépés, kikapcsolt gép, megszakadt munka, Windows-os sorvégek; 64/64).
+- **Endi teendője:** `tools/fuzet/README.md` („Endi teendői”, „Az első valódi próba”). **2. lépés:** második vélemény a
+  helyi Qwen vision-modelltől a `[?]`-es részekre.
 
 ## Döntések és indokaik
 

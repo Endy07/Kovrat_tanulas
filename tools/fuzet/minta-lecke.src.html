@@ -1,0 +1,143 @@
+<!--@HEAD-->
+<title>__CIM__</title>
+<style>
+/* A füzetből készült lecke váza. A feldolgozó (tools/fuzet/feldolgozo-prompt.md) ezt másolja le
+   tools/lessons/<lecke>.src.html néven, és tölti meg a füzet tartalmával. A __LECKE__ és __CIM__ helyére a valódi érték kerül.
+   Ez a minta egy matekos példán (törtek összeadása) mutatja a részeket; a tartalmat mindig a füzet adja. */
+.fuzet-lap{background:#FBFAF4;color:#1F3A93;border-radius:14px;padding:16px 18px;border:1.5px solid #D9D4C2;font-family:var(--mono);font-variant-ligatures:none;
+  background-image:linear-gradient(#E3E8F4 1px,transparent 1px),linear-gradient(90deg,#E3E8F4 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column;gap:10px;overflow-wrap:anywhere}
+.fuzet-lap .fl-cim{font-family:var(--body);font-weight:700;color:#17202B}
+.fuzet-lap .fl-sor{white-space:pre-wrap}
+.fuzet-lap .bizonytalan{background:#FFE7B0;border-radius:4px;padding:0 3px}
+.slide .eq{white-space:normal}
+table.pt,code,pre.code{font-variant-ligatures:none}
+</style>
+<div class="wrap">
+
+<header class="hero section-head">
+  <a class="back" href="index.html">← Vissza a leckékhez</a>
+  <span class="eyebrow">Matek · a füzetedből</span>
+  <h1>__CIM__</h1>
+  <p class="lead">Rövid, barátságos bevezető: mit tanultatok az órán, és mit fogsz tudni a lecke végére.</p>
+  <div id="forras"></div>
+</header>
+
+<section class="section-head" id="olvasat-resz">
+  <span class="eyebrow">Először</span><h2>Ezt jól olvastam?</h2>
+  <div id="olvasat"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">0. rész</span><h2>A füzeted</h2>
+  <p>Így olvastam ki a füzetedet. A sárgával jelölt részben nem voltam biztos (fent megkérdeztem).</p>
+  <div class="fuzet-lap" id="fuzet"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">1. rész</span><h2>Magyarázat</h2>
+  <div id="deck"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">2. rész</span><h2>Kidolgozott példák, lépésenként</h2>
+  <p>A füzet feladatainak mintájára. A „Tovább” gombbal lépkedj, vagy hagyd, hogy magától menjen. Felolvasva is megy.</p>
+  <div class="tabs" id="pb-methods"></div>
+  <div id="pb"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">3. rész</span><h2>Gyakorlás</h2>
+  <p>Három szint, mindig új feladatok, csak abból, ami a füzetedben van. A „Próbadolgozat” 10 vegyes feladat, a végén jegy.</p>
+  <div id="practice"></div>
+</section>
+
+<section class="section-head">
+  <span class="eyebrow">4. rész</span><h2>Puska</h2>
+  <div class="two-col" id="puska"></div>
+</section>
+
+</div>
+<!--@KITJS-->
+<!--@FUZETJS-->
+<script>
+(function(){
+  const { $, $$, rnd, pick } = K;
+
+  /* ---------- Miből készült, és ami bizonytalan volt ---------- */
+  F.forras($("#forras"), { tantargy: "Matek", tema: "Törtek összeadása", kepDb: 1, datum: "2026. 11." });
+  F.olvasat($("#olvasat"), { lecke: "__LECKE__", tetelek: [
+    { id: "o1", hol: "2. feladat", olvasat: "3/4 + 1/6", kerdes: "A második tört nevezője 6 vagy 8?" }
+  ] });
+
+  /* ---------- A füzet tartalma, ahogy kiolvastam (személyes adat nélkül) ---------- */
+  const FUZET = [
+    { cim: "Törtek összeadása", sorok: ["Közös nevezőre hozzuk, aztán a számlálókat összeadjuk."] },
+    { cim: "1. feladat", sorok: ["1/2 + 1/3 = 3/6 + 2/6 = 5/6"] },
+    { cim: "2. feladat", sorok: ["3/4 + <span class='bizonytalan'>1/6</span> = 9/12 + 2/12 = 11/12"] }
+  ];
+  $("#fuzet").innerHTML = FUZET.map(f => "<div><div class='fl-cim'>" + f.cim + "</div>" + f.sorok.map(s => "<div class='fl-sor'>" + s + "</div>").join("") + "</div>").join("");
+
+  /* ---------- Diák ---------- */
+  K.deck($("#deck"), [
+    { k: "Alap", t: "Mi a közös nevező?", h: "<p>Két törtet csak akkor adhatunk össze, ha ugyanannyi részre van vágva az egész: ez a <b>közös nevező</b>.</p><p class='eq'>1/2 = 3/6 &nbsp; és &nbsp; 1/3 = 2/6</p>" },
+    { k: "Lépések", t: "Összeadás három lépésben", h: "<ol><li>Közös nevező (a két nevező legkisebb közös többszöröse).</li><li>Bővítés: számláló és nevező ugyanazzal szorozva.</li><li>A számlálók összege, a nevező marad; a végén egyszerűsítünk.</li></ol>" },
+    { k: "Hibák", t: "Tipikus hibák", h: "<div class='mistake'>1/2 + 1/3 ≠ 2/5: a nevezőket nem adjuk össze.</div><div class='mistake'>Elmarad az egyszerűsítés: 4/8 helyett 1/2.</div>" }
+  ]);
+
+  /* ---------- Levezetés-lejátszó ---------- */
+  const lnko = (a, b) => b ? lnko(b, a % b) : a, lkkt = (a, b) => a / lnko(a, b) * b;
+  function osszegKockak(a, b, c, d){
+    const n = lkkt(b, d), x = a * n / b, y = c * n / d, s = x + y, g = lnko(s, n), fr = [];
+    const kep = sor => "<div>" + sor.join("</div><div>") + "</div>";
+    fr.push({ cap: "Feladat: " + a + "/" + b + " + " + c + "/" + d + ".", html: kep([a + "/" + b + " + " + c + "/" + d]) });
+    fr.push({ cap: "Közös nevező: " + b + " és " + d + " legkisebb közös többszöröse, " + n + ".", html: kep([a + "/" + b + " + " + c + "/" + d, "<span class='cur'>közös nevező: " + n + "</span>"]) });
+    fr.push({ cap: "Bővítünk: " + a + "/" + b + " = " + x + "/" + n + ", és " + c + "/" + d + " = " + y + "/" + n + ".", html: kep([a + "/" + b + " + " + c + "/" + d, "közös nevező: " + n, "<span class='cur'>" + x + "/" + n + " + " + y + "/" + n + "</span>"]) });
+    fr.push({ cap: "Összeadjuk a számlálókat: " + x + " + " + y + " = " + s + ".", html: kep([x + "/" + n + " + " + y + "/" + n, "<span class='cur'>= " + s + "/" + n + "</span>"]) });
+    fr.push({ cap: g > 1 ? "Egyszerűsítünk: a számlálót és a nevezőt is elosztjuk ennyivel: " + g + ". Az eredmény " + (s / g) + "/" + (n / g) + "." : "Nem egyszerűsíthető, ez a végeredmény.", html: kep([x + "/" + n + " + " + y + "/" + n, "= " + s + "/" + n, "<span class='cur'>= " + (s / g) + "/" + (n / g) + "</span>"]) });
+    return fr;
+  }
+  const PELDAK = { f1: [1, 2, 1, 3], f2: [3, 4, 1, 6] }, CIMEK = { f1: "A füzet 1. feladata", f2: "A füzet 2. feladata" };
+  $("#pb-methods").innerHTML = Object.keys(PELDAK).map((k, i) => "<button class='tab' data-m='" + k + "' aria-selected='" + (i === 0) + "'>" + CIMEK[k] + "</button>").join("");
+  const pb = K.player($("#pb"));
+  const tolt = (m, auto) => { $$("#pb-methods .tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.m === m))); pb.load(osszegKockak(...PELDAK[m]), CIMEK[m], auto); };
+  $("#pb-methods").addEventListener("click", e => { const b = e.target.closest(".tab"); if (b) tolt(b.dataset.m, false); });
+  tolt("f1", false);
+  const playTo = (fr, title) => { pb.load(fr, title, true); $("#pb").scrollIntoView({ behavior: "smooth", block: "center" }); };
+
+  /* ---------- Gyakorlás: a füzet témája, 3 szinten, gépi ellenőrzéssel ---------- */
+  const tortBe = v => { const m = /^\s*(-?\d+)\s*\/\s*(\d+)\s*$/.exec(String(v)); return m && Number(m[2]) ? [Number(m[1]), Number(m[2])] : null; };
+  function tortCheck(p, q){
+    return v => {
+      const t = tortBe(v);
+      if (!t) return { ok: false, msg: "Törtet írj, például így: 5/6." };
+      if (t[0] * q !== p * t[1]) return { ok: false, msg: "Nem jó. Előbb hozd közös nevezőre a két törtet." };
+      if (lnko(Math.abs(t[0]), t[1]) > 1) return { ok: false, msg: "Az érték jó, de még egyszerűsíthető." };
+      return { ok: true, msg: "Helyes!" };
+    };
+  }
+  const NEV = [[2, 3, 4], [3, 4, 6, 8], [4, 6, 8, 9, 10, 12]];
+  const types = [
+    { id: "ossz", name: "Összeadás", gen(l){
+      let b, d, a, c, g = 0;
+      do { b = pick(NEV[l - 1]); d = pick(NEV[l - 1]); a = rnd(1, b - 1); c = rnd(1, d - 1); } while (b === d && l > 1 && g++ < 50);
+      const n = lkkt(b, d), s = a * n / b + c * n / d, k = lnko(s, n);
+      return { q: "Mennyi? <span class='num'>" + a + "/" + b + " + " + c + "/" + d + "</span>", kind: "input", ph: "5/6", answer: (s / k) + "/" + (n / k),
+        frames: osszegKockak(a, b, c, d), title: "Törtek összeadása",
+        sol: "<p>Közös nevező: " + n + ". " + a + "/" + b + " + " + c + "/" + d + " = " + (a * n / b) + "/" + n + " + " + (c * n / d) + "/" + n + " = " + s + "/" + n + (k > 1 ? " = " + (s / k) + "/" + (n / k) : "") + ".</p>",
+        check: tortCheck(s / k, n / k) };
+    } },
+    { id: "kozos", name: "Közös nevező", gen(l){
+      const b = pick(NEV[l - 1]), d = pick(NEV[l - 1].filter(x => x !== b)), n = lkkt(b, d);
+      return { q: "Mi a legkisebb közös nevezője ennek a két törtnek? <span class='num'>1/" + b + " és 1/" + d + "</span>", kind: "input", mode: "numeric", answer: n,
+        sol: "<p>" + b + " és " + d + " legkisebb közös többszöröse " + n + ".</p>",
+        check: v => Number(String(v).trim()) === n ? { ok: true, msg: "Helyes!" } : Number(v) > 0 && Number(v) % b === 0 && Number(v) % d === 0 ? { ok: false, msg: "Ez is közös nevező, de nem a legkisebb." } : { ok: false, msg: "Nem jó. Olyan szám kell, amely mindkét nevezővel osztható." } };
+    } }
+  ];
+  K.practice($("#practice"), { id: "__LECKE__", types, play: playTo, examN: 10 });
+
+  /* ---------- Puska ---------- */
+  $("#puska").innerHTML = [["Közös nevező", "a nevezők legkisebb közös többszöröse"], ["Bővítés", "számláló és nevező ugyanazzal szorozva"], ["Egyszerűsítés", "számláló és nevező ugyanazzal osztva"]]
+    .map(r => "<div class='trick'><span class='t'>" + r[0] + "</span><span>" + r[1] + "</span></div>").join("");
+})();
+</script>
+<!--@UPDATE-->

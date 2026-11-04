@@ -1,0 +1,19 @@
+/* Füzetből készült leckék: „Ezt jól olvastam?” (F.olvasat) */
+.fz-olv{border:2px solid var(--led);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb,var(--led) 8%,var(--surface))}
+.fz-olv.fz-kesz{border-color:var(--ok);background:var(--ok-bg)}
+.fz-fej{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;font-family:var(--display);font-size:1.25rem}
+.fz-fej span{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.fz-mag{color:var(--muted)}
+.fz-t{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.fz-t.jo{border-color:var(--ok)}
+.fz-t.nemjo{border-color:var(--bad)}
+.fz-hol{font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fz-olvas{font-family:var(--mono);font-size:1.15rem;font-weight:700;overflow-wrap:anywhere;font-variant-ligatures:none}
+.fz-kerd{font-weight:700}
+.fz-gombok{display:flex;flex-wrap:wrap;gap:8px}
+.fz-jav{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.fz-jav label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted);flex:1 1 200px;min-width:0}
+.fz-jav input{font-family:var(--mono);font-size:1.05rem;padding:.45em .6em;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.fz-kuld{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fz-km{color:var(--muted);flex:1 1 200px;min-width:0}
+.fz-forras{font-size:.95rem;color:var(--muted)}

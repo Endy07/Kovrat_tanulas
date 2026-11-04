@@ -30,6 +30,8 @@ for (const n of names) {
        .replace("<!--@HJS-->", () => "<style>\n" + rd("helyesiras.css") + "</style>\n<script>\n" + rd("helyesiras.js") + "</script>")
        // Python-sorozat: a közös Python-modul (futtató, ellenőrzés, feladatfajták)
        .replace("<!--@PYJS-->", () => "<style>\n" + rd("python.css") + "</style>\n<script>\n" + rd("python.js") + "</script>")
+       // füzetből készült leckék: „Ezt jól olvastam?” és a forrássor (tools/fuzet, feldolgozó prompt)
+       .replace("<!--@FUZETJS-->", () => "<style>\n" + rd("fuzet-lecke.css") + "</style>\n<script>\n" + rd("fuzet-lecke.js") + "</script>")
        // ismétlő lecke: más Python-leckék feladatlogikája (a /*@LOGIC*/ blokkjuk), PYL["python-5-elagazas"] alakban
        .replace(/<!--@PYLOGIC ([^>]*?)-->/, (m, list) => "<script>\nconst PYL = {};\n" + list.trim().split(/\s+/).map(l => "PYL[" + JSON.stringify(l) + "] = (function(){\n" + logicOf(l) + "\nreturn LOGIC;\n})();\n").join("") + "</script>");
   fs.writeFileSync(path.join(root, n + ".html"), s);

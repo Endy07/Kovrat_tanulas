@@ -10,6 +10,7 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 
 | Lecke | Tartalom |
 |---|---|
+| [Füzetből lecke](fuzet.html) | Fotó a füzetről vagy a tábláról → feltöltés → kijelölés → a gép leckét készít belőle (Endi átnézi). A beállítást Endi adja meg |
 | [Visszatekintés a 8. osztályra](8-visszatekintes.html) | Hatványok, normálalak, törtek, százalék, arány, egyenletek, adatmennyiség: a 9.-es anyag alapjai. 9 dia, 3 levezetés, 6 feladattípus, próbadolgozat |
 | [Oszthatóság, maradék, prímek, statisztika](oszthatosag-statisztika.html) | Maradékos osztás és a `%` jel, oszthatósági szabályok, prímek és Eratoszthenész szitája, prímtényezős felbontás, LNKO, LKKT, euklideszi algoritmus, átlag, medián, módusz, rövid Python-programok |
 | [Koordináták és függvények](koordinatak-fuggvenyek.html) | Pont, síknegyed, tükrözés, értéktáblázat, lineáris függvény, egyenes két pontból, távolság Pitagorasszal, grafikon olvasása, képernyő-koordináták (CSS, játékmozgás); csúszkás grafikon |
@@ -77,8 +78,9 @@ A kezdőlapról az **[éves tanrend](tanrend.html)** is elérhető: hónapról h
 
 Minden lecke egyetlen önálló HTML-fájl, telepítés és build nélkül: böngészőben megnyitva működik. (A forrásuk a `tools/lessons` mappában van, onnan állítja elő a `node tools/lessons/build.js`.)
 
-## Hol tartunk (2026. 11. 01.)
+## Hol tartunk (2026. 11. 04.)
 
+- **Új (2026. 11. 04.): füzetből lecke** ([`fuzet.html`](fuzet.html), `tools/fuzet/`). A fotó a telefonról Endi Google Drive-jába megy (Apps Script), Endi gépén a figyelő a `claude -p`-vel leckét készít belőle (magyarázat, kidolgozott példák, gyakorlás 3 szinten, próbadolgozat, „Ezt jól olvastam?”), és PR-ként adja vissza. Hamis Apps Scripttel és hamis rclone-nal tesztelve; a telepítés Endi teendője (`tools/fuzet/README.md`).
 - **Kész (2026. 11. 01.): a Python-sorozat mind a 10 leckéje** (print → függvények), lektorálva, VS Code-os példákkal; az 1–9. élesben, a 10. PR-ban.
 - **Új (2026. 11. 01., este): Python-sorozat a nulláról.** Terv 10 leckével (`docs/python-terv.md`), közös Python-modul (`tools/lessons/python.js`), és az első két lecke: **1. Mi a program? A print**, **2. Változók és típusok**. A kezdőlapon új csoport: „Python a nulláról”. Később ugyanabba a PR-be: **3. Adatbekérés, input** (VS Code-os terminálpéldákkal), és a Python-előzetes új címe „Python – gyors áttekintés”. Beolvasztásra vár (PR #5).
 - **A helyesírás-sor kész és élesben** (11 lecke, 44 tollbamondás, szintfelmérő automatikus mentéssel). Következő: Python-sorozat a nulláról, új sessionben.
